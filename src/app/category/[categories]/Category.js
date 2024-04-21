@@ -54,9 +54,6 @@ const Category = ({ params }) => {
                 className="h-full w-full object-cover object-center group-hover:opacity-50"/>
             </div>
             <h3 className="mt-4 text-sm text-gray-700">{product.description}</h3>
-            <p className="mt-1 text-lg text-center font-medium text-gray-900">
-              {product.price}
-            </p>
           </Link>
         ))}
       </div>

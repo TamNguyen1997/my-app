@@ -1,20 +1,19 @@
-"use client"
+import Image from "next/image"
+import Link from "next/link"
+import { useEffect, useState } from "react"
 
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-
-export default function PopularItems() {
+const RelatedProducts = ({ productId }) => {
+  if (!productId) return <></>
 
   const [products, setProducts] = useState([])
 
   useEffect(() => {
-    fetch("/api/popular-products").then(res => res.json()).then(setProducts)
+    fetch(`/api/products/${productId}/related`).then(res => res.json()).then(json => setProducts(json))
   }, [])
 
-  return (
-    <div>
-      <div className="bg-white mx-auto w-6/12">
+  return (<>
+    <div className="pt-6">
+      <div className="bg-white mx-auto">
         <div className="mx-auto lg:max-w-full">
           <div className=" grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-6">
             {
@@ -39,5 +38,7 @@ export default function PopularItems() {
         </div>
       </div>
     </div>
-  );
+  </>)
 }
+
+export default RelatedProducts

@@ -5,20 +5,16 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import TechnicalDetail from "../../components/TechnicalDetail";
 import Skeleton from "../../components/Skeleton";
-import { Button } from "@nextui-org/react";
-import { ShoppingCart } from "lucide-react";
+import SaleDetail from "../../components/SaleDetail";
+import RelatedProducts from "../../components/RelatedProducts";
 
 const Product = () => {
   const [product, setProduct] = useState({});
-  const [category, setCategory] = useState("");
   const [technicalDetails, setTechnicalDetails] = useState([]);
   const { _id } = useParams();
   useEffect(() => {
     const fetchProduct = () => {
-      fetch(`/api/products/${_id}`).then((res) => res.json()).then(json => {
-        setProduct(json)
-        fetch(`/api/categories/${json.categoryId}`).then((res) => res.json()).then(json => setCategory(json.name))
-      })
+      fetch(`/api/products/${_id}`).then((res) => res.json()).then(json => setProduct(json))
     };
     const fetchTechnicalDetails = () => {
       fetch(`/api/products/${_id}/technical-details`).then((res) => res.json()).then(json => setTechnicalDetails(json))
@@ -69,25 +65,14 @@ const Product = () => {
             </div>
             <div className="w-full px-4 md:w-1/2 ">
               <div>
-                <span className="text-lg font-medium text-rose-500 ">
-                  {category}
-                </span>
                 <h2 className="max-w-xl mt-2 mb-6 text-2xl font-bold  md:text-4xl">
                   {product?.description}
                 </h2>
-                <p className="inline-block mb-8 text-4xl font-bold text-gray-700  ">
-                  <span>{product?.price?.toLocaleString()}</span>
-                </p>
               </div>
-              <div className="flex pb-3">
-                <div className="pr-7 w-2/3">
-                  <Button color="primary" fullWidth radius="full">Mua ngay <ShoppingCart /></Button>
-                </div>
-                <div className="w-1/3">
-                  <Button color="default" fullWidth variant="faded" radius="full">Liên hệ</Button>
-                </div>
-              </div>
+              <SaleDetail productId={_id}></SaleDetail>
               <TechnicalDetail data={technicalDetails}></TechnicalDetail>
+
+              <RelatedProducts productId={_id}></RelatedProducts>
             </div>
           </div>
         </div>

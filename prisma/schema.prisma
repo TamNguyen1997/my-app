@@ -62,16 +62,18 @@ model primary_sale_detail {
   productId             String                  @map("product_id")
   key                   String
   value                 String
+  price                 Int?
   secondary_sale_detail secondary_sale_detail[]
 
   @@index([productId])
 }
 
 model secondary_sale_detail {
-  id    String @id @db.Uuid
-  key   String
-  value String
-
+  id                  String              @id @db.Uuid
+  key                 String
+  value               String
+  price               Int?
+  
   primarySaleDetail   primary_sale_detail @relation(fields: [primarySaleDetailId], references: [id])
   primarySaleDetailId String              @map("primary_sale_detail_id")
 

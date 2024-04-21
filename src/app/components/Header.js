@@ -20,7 +20,7 @@ const Header = () => {
 
   return (
     <div className="w-full flexible">
-      <header className="bg-white ">
+      <header className="bg-[#ffd300] ">
         <div className="mx-auto flex h-16 max-w-screen-2xl items-center gap-8 px-4 sm:px-6 lg:px-8">
           <Link className="block text-teal-600" href="/">
             <span className="sr-only">Home</span>

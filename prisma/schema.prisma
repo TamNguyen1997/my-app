@@ -22,7 +22,7 @@ model category {
 
 model product {
   id          String    @id
-  category    category? @relation(fields: [categoryId], references: [id])
+  category    category? @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   categoryId  String?   @map("category_id")
   description String?
   imageUrl    String?   @map("image_url")
@@ -31,34 +31,33 @@ model product {
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
-  primarySaleDetails   primary_sale_detail[]
-  secondarySaleDetails secondary_sale_detail[]
-  technicalDetails     technical_detail[]
-  popularProduct       popular_product?
+  primarySaleDetails primary_sale_detail[]
+  technicalDetails   technical_detail[]
+  popularProduct     popular_product?
 
   @@index([categoryId])
 }
 
 model popular_product {
-  product   product @relation(fields: [productId], references: [id])
-  productId String  @id @map("product_id")
+  product   product? @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productId String   @id @map("product_id")
 
   @@index([productId])
 }
 
 model technical_detail {
+  id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   key       String
   value     String
-  product   product @relation(fields: [productId], references: [id])
+  product   product @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   productId String  @map("product_id")
 
-  @@id([key, productId])
   @@index([productId])
 }
 
 model primary_sale_detail {
-  id                    String                  @id @db.Uuid
-  product               product                 @relation(fields: [productId], references: [id])
+  id                    String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  product               product                 @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   productId             String                  @map("product_id")
   key                   String
   value                 String
@@ -69,17 +68,13 @@ model primary_sale_detail {
 }
 
 model secondary_sale_detail {
-  id                  String              @id @db.Uuid
-  key                 String
-  value               String
-  price               Int?
-  
-  primarySaleDetail   primary_sale_detail @relation(fields: [primarySaleDetailId], references: [id])
+  id    String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  key   String
+  value String
+  price Int?
+
+  primarySaleDetail   primary_sale_detail @relation(fields: [primarySaleDetailId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   primarySaleDetailId String              @map("primary_sale_detail_id")
 
-  product   product @relation(fields: [productId], references: [id])
-  productId String  @map("product_id")
-
-  @@index([productId])
   @@index([primarySaleDetailId])
 }

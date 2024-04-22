@@ -10,7 +10,8 @@ const nextConfig = {
       "images.ctfassets.net",
       "cdn.pixabay.com",
       "cdn.tgdd.vn",
-      "hc.com.vn"
+      "hc.com.vn",
+      "bizweb.dktcdn.net"
     ],
   },
 };

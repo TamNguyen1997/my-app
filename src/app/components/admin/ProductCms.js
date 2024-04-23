@@ -10,7 +10,7 @@ import {
 } from "@nextui-org/react";
 import { useCallback, useState } from "react";
 import { EditIcon, Trash2 } from "lucide-react";
-import DetailProductCms from "../admin/DetailProductCms"
+import DetailProductCms from "@/components/admin/DetailProductCms"
 
 const ProductCms = () => {
   const [isLoading, setIsLoading] = useState(true);

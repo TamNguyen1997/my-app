@@ -1,7 +1,7 @@
 "use client";
 
-import HeroBanner from "./components/HeroBanner";
-import PopularItems from "./components/PopularItems";
+import HeroBanner from "@/components/HeroBanner";
+import PopularItems from "@/components/PopularItems";
 
 export default function Home() {
   return (

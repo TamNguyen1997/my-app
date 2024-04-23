@@ -2,6 +2,7 @@
 
 import { Listbox, ListboxItem } from "@nextui-org/react";
 import Link from "next/link";
+import BlogCms from "@/components/admin/BlogCms"
 
 const menu = [
   {
@@ -13,11 +14,6 @@ const menu = [
     id: "product",
     link: "/admin/product",
     name: "Sản phẩm"
-  },
-  {
-    id: "blog",
-    link: "/admin/blog",
-    name: "Blog"
   },
   {
     id: "blog",
@@ -43,6 +39,11 @@ const Admin = () => {
                 })
               }
             </Listbox>
+          </div>
+        </div>
+        <div className="pl-5 w-5/6 pr-5">
+          <div className="border rounded-md shadow-md">
+            <BlogCms></BlogCms>
           </div>
         </div>
       </div>

@@ -3,10 +3,10 @@
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import TechnicalDetail from "../../components/TechnicalDetail";
-import Skeleton from "../../components/Skeleton";
-import SaleDetail from "../../components/SaleDetail";
-import RelatedProducts from "../../components/RelatedProducts";
+import TechnicalDetail from "@/components/TechnicalDetail";
+import Skeleton from "@/components/Skeleton";
+import SaleDetail from "@/components/SaleDetail";
+import RelatedProducts from "@/components/RelatedProducts";
 
 const Product = () => {
   const [product, setProduct] = useState({});

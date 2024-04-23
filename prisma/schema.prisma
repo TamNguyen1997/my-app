@@ -78,3 +78,10 @@ model secondary_sale_detail {
 
   @@index([primarySaleDetailId])
 }
+
+model blog {
+  id      String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title   String
+  content String
+  active  Boolean @default(false)
+} 

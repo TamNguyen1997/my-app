@@ -2,6 +2,7 @@
 
 import HeroBanner from "@/components/HeroBanner";
 import PopularItems from "@/components/PopularItems";
+import PopularBlogs from "@/components/PopularBlogs";
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
           <PopularItems />
         </div>
       </div>
+      <PopularBlogs />
     </div>
   );
 }

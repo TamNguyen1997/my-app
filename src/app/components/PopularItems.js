@@ -30,7 +30,7 @@ export default function PopularItems() {
                     />
                   </div>
                   <h3 className="mt-4 text-sm text-gray-700">
-                    {product.description}
+                    {product.name}
                   </h3>
                 </Link>
               })

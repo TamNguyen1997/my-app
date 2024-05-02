@@ -53,7 +53,7 @@ const Category = ({ params }) => {
                 alt={product.imageAlt}
                 className="h-full w-full object-cover object-center group-hover:opacity-50"/>
             </div>
-            <h3 className="mt-4 text-sm text-gray-700">{product.description}</h3>
+            <h3 className="mt-4 text-sm text-gray-700">{product.name}</h3>
           </Link>
         ))}
       </div>

@@ -10,17 +10,13 @@ import RelatedProducts from "@/components/RelatedProducts";
 
 const Product = () => {
   const [product, setProduct] = useState({});
-  const [technicalDetails, setTechnicalDetails] = useState([]);
   const { _id } = useParams();
   useEffect(() => {
     const fetchProduct = () => {
       fetch(`/api/products/${_id}`).then((res) => res.json()).then(json => setProduct(json))
     };
-    const fetchTechnicalDetails = () => {
-      fetch(`/api/products/${_id}/technical-details`).then((res) => res.json()).then(json => setTechnicalDetails(json))
-    };
+
     fetchProduct()
-    fetchTechnicalDetails()
   }, [_id]);
   if (!product.id) {
     return <Skeleton />
@@ -66,11 +62,11 @@ const Product = () => {
             <div className="w-full px-4 md:w-1/2 ">
               <div>
                 <h2 className="max-w-xl mt-2 mb-6 text-2xl font-bold  md:text-4xl">
-                  {product?.description}
+                  {product?.name}
                 </h2>
               </div>
               <SaleDetail productId={_id}></SaleDetail>
-              <TechnicalDetail data={technicalDetails}></TechnicalDetail>
+              <TechnicalDetail data={product.technicalDetails}></TechnicalDetail>
 
               <RelatedProducts productId={_id}></RelatedProducts>
             </div>

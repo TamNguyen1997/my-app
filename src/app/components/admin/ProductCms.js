@@ -8,14 +8,17 @@ import {
   ModalBody, ModalFooter,
   Button, ModalContent
 } from "@nextui-org/react";
-import { useCallback, useState } from "react";
+import { createContext, useCallback, useState } from "react";
 import { EditIcon, Trash2 } from "lucide-react";
 import DetailProductCms from "@/components/admin/DetailProductCms"
+
+export const ProductContext = createContext();
 
 const ProductCms = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedProduct, setSelectedProduct] = useState({});
+  const value = [selectedProduct, setSelectedProduct]
 
   let list = useAsyncList({
     async load() {
@@ -53,6 +56,16 @@ const ProductCms = () => {
     }
   }, [])
 
+  const onSubmit = async () => {
+    const body = selectProduct
+    body.saleDetails.forEach(detail => delete detail.productId)
+    body.technicalDetails.forEach(detail => delete detail.productId)
+    await fetch(`/api/products/${selectedProduct.id}`, {
+      method: "PUT",
+      body: JSON.stringify(selectedProduct)
+    })
+  }
+
   return (
     <>
       <div className="flex flex-col gap-2 border-r min-h-full p-2">
@@ -61,12 +74,13 @@ const ProductCms = () => {
             aria-label="Tất cả sản phẩm">
             <TableHeader>
               <TableColumn key="id" textValue="Mã sản phẩm">Mã sản phẩm</TableColumn>
-              <TableColumn key="description" textValue="Tên sản phẩm">Tên sản phẩm</TableColumn>
+              <TableColumn key="name" textValue="Tên sản phẩm">Tên sản phẩm</TableColumn>
               <TableColumn key="actions" textValue="actions"></TableColumn>
             </TableHeader>
             <TableBody
               items={list.items}
               isLoading={isLoading}
+              emptyContent={"Không có sản phẩm nào"}
               loadingContent={<Spinner label="Loading..." />}>
               {(item) => (
                 <TableRow key={item.id}>
@@ -77,25 +91,32 @@ const ProductCms = () => {
           </Table>
         </div>
       </div>
-      <Modal
-        size="5xl" scrollBehavior="inside"
-        isOpen={isOpen} onOpenChange={onOpenChange}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">Chi tiết sản phẩm</ModalHeader>
-              <ModalBody>
-                <DetailProductCms product={selectedProduct}></DetailProductCms>
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Close
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+      <ProductContext.Provider value={value}>
+        <Modal
+          size="5xl" scrollBehavior="inside"
+          isOpen={isOpen} onOpenChange={onOpenChange}>
+          <form onSubmit={onSubmit}>
+            <ModalContent>
+              {(onClose) => (
+                <>
+                  <ModalHeader className="flex flex-col gap-1">Chi tiết sản phẩm</ModalHeader>
+                  <ModalBody>
+                    <DetailProductCms ></DetailProductCms>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button color="primary" type="submit">
+                      Lưu
+                    </Button>
+                    <Button color="danger" variant="light" onPress={onClose}>
+                      Close
+                    </Button>
+                  </ModalFooter>
+                </>
+              )}
+            </ModalContent>
+          </form>
+        </Modal>
+      </ProductContext.Provider>
     </>
   );
 };

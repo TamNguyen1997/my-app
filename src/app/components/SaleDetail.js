@@ -12,24 +12,34 @@ const SaleDetail = ({ productId }) => {
   const [selectedSecondary, setSelectedSecondary] = useState({})
 
   useEffect(() => {
-    fetch(`/api/products/${productId}/sale-details/`).then(res => res.json())
-    .then(json => {
-      setDetail(Object.groupBy(json, ({id}) => id))
-      setPrimarySaleDetails(json)
-    })
+    fetch(`/api/products/${productId}`).then(res => res.json())
+      .then(json => {
+        let primary = []
+        let detailGroup = {}
+
+        json.saleDetails.forEach((detail) => {
+          if (detail.parentSaleDetailId) {
+            if (!detailGroup[detail.parentSaleDetailId]) detailGroup[detail.parentSaleDetailId] = [detail]
+            else detailGroup[detail.parentSaleDetailId].push(detail)
+          } else {
+            primary.push(detail)
+          }
+        })
+        setDetail(detailGroup)
+        setPrimarySaleDetails(primary)
+      })
   }, [])
 
   const onPrimarySelect = (e) => {
     const buttonValue = e.target.getAttribute("value")
-    setSelectedPrimary(detail[buttonValue][0])
+    setSelectedPrimary(primarySaleDetails.find(detail => detail.id === buttonValue))
     setSelectedSecondary({})
-    const secondaryDetails = detail[buttonValue][0].secondary_sale_detail ? detail[buttonValue][0].secondary_sale_detail : []
-    setSecondarySaleDetails(secondaryDetails)
+    setSecondarySaleDetails(detail[buttonValue])
   }
 
   const onSecondarySelect = (e) => {
     const buttonValue = e.target.getAttribute("value")
-    setSelectedSecondary(selectedPrimary.secondary_sale_detail.find(detail => detail.id === buttonValue))
+    setSelectedSecondary(secondarySaleDetails.find(detail => detail.id === buttonValue))
   }
 
   const getVariant = (id, selected) => {
@@ -38,7 +48,7 @@ const SaleDetail = ({ productId }) => {
   }
 
   const getPrice = () => {
-    if (selectedPrimary.price && !selectedPrimary.secondary_sale_detail?.length) return selectedPrimary.price.toLocaleString()
+    if (selectedPrimary.price && !detail[selectedPrimary.id]) return selectedPrimary.price.toLocaleString()
     if (selectedSecondary.price) return selectedSecondary.price.toLocaleString()
   }
 
@@ -47,7 +57,10 @@ const SaleDetail = ({ productId }) => {
       {
         primarySaleDetails.map(detail => {
           return <div className="pl-4" key={detail.id}>
-            <Button color="default" variant={getVariant(detail.id, selectedPrimary.id)} onPress={onPrimarySelect} value={detail.id}>{detail.value}</Button>
+            <Button color="default" 
+              variant={getVariant(detail.id, selectedPrimary.id)}
+              onPress={onPrimarySelect} 
+              value={detail.id}>{detail.value}</Button>
           </div>
         })
       }
@@ -57,7 +70,7 @@ const SaleDetail = ({ productId }) => {
       {
         secondarySaleDetails.map(detail => {
           return <div className="pl-4" key={detail.id}>
-            <Button color="default" variant={getVariant(detail.id, selectedSecondary.id)}  onPress={onSecondarySelect} value={detail.id}>{detail.value}</Button>
+            <Button color="default" variant={getVariant(detail.id, selectedSecondary.id)} onPress={onSecondarySelect} value={detail.id}>{detail.value}</Button>
           </div>
         })
       }

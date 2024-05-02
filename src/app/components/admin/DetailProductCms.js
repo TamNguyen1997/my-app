@@ -3,29 +3,28 @@ import TechnicalDetailForm from "./ui/TechnicalDetailForm";
 import ProductDetailForm from "./ui/ProductDetailForm";
 import SaleDetailForm from "./ui/SaleDetailForm";
 
-const DetailProductCms = ({ product }) => {
-
+const DetailProductCms = () => {
   return (
     <>
       <Tabs>
         <Tab title="Thông tin chung">
           <Card>
             <CardBody>
-              <ProductDetailForm product={product}></ProductDetailForm>
+              <ProductDetailForm></ProductDetailForm>
             </CardBody>
           </Card>
         </Tab>
         <Tab title="Thông số kĩ thuật">
           <Card>
             <CardBody>
-              <TechnicalDetailForm product={product}></TechnicalDetailForm>
+              <TechnicalDetailForm></TechnicalDetailForm>
             </CardBody>
           </Card>
         </Tab>
         <Tab title="Thông số bán hàng">
           <Card>
             <CardBody>
-              <SaleDetailForm product={product}></SaleDetailForm>
+              <SaleDetailForm></SaleDetailForm>
             </CardBody>
           </Card>
         </Tab>

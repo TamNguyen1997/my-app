@@ -21,19 +21,18 @@ model category {
 }
 
 model product {
-  id          String    @id
-  category    category? @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  categoryId  String?   @map("category_id")
-  description String?
-  imageUrl    String?   @map("image_url")
-  imageAlt    String?   @map("image_alt")
-  price       Int?
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
+  id         String    @id
+  category   category? @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  categoryId String?   @map("category_id")
+  name       String?
+  imageUrl   String?   @map("image_url")
+  imageAlt   String?   @map("image_alt")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
 
-  primarySaleDetails primary_sale_detail[]
-  technicalDetails   technical_detail[]
-  popularProduct     popular_product?
+  saleDetails      sale_detail[]
+  technicalDetails technical_detail[]
+  popularProduct   popular_product?
 
   @@index([categoryId])
 }
@@ -55,33 +54,25 @@ model technical_detail {
   @@index([productId])
 }
 
-model primary_sale_detail {
-  id                    String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  product               product                 @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  productId             String                  @map("product_id")
-  key                   String
-  value                 String
-  price                 Int?
-  secondary_sale_detail secondary_sale_detail[]
+model sale_detail {
+  id                 String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  product            product       @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productId          String        @map("product_id")
+  key                String
+  value              String
+  price              Int?
+  parentSaleDetailId String?        @unique @db.Uuid
+  saleDetails        sale_detail[] @relation("SaleDetail")
+  sale_detailId      String?       @db.Uuid
+  parentSaleDetail   sale_detail?  @relation("SaleDetail", fields: [parentSaleDetailId], references: [id], onUpdate: Restrict, onDelete: Restrict)
 
   @@index([productId])
-}
-
-model secondary_sale_detail {
-  id    String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  key   String
-  value String
-  price Int?
-
-  primarySaleDetail   primary_sale_detail @relation(fields: [primarySaleDetailId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  primarySaleDetailId String              @map("primary_sale_detail_id")
-
-  @@index([primarySaleDetailId])
+  @@index([parentSaleDetailId])
 }
 
 model blog {
-  id      String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id      String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title   String
   content String
   active  Boolean @default(false)
-} 
+}

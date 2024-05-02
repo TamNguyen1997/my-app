@@ -48,7 +48,7 @@ const BlogCms = () => {
             <TableColumn key="title">Tiêu đề</TableColumn>
             <TableColumn key="actions"></TableColumn>
           </TableHeader>
-          <TableBody>
+          <TableBody emptyContent={"Không có bài viết nào"}>
             {
               blogs.map(blog => {
                 return <TableRow key={blog.id}>

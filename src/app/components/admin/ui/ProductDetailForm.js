@@ -18,23 +18,26 @@ const ProductDetailForm = () => {
         type="text"
         label="Mã sản phẩm"
         labelPlacement="outside"
+        aria-label="Mã sản phẩm"
         defaultValue={selectedProduct.id}
         isRequired
         className="p-3"
-        onValueChange={(value) => { setSelectedProduct(Object.assign({}, selectedProduct, { id: value })) }}
+        onValueChange={(value) => setSelectedProduct(Object.assign({}, selectedProduct, { id: value })) }
       />
       <Input
         type="text"
         label="Tên sản phẩm"
         labelPlacement="outside"
+        aria-label="Tên sản phẩm"
         defaultValue={selectedProduct.name}
         isRequired
-        onValueChange={(value) => { setSelectedProduct(Object.assign({}, selectedProduct, { name: value })) }}
+        onValueChange={(value) => setSelectedProduct(Object.assign({}, selectedProduct, { name: value })) }
         className="p-3"
       />
       <Autocomplete
         label="Category"
         variant="bordered"
+        aria-label="Category"
         defaultItems={categories}
         className="max-w-xs p-3"
         allowsCustomValue={true}
@@ -47,20 +50,22 @@ const ProductDetailForm = () => {
       <Input
         type="url"
         label="URL hình ảnh"
+        aria-label="URL hình ảnh"
         labelPlacement="outside"
         defaultValue={selectedProduct.imageUrl}
         isRequired
-        onValueChange={(value) => { setSelectedProduct(Object.assign({}, selectedProduct, { imageUrl: value })) }}
+        onValueChange={(value) => setSelectedProduct(Object.assign({}, selectedProduct, { imageUrl: value })) }
         className="p-3"
       />
       <Input
         type="text"
         label="Alt hình ảnh"
+        aria-label="Alt hình ảnh"
         labelPlacement="outside"
         defaultValue={selectedProduct.imageAlt}
         isRequired
         className="p-3"
-        onValueChange={(value) => { setSelectedProduct(Object.assign({}, selectedProduct, { imageAlt: value })) }}
+        onValueChange={(value) => setSelectedProduct(Object.assign({}, selectedProduct, { imageAlt: value })) }
       />
       <div className="p-3">
         <Image src={selectedProduct.imageUrl} width={200} height={100} alt={selectedProduct.imageAlt}></Image>

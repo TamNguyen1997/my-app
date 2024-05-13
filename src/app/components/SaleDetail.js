@@ -12,12 +12,12 @@ const SaleDetail = ({ productId }) => {
   const [selectedSecondary, setSelectedSecondary] = useState({})
 
   useEffect(() => {
-    fetch(`/api/products/${productId}`).then(res => res.json())
+    fetch(`/api/products/${productId}/sale-details`).then(res => res.json())
       .then(json => {
         let primary = []
         let detailGroup = {}
 
-        json.saleDetails.forEach((detail) => {
+        json.forEach((detail) => {
           if (detail.parentSaleDetailId) {
             if (!detailGroup[detail.parentSaleDetailId]) detailGroup[detail.parentSaleDetailId] = [detail]
             else detailGroup[detail.parentSaleDetailId].push(detail)

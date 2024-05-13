@@ -57,9 +57,6 @@ const ProductCms = () => {
   }, [])
 
   const onSubmit = async () => {
-    const body = selectProduct
-    body.saleDetails.forEach(detail => delete detail.productId)
-    body.technicalDetails.forEach(detail => delete detail.productId)
     await fetch(`/api/products/${selectedProduct.id}`, {
       method: "PUT",
       body: JSON.stringify(selectedProduct)
@@ -75,7 +72,8 @@ const ProductCms = () => {
             <TableHeader>
               <TableColumn key="id" textValue="Mã sản phẩm">Mã sản phẩm</TableColumn>
               <TableColumn key="name" textValue="Tên sản phẩm">Tên sản phẩm</TableColumn>
-              <TableColumn key="actions" textValue="actions"></TableColumn>
+              <TableColumn key="categoryId" textValue="Category">Category</TableColumn>
+              <TableColumn key="actions" textValue="actions" width="100"></TableColumn>
             </TableHeader>
             <TableBody
               items={list.items}

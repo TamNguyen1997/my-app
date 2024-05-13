@@ -61,7 +61,7 @@ model sale_detail {
   key                String
   value              String
   price              Int?
-  parentSaleDetailId String?        @unique @db.Uuid
+  parentSaleDetailId String?       @db.Uuid
   saleDetails        sale_detail[] @relation("SaleDetail")
   sale_detailId      String?       @db.Uuid
   parentSaleDetail   sale_detail?  @relation("SaleDetail", fields: [parentSaleDetailId], references: [id], onUpdate: Restrict, onDelete: Restrict)

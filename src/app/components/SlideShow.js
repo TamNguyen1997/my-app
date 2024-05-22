@@ -4,7 +4,7 @@ import { BsFillArrowRightCircleFill, BsFillArrowLeftCircleFill } from "react-ico
 export default function Carousel({ timeout, slides }) {
 
   const [current, setCurrent] = useState(0)
-  
+
   const previous = () => {
     if (current === 0) setCurrent(slides.length - 1)
     else setCurrent(current - 1)
@@ -35,7 +35,7 @@ export default function Carousel({ timeout, slides }) {
           })
         }
       </div>
-      <div className="absolute top-0 h-full w-full justify-between items-center flex text-white px-10 text-3xl">
+      <div className="absolute top-0 h-full w-full justify-between items-center flex text-gray-600 px-10 text-3xl">
         <button onClick={previous}>
           <BsFillArrowLeftCircleFill />
         </button>

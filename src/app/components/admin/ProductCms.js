@@ -38,6 +38,11 @@ const ProductCms = () => {
     onOpen()
   }
 
+  const newProduct = () => {
+    setSelectedProduct({})
+    onOpen()
+  }
+
   const renderCell = useCallback((product, columnKey) => {
     const cellValue = product[columnKey]
     switch (columnKey) {
@@ -105,6 +110,10 @@ const ProductCms = () => {
           </Table>
         </div>
       </div>
+      <div className="p-3">
+        <Button color="primary" onClick={newProduct}>Thêm sản phẩm</Button>
+      </div>
+
       <ProductContext.Provider value={value}>
         <Modal
           size="5xl" scrollBehavior="inside"

@@ -22,7 +22,7 @@ const ProductDetailForm = () => {
         defaultValue={selectedProduct.id}
         isRequired
         className="p-3"
-        onValueChange={(value) => setSelectedProduct(Object.assign({}, selectedProduct, { id: value })) }
+        onValueChange={(value) => setSelectedProduct(Object.assign({}, selectedProduct, { id: value }))}
       />
       <Input
         type="text"
@@ -31,7 +31,7 @@ const ProductDetailForm = () => {
         aria-label="Tên sản phẩm"
         defaultValue={selectedProduct.name}
         isRequired
-        onValueChange={(value) => setSelectedProduct(Object.assign({}, selectedProduct, { name: value })) }
+        onValueChange={(value) => setSelectedProduct(Object.assign({}, selectedProduct, { name: value }))}
         className="p-3"
       />
       <Autocomplete
@@ -54,7 +54,7 @@ const ProductDetailForm = () => {
         labelPlacement="outside"
         defaultValue={selectedProduct.imageUrl}
         isRequired
-        onValueChange={(value) => setSelectedProduct(Object.assign({}, selectedProduct, { imageUrl: value })) }
+        onValueChange={(value) => setSelectedProduct(Object.assign({}, selectedProduct, { imageUrl: value }))}
         className="p-3"
       />
       <Input
@@ -65,11 +65,14 @@ const ProductDetailForm = () => {
         defaultValue={selectedProduct.imageAlt}
         isRequired
         className="p-3"
-        onValueChange={(value) => setSelectedProduct(Object.assign({}, selectedProduct, { imageAlt: value })) }
+        onValueChange={(value) => setSelectedProduct(Object.assign({}, selectedProduct, { imageAlt: value }))}
       />
-      <div className="p-3">
-        <Image src={selectedProduct.imageUrl} width={200} height={100} alt={selectedProduct.imageAlt}></Image>
-      </div>
+      {
+        selectedProduct.imageUrl ?
+          <div className="p-3">
+            <Image src={selectedProduct.imageUrl} width={200} height={100} alt={selectedProduct.imageAlt}></Image>
+          </div> : <></>
+      }
     </>
   )
 }

@@ -14,6 +14,8 @@ export default function PopularBlogs() {
     fetch("/api/blogs").then(res => res.json()).then(setBlogs)
   }, [])
 
+  if (blogs.length === 0) return <></>
+
   return (
     <>
       <div className="text-2xl font-bold text-center mt-10 mb-10">

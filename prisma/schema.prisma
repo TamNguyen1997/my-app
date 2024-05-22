@@ -58,7 +58,6 @@ model sale_detail {
   id                 String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   product            product       @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   productId          String        @map("product_id")
-  key                String
   value              String
   price              Int?
   parentSaleDetailId String?       @db.Uuid

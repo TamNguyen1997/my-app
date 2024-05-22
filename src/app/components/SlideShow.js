@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { BsFillArrowRightCircleFill, BsFillArrowLeftCircleFill } from "react-icons/bs"
 
 export default function Carousel({ timeout, slides }) {
@@ -15,7 +15,10 @@ export default function Carousel({ timeout, slides }) {
     else setCurrent(current + 1)
   }
 
-  setTimeout(next, timeout)
+  useEffect(() => {
+    const interval = setInterval(next, timeout);
+    return () => clearInterval(interval);
+  }, [])
 
   return (
     <div className="overflow-hidden relative">

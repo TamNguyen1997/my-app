@@ -11,7 +11,8 @@ const nextConfig = {
       "cdn.pixabay.com",
       "cdn.tgdd.vn",
       "hc.com.vn",
-      "bizweb.dktcdn.net"
+      "bizweb.dktcdn.net",
+      "dungcuvesinhsaoviet.com"
     ],
   },
 };

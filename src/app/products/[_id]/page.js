@@ -7,24 +7,21 @@ import TechnicalDetail from "@/components/TechnicalDetail";
 import Skeleton from "@/components/Skeleton";
 import SaleDetail from "@/components/SaleDetail";
 import RelatedProducts from "@/components/RelatedProducts";
+import { Divide } from "lucide-react";
 
 const Product = () => {
   const [product, setProduct] = useState({});
-  const [technicalDetails, setTechnicalDetails] = useState([]);
   const { _id } = useParams();
-
   useEffect(() => {
     const fetchProduct = () => {
       fetch(`/api/products/${_id}`).then((res) => res.json()).then(json => setProduct(json))
-      .then(() => fetch(`/api/products/${_id}/technical-details`).then((res) => res.json()).then(json => setTechnicalDetails(json))) 
-    }
+    };
+
     fetchProduct()
   }, [_id]);
-
   if (!product.id) {
     return <Skeleton />
   }
-
   return (
     <div>
       <section className="overflow-hidden bg-white py-11 font-poppins ">
@@ -60,7 +57,19 @@ const Product = () => {
               </div>
               <div>
                 <div className="font-semibold">Mô tả sản phẩm</div>
-                <div> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nunc sed augue lacus viverra vitae congue. Scelerisque eleifend donec pretium vulputate sapien nec sagittis aliquam. Elementum eu facilisis sed odio morbi quis commodo. Proin fermentum leo vel orci porta. Sit amet justo donec enim diam vulputate ut pharetra sit. Nec ultrices dui sapien eget mi proin sed libero. Porta nibh venenatis cras sed felis eget velit. Tempus quam pellentesque nec nam aliquam sem. Eu lobortis elementum nibh tellus molestie nunc non blandit. Neque viverra justo nec ultrices dui sapien eget. Metus vulputate eu scelerisque felis imperdiet proin. Risus feugiat in ante metus dictum at tempor. Ullamcorper velit sed ullamcorper morbi. Morbi tincidunt ornare massa eget egestas purus viverra accumsan. Phasellus egestas tellus rutrum tellus pellentesque eu tincidunt tortor aliquam. Mauris commodo quis imperdiet massa. Turpis egestas sed tempus urna et. Nunc consequat interdum varius sit amet. Rhoncus dolor purus non enim. Urna molestie at elementum eu. Orci ac auctor augue mauris augue neque. Neque volutpat ac tincidunt vitae. Elit sed vulputate mi sit amet mauris commodo. Et malesuada fames ac turpis egestas sed tempus urna. Venenatis urna cursus eget nunc scelerisque viverra mauris in aliquam. Malesuada fames ac turpis egestas integer eget aliquet. Orci nulla pellentesque dignissim enim sit amet venenatis urna. Orci porta non pulvinar neque laoreet. Rutrum quisque non tellus orci ac auctor augue. Dui id ornare arcu odio ut sem nulla pharetra diam. Nunc scelerisque viverra mauris in aliquam sem fringilla ut. Nullam eget felis eget nunc lobortis mattis aliquam. Vehicula ipsum a arcu cursus vitae congue mauris. Tellus in metus vulputate eu scelerisque felis.</div>
+                <p>Ghibli & Wirbel V 10: Máy hút bụi tiện lợi cho gia đình</p>
+                <p>Máy hút bụi là thiết bị gia dụng nên trang bị cho gia đình. Chúng giúp quá trình làm sạch nhà cửa trở nên nhanh chóng, dễ dàng và hiệu quả hơn.</p>
+                <p>Máy hút bụi V 10 là một lựa chọn tuyệt vời cho các gia đình cần một chiếc máy hút bụi nhỏ gọn nhưng sở hữu nhiều tính năng và lực hút mạnh mẽ.</p>
+                <p>Vậy, V 10 có gì đặc biệt mà rất phù hợp để sử dụng tại gia đình?</p>
+                <p>Thiết kế nhỏ gọn, tiện lợi</p>
+                <p>Máy hút bụi V 10 có thiết kế nhỏ gọn, trọng lượng chỉ 4,5 kg, nên rất dễ để di chuyển và cất giữ tại gia đình. Kích thước nhỏ gọn giúp máy hút bụi dễ dàng len lỏi vào những ngóc ngách trong nhà, hút sạch bụi bẩn ở mọi nơi.</p>
+                <p>Máy hút bụi V 10 được trang bị động cơ mạnh mẽ, tạo ra lực hút lên đến 150 mbar, giúp hút sạch hầu hết các loại bụi bẩn có trong căn nhà. Lực hút mạnh sẽ đẩy nhanh quá trình làm sạch nhà cửa, trả lại không gian sạch thoáng.</p>
+                <p>Độ ồn thấp</p>
+                <p>Máy hút bụi V 10 có độ ồn thấp, chỉ 76 dB(A), không quá ồn khi sử dụng. Độ ồn thấp nên máy không ảnh hưởng đến sinh hoạt của gia đình.</p>
+                <p>Xuất xứ Italy, công nghệ châu Âu</p>
+                <p>Máy hút bụi V 10 được trang bị các công nghệ tiên tiến của Ghibli&Wirbel, đảm bảo chất lượng và độ bền cao. Máy hút bụi được làm từ chất liệu cao cấp, có khả năng chịu lực, chịu nhiệt tốt.</p>
+                <p>Với những ưu điểm trên, máy hút bụi Ghibli&Wirbel V 10 là một lựa chọn tốt cho những gia đình đang tìm kiếm một chiếc máy hút bụi nhỏ gọn nhưng có lực hút mạnh mẽ, mà giá cả lại rất phải chăng.</p>
+                <br></br>
               </div>
             </div>
             <div className="w-full px-4 md:w-1/2 ">
@@ -69,8 +78,8 @@ const Product = () => {
                   {product?.name}
                 </h2>
               </div>
-              <SaleDetail productId={_id}></SaleDetail>
-              <TechnicalDetail data={technicalDetails}></TechnicalDetail>
+              <SaleDetail data={product.saleDetails}></SaleDetail>
+              <TechnicalDetail data={product.technicalDetails}></TechnicalDetail>
 
               <RelatedProducts productId={_id}></RelatedProducts>
             </div>

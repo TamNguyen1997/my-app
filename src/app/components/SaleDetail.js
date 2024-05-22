@@ -2,7 +2,7 @@ import { Button } from "@nextui-org/react"
 import { ShoppingCart } from "lucide-react"
 import { useEffect, useState } from "react"
 
-const SaleDetail = ({ productId }) => {
+const SaleDetail = ({ data }) => {
   const [detail, setDetail] = useState({})
 
   const [primarySaleDetails, setPrimarySaleDetails] = useState([])
@@ -12,23 +12,20 @@ const SaleDetail = ({ productId }) => {
   const [selectedSecondary, setSelectedSecondary] = useState({})
 
   useEffect(() => {
-    fetch(`/api/products/${productId}/sale-details`).then(res => res.json())
-      .then(json => {
-        let primary = []
-        let detailGroup = {}
+      let primary = []
+      let detailGroup = {}
 
-        json.forEach((detail) => {
-          if (detail.parentSaleDetailId) {
-            if (!detailGroup[detail.parentSaleDetailId]) detailGroup[detail.parentSaleDetailId] = [detail]
-            else detailGroup[detail.parentSaleDetailId].push(detail)
-          } else {
-            primary.push(detail)
-          }
-        })
-        setDetail(detailGroup)
-        setPrimarySaleDetails(primary)
+      data.forEach((detail) => {
+        if (detail.parentSaleDetailId) {
+          if (!detailGroup[detail.parentSaleDetailId]) detailGroup[detail.parentSaleDetailId] = [detail]
+          else detailGroup[detail.parentSaleDetailId].push(detail)
+        } else {
+          primary.push(detail)
+        }
       })
-  }, [])
+      setDetail(detailGroup)
+      setPrimarySaleDetails(primary)
+  }, [data])
 
   const onPrimarySelect = (e) => {
     const buttonValue = e.target.getAttribute("value")
@@ -68,11 +65,13 @@ const SaleDetail = ({ productId }) => {
 
     <div className="flex pt-3 pb-6">
       {
+        secondarySaleDetails ? 
         secondarySaleDetails.map(detail => {
           return <div className="pl-4" key={detail.id}>
             <Button color="default" variant={getVariant(detail.id, selectedSecondary.id)} onPress={onSecondarySelect} value={detail.id}>{detail.value}</Button>
           </div>
-        })
+        }) :
+        <></>
       }
     </div>
 

@@ -17,4 +17,12 @@
         font-weight: bold !important;
         font-size: 30px !important;
     }
+
+    ul {
+        padding-left: 24px;
+    }
+
+    ol {
+        padding-left: 24px;
+    }
 }

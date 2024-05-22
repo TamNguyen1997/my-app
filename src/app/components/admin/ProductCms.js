@@ -1,4 +1,4 @@
-import { useAsyncList } from "@react-stately/data";
+import { useAsyncList } from "@react-stately/data"
 import {
   Spinner, Table,
   TableCell, TableColumn,
@@ -7,38 +7,39 @@ import {
   Modal, ModalHeader,
   ModalBody, ModalFooter,
   Button, ModalContent
-} from "@nextui-org/react";
-import { createContext, useCallback, useState } from "react";
-import { EditIcon, Trash2 } from "lucide-react";
+} from "@nextui-org/react"
+import { createContext, useCallback, useState } from "react"
+import { EditIcon, Trash2 } from "lucide-react"
 import DetailProductCms from "@/components/admin/DetailProductCms"
 
-export const ProductContext = createContext();
+export const ProductContext = createContext()
 
 const ProductCms = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [selectedProduct, setSelectedProduct] = useState({});
+  const [isLoading, setIsLoading] = useState(true)
+  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const [selectedProduct, setSelectedProduct] = useState({})
   const value = [selectedProduct, setSelectedProduct]
 
   let list = useAsyncList({
     async load() {
-      let res = await fetch('/api/products/');
-      let json = await res.json();
-      setIsLoading(false);
+      let res = await fetch('/api/products/')
+      let json = await res.json()
+      setIsLoading(false)
 
       return {
         items: json,
-      };
+      }
     }
-  });
+  })
 
-  const openModal = (product) => {
-    setSelectedProduct(product)
+  const openModal = async (product) => {
+    let res = await fetch(`/api/products/${product.id}`)
+    setSelectedProduct(await res.json())
     onOpen()
   }
 
   const renderCell = useCallback((product, columnKey) => {
-    const cellValue = product[columnKey];
+    const cellValue = product[columnKey]
     switch (columnKey) {
       case "actions":
         return (
@@ -50,16 +51,31 @@ const ProductCms = () => {
               <Trash2 />
             </span>
           </div>
-        );
+        )
       default:
-        return cellValue;
+        return cellValue
     }
   }, [])
 
   const onSubmit = async () => {
-    await fetch(`/api/products/${selectedProduct.id}`, {
+    let productToUpdate = selectedProduct
+    const technicalDetails = productToUpdate.technicalDetails
+    const saleDetails = productToUpdate.saleDetails
+    delete productToUpdate.technicalDetails
+    delete productToUpdate.saleDetails
+
+    fetch(`/api/products/${productToUpdate.id}`, {
       method: "PUT",
-      body: JSON.stringify(selectedProduct)
+      body: JSON.stringify(productToUpdate)
+    }).then(() => {
+      fetch(`/api/products/${productToUpdate.id}/sale-details`, {
+        method: "POST",
+        body: JSON.stringify(saleDetails)
+      })
+      fetch(`/api/products/${productToUpdate.id}/technical-details`, {
+        method: "POST",
+        body: JSON.stringify(technicalDetails)
+      })
     })
   }
 
@@ -116,7 +132,7 @@ const ProductCms = () => {
         </Modal>
       </ProductContext.Provider>
     </>
-  );
-};
+  )
+}
 
-export default ProductCms;
+export default ProductCms

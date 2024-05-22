@@ -25,8 +25,8 @@ const menu = [
 const Admin = () => {
   return (
     <div>
-      <div className="flex justify-between">
-        <div className="flex flex-col gap-2 w-1/6 border-r min-h-full p-2">
+      <div className="flex justify-between min-h-screen">
+        <div className="flex flex-col gap-2 w-1/6 border-r min-h-screen p-2">
           <div className="border-small px-1 py-2 rounded-small border-default-200 shadow-md">
             <Listbox
               aria-label="Single selection example"

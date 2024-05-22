@@ -1,6 +1,8 @@
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image'
+import OrderedList from '@tiptap/extension-ordered-list'
+import BulletList from '@tiptap/extension-bullet-list'
 import BlogToolbar from "@/components/admin/ui/BlogToolBar"
 import Placeholder from '@tiptap/extension-placeholder'
 import Link from '@tiptap/extension-link'
@@ -8,7 +10,6 @@ import './Tiptap.css'
 import { Button, Input, Switch } from '@nextui-org/react';
 import { useForm } from "react-hook-form"
 import { useState } from 'react';
-
 const RichTextEditor = ({ blog }) => {
   const {
     register,
@@ -18,6 +19,16 @@ const RichTextEditor = ({ blog }) => {
   const editor = useEditor({
     extensions: [
       StarterKit, Image,
+      OrderedList.configure({
+        HTMLAttributes: {
+          class: 'list-decimal'
+        }
+      }),
+      BulletList.configure({
+        HTMLAttributes: {
+          class: 'list-disc'
+        }
+      }),
       Link.configure({
         protocols: ["http", "https"]
       }),
@@ -28,7 +39,6 @@ const RichTextEditor = ({ blog }) => {
     ],
     content: blog?.content
   });
-
   const onSubmit = (data) => {
     fetch('/api/blogs', {
       method: "POST",
@@ -40,11 +50,13 @@ const RichTextEditor = ({ blog }) => {
       })
     })
   }
-
+  const focus = () => {
+    editor.commands.focus('end')
+  }
   return (
     <div className="p-3">
       <BlogToolbar editor={editor} />
-      <div className="h-full w-full shadow-md min-h-44 p-3 border">
+      <div className="h-full w-full shadow-md min-h-44 p-3 border" onClick={focus}>
         <EditorContent editor={editor} />
       </div>
       <div className="pt-3">
@@ -57,5 +69,4 @@ const RichTextEditor = ({ blog }) => {
     </div>
   );
 };
-
 export default RichTextEditor;

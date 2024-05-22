@@ -1,5 +1,5 @@
 import { Button, Input } from "@nextui-org/react"
-import { EditIcon, Plus, Trash2 } from "lucide-react"
+import { Plus, Trash2 } from "lucide-react"
 import { useContext } from "react";
 import { v4 } from "uuid";
 import { ProductContext } from "../ProductCms";
@@ -49,21 +49,19 @@ const TechnicalDetailForm = () => {
               <div className="flex">
                 <Input
                   type="text"
-                  label="Định danh"
-                  defaultValue={detail.key}
-                  aria-label={detail.key}
-                  className="p-3"
-                  onValueChange={value => handleDetailChange(value, detail.id, "key")}
-                  isRequired
-                />
-                <Input
-                  type="text"
-                  label="Giá trị"
+                  label="Option"
                   defaultValue={detail.value}
                   aria-label={detail.value}
                   onValueChange={value => handleDetailChange(value, detail.id, "value")}
                   isRequired
                   className="p-3"
+                />
+                <Input type="number"
+                  label="Giá"
+                  defaultValue={detail.price}
+                  aria-label="Giá"
+                  className="p-3"
+                  onValueChange={(value) => { handleDetailChange(parseInt(value), detail.id, "value") }}
                 />
               </div>
               <div className="pl-10">
@@ -74,16 +72,8 @@ const TechnicalDetailForm = () => {
                   selectedProduct.saleDetails.filter(sDetail => sDetail.parentSaleDetailId === detail.id).map(sDetail => {
                     return <div key={sDetail.id} className="flex">
                       <Input type="text"
-                        label="Định danh"
-                        defaultValue={sDetail.key}
-                        aria-label="Định danh"
-                        className="p-3"
-                        isRequired
-                        onValueChange={(value) => { handleDetailChange(value, sDetail.id, "key") }}
-                      />
-                      <Input type="text"
                         defaultValue={sDetail.value}
-                        label="Giá trị"
+                        label="Option phụ"
                         aria-label="Giá trị"
                         className="p-3"
                         isRequired

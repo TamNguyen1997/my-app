@@ -7,47 +7,37 @@ import {
   RiCodeSSlashLine,
   RiH1,
   RiH2,
-  RiParagraph,
   RiListOrdered,
   RiListUnordered,
   RiLink,
   RiImage2Fill
 } from 'react-icons/ri'
-
-
 function BlogToolbar({ editor }) {
-  
   const iconClassName = "border w-6 h-6 justify-items-center items-center"
   const imageModal = useDisclosure();
   const linkModal = useDisclosure();
-  
   const [imageUrl, setImageUrl] = useState('')
   const [imageAlt, setImageAlt] = useState('')
-  
   const [hyperlink, setHyperlink] = useState('')
-  
   if (!editor) {
     return <></>
   }
-  
   const insertImage = () => {
     editor.chain().focus().setImage({ src: imageUrl, alt: imageAlt }).run()
   }
-
   const insertLink = () => {
     if (!hyperlink) {
       editor.chain().focus().extendMarkRange('link').unsetLink().run()
       return
     }
-
     editor.chain().focus().extendMarkRange('link').setLink({ href: hyperlink }).run()
   }
-
   return (
-    <div className="flex p-3 ">
+    <div className="flex p-3">
       <div className="w-1/4"></div>
       <div className="flex w-1/2">
-        <div className={iconClassName} onClick={() => editor.chain().focus().toggleBold().run()}>
+        <div className={iconClassName}
+          onClick={() => editor.chain().focus().toggleBold().run()}>
           <RiBold className="w-full h-full" />
         </div>
         <div className={iconClassName} onClick={() => editor.chain().focus().toggleItalic().run()}>
@@ -69,28 +59,23 @@ function BlogToolbar({ editor }) {
           <RiH2 className="w-full h-full" />
         </div>
         <div className="pr-5"></div>
-        <div className={iconClassName} onClick={() => editor.chain().focus().setParagraph().run()}>
-          <RiParagraph className="w-full h-full" />
-        </div>
         <div className={iconClassName}
-          onClick={() => editor.chain().focus().toggleBulletList().run()}>
+          onClick={() => editor.chain().focus().toggleOrderedList().run()}>
           <RiListOrdered className="w-full h-full" />
         </div>
         <div className={iconClassName}
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}>
+          onClick={() => editor.chain().focus().toggleBulletList().run()}>
           <RiListUnordered className="w-full h-full" />
         </div>
         <div className={iconClassName}
           onClick={imageModal.onOpen}>
           <RiImage2Fill className="w-full h-full" />
         </div>
-
         <div className={iconClassName} onClick={linkModal.onOpen}>
           <RiLink className="w-full h-full" />
         </div>
       </div>
       <div className="w-1/4"></div>
-
       <Modal isOpen={imageModal.isOpen} onOpenChange={imageModal.onOpenChange}>
         <ModalContent>
           {(onClose) => (
@@ -115,7 +100,6 @@ function BlogToolbar({ editor }) {
           )}
         </ModalContent>
       </Modal>
-
       <Modal isOpen={linkModal.isOpen} onOpenChange={linkModal.onOpenChange}>
         <ModalContent>
           {(onClose) => (
@@ -142,5 +126,4 @@ function BlogToolbar({ editor }) {
     </div>
   )
 }
-
 export default BlogToolbar

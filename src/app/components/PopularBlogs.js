@@ -1,10 +1,7 @@
 "use client"
 
-import { Card, CardBody, CardHeader, Divider } from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Divider, Image } from "@nextui-org/react";
 import { useEffect, useState } from "react";
-import "./blog.css"
-
-import parser from "html-react-parser"
 
 export default function PopularBlogs() {
 
@@ -23,17 +20,21 @@ export default function PopularBlogs() {
       </div>
       <div className="bg-white mx-auto w-4/5">
         <div className="mx-auto lg:max-w-full">
-          <div className=" grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-6">
+          <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-6">
             {
               blogs.map((blog) => {
-                return <div key={blog.id} className="max-h-100px max-w-100px">
-                  <Card className="py-4">
-                    <CardHeader>
-                      <p className="text-xl font-semibold">{blog.title}</p>
+                return <div key={blog.id}>
+                  <Card className="py-4 top-0">
+                    <CardHeader className="flex flex-col items-center justify-center h-64">
+                      <Image
+                        width={400}
+                        height={200}
+                        src={blog.thumbnail}
+                      />
                     </CardHeader>
                     <Divider />
-                    <CardBody className="overflow-visible py-2 truncate ...">
-                      {parser(blog.content)}
+                    <CardBody className="h-28 w-full font-bold">
+                      {blog.title}
                     </CardBody>
                   </Card>
                 </div>

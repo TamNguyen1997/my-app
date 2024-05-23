@@ -29,9 +29,9 @@ const Footer = () => {
             </ul>
           </div>
         ))}
-        <div className="col-span-2 pt-8 md:pt-2">
+        {/* <div className="col-span-2 pt-8 md:pt-2">
           <iframe src="https://dungcuvesinhsaoviet.com/"></iframe>
-        </div>
+        </div> */}
       </div>
     </div>
   );

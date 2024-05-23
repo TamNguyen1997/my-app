@@ -12,33 +12,20 @@ datasource db {
   relationMode = "prisma"
 }
 
-model category {
-  id          String        @id
-  name        String
-  createdAt   DateTime      @default(now()) @map("created_at")
-  updatedAt   DateTime      @updatedAt @map("updated_at")
-  product     product[]
-  subCategory subCategory[]
-}
-
 model subCategory {
-  id         String    @id
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name       String
   categoryId String    @map("category_id")
-  category   category  @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   createdAt  DateTime  @default(now()) @map("created_at")
   updatedAt  DateTime  @updatedAt @map("updated_at")
   product    product[]
-
-  @@index([categoryId])
 }
 
 model product {
   id            String      @id
-  category      category    @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  categoryId    String      @map("category_id")
   subCategoryId String      @map("sub_category_id")
-  subCategory   subCategory @relation(fields: [subCategoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  subCategory   subCategory @relation(fields: [subCategoryId], references: [id])
+  categoryId    String?
   name          String?
   imageUrl      String?     @map("image_url")
   imageAlt      String?     @map("image_alt")
@@ -47,17 +34,9 @@ model product {
 
   saleDetails      sale_detail[]
   technicalDetails technical_detail[]
-  popularProduct   popular_product?
+  order_history    order_history[]
 
-  @@index([categoryId])
   @@index([subCategoryId])
-}
-
-model popular_product {
-  product   product? @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  productId String   @id @map("product_id")
-
-  @@index([productId])
 }
 
 model technical_detail {
@@ -85,9 +64,18 @@ model sale_detail {
   @@index([parentSaleDetailId])
 }
 
+model order_history {
+  id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  productId String  @map("product_id")
+  product   product @relation(fields: [productId], references: [id])
+
+  @@index([productId])
+}
+
 model blog {
-  id      String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  title   String
-  content String
-  active  Boolean @default(false)
+  id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title     String
+  content   String
+  thumbnail String  @default("")
+  active    Boolean @default(false)
 }

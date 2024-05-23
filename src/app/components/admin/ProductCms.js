@@ -53,7 +53,7 @@ const ProductCms = () => {
               <EditIcon onClick={() => openModal(product)} />
             </span>
             <span className="text-lg text-danger cursor-pointer active:opacity-50 pl-5">
-              <Trash2 />
+              <Trash2 ibn />
             </span>
           </div>
         )

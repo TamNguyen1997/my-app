@@ -7,7 +7,6 @@ import TechnicalDetail from "@/components/TechnicalDetail";
 import Skeleton from "@/components/Skeleton";
 import SaleDetail from "@/components/SaleDetail";
 import RelatedProducts from "@/components/RelatedProducts";
-import { Divide } from "lucide-react";
 
 const Product = () => {
   const [product, setProduct] = useState({});

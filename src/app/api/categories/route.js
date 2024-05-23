@@ -2,19 +2,19 @@ import { NextResponse } from 'next/server';
 
 export const categories = [
   {
-    id: "rubbermaid",
+    id: "Rubbermaid",
     name: "Rubbermaid"
   },
   {
-    id: "ghibli",
-    name: "Ghible"
+    id: "Ghibli",
+    name: "Ghibli"
   },
   {
-    id: "mapa",
+    id: "Mapa",
     name: "Mapa"
   },
   {
-    id: "moerman",
+    id: "Moerman",
     name: "Moerman"
   }
 ]

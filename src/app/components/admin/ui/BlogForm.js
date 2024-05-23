@@ -10,6 +10,7 @@ import './Tiptap.css'
 import { Button, Input, Switch } from '@nextui-org/react';
 import { useForm } from "react-hook-form"
 import { useState } from 'react';
+
 const RichTextEditor = ({ blog }) => {
   const {
     register,
@@ -48,7 +49,7 @@ const RichTextEditor = ({ blog }) => {
         content: editor.getHTML(),
         active: isSelected
       })
-    })
+    }).then(() => window.location.reload())
   }
   const focus = () => {
     editor.commands.focus('end')
@@ -65,6 +66,18 @@ const RichTextEditor = ({ blog }) => {
           <Switch isSelected={isSelected} onValueChange={setIsSelected}></Switch>
           <Button color="primary" type="submit" >Lưu</Button>
         </form>
+        <Input label="Thumbnail" aria-label="Thumbnail" {...register('thumbnail')} defaultValue={blog?.thumbnail}></Input>
+        {
+          blog?.thumbnail
+            ?
+            <Image
+              width={400}
+              height={300}
+              src={blog?.thumbnail}
+              sizes="(max-width: 400px) 100vw, (max-width: 400px) 50vw, 33vw"
+              className="h-full w-full object-cover object-center" />
+            : <></>
+        }
       </div>
     </div>
   );

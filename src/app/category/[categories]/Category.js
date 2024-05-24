@@ -39,21 +39,26 @@ const Category = ({ params }) => {
         style={{ maxWidth: "90rem" }}>
         Home <span className="mx-2">/</span> {params}
       </div>
-      <div className="w-full lg:w-11/12 mx-auto my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-2">
+      <div className="w-full lg:w-11/12 mx-auto my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4 p-2">
         {data.map((product) => (
           <Link
             href={`/products/${product.id}`}
             key={product.id}
-            className="group">
-            <div className="aspect-h-1 aspect-w-1 w-full  md:h-5/6 overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-              <Image
-                width={500}
-                height={400}
-                src={product.imageUrl}
-                alt={product.imageAlt}
-                className="h-full w-full object-cover object-center group-hover:opacity-50"/>
-            </div>
-            <h3 className="mt-4 text-sm text-gray-700">{product.name}</h3>
+            className="group border rounded h-[450px] overflow-clip">
+            <Image
+              width={500}
+              height={400}
+              src={product.imageUrl}
+              alt={product.imageAlt}
+              className="h-[300px] w-full object-cover object-center group-hover:opacity-50 p-2" />
+            <p className="mt-4 text-sm text-gray-700 font-semibold text-center">
+              {product.name}
+            </p>
+            <p className="text-center text-red-500 font-bold text-xl pt-3">
+              {
+                (Math.random() * 1000000).toLocaleString()
+              }
+            </p>
           </Link>
         ))}
       </div>

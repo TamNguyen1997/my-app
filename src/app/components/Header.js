@@ -24,14 +24,15 @@ const Header = () => {
   return (<>
     <Navbar className="bg-[#ffd300]">
       <NavbarBrand>
-        <Image
-          src="https://dungcuvesinhsaoviet.com/wp-content/uploads/2021/11/Asset-2.png"
-          alt="favicon"
-          width="78"
-          height="30"
-          className="bg-black"
-          onClick={() => window.location.replace("/")}
-        />
+        <Link href="/">
+          <Image
+            src="https://dungcuvesinhsaoviet.com/wp-content/uploads/2021/11/Asset-2.png"
+            alt="favicon"
+            width="78"
+            height="30"
+            className="bg-black"
+          />
+        </Link>
       </NavbarBrand>
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         {
@@ -43,7 +44,7 @@ const Header = () => {
         }
         <NavbarItem>
           <Link href="/blog"
-           className="text-gray-800 transition hover:text-gray-800/75 cursor-pointer">Tin tức</Link>
+            className="text-gray-800 transition hover:text-gray-800/75 cursor-pointer">Tin tức</Link>
         </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
@@ -70,8 +71,10 @@ const HoverDropDown = ({ category, subCates }) => {
       <DropdownMenu aria-label="Static Actions" onMouseOver={() => setIsOpen(true)} onMouseLeave={() => setIsOpen(false)}>
         {
           subCates.filter(item => item.categoryId === category.id).map(item =>
-            <DropdownItem key={item.id} textValue="temp" onClick={() => window.location.replace(`/category/${category.id}/${item.id}`)}>
-              {item.name} 
+            <DropdownItem key={item.id} textValue="subcategory">
+              <Link href={`/category/${category.id}/${item.id}`}>
+                {item.name}
+              </Link>
             </DropdownItem>
           )
         }

@@ -1,6 +1,7 @@
 "use client";
 
-import { Button, Card, CardBody, CardHeader, Divider, Image } from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Divider, Image } from "@nextui-org/react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const Blog = () => {
@@ -13,19 +14,21 @@ const Blog = () => {
   if (blogs.length === 0) return <></>
   return (
     <>
-      <div className="grid grid-cols-12 mx-auto w-4/5">
+      <div className="grid grid-cols-12 mx-auto w-5/6">
         <div className="col-span-2">
-          Bài viết mới
+          <div className="text-center font-bold text-large p-3">
+            Bài viết mới
+          </div>
           <div className="p-3">
-            <div className="mx-auto lg:max-w-full">
-
-              {
-                blogs.map((blog) => {
-                  return <div key={blog.id} className="grid grid-cols-4 p-2 border">
-                    <div>
+            {
+              blogs.map((blog) => {
+                return <Link href={`/blog/${blog.id}`} key={blog.id} >
+                  <div className="grid grid-cols-4 p-2 border">
+                    <div className="pr-1">
                       <Image
-                        width={100}
-                        height={50}
+                        radius="none"
+                        width={300}
+                        height={300}
                         src={blog.thumbnail}
                       />
                     </div>
@@ -33,10 +36,9 @@ const Blog = () => {
                       {blog.title}
                     </div>
                   </div>
-                })
-              }
-
-            </div>
+                </Link>
+              })
+            }
           </div>
         </div>
         <div className="p-3 mx-auto col-span-10">
@@ -44,7 +46,7 @@ const Blog = () => {
             <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-6">
               {
                 blogs.map((blog) => {
-                  return <div key={blog.id}>
+                  return <Link href={`/blog/${blog.id}`} key={blog.id}>
                     <Card className="py-4 top-0">
                       <CardHeader className="flex flex-col items-center justify-center h-64">
                         <Image
@@ -58,7 +60,7 @@ const Blog = () => {
                         {blog.title}
                       </CardBody>
                     </Card>
-                  </div>
+                  </Link>
                 })
               }
             </div>

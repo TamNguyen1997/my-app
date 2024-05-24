@@ -6,7 +6,7 @@ import PopularBlogs from "@/components/PopularBlogs";
 
 export default function Home() {
   return (
-    <div>
+    <div className="bg-[#f6f6f6]">
       <HeroBanner />
       <div className="flex flex-col">
         <div className="pb-12">

@@ -23,7 +23,7 @@ const Product = () => {
   }
   return (
     <div>
-      <section className="overflow-hidden bg-white py-11 font-poppins ">
+      <section className="overflow-hidden bg-white py-11 font-poppins">
         <div className="max-w-6xl px-4 py-4 mx-auto lg:py-8 md:px-6">
           <div className="flex flex-wrap -mx-4">
             <div className="w-full px-4 md:w-1/2 ">
@@ -36,7 +36,7 @@ const Product = () => {
                       product?.imageUrl ? (
                         product.imageUrl
                       ) : (
-                        <div className="flex items-center justify-center lg:w-1/2  h-96 bg-gray-300 rounded  ">
+                        <div className="flex items-center justify-center lg:w-1/2  h-96 bg-gray-300 rounded">
                           <svg
                             className="w-10 h-10 text-gray-200 "
                             ariaHidden="true"

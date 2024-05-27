@@ -10,7 +10,10 @@ import {
 } from "@nextui-org/react"
 import { createContext, useCallback, useState } from "react"
 import { EditIcon, Trash2 } from "lucide-react"
-import DetailProductCms from "@/components/admin/DetailProductCms"
+import { Card, CardBody, Tab, Tabs } from "@nextui-org/react";
+import TechnicalDetailForm from "@/components/admin/ui/TechnicalDetailForm";
+import ProductDetailForm from "@/components/admin/ui/ProductDetailForm";
+import SaleDetailForm from "@/components/admin/ui/SaleDetailForm";
 
 export const ProductContext = createContext()
 
@@ -53,7 +56,7 @@ const ProductCms = () => {
               <EditIcon onClick={() => openModal(product)} />
             </span>
             <span className="text-lg text-danger cursor-pointer active:opacity-50 pl-5">
-              <Trash2 ibn />
+              <Trash2 />
             </span>
           </div>
         )
@@ -124,7 +127,29 @@ const ProductCms = () => {
                 <>
                   <ModalHeader className="flex flex-col gap-1">Chi tiết sản phẩm</ModalHeader>
                   <ModalBody>
-                    <DetailProductCms ></DetailProductCms>
+                    <Tabs>
+                      <Tab title="Thông tin chung">
+                        <Card>
+                          <CardBody>
+                            <ProductDetailForm></ProductDetailForm>
+                          </CardBody>
+                        </Card>
+                      </Tab>
+                      <Tab title="Thông số kĩ thuật">
+                        <Card>
+                          <CardBody>
+                            <TechnicalDetailForm></TechnicalDetailForm>
+                          </CardBody>
+                        </Card>
+                      </Tab>
+                      <Tab title="Thông số bán hàng">
+                        <Card>
+                          <CardBody>
+                            <SaleDetailForm></SaleDetailForm>
+                          </CardBody>
+                        </Card>
+                      </Tab>
+                    </Tabs>
                   </ModalBody>
                   <ModalFooter>
                     <Button color="primary" type="submit">

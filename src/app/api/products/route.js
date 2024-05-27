@@ -13,8 +13,8 @@ export async function POST(req) {
               createMany: { data: body.technicalDetails ? body.technicalDetails : [] }
             },
             saleDetails: {
-              createMany: { 
-                data: body.saleDetails ? body.saleDetails : [] 
+              createMany: {
+                data: body.saleDetails ? body.saleDetails : []
               }
             }
           },

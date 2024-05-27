@@ -77,7 +77,7 @@ const ProductCard = ({ category, products, redirect }) => {
                               <Image
                                 width={500}
                                 height={400}
-                                src={product.imageUrl}
+                                src={`/gallery/${product.imageUrl}`}
                                 alt={product.imageAlt}
                                 className="h-full w-full object-cover object-center group-hover:opacity-75"
                               />

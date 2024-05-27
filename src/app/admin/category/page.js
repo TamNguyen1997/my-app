@@ -52,12 +52,12 @@ const Category = () => {
   }
 
   const deleteSubCate = (id) => [
-    fetch(`/api/sub-categories/${id}`, {method: "DELETE"}).then(() => window.location.reload())
+    fetch(`/api/sub-categories/${id}`, { method: "DELETE" }).then(() => window.location.reload())
   ]
 
   const renderCell = useCallback((subCategory, columnKey) => {
     const cellValue = subCategory[columnKey]
-    
+
     switch (columnKey) {
       case "actions":
         return (
@@ -66,7 +66,7 @@ const Category = () => {
               <EditIcon onClick={() => openModal(subCategory)} />
             </span>
             <span className="text-lg text-danger cursor-pointer active:opacity-50 pl-5">
-              <Trash2 onClick={() => {deleteSubCate(subCategory.id)}} />
+              <Trash2 onClick={() => { deleteSubCate(subCategory.id) }} />
             </span>
           </div>
         )

@@ -26,7 +26,7 @@ const Header = () => {
       <NavbarBrand>
         <Link href="/">
           <Image
-            src="https://dungcuvesinhsaoviet.com/wp-content/uploads/2021/11/Asset-2.png"
+            src="/Asset-2.png"
             alt="favicon"
             width="78"
             height="30"

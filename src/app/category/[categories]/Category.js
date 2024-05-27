@@ -27,6 +27,7 @@ const Category = ({ params }) => {
     window.scrollTo(0, 0)
   }, [params]);
 
+  console.log(data)
   return (
     <>
       <div className="flex flex-col items-center justify-center w-full h-60 bg-cover bg-center bg-no-repeat">
@@ -39,7 +40,7 @@ const Category = ({ params }) => {
         style={{ maxWidth: "90rem" }}>
         Home <span className="mx-2">/</span> {params}
       </div>
-      <div className="w-full lg:w-11/12 mx-auto my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4 p-2">
+      <div className="w-full lg:w-11/12 mx-auto my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
         {data.map((product) => (
           <Link
             href={`/products/${product.id}`}
@@ -48,7 +49,7 @@ const Category = ({ params }) => {
             <Image
               width={500}
               height={400}
-              src={product.imageUrl}
+              src={`/gallery/${product.imageUrl}`}
               alt={product.imageAlt}
               className="h-[300px] w-full object-cover object-center group-hover:opacity-50 p-2" />
             <p className="mt-4 text-sm text-gray-700 font-semibold text-center">

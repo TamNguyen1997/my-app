@@ -12,11 +12,23 @@ module.exports = {
   prefix: "",
   theme: {
     extend: {
+      container: {
+        center: true,
+        padding: '1rem',
+        screens: {
+          DEFAULT: '1024px',
+          sm: '1024px',
+          md: '1024px',
+          lg: '1024px',
+          xl: '1024px',
+          '2xl': '1024px',
+        }
+      },
       backgroundImage: {
         'hero-pattern': "url('/img/hero-pattern.svg')",
         'footer-texture': "url('/img/footer-texture.png')",
       }
     },
   },
-  plugins: [require("tailwindcss-animate"), nextui()],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography"), nextui()],
 } 

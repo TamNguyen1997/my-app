@@ -12,6 +12,7 @@
     "@nextui-org/react": "^2.3.5",
     "@prisma/client": "^5.12.1",
     "@react-stately/data": "^3.11.2",
+    "@tailwindcss/typography": "^0.5.13",
     "@tiptap/extension-heading": "^2.3.0",
     "@tiptap/extension-highlight": "^2.3.0",
     "@tiptap/extension-image": "^2.3.0",

@@ -6,6 +6,11 @@ import BlogCms from "@/components/admin/BlogCms"
 
 const menu = [
   {
+    id: "image",
+    link: "/admin/image",
+    name: "Gallery"
+  },
+  {
     id: "category",
     link: "/admin/category",
     name: "Category"

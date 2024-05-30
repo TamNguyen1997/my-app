@@ -27,7 +27,6 @@ const Category = ({ params }) => {
     window.scrollTo(0, 0)
   }, [params]);
 
-  console.log(data)
   return (
     <>
       <div className="flex flex-col items-center justify-center w-full h-60 bg-cover bg-center bg-no-repeat">

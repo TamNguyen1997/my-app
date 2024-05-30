@@ -19,7 +19,6 @@ export async function GET(req, { params }) {
       }
     ))
   } catch (e) {
-    console.log(e)
     return NextResponse.json([])
   }
 }

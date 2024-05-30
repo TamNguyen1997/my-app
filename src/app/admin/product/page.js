@@ -6,6 +6,11 @@ import ProductCms from "@/components/admin/ProductCms"
 
 const menu = [
   {
+    id: "image",
+    link: "/admin/image",
+    name: "Gallery"
+  },
+  {
     id: "category",
     link: "/admin/category",
     name: "Category"

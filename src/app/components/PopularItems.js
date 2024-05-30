@@ -35,7 +35,6 @@ export default function PopularItems() {
   }, [])
 
   if (!products.length) return <></>
-  console.log(products)
   return (
     <div>
       <div className="text-2xl font-bold text-center mt-10 mb-5">

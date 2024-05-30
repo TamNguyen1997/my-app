@@ -2,13 +2,12 @@ import Carousel from "./SlideShow";
 
 const HeroBanner = () => {
   const images = [
-    "https://dungcuvesinhsaoviet.com/wp-content/uploads/2021/11/Banner-dung-cu-ve-sinh-Rubbermaid-Commercial-01.jpg",
-    "https://dungcuvesinhsaoviet.com/wp-content/uploads/2021/11/Banner-gang-tay-bao-ho-MAPA-01.jpg",
-    "https://dungcuvesinhsaoviet.com/wp-content/uploads/2021/11/Banner-dung-cu-ve-sinh-kinh-Moerman-03.jpg",
+    "/gallery/banner/5c29faad-d59f-4f24-a487-7f8c8f03e8da.jpg",
+    "/gallery/banner/1147b9ec-bdbb-4387-96f6-82b6462bcdb7.jpg"
   ]
   return (
     <div className="w-[75%] m-auto">
-      <Carousel timeout={10000} slides={images}></Carousel>
+      <Carousel slides={images}></Carousel>
     </div>
   );
 };

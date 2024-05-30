@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import { Autocomplete, AutocompleteItem, Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react";
 import { ProductContext } from "../ProductCms";
-import ImageCms from "../../../admin/image/page";
+import ImageCms from "@/components/admin/ui/ImageCms";
 import Image from "next/image";
 
 const ProductDetailForm = () => {

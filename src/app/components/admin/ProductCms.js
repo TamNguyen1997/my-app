@@ -6,7 +6,8 @@ import {
   TableBody, useDisclosure,
   Modal, ModalHeader,
   ModalBody, ModalFooter,
-  Button, ModalContent
+  Button, ModalContent,
+  Switch
 } from "@nextui-org/react"
 import { createContext, useCallback, useState } from "react"
 import { EditIcon, Trash2 } from "lucide-react"
@@ -46,6 +47,11 @@ const ProductCms = () => {
     onOpen()
   }
 
+  const updateProductActive = async (product, active) => {
+    product.active = active
+    await fetch(`/api/products/${product.id}`, { method: "PUT", body: JSON.stringify(product) })
+  }
+
   const renderCell = useCallback((product, columnKey) => {
     const cellValue = product[columnKey]
     switch (columnKey) {
@@ -58,6 +64,12 @@ const ProductCms = () => {
             <span className="text-lg text-danger cursor-pointer active:opacity-50 pl-5">
               <Trash2 />
             </span>
+          </div>
+        )
+      case "active":
+        return (
+          <div className="relative flex items-center gap-2">
+            <Switch defaultSelected={product.active} onValueChange={(value) => updateProductActive(product, value)}></Switch>
           </div>
         )
       default:
@@ -94,9 +106,10 @@ const ProductCms = () => {
           <Table
             aria-label="Tất cả sản phẩm">
             <TableHeader>
-              <TableColumn key="id" textValue="Mã sản phẩm">Mã sản phẩm</TableColumn>
-              <TableColumn key="name" textValue="Tên sản phẩm">Tên sản phẩm</TableColumn>
-              <TableColumn key="categoryId" textValue="Category">Category</TableColumn>
+              <TableColumn key="id" textValue="Mã sản phẩm" aria-label="Mã sản phẩm">Mã sản phẩm</TableColumn>
+              <TableColumn key="name" textValue="Tên sản phẩm" aria-label="Tên sản phẩm">Tên sản phẩm</TableColumn>
+              <TableColumn key="categoryId" textValue="Category" aria-label="Category">Category</TableColumn>
+              <TableColumn key="active" textValue="active" aria-label="active"></TableColumn>
               <TableColumn key="actions" textValue="actions" width="100"></TableColumn>
             </TableHeader>
             <TableBody

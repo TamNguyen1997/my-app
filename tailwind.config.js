@@ -24,6 +24,22 @@ module.exports = {
           '2xl': '1024px',
         }
       },
+      animation: {
+        vote: 'vote 1s ease-in-out',
+      },
+      keyframes: {
+        vote: {
+          '0%, 100%': {
+            transform: 'rotate(0deg)',
+          },
+          '25%': {
+            transform: 'rotate(-30deg)',
+          },
+          '75%': {
+            transform: 'rotate(30deg)',
+          },
+        },
+      },
       backgroundImage: {
         'hero-pattern': "url('/img/hero-pattern.svg')",
         'footer-texture': "url('/img/footer-texture.png')",

@@ -8,6 +8,7 @@ import { BreadcrumbItem, Breadcrumbs, Button } from "@nextui-org/react";
 import TableOfContent from "@/components/TableOfContent";
 import RelatedBlog from "@/components/RelatedBlogs";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 const Blog = () => {
   const [blog, setBlog] = useState({})
@@ -52,25 +53,69 @@ const Blog = () => {
       <div className="container pt-5 pb-20">
         <div className="bg-white rounded-lg">
           <div className="max-w-[860px] p-5 pb-20 mx-auto">
-            <h1 className="text-3xl font-semibold mb-4">{blog.title}</h1>
+            <motion.h1
+              initial={{ y: -100, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.7 }}
+              viewport={{ once: true }}
+              className="text-3xl font-semibold mb-4"
+            >
+              {blog.title}
+            </motion.h1>
 
-            <div className="text-sm text-[#6d6d6d] flex items-center mb-4">
+            <motion.div
+              initial={{ x: -100, opacity: 0 }}
+              whileInView={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.7 }}
+              viewport={{ once: true }}
+              className="text-sm text-[#6d6d6d] flex items-center mb-4"
+            >
               <span>Đóng góp bởi: <b className="ml-1">Võ Thị Mỹ Duyên</b></span>
               <span className="w-1 h-1 min-w-1 bg-[#e9e9e9] rounded-full mx-2"></span>
               <span>Cập nhật: <b className="ml-1">18/05/2024</b></span>
-            </div>
+            </motion.div>
             
-            <p>Short description...</p>
+            <motion.p
+              initial={{ x: -100, opacity: 0 }}
+              whileInView={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.7 }}
+              viewport={{ once: true }}
+            >
+              Short description...
+            </motion.p>
 
-            <div className="my-4">
+            <motion.div
+              initial={{ x: -100, opacity: 0 }}
+              whileInView={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.7 }}
+              viewport={{ once: true }}
+              className="my-4"
+            >
               <TableOfContent selector=".blog-content" />
-            </div>
+            </motion.div>
             
-            <div className="prose blog-content">
+            <motion.div
+              initial={{ y: -200, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.7, delay: 0.3 }}
+              viewport={{ once: true }}
+              className={`
+                [&_img]:max-w-[75%]
+                [&_img]:mx-auto
+                [&_a]:text-primary
+                max-w-full prose blog-content
+              `}
+            >
               {parse(blog.content)}
-            </div>
+            </motion.div>
 
-            <div className="text-sm bg-[#f2f4f9] rounded p-5 my-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              viewport={{ once: true }}
+              className="text-sm bg-[#f2f4f9] rounded p-5 my-6"
+            >
               <p className="font-semibold mb-4">Xem thêm</p>
               {
                 [...Array(3)].map((_, index) => {
@@ -82,23 +127,35 @@ const Blog = () => {
                   )
                 })
               }
-            </div>
+            </motion.div>
 
             <div className="w-full h-2 bg-[url(/line-bg.png)]"></div>
 
-            <div className="pt-8 pb-10 flex flex-col items-end">
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              viewport={{ once: true }}
+              className="pt-8 pb-10 flex flex-col items-end"
+            >
               <p className="mb-3">Bài viết có hữu ích không?</p>
               <div className="flex space-x-5">
                 <Button className="border-[thin]" variant="bordered">Có</Button>
                 <Button className="border-[thin]" variant="bordered">Không</Button>
               </div>
-            </div>
+            </motion.div>
 
             <div className="w-full h-2 bg-[url(/line-bg.png)]"></div>
 
-            <div className="mt-14">
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              viewport={{ once: true }}
+              className="mt-14"
+            >
               <RelatedBlog />
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>

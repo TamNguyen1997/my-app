@@ -1,86 +1,89 @@
-"use client";
-
-import { ShoppingBag } from "lucide-react";
+import { Menu, Phone, Search, ShoppingCart } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Navbar, NavbarBrand, NavbarContent, NavbarItem } from "@nextui-org/react";
 import Image from "next/image";
+import { Input } from "@nextui-org/react";
 
 const Header = () => {
-  const [categories, setCategories] = useState([])
 
-  const [subCates, setSubCates] = useState([])
-  useEffect(() => {
-    const getCategories = () => {
-      fetch('/api/categories/').then(async res => {
-        setCategories(await res.json())
-      })
-      fetch('/api/sub-categories/').then(async res => {
-        setSubCates(await res.json())
-      })
-    }
-    getCategories()
-  }, [])
-  return (<>
-    <Navbar className="bg-[#ffd300]">
-      <NavbarBrand>
-        <Link href="/">
-          <Image
-            src="/Asset-2.png"
-            alt="favicon"
-            width="78"
-            height="30"
-            className="bg-black"
-          />
-        </Link>
-      </NavbarBrand>
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        {
-          categories.map((category, i) => {
-            return <NavbarItem key={i}>
-              <HoverDropDown category={category} subCates={subCates}></HoverDropDown>
-            </NavbarItem>
-          })
-        }
-        <NavbarItem>
-          <Link href="/blog"
-            className="text-gray-800 transition hover:text-gray-800/75 cursor-pointer">Tin tức</Link>
-        </NavbarItem>
-      </NavbarContent>
-      <NavbarContent justify="end">
-        <NavbarItem className="hidden lg:flex">
-          <ShoppingBag ></ShoppingBag>
-        </NavbarItem>
-      </NavbarContent>
-    </Navbar>
-  </>)
+  return (
+    <nav className="bg-black border-gray-200 dark:bg-gray-900 h-[140px]">
+      <div className="flex w-full h-full">
+        <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+          <Link href="/">
+            <Image
+              src="/favicon.svg"
+              alt="favicon"
+              width="78"
+              height="30"
+              className="bg-black h-[81px] w-[200px]"
+            />
+          </Link>
+        </div>
+
+        <div className="bg-[#ffd300] w-[75%] rounded-tl-[50px] rounded-bl-[50px]">
+          <div className="pl-[50px] h-full">
+            <div className="h-1/2 p-3 flex gap-7">
+              <div className="w-[1/4] flex items-center gap-5">
+                <Input
+                  isClearable
+                  radius="lg"
+                  placeholder="Tìm sản phẩm..."
+                  aria-label="Search"
+                  startContent={
+                    <Search className="hover:opacity-hover" strokeWidth={3}></Search>
+                  }
+                />
+                <div className="bg-[#FFAC0A] w-[150px] h-[40px] items-center text-center relative flex gap-2 rounded-md shadow-md">
+                  <span className="pl-1">
+                    <ShoppingCart size={24} strokeWidth={2}></ShoppingCart>
+                  </span>
+                  <span className="text-sm">
+                    Giỏ hàng
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center">
+                <div className="flex gap-10 item">
+                  <Link href="/">Tin tức</Link>
+                  <Link href="/">Blog</Link>
+                  <Link href="/">Liên hệ</Link>
+                  <Link href="/">
+                    <div className="flex gap-3">
+                      <div>
+                        <Phone></Phone>
+                      </div>
+                      <div className="text-lg font-bold">
+                        090 380 2979
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              </div>
+            </div>
+            <div className="h-1/2 flex items-center gap-5">
+              <div className="flex gap-1 rounded-lg shadow-md w-[121px] h-[45px] items-center text-center font-bold">
+                <span className="pl-1">
+                  <Menu />
+                </span>
+                <span>
+                  Danh mục
+                </span>
+              </div>
+              <div className="flex gap-6 text-sm">
+                <Link href="/">Dụng cụ vệ sinh</Link>
+                <Link href="/">Xe đẩy</Link>
+                <Link href="/">Dụng cụ vệ sinh kính</Link>
+                <Link href="/">Găng tay</Link>
+                <Link href="/">Xe làm vệ sinh</Link>
+                <Link href="/">Máy chà sàn</Link>
+                <Link href="/">Máy hút bụi</Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  )
 };
-
-const HoverDropDown = ({ category, subCates }) => {
-  const [isOpen, setIsOpen] = useState(false)
-  return (<>
-    <Dropdown isOpen={isOpen}>
-      <DropdownTrigger>
-        <Link href={`/category/${category.id}`}
-          className="text-gray-800 transition hover:text-gray-800/75 cursor-pointer"
-          onMouseOver={() => setIsOpen(true)}
-          onMouseLeave={() => setIsOpen(false)}>
-          {category.name}
-        </Link>
-      </DropdownTrigger>
-      <DropdownMenu aria-label="Static Actions" onMouseOver={() => setIsOpen(true)} onMouseLeave={() => setIsOpen(false)}>
-        {
-          subCates.filter(item => item.categoryId === category.id).map(item =>
-            <DropdownItem key={item.id} textValue="subcategory">
-              <Link href={`/category/${category.id}/${item.id}`}>
-                {item.name}
-              </Link>
-            </DropdownItem>
-          )
-        }
-      </DropdownMenu>
-    </Dropdown>
-  </>)
-}
 
 export default Header;

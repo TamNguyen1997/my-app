@@ -123,7 +123,7 @@ const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) =>
                 />
                 {
                   disableDelete ? null : (
-                    <span className="delete-image animate-vote bg-red-500 rounded-full hover:bg-red-700" onClick={() => deleteImage(img)}><X color="#FFFFFF" /></span>
+                    <span className="delete-image animate-vote bg-red-500 rounded-full hover:bg-red-700 delete-button" onClick={() => deleteImage(img)}><X color="#FFFFFF" /></span>
                   )
                 }
               </div>

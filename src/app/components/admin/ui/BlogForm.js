@@ -35,35 +35,10 @@ const RichTextEditor = ({ blog }) => {
         protocols: ["http", "https"]
       }),
       Placeholder.configure({
-        placeholder:
-           `
-        <toc></toc>
-        <h2>1 heading</h2>
-        <p>paragraph</p>
-        <h3>1.1 heading</h3>
-        <p>paragraph</p>
-        <h3>1.2 heading</h3>
-        <p>paragraph</p>
-        <h2>2 heading</h2>
-        <p>paragraph</p>
-        <h3>2.1 heading</h3>
-        <p>paragraph</p>
-      `,
+        placeholder: "Nhập văn bản"
       })
     ],
-    content: `
-    <toc></toc>
-    <h2>1 heading</h2>
-    <p>paragraph</p>
-    <h3>1.1 heading</h3>
-    <p>paragraph</p>
-    <h3>1.2 heading</h3>
-    <p>paragraph</p>
-    <h2>2 heading</h2>
-    <p>paragraph</p>
-    <h3>2.1 heading</h3>
-    <p>paragraph</p>
-  `
+    content: blog.content
   });
   const onSubmit = (data) => {
     fetch('/api/blogs', {

@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <div className="bg-[#f6f6f6]">
       <HeroBanner />
-      <div className="pb-12">
+      <div className="pb-12 pt-3">
         <PopularItems />
       </div>
       <PopularBlogs />

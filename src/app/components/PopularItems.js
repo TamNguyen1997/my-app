@@ -1,6 +1,6 @@
 "use client"
 
-import { Button, Tab, Tabs } from "@nextui-org/react";
+import { Button, Spinner } from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react"
@@ -28,7 +28,7 @@ const responsive = {
 
 const brandDescription = {
   "KIMMBERLY": {
-    logo: "/brand/Rubbermaid.png",
+    logo: "/brand/Logo-Kimberly-Clark.png",
     description: "KIMMBERLY"
   },
   "RUBBERMAID": {
@@ -36,15 +36,15 @@ const brandDescription = {
     description: "Với đội ngũ nhân viên tư vấn nhiệt tình, nhanh nhẹn, được đào tạo bài bản; sản phẩm nhập khẩu chất lượng cao, chế độ hậu mãi, bảo hành uy tín cùng với bề dày kinh nghiệm hoạt động lâu năm trong lĩnh vực vệ sinh công nghiệp."
   },
   "MAPA": {
-    logo: "/brand/Rubbermaid.png",
+    logo: "/brand/Logo-Mapa.png",
     description: "MAPA"
   },
   "MOERMAN": {
-    logo: "/brand/Rubbermaid.png",
+    logo: "/brand/Logo-Moerman.png",
     description: "MOERMAN"
   },
   "GHIBLI & WIRBEL": {
-    logo: "/brand/Rubbermaid.png",
+    logo: "/brand/Logo-Ghibli.png",
     description: "GHIBLI & WIRBEL"
   }
 }
@@ -52,12 +52,15 @@ const brandDescription = {
 export default function PopularItems() {
 
   const [products, setProducts] = useState([])
-
   const [selectedBrand, setSelectedBrand] = useState("RUBBERMAID")
 
+  const [isLoading, setIsLoading] = useState(true)
+
   useEffect(() => {
-    fetch("/api/most-bought").then(res => res.json()).then(setProducts)
+    fetch("/api/most-bought").then(res => res.json()).then(setProducts).then(() => setIsLoading(false))
   }, [])
+
+  if (isLoading) return <Spinner className="m-auto" />
 
   if (!products.length) return <></>
 
@@ -65,7 +68,7 @@ export default function PopularItems() {
     return selectedBrand === value ? "bg-slate-700" : "bg-black"
   }
   return (
-    <div className="mx-auto w-[70%] ">
+    <div>
       <ProductCard category="SẢN PHẨM BÁN CHẠY" products={products} redirect="/category/Rubbermaid" />
       <ProductCard category="SẢN PHẨM MỚI NHẤT" products={products} redirect="/category/Ghibli" />
 
@@ -201,7 +204,7 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
     <div className="grid grid-cols-6">
       <div className="p-2 col-span-2">
         <div className="bg-[#ffd300] shadow-lg rounded-md h-full pt-9">
-          <div className="flex items-center w-2/3 m-auto h-1/3">
+          <div className="flex items-center w-2/3 m-auto h-[80px]">
             <div className="text-black font-bold text-xl">
               {
                 brandDescription[selectedBrand] && brandDescription[selectedBrand].logo ?

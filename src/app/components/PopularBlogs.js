@@ -1,6 +1,6 @@
 "use client"
 
-import { Card, CardBody, CardHeader, Divider, Image } from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Divider, Image, Spinner } from "@nextui-org/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Carousel from "react-multi-carousel"
@@ -28,10 +28,13 @@ const responsive = {
 export default function PopularBlogs() {
 
   const [blogs, setBlogs] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    fetch("/api/blogs").then(res => res.json()).then(setBlogs)
+    fetch("/api/blogs").then(res => res.json()).then(setBlogs).then(() => setIsLoading(false))
   }, [])
+
+  if (isLoading) return <Spinner className="m-auto" />
 
   if (blogs.length === 0) return <></>
 
@@ -43,7 +46,7 @@ export default function PopularBlogs() {
         </div>
       </div>
 
-      <Carousel responsive={responsive} className="flex items-center m-auto w-3/4" infinite>
+      <Carousel responsive={responsive} className="flex items-center" infinite>
         {
           blogs.map((blog) => {
             return <div className="p-1">
@@ -69,6 +72,14 @@ export default function PopularBlogs() {
           })
         }
       </Carousel>
+
+      <Link
+        href="/blog"
+        className="flex items-center w-1/3 h-[50px] m-auto rounded-large border-large border-slate-950 hover:opacity-30">
+        <span className="m-auto text-black font-bold text-xl">
+          Xem tất cả tin tức
+        </span>
+      </Link>
     </>
   )
 }

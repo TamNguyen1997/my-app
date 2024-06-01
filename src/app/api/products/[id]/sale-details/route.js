@@ -1,15 +1,13 @@
 import { db } from '@/app/db';
 import { NextResponse } from 'next/server';
 
-export async function POST(req) {
+export async function POST(req, { params }) {
   try {
     let body = await req.json()
-    const ids = body.map(item => item.id)
-    await db.sale_detail.delete({
+
+    await db.sale_detail.deleteMany({
       where: {
-        id: {
-          in: ids
-        }
+        productId: params.id
       }
     })
     await db.technical_detail.createMany({

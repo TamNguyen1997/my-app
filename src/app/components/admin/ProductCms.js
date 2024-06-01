@@ -15,6 +15,7 @@ import { Card, CardBody, Tab, Tabs } from "@nextui-org/react";
 import TechnicalDetailForm from "@/components/admin/ui/TechnicalDetailForm";
 import ProductDetailForm from "@/components/admin/ui/ProductDetailForm";
 import SaleDetailForm from "@/components/admin/ui/SaleDetailForm";
+import { redirect } from "next/navigation";
 
 export const ProductContext = createContext()
 
@@ -23,6 +24,7 @@ const ProductCms = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [selectedProduct, setSelectedProduct] = useState({})
   const value = [selectedProduct, setSelectedProduct]
+  const [reload, setReload] = useState(false)
 
   let list = useAsyncList({
     async load() {
@@ -77,26 +79,36 @@ const ProductCms = () => {
     }
   }, [])
 
-  const onSubmit = async () => {
+  if (reload) {
+    redirect("/admin/product")
+  }
+
+  const onSubmit = async (e) => {
+    e.preventDefault()
+
     let productToUpdate = selectedProduct
     const technicalDetails = productToUpdate.technicalDetails
     const saleDetails = productToUpdate.saleDetails
     delete productToUpdate.technicalDetails
     delete productToUpdate.saleDetails
 
-    fetch(`/api/products/${productToUpdate.id}`, {
+    await fetch(`/api/products/${productToUpdate.id}`, {
       method: "PUT",
       body: JSON.stringify(productToUpdate)
-    }).then(() => {
-      fetch(`/api/products/${productToUpdate.id}/sale-details`, {
+    })
+    if (saleDetails.length) {
+      await fetch(`/api/products/${productToUpdate.id}/sale-details`, {
         method: "POST",
         body: JSON.stringify(saleDetails)
       })
-      fetch(`/api/products/${productToUpdate.id}/technical-details`, {
+    }
+    if (technicalDetails.length) {
+      await fetch(`/api/products/${productToUpdate.id}/technical-details`, {
         method: "POST",
         body: JSON.stringify(technicalDetails)
       })
-    })
+    }
+    setReload(true)
   }
 
   return (

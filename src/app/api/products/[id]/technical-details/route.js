@@ -1,15 +1,12 @@
 import { db } from '@/app/db';
 import { NextResponse } from 'next/server';
 
-export async function POST(req) {
+export async function POST(req, { params }) {
   try {
     let body = await req.json()
-    const ids = body.map(item => item.id)
-    await db.technical_detail.delete({
+    await db.technical_detail.deleteMany({
       where: {
-        id: {
-          in: ids
-        }
+        productId: params.id
       }
     })
     await db.technical_detail.createMany({
@@ -17,6 +14,7 @@ export async function POST(req) {
     })
     return NextResponse.json({ message: "Success" })
   } catch (e) {
+    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }

@@ -109,8 +109,8 @@ export default function PopularItems() {
 
         <Link
           href="/"
-          className="flex items-center w-1/3 h-[50px] m-auto rounded-large border-large border-slate-950 hover:opacity-30">
-          <span className="m-auto text-black font-bold text-xl">
+          className="flex items-center w-1/3 h-[50px] m-auto rounded-large border-medium border-slate-950 hover:opacity-30">
+          <span className="m-auto text-black">
             Xem tất cả sản phẩm
           </span>
         </Link>
@@ -163,7 +163,7 @@ const ProductCarousel = ({ products, responsive }) => {
                     {product.name}
                   </p>
                 </div>
-                <div className="absolute inset-x-0 bottom-0">
+                <div className="absolute inset-x-0 bottom-3">
                   <p className="text-center text-red-500 font-bold text-xl pt-3">
                     {
                       (10000000).toLocaleString()
@@ -188,7 +188,7 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
   const responsive = {
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
-      items: 4
+      items: 3
     },
     tablet: {
       breakpoint: { max: 1024, min: 464 },

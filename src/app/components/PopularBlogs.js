@@ -46,7 +46,7 @@ export default function PopularBlogs() {
         </div>
       </div>
 
-      <Carousel responsive={responsive} className="flex items-center" infinite>
+      <Carousel responsive={responsive} className="flex items-center pb-3" infinite>
         {
           blogs.map((blog) => {
             return <div className="p-1">
@@ -75,8 +75,8 @@ export default function PopularBlogs() {
 
       <Link
         href="/blog"
-        className="flex items-center w-1/3 h-[50px] m-auto rounded-large border-large border-slate-950 hover:opacity-30">
-        <span className="m-auto text-black font-bold text-xl">
+        className="flex items-center w-1/3 h-[50px] m-auto rounded-large border-medium border-slate-950 hover:opacity-30">
+        <span className="m-auto text-black">
           Xem tất cả tin tức
         </span>
       </Link>

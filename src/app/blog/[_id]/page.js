@@ -3,7 +3,6 @@
 import { useState } from "react";
 import parse from 'html-react-parser'
 import { useParams } from "next/navigation";
-// import "./blog.css"
 import { BreadcrumbItem, Breadcrumbs, Button } from "@nextui-org/react";
 import TableOfContent from "@/components/TableOfContent";
 import RelatedBlog from "@/components/RelatedBlogs";
@@ -20,21 +19,6 @@ const Blog = () => {
   if (!blog.id) return <></>
 
   return (
-    // <div className="bg-[#f6f6f6]">
-    //   <div className="mx-auto w-2/5 p-3 blog bg-white">
-    //     <Breadcrumbs variant="solid">
-    //       <BreadcrumbItem>Home</BreadcrumbItem>
-    //       <BreadcrumbItem>Music</BreadcrumbItem>
-    //       <BreadcrumbItem>Artist</BreadcrumbItem>
-    //       <BreadcrumbItem>Album</BreadcrumbItem>
-    //       <BreadcrumbItem>Song</BreadcrumbItem>
-    //     </Breadcrumbs>
-    //     <div className="p-5 pt-10">
-    //       {parse(blog.content)}
-    //     </div>
-    //   </div>
-    // </div>
-
     <div className="bg-[#f6f6f6]">
       <div className="bg-[#d4ff96] py-6">
         <div className="container">
@@ -74,7 +58,7 @@ const Blog = () => {
               <span className="w-1 h-1 min-w-1 bg-[#e9e9e9] rounded-full mx-2"></span>
               <span>Cập nhật: <b className="ml-1">18/05/2024</b></span>
             </motion.div>
-            
+
             <motion.p
               initial={{ x: -100, opacity: 0 }}
               whileInView={{ x: 0, opacity: 1 }}
@@ -93,7 +77,7 @@ const Blog = () => {
             >
               <TableOfContent selector=".blog-content" />
             </motion.div>
-            
+
             <motion.div
               initial={{ y: -200, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}

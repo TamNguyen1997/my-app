@@ -83,22 +83,23 @@ const Footer = () => {
             <Image height="200" width="200" src="/brand/icon-bo-cong-thuong.png" className="w-[70px] h-[30px]" alt="" />
           </div>
           <p className="font-bold">MẠNG XÃ HỘI</p>
-          <div className="flex gap-1">
-            <Link href="">
+          <div className="flex gap-3">
+            <Link href="/">
               <Facebook className="w-[30px] h-[30px] text-white" />
             </Link>
-            <Link href="">
+            <Link href="/">
               <Linkedin className="w-[30px] h-[30px] text-white" />
             </Link>
-            <Link href="">
+            <Link href="/">
               <Youtube className="w-[30px] h-[30px] text-white" />
             </Link>
           </div>
 
         </div>
-        <div className="col-span-2 flex flex-col gap-3">
+        <div className="col-span-2 flex flex-col">
           <p className="font-bold p-3 w-full">FANPAGE CHÍNH THỨC</p>
           <iframe
+            className="border-[#ffd300] border-4 h-[130px] rounded-lg"
             data-testid="fb:page Facebook Social Plugin"
             title="fb:page Facebook Social Plugin"
             allowtransparency="true"

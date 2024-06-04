@@ -53,7 +53,9 @@ const RichTextEditor = ({ blog }) => {
   }
 
   const focus = () => {
-    editor.commands.focus('end')
+    if (!blog.content) {
+      editor.commands.focus('end')
+    }
   }
 
   return (

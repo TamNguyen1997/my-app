@@ -4,29 +4,31 @@ import Link from "next/link";
 
 const Footer = () => {
   return (
-    <div className="w-full bg-black text-white">
+    <div className="w-full bg-[#212020] text-white">
       <div className="grid grid-cols-9 gap-2 w-[95%] m-auto">
         <div className="col-span-3 p-3">
           <div className="flex flex-col gap-3">
             <p className="font-bold">CÔNG TY TNHH TMDV VỆ SINH SAO VIỆT</p>
-            <div className="flex gap-1">
-              <MapPin className="text-[#ffd300]" />
-              <p>666/62 đường 3/2, phường 14, quận 10, TP Hồ Chí Minh</p>
+            <div className="flex gap-2">
+              <div>
+                <MapPin className="text-[#ffd300]" size="24" />
+              </div>
+              <p className="w-">666/62 đường 3/2, phường 14, quận 10, TP Hồ Chí Minh</p>
             </div>
-            <div className="flex gap-1">
-              <NotebookText className="text-[#ffd300]" />
+            <div className="flex gap-2">
+              <NotebookText className="text-[#ffd300]" size="24" />
               <p>MST: 0304014195</p>
             </div>
-            <div className="flex gap-1">
-              <Mail className="text-[#ffd300]" />
+            <div className="flex gap-2">
+              <Mail className="text-[#ffd300]" size="24" />
               <p>Email: info@saovietco.vn</p>
             </div>
-            <div className="flex gap-1">
-              <Phone className="text-[#ffd300]" />
+            <div className="flex gap-2">
+              <Phone className="text-[#ffd300]" size="24" />
               <p>Tel: 028 3863 9456 – 028 3863 9457</p>
             </div>
-            <div className="flex gap-1">
-              <PhoneCall className="text-[#ffd300]" />
+            <div className="flex gap-2">
+              <PhoneCall className="text-[#ffd300]" size="24" />
               <p>Hotline: 090 380 2979</p>
             </div>
           </div>
@@ -90,7 +92,7 @@ const Footer = () => {
             <Link href="/">
               <Linkedin className="w-[30px] h-[30px] text-white" />
             </Link>
-            <Link href="/">
+            <Link href="/" className="pt-1">
               <Youtube className="w-[30px] h-[30px] text-white" />
             </Link>
           </div>
@@ -99,7 +101,7 @@ const Footer = () => {
         <div className="col-span-2 flex flex-col">
           <p className="font-bold p-3 w-full">FANPAGE CHÍNH THỨC</p>
           <iframe
-            className="border-[#ffd300] border-4 h-[130px] rounded-lg"
+            className="border-[#ffd300] border h-[130px] rounded-lg w-[300px]"
             data-testid="fb:page Facebook Social Plugin"
             title="fb:page Facebook Social Plugin"
             allowtransparency="true"

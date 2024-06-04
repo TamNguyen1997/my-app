@@ -31,7 +31,7 @@ const images = [
 
 const HeroBanner = () => {
   return (
-    <Carousel responsive={responsive} infinite>
+    <Carousel responsive={responsive} infinite autoPlay autoPlaySpeed={5000}>
       {
         images.map((s, i) => {
           return <Image key={i} width="1280" height="720" className="w-full h-full" src={s} />

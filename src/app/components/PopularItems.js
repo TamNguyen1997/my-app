@@ -69,14 +69,20 @@ export default function PopularItems() {
   }
   return (
     <div>
-      <ProductCard category="SẢN PHẨM BÁN CHẠY" products={products} redirect="/category/Rubbermaid" />
-      <ProductCard category="SẢN PHẨM MỚI NHẤT" products={products} redirect="/category/Ghibli" />
-
-      <div className="bg-[#ffd300] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-1/3 h-[50px] m-auto">
-        <span className="m-auto text-black font-bold text-xl">THƯƠNG HIỆU NỔI BẬT</span>
+      <div className="pt-[35px]">
+        <ProductCard category="SẢN PHẨM BÁN CHẠY" products={products} redirect="/category/Rubbermaid" />
+      </div>
+      <div className="pt-[35px]">
+        <ProductCard category="SẢN PHẨM MỚI NHẤT" products={products} redirect="/category/Ghibli" />
       </div>
 
-      <div className="pt-3">
+      <div className="pt-[60px]">
+        <div className="bg-[#ffd300] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-1/3 h-[50px] m-auto shadow-md">
+          <span className="m-auto text-black font-bold text-xl">THƯƠNG HIỆU NỔI BẬT</span>
+        </div>
+      </div>
+
+      <div className="pt-2">
         <div className="bg-black grid grid-cols-5">
           <Button radius="none"
             onClick={() => setSelectedBrand("RUBBERMAID")}
@@ -121,17 +127,17 @@ export default function PopularItems() {
 
 const ProductCard = ({ category, products, redirect }) => {
   return (
-    <div className="p-3">
+    <div>
       <section className="rounded-tr-[50px] rounded-tl-[50px]">
-        <div className="bg-[#ffd300] h-[60px] rounded-tr-[50px] rounded-tl-[50px] flex flex-row">
-          <div className="text-xl text-black p-3 pt-4 pl-10 font-extrabold w-[85%]">
+        <div className="bg-[#ffd300] h-[60px] rounded-tr-[50px] rounded-tl-[50px] flex flex-row shadow-md">
+          <div className="text-xl text-black p-3 pl-10 font-extrabold w-[85%]">
             {category}
           </div>
           <div className="bg-black text-white rounded-tr-[42px] rounded-bl-[42px] text-md font-bold italic flex items-center w-[15%] min-w-[100px]">
             <Link href={redirect} className="m-auto">Xem thêm</Link>
           </div>
         </div>
-        <div className="mx-auto lg:max-w-full pt-3">
+        <div className="mx-auto lg:max-w-full">
           <ProductCarousel products={products} responsive={responsive}></ProductCarousel>
         </div>
       </section>
@@ -146,7 +152,7 @@ const ProductCarousel = ({ products, responsive }) => {
         products.map((product) => {
           return <div key={product.id} className="p-2">
             <div className="rounded-md border h-[400px] shadow-md p-2">
-              <Link href={`/products/${product.id}`} className="group">
+              <Link href={`/products/${product.id}`}>
                 <div className="h-2/3">
                   <div className="aspect-h-1 aspect-w-1 w-full h-full overflow-hidden rounded-lg  xl:aspect-h-8 xl:aspect-w-7">
                     <Image

@@ -40,17 +40,17 @@ export default function PopularBlogs() {
 
   return (
     <>
-      <div className="pb-3">
-        <div className="bg-black rounded-tr-[50px] rounded-bl-[50px] flex items-center w-1/3 h-[50px] m-auto">
+      <div className="pb-2">
+        <div className="bg-black rounded-tr-[50px] rounded-bl-[50px] flex items-center w-1/3 h-[50px] m-auto shadow-md">
           <Link href="/" className="m-auto text-white font-bold text-xl">BÀI VIẾT NỔI BẬT</Link>
         </div>
       </div>
 
-      <Carousel responsive={responsive} className="flex items-center pb-3" infinite>
+      <Carousel responsive={responsive} className="flex items-center pb-2" infinite>
         {
           blogs.map((blog) => {
-            return <div className="p-1">
-              <Link key={blog.id} href={`/blog/${blog.id}`}>
+            return <div className="p-1" key={blog.id}>
+              <Link href={`/blog/${blog.id}`}>
                 <div>
                   <Card>
                     <CardHeader className="flex flex-col items-center justify-center h-64">

@@ -44,7 +44,7 @@ const Header = () => {
                   </span>
                 </div>
               </div>
-              <div className="flex items-center">
+              <div className="flex items-center text-sm">
                 <div className="flex gap-10">
                   <div className="flex items-center gap-10">
                     <Link href="/">Tin tức</Link>

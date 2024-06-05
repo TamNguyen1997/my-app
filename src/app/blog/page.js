@@ -97,7 +97,7 @@ const Blog = () => {
             </div>
 
             <div className="w-full flex flex-col lg:flex-row items-start lg:space-x-5">
-              <div className="w-full lg:w-[57%] mb-5">
+              <div className="relative w-full lg:w-[57%] mb-5">
                 <BlogCarousel items={blogs} />
               </div>
               <div className="w-full lg:w-[43%] mb-5">
@@ -110,7 +110,7 @@ const Blog = () => {
             {
               blogCategories.map(category => {
                 return (
-                  <div className="mb-10">
+                  <div className="mb-10" key={category.slug}>
                     <div className="text-xl text-[#191919] leading-none font-bold uppercase border-l-4 border-[#83e214] pl-3 mb-4">{category.title}</div>
                     <div className="flex flex-wrap">
                       {
@@ -119,9 +119,10 @@ const Blog = () => {
                             <div
                               className={`
                                 text-[13px] rounded bg-[#f2f4f9] cursor-pointer transition
-                                flex items-center justify-center text-center px-2 pb-1 pt-0.5 mr-2 mb-4
+                                flex items-center justify-center text-center px-2 pt-1 pb-0.5 mr-2 mb-4
                                 ${tag.slug === activeTag && 'bg-black text-white'}
                               `}
+                              key={tag.slug}
                               onClick={() => setActiveTag(tag.slug)}
                             >
                               {tag.title}
@@ -135,7 +136,7 @@ const Blog = () => {
                       {
                         blogs?.slice(0, 3).map(item => {
                           return (
-                            <BlogItem item={item} containerClass="lg:grid-cols-[192px_auto] pb-5" />
+                            <BlogItem item={item} key={item.id} containerClass="lg:grid-cols-[192px_auto] pb-5" />
                           )
                         })
                       }

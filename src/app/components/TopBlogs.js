@@ -11,6 +11,7 @@ export default ({ items }) => {
                         return (
                             <BlogItem
                                 item={item}
+                                key={item.id}
                                 textClass={`
                                     [&_.blog-category]:mb-0.5
                                     [&_.blog-title]:mb-1

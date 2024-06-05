@@ -4,11 +4,11 @@ import Image from "next/image";
 export default () => {
     return (
         <>
-            <div className="text-lg leading-none font-semibold border-l-4 border-[#83e214] pl-3 mb-4">BÀI VIẾT LIÊN QUAN</div>
+            <div className="text-lg text-[#FFD300] leading-none font-semibold border-l-4 border-[#83e214] pl-3 mb-4">BÀI VIẾT LIÊN QUAN</div>
             
             <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4">
                 {
-                    [...Array(2)].map((_, index) => {
+                    [...Array(4)].map((_, index) => {
                         return (
                             <Link href="" className="flex items-center" key={index}>
                                 <Image

@@ -36,6 +36,9 @@ export default ({ selector }) => {
                     [&>h2>button>span]:-rotate-90
                     [&>h2>button>span]:data-[open=true]:rotate-90
                     [&>h2>button>span>svg]:scale-[1.4]
+                    [&>h2[data-open=true]>button]:pb-0.5
+                    [&>h2>button]:transition-[padding]
+                    [&>h2>button]:duration-200
                 `}
             >
                 {headings.map(heading => {
@@ -45,7 +48,8 @@ export default ({ selector }) => {
                             key={heading.dataset.id}
                             data-id={heading.dataset.id}
                             className={`
-                                block w-full text-left p-2 first:pt-0
+                                block w-full text-left p-[11px] first:pt-0
+                                [&_*]:leading-none
                                 ${+tagLevel > minLevel && "!font-normal"}
                             `}
                             style={{

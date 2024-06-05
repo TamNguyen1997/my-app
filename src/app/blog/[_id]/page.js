@@ -3,7 +3,7 @@
 import { useState } from "react";
 import parse from 'html-react-parser'
 import { useParams } from "next/navigation";
-import { BreadcrumbItem, Breadcrumbs, Button } from "@nextui-org/react";
+import { BreadcrumbItem, Breadcrumbs } from "@nextui-org/react";
 import TableOfContent from "@/components/TableOfContent";
 import RelatedBlog from "@/components/RelatedBlogs";
 import Link from "next/link";
@@ -19,8 +19,8 @@ const Blog = () => {
   if (!blog.id) return <></>
 
   return (
-    <div className="bg-[#f6f6f6]">
-      <div className="bg-[#d4ff96] py-6">
+    <div className="bg-[#f6f6f6] blog-detail">
+      <div className="bg-[#d4ff96] bg-opacity-40 py-6">
         <div className="container">
           <Breadcrumbs
             variant="light"
@@ -42,7 +42,7 @@ const Blog = () => {
               whileInView={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.7 }}
               viewport={{ once: true }}
-              className="text-3xl font-semibold mb-4"
+              className="text-3xl leading-[38px] font-semibold mb-4"
             >
               {blog.title}
             </motion.h1>
@@ -58,7 +58,7 @@ const Blog = () => {
               <span className="w-1 h-1 min-w-1 bg-[#e9e9e9] rounded-full mx-2"></span>
               <span>Cập nhật: <b className="ml-1">18/05/2024</b></span>
             </motion.div>
-
+            
             <motion.p
               initial={{ x: -100, opacity: 0 }}
               whileInView={{ x: 0, opacity: 1 }}
@@ -77,7 +77,7 @@ const Blog = () => {
             >
               <TableOfContent selector=".blog-content" />
             </motion.div>
-
+            
             <motion.div
               initial={{ y: -200, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
@@ -87,8 +87,11 @@ const Blog = () => {
                 [&_img]:max-w-[75%]
                 [&_img]:mx-auto
                 [&_a]:text-primary
+                [&_h2]:mt-[1.25em]
+                [&_p]:my-[1.125em]
                 max-w-full prose blog-content
               `}
+              style={{"--tw-prose-bullets": "currentColor"}}
             >
               {parse(blog.content)}
             </motion.div>
@@ -112,24 +115,6 @@ const Blog = () => {
                 })
               }
             </motion.div>
-
-            <div className="w-full h-2 bg-[url(/line-bg.png)]"></div>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              viewport={{ once: true }}
-              className="pt-8 pb-10 flex flex-col items-end"
-            >
-              <p className="mb-3">Bài viết có hữu ích không?</p>
-              <div className="flex space-x-5">
-                <Button className="border-[thin]" variant="bordered">Có</Button>
-                <Button className="border-[thin]" variant="bordered">Không</Button>
-              </div>
-            </motion.div>
-
-            <div className="w-full h-2 bg-[url(/line-bg.png)]"></div>
 
             <motion.div
               initial={{ opacity: 0 }}

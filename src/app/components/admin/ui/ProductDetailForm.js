@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { Autocomplete, AutocompleteItem, Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react";
+import { Autocomplete, AutocompleteItem, Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Textarea, useDisclosure } from "@nextui-org/react";
 import { ProductContext } from "../ProductCms";
 import ImageCms from "@/components/admin/ui/ImageCms";
 import Image from "next/image";
@@ -53,26 +53,39 @@ const ProductDetailForm = () => {
       >
         {(category) => <AutocompleteItem key={category.id}>{category.name}</AutocompleteItem>}
       </Autocomplete>
-      <div className='p-3 flex w-full flex-wrap md:flex-nowrap gap-4'>
-        <Input type="text"
-          aria-label="Hình ảnh"
-          label="Hình ảnh"
-          defaultValue={selectedProduct.imageUrl} isDisabled></Input>
-        <Input type="text"
-          aria-label="Alt sản phẩm"
-          label="Alt sản phẩm"
-          onValueChange={(value) => setSelectedProduct(Object.assign({}, selectedProduct, { imageAlt: value }))}
-          defaultValue={selectedProduct.imageAlt}></Input>
-        <Button color="primary" onClick={onOpen}>Chọn ảnh</Button>
-      </div>
-
-      <div className="w-96 h-96">
-        <Image
-          src={`/gallery/${selectedProduct.imageUrl}`}
-          alt="favicon"
-          width="300"
-          height="300"
-          className="bg-black"
+      <div className='pl-3 grid grid-cols-2'>
+        <div className="flex flex-col gap-3">
+          <Input type="text"
+            aria-label="Hình ảnh"
+            label="Hình ảnh"
+            defaultValue={selectedProduct.imageUrl} isDisabled></Input>
+          <Input type="text"
+            aria-label="Alt sản phẩm"
+            label="Alt sản phẩm"
+            onValueChange={(value) => setSelectedProduct(Object.assign({}, selectedProduct, { imageAlt: value }))}
+            defaultValue={selectedProduct.imageAlt}></Input>
+          <div>
+            <Button color="primary" onClick={onOpen} className="w-24 float-right">Chọn ảnh</Button>
+          </div>
+        </div>
+        <div>
+          {
+            selectedProduct.imageUrl ?
+              <Image
+                src={`/gallery/${selectedProduct.imageUrl}`}
+                alt="favicon"
+                width="300"
+                height="300"
+                className="float-right"
+              /> : null
+          }
+        </div>
+        <Textarea
+          label="Mô tả sản phẩm"
+          labelPlacement="outside"
+          placeholder="Mô tả sản phẩm"
+          value={selectedProduct.description}
+          onValueChange={(value) => setSelectedProduct(Object.assign({}, selectedProduct, { description: value }))}
         />
       </div>
 

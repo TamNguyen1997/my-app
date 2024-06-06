@@ -31,7 +31,7 @@ const TechnicalDetailForm = () => {
     let updateDetails = selectedProduct.saleDetails
     updateDetails.forEach(detail => {
       if (detail.id === id) {
-        if (detail.id === id) detail[key] = value
+        detail[key] = value
       }
     })
     setSelectedProduct(Object.assign({}, selectedProduct, { saleDetails: updateDetails }))
@@ -61,7 +61,7 @@ const TechnicalDetailForm = () => {
                   defaultValue={detail.price}
                   aria-label="Giá"
                   className="p-3"
-                  onValueChange={(value) => { handleDetailChange(parseInt(value), detail.id, "value") }}
+                  onValueChange={(value) => { handleDetailChange(parseInt(value), detail.id, "price") }}
                 />
               </div>
               <div className="pl-10">

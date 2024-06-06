@@ -1,15 +1,17 @@
-import { EditorContent, Node, NodeViewWrapper, ReactNodeViewRenderer, mergeAttributes, useEditor } from '@tiptap/react';
+import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Image from '@tiptap/extension-image'
+import TipTapImage from '@tiptap/extension-image'
 import OrderedList from '@tiptap/extension-ordered-list'
 import BulletList from '@tiptap/extension-bullet-list'
 import BlogToolbar from "@/components/admin/ui/BlogToolBar"
+import ImageCms from "@/components/admin/ui/ImageCms";
 import Placeholder from '@tiptap/extension-placeholder'
 import Link from '@tiptap/extension-link'
 import './Tiptap.css'
-import { Button, Input, Switch } from '@nextui-org/react';
+import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Switch, Textarea, useDisclosure } from '@nextui-org/react';
 import { useForm } from "react-hook-form"
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
+import Image from 'next/image';
 
 const RichTextEditor = ({ blog }) => {
   const {
@@ -20,7 +22,7 @@ const RichTextEditor = ({ blog }) => {
   const [isSelected, setIsSelected] = useState(blog?.active);
   const editor = useEditor({
     extensions: [
-      StarterKit, Image, TableOfContents,
+      StarterKit, TipTapImage,
       OrderedList.configure({
         HTMLAttributes: {
           class: 'list-decimal'
@@ -39,7 +41,8 @@ const RichTextEditor = ({ blog }) => {
       })
     ],
     content: blog.content
-  });
+  })
+
   const onSubmit = (data) => {
     fetch('/api/blogs', {
       method: "POST",
@@ -58,122 +61,73 @@ const RichTextEditor = ({ blog }) => {
     }
   }
 
+  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+
+  const selectedImage = (value) => {
+    blog.thumbnail = value
+    onOpenChange()
+  }
+
   return (
     <div className="p-3">
       <BlogToolbar editor={editor} />
       <div className="h-full w-full shadow-md min-h-44 p-3 border" onClick={focus}>
         <EditorContent editor={editor} />
       </div>
-      <div className="pt-3">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex items-center">
-            <Input label="Tiêu đề" aria-label="Tiêu đề" {...register('title')} className="pr-3" defaultValue={blog?.title}></Input>
+      <div className="pt-3 pr-3">
+        <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-3'>
+          <div>
+            <Textarea label="Tóm tắt" aria-label="Tóm tắt" {...register('summary')} value={blog?.summary}></Textarea>
+          </div>
+          <div className="flex gap-3">
+            <Input label="Tiêu đề" aria-label="Tiêu đề" {...register('title')} defaultValue={blog?.title}></Input>
             <Switch isSelected={isSelected} onValueChange={setIsSelected}></Switch>
           </div>
-          <div className="flex items-center">
-            <Input label="Thumbnail" aria-label="Thumbnail" {...register('thumbnail')} defaultValue={blog?.thumbnail} className="pt-3 pr-3"></Input>
-            <Button color="primary" type="submit">Lưu</Button>
+          <div className="grid grid-cols-2 gap-3">
+            <div className='flex flex-col gap-3'>
+              <Input label="Thumbnail" aria-label="Thumbnail" {...register('thumbnail')} value={blog?.thumbnail} disabled></Input>
+              <div>
+                <div className="float-right flex gap-3">
+                  <Button onClick={onOpen}>Chọn ảnh</Button>
+                  <Button color="primary" type="submit">Lưu</Button>
+                </div>
+              </div>
+            </div>
+            <div>
+              {
+                blog?.thumbnail ?
+                  <Image
+                    src={`/gallery/${blog.thumbnail}`}
+                    width="300"
+                    height="300"
+                  /> : null
+              }
+            </div>
           </div>
         </form>
       </div>
+
+      <Modal
+        size="5xl" scrollBehavior="inside"
+        isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">Chọn hình ảnh</ModalHeader>
+              <ModalBody>
+                <ImageCms disableAdd={true} onImageClick={selectedImage} disableDelete={true}></ImageCms>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Close
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 };
-
-const TableOfContents = Node.create({
-  name: 'tableOfContents',
-  group: 'block',
-  atom: true,
-
-  parseHTML() {
-    return [
-      {
-        tag: 'toc',
-      },
-    ]
-  },
-
-  renderHTML({ HTMLAttributes }) {
-    return ['toc', mergeAttributes(HTMLAttributes)]
-  },
-
-  addNodeView() {
-    return ReactNodeViewRenderer(Component)
-  },
-
-  addGlobalAttributes() {
-    return [
-      {
-        types: ['heading'],
-        attributes: {
-          id: {
-            default: null,
-          },
-        },
-      },
-    ]
-  },
-})
-
-const Component = ({ editor }) => {
-  const [items, setItems] = useState([])
-
-  const handleUpdate = useCallback(() => {
-    const headings = []
-    const transaction = editor.state.tr
-
-    editor.state.doc.descendants((node, pos) => {
-      if (node.type.name === 'heading') {
-        const id = `heading-${headings.length + 1}`
-
-        if (node.attrs.id !== id) {
-          transaction.setNodeMarkup(pos, undefined, {
-            ...node.attrs,
-            id,
-          })
-        }
-
-        headings.push({
-          level: node.attrs.level,
-          text: node.textContent,
-          id,
-        })
-      }
-    })
-
-    transaction.setMeta('addToHistory', false)
-    transaction.setMeta('preventUpdate', true)
-
-    editor.view.dispatch(transaction)
-
-    setItems(headings)
-  }, [editor])
-
-  useEffect(handleUpdate, [])
-
-  useEffect(() => {
-    if (!editor) {
-      return null
-    }
-
-    editor.on('update', handleUpdate)
-
-    return () => {
-      editor.off('update', handleUpdate)
-    }
-  }, [editor])
-
-  return (
-    <NodeViewWrapper className="toc">
-      <ul className="toc__list">
-        {items.map((item, index) => (
-          <li key={index} className={`toc__item toc__item--${item.level}`}>
-            <a href={`#${item.id}`}>{item.text}</a>
-          </li>
-        ))}
-      </ul>
-    </NodeViewWrapper>
-  )
-}
 
 export default RichTextEditor;

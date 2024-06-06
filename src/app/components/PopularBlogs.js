@@ -41,12 +41,12 @@ export default function PopularBlogs() {
   return (
     <>
       <div className="pb-2">
-        <div className="bg-black rounded-tr-[50px] rounded-bl-[50px] flex items-center w-1/3 h-[50px] m-auto shadow-md">
+        <div className="bg-black rounded-tr-[50px] rounded-bl-[50px] flex items-center w-1/3 h-[50px] m-auto">
           <Link href="/" className="m-auto text-white font-bold text-xl">BÀI VIẾT NỔI BẬT</Link>
         </div>
       </div>
 
-      <Carousel responsive={responsive} className="flex items-center pb-2" infinite>
+      <Carousel responsive={responsive} className="flex items-center pb-1" infinite>
         {
           blogs.map((blog) => {
             return <div className="p-1" key={blog.id}>
@@ -62,8 +62,17 @@ export default function PopularBlogs() {
                       />
                     </CardHeader>
                     <Divider />
-                    <CardBody className="h-28 w-full font-bold">
-                      {blog.title}
+                    <CardBody>
+                      <div className="h-28 w-full font-bold">
+                        <p className=" line-clamp-3">
+                          {blog.title}
+                        </p>
+                      </div>
+                      <div>
+                        <div className="italic">
+                          {new Date('2024-06-04T16:50:06.304Z').toLocaleDateString()}
+                        </div>
+                      </div>
                     </CardBody>
                   </Card>
                 </div>

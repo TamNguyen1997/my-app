@@ -4,17 +4,18 @@ import { NextResponse } from 'next/server';
 export async function POST(req, { params }) {
   try {
     let body = await req.json()
-
+    console.log(body)
     await db.sale_detail.deleteMany({
       where: {
         productId: params.id
       }
     })
-    await db.technical_detail.createMany({
+    await db.sale_detail.createMany({
       data: body
     })
     return NextResponse.json({ message: "Success" })
   } catch (e) {
+    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }

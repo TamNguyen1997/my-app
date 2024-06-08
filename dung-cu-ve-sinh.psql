@@ -1,0 +1,357 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 16.0 (Debian 16.0-1.pgdg120+1)
+-- Dumped by pg_dump version 16.0 (Debian 16.0-1.pgdg120+1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+-- *not* creating schema, since initdb creates it
+
+
+ALTER SCHEMA public OWNER TO postgres;
+
+--
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON SCHEMA public IS '';
+
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: blog; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.blog (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    title text NOT NULL,
+    content text NOT NULL,
+    active boolean DEFAULT false NOT NULL,
+    thumbnail text DEFAULT ''::text NOT NULL,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    author text,
+    summary text
+);
+
+
+ALTER TABLE public.blog OWNER TO postgres;
+
+--
+-- Name: order_history; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.order_history (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    product_id text NOT NULL
+);
+
+
+ALTER TABLE public.order_history OWNER TO postgres;
+
+--
+-- Name: product; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.product (
+    sub_category_id text NOT NULL,
+    name text,
+    image_url text,
+    image_alt text,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at timestamp(3) without time zone NOT NULL,
+    id text NOT NULL,
+    "categoryId" text,
+    active boolean DEFAULT true NOT NULL,
+    description text
+);
+
+
+ALTER TABLE public.product OWNER TO postgres;
+
+--
+-- Name: sale_detail; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.sale_detail (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    product_id text NOT NULL,
+    value text NOT NULL,
+    price integer,
+    "parentSaleDetailId" uuid,
+    "sale_detailId" uuid
+);
+
+
+ALTER TABLE public.sale_detail OWNER TO postgres;
+
+--
+-- Name: subCategory; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public."subCategory" (
+    name text NOT NULL,
+    category_id text NOT NULL,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at timestamp(3) without time zone NOT NULL,
+    id uuid DEFAULT gen_random_uuid() NOT NULL
+);
+
+
+ALTER TABLE public."subCategory" OWNER TO postgres;
+
+--
+-- Name: technical_detail; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.technical_detail (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    key text NOT NULL,
+    value text NOT NULL,
+    product_id text NOT NULL
+);
+
+
+ALTER TABLE public.technical_detail OWNER TO postgres;
+
+--
+-- Data for Name: blog; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.blog (id, title, content, active, thumbnail, created_at, updated_at, author, summary) FROM stdin;
+96cfefb4-732e-466c-be87-4ca33ed5737b	Sao Việt tham gia Triển lãm Quốc tế Cafe Show Việt Nam lần thứ 9	<p><a target="_blank" rel="noopener" href="https://dungcuvesinhsaoviet.com/"><strong>Công ty TNHH TM DV Vệ Sinh Sao Việt</strong></a><strong> – chuyên phân phối </strong><a target="_blank" rel="noopener" href="https://dungcuvesinhsaoviet.com/danh-muc-san-pham/dung-cu-ve-sinh-rubbermaid-usa/thung-dung-do-brute/"><strong>thùng nhựa BRUTE đa năng của Rubbermaid</strong></a><strong> từ năm 2007, là nhà triển lãm trong sự kiện </strong><a target="_blank" rel="noopener" href="https://ticket.cafeshow.com.vn/"><strong>Cafe Show Việt Nam 2024</strong></a><strong>, diễn ra từ ngày 9 – 11/05/2024.</strong></p><p><strong>Sự kiện nằm trong chuỗi hoạt động quảng bá, nâng cao nhận thức về dòng thùng nhựa BRUTE, quản lý hiệu quả và an toàn cà phê.</strong></p><img src="https://dungcuvesinhsaoviet.com/wp-content/uploads/2024/05/CS_1200x850.jpg"><h2><strong>Triển lãm Quốc tế Cafe Show</strong></h2><p><a target="_blank" rel="noopener" href="https://www.cafeshow.com.vn/"><strong>Cafe Show</strong></a> – thương hiệu có nguồn gốc từ <strong>Hàn Quốc</strong>, là một trong những sự kiện triển lãm mang tầm quốc tế, nằm trong top đầu về lĩnh vực cà phê và đồ uống. Chính thức ra đời từ năm 2002, đến nay chương trình đã tổ chức tại nhiều quốc gia tại châu Á và sắp tới là Paris, Pháp.</p><p>Hơn 20 năm hoạt động, triển lãm không chỉ tập trung vào cà phê mà còn bao gồm trà, các loại đồ uống khác, bánh ngọt, nguyên liệu, máy móc và thiết bị phục vụ ngành cà phê. Triển lãm như một cơ hội để các doanh nghiệp cà phê, barista gặp gỡ, trao đổi kiến thức, thi thố tài năng cũng như khám phá các xu hướng mới nhất trong ngành.</p><p></p><p>Với khẩu hiệu <strong>We clean We care</strong>, Sao Việt đã mang đến hàng loạt dụng cụ vệ sinh công nghiệp đến từ những thương hiệu hàng đầu thế giới như <a target="_blank" rel="noopener" href="https://dungcuvesinhsaoviet.com/danh-muc-san-pham/dung-cu-ve-sinh-rubbermaid-usa/"><strong>Rubbermaid Commercial Products (USA)</strong></a>, <a target="_blank" rel="noopener" href="https://dungcuvesinhsaoviet.com/danh-muc-san-pham/dung-cu-lam-sach-kinh-moerman/"><strong>Moerman (Belgium)</strong></a> và <a target="_blank" rel="noopener" href="https://shopee.vn/saoviettissue"><strong>Kimberly-Clark (USA)</strong></a>. Những thiết bị vệ sinh cao cấp này đảm bảo “Không chỉ chú trọng đến kinh doanh mà còn mang đến cho khách hàng các giải pháp làm vệ sinh hiệu quả nhất.”</p><p></p><p>Với khẩu hiệu <strong>We clean We care</strong>, Sao Việt đã mang đến hàng loạt dụng cụ vệ sinh công nghiệp đến từ những thương hiệu hàng đầu thế giới như <a target="_blank" rel="noopener" href="https://dungcuvesinhsaoviet.com/danh-muc-san-pham/dung-cu-ve-sinh-rubbermaid-usa/"><strong>Rubbermaid Commercial Products (USA)</strong></a>, <a target="_blank" rel="noopener" href="https://dungcuvesinhsaoviet.com/danh-muc-san-pham/dung-cu-lam-sach-kinh-moerman/"><strong>Moerman (Belgium)</strong></a> và <a target="_blank" rel="noopener" href="https://shopee.vn/saoviettissue"><strong>Kimberly-Clark (USA)</strong></a>. Những thiết bị vệ sinh cao cấp này đảm bảo “Không chỉ chú trọng đến kinh doanh mà còn mang đến cho khách hàng các giải pháp làm vệ sinh hiệu quả nhất.”</p>	f	3.jpg	2024-06-04 16:50:06.304	2024-06-08 00:21:23.065	\N	\N
+1e09aed7-7d3e-4e2f-922f-1d07a43fdd3c	Sao Việt tham gia Ngày hội kết nối kinh doanh Business Open Day của BNI Stars vào ngày 26/04/2024	<p><strong>Trong buổi sáng ngày 26/04, </strong><a target="_blank" rel="noopener" href="https://dungcuvesinhsaoviet.com/"><strong>Công ty TNHH TM DV Vệ Sinh Sao Việt</strong></a><strong> đã tham gia Ngày hội kết nối kinh doanh Business Open Day. Ông Đinh Công Hiếu – Giám Đốc công ty Sao Việt vinh dự là thành viên trong tổ chức.</strong></p><img src="https://dungcuvesinhsaoviet.com/wp-content/uploads/2024/04/Sao-viet-tham-gia-bni-stars-thang-4-2024-cover-01.jpg"><p>Sự kiện nằm trong chuỗi hoạt động của <strong>BNI Stars</strong> – tổ chức kết nối thương mại hàng đầu tại Việt Nam.</p><img src="https://dungcuvesinhsaoviet.com/wp-content/uploads/2024/04/Sao-viet-tham-gia-bni-stars-thang-4-2024-01.jpg">	f	3.jpg	2024-06-04 16:50:06.304	2024-06-04 17:23:28.709	\N	\N
+7f8e94f2-cb92-41f3-afaf-b0513e49f339	[LỊCH LÀM VIỆC THÁNG 5] Thông báo lịch nghỉ dưỡng thường niên cho cán bộ, công nhân viên khối văn phòng	<p><strong>Hoạt động du lịch, nghỉ dưỡng tại </strong><a target="_blank" rel="noopener" href="https://dungcuvesinhsaoviet.com/"><strong>Công ty TNHH TM DV Vệ Sinh Sao Việt</strong></a><strong> là một trong số những quyền lợi hấp dẫn cho cán bộ, công nhân viên khối văn phòng, được diễn ra vào quý II hàng năm.</strong></p><p>Sao Việt trân trọng thông báo đến quý khách hàng, quý đối tác lịch làm việc tháng 5, cụ thể như sau:</p><h2><strong>Thời gian diễn ra du lịch, nghỉ dưỡng:</strong></h2><ul class="list-disc"><li><p>Bắt đầu nghỉ từ thứ 6, ngày 17/05/2024</p></li><li><p>Đến hết chủ nhật, ngày 19/05/2024</p></li><li><p>Thời gian làm việc lại: thứ 2, ngày 20/05/2024</p></li></ul><h2><strong>Lịch làm việc tháng 5</strong></h2><p>Hoạt động bình thường từ 8:00 – 17:00, thứ 2 – thứ 6. Riêng thứ 7 từ 8:00 – 12:00</p><p></p><h2><strong>Một số lưu ý</strong></h2><ul class="list-disc"><li><p>Trong thời gian diễn ra hoạt động nghỉ dưỡng, <a target="_blank" rel="noopener" href="https://dungcuvesinhsaoviet.com/"><strong>Công ty TNHH TM DV Vệ Sinh Sao Việt</strong></a>&nbsp;sẽ tạm ngừng tiếp nhận và xử lý các yêu cầu phát sinh từ khách hàng.</p></li><li><p>Để được hỗ trợ, giải quyết về các vấn đề liên quan đến giao dịch, bán hàng, sản phẩm và dịch vụ, quý khách hàng vui lòng thu xếp và thực hiện trước hoặc sau thời gian trên hoặc liên hệ qua số <strong>HOTLINE 090 380 2979.</strong></p></li></ul><h2><strong>Một số hình ảnh của chuyến du lịch, nghỉ dưỡng của Sao Việt trong năm 2023</strong></h2><img src="https://dungcuvesinhsaoviet.com/wp-content/uploads/2024/05/Thong-bao-lich-nghi-duong-cong-ty-sao-viet-2-1024x672.jpg" alt=""><img src="https://dungcuvesinhsaoviet.com/wp-content/uploads/2024/05/Thong-bao-lich-nghi-duong-cong-ty-sao-viet-3-1024x679.jpg" alt=""><img src="https://dungcuvesinhsaoviet.com/wp-content/uploads/2024/05/Thong-bao-lich-nghi-duong-cong-ty-sao-viet-6-1024x681.jpg" alt=""><img src="https://dungcuvesinhsaoviet.com/wp-content/uploads/2024/05/Thong-bao-lich-nghi-duong-cong-ty-sao-viet-5-693x1024.jpg" alt=""><img src="https://dungcuvesinhsaoviet.com/wp-content/uploads/2024/05/Thong-bao-lich-nghi-duong-cong-ty-sao-viet-4-676x1024.jpg" alt=""><img src="https://dungcuvesinhsaoviet.com/wp-content/uploads/2024/05/Thong-bao-lich-nghi-duong-cong-ty-sao-viet-1-688x1024.jpg" alt=""><p>Trân trọng cảm ơn!</p><p><strong>CÔNG TY TNHH THƯƠNG MẠI – DỊCH VỤ VỆ SINH SAO VIỆT&nbsp;</strong></p><ul class="list-disc"><li><p>Địa chỉ: 666/62 Ba Tháng Hai, Phường 14, Quận 10, TP. Hồ Chí Minh.</p></li><li><p>Email: <a target="_blank" rel="noopener noreferrer nofollow" href="mailto:info@saovietco.vn">info@saovietco.vn</a></p></li><li><p>Hotline: 028 3863 9456 – 028 3863 9457.</p></li><li><p>Website:&nbsp;<a target="_blank" rel="noopener noreferrer nofollow" href="https://dungcuvesinhsaoviet.com/">https://dungcuvesinhsaoviet.com/</a>&nbsp;–&nbsp;<a target="_blank" rel="noopener noreferrer nofollow" href="http://saovietco.vn">saovietco.vn</a></p></li><li><p>Youtube:&nbsp;<a target="_blank" rel="noopener noreferrer nofollow" href="http://bit.ly/youtube-saoviet">http://bit.ly/youtube-saoviet</a></p></li><li><p>Linkedin:&nbsp;<a target="_blank" rel="noopener noreferrer nofollow" href="https://bit.ly/35OIN5t">https://bit.ly/35OIN5t</a></p></li><li><p>Pinterest:&nbsp;<a target="_blank" rel="noopener noreferrer nofollow" href="https://www.pinterest.com/congtyvesinhsaoviet">https://www.pinterest.com/congtyvesinhsaoviet</a></p></li><li><p>Shopee:&nbsp;<a target="_blank" rel="noopener noreferrer nofollow" href="https://shopee.vn/saovietcompany">https://shopee.vn/saovietcompany</a></p></li><li><p>Lazada:&nbsp;<a target="_blank" rel="noopener noreferrer nofollow" href="https://bit.ly/saoviet-lazada">https://bit.ly/saoviet-lazada</a></p></li><li><p>Tiki:&nbsp;<a target="_blank" rel="noopener noreferrer nofollow" href="https://tiki.vn/cua-hang/sao-viet-company">https://tiki.vn/cua-hang/sao-viet-company</a></p></li><li><p>Fanpage:&nbsp;<a target="_blank" rel="noopener noreferrer nofollow" href="https://www.facebook.com/thungnhuabrute">https://www.facebook.com/thungnhuabrute</a></p></li><li><p>Fanpage:&nbsp;<a target="_blank" rel="noopener noreferrer nofollow" href="https://www.facebook.com/dungcuvesinhsaoviet">https://www.facebook.com/dungcuvesinhsaoviet</a></p></li></ul>	f	3.jpg	2024-06-04 16:50:06.304	2024-06-04 16:50:06.304	\N	\N
+9a58dd69-5be5-4eed-afc4-0f430ed77f6a	test	<h2><strong>Kim tứ đồ là gì? Ý nghĩa của kim tứ đồ Robert Kiyosaki</strong></h2><p>Kim Tứ Đồ còn có được biết đến theo tên tiếng Anh là <a target="_blank" rel="nofollow" href="https://www.richdad.com/the-cashflow-quadrant">Cashflow Quadrant</a>, hay cái tên Kim Tứ Đồ Robert Kiyosaki. Đây là một trong những thuật ngữ do nhà đầu tư, người doanh nhân, hay người diễn giả và là tác giả nổi tiếng người Mỹ - <a target="_blank" rel="nofollow" href="https://vi.wikipedia.org/wiki/Robert_Kiyosaki">Robert Kiyosaki</a> đã đặt tên cho mô hình về tiền tệ trên thế giới, cũng như cách nó được tạo ra.</p><p>Trong Kim Tứ Đồ có chia con người ra thành làm 4 nhóm cơ bản: <strong>nhóm người làm thuê </strong>(Employee), <strong>nhóm người làm tự do&nbsp;</strong>(Self-employed), <strong>nhóm chủ doanh nghiệp&nbsp;</strong>(Business Owner) và <strong>nhóm nhà đầu tư&nbsp;</strong>(Investor). Những người này thường có điểm giống nhau ở chỗ luôn có mong muốn kiếm được nhiều tiền một cách mãnh liệt nhưng lại có những điểm khác biệt ở cách mà họ kiếm tiền.</p><p>Với Kim tứ đồ, Robert Kiyosaki sẽ giúp các bạn nhận ra những điều sau:</p><ul class="list-disc"><li><p>Bạn là ai và đứng ở đâu trong nhóm có 4 người.</p></li><li><p>Bạn đang kiếm tiền và tạo thêm thu nhập từ phần nào ở trên thang của Kim tứ đồ.</p></li><li><p>Bạn nên gia nhập vào nhóm nào để có thể thực hiện được tự do tài chính.</p></li></ul><p></p><h2><strong>2Kim tứ đồ gồm những yếu tố nào?</strong></h2><p>Tác giả Robert Kiyosaki đã căn cứ trên nhiều phương diện và phân chia theo tính chất công việc để tạo thành 4 nhóm yếu tố như sau:</p><p></p><p><em>kim tứ đồ gồm 4 nhóm E,B,S,I</em></p><h3><strong>2.1 – Employee: Người làm thuê, làm công</strong></h3><p><strong>Nhóm 1 - Nhóm E (Employee):</strong> Đây là nhóm tập hợp những người chỉ đi làm công, làm thuê. Họ là những cán bộ công nhân viên có công việc cố định và tiền lương được trả đều đặn hàng tháng để làm việc cho một công ty, hay tập đoàn, hoặc xí nghiệp nào đó.</p><p>Thậm chí nếu bạn đang công tác trong ban giám đốc, hoặc chỉ là nhân viên văn phòng, hay công nhân, bảo vệ… thì vẫn đều tính là thuộc nhóm Employee. Bởi đây là vốn là nhóm người đang sử dụng sức lao động, cũng như thời gian và trí tuệ của mình để đổi lấy tiền.</p><h3><strong>2.2 – Self-employed/small business owner: Người làm tự do/ làm chủ doanh nghiệp nhỏ</strong></h3><p><strong>Nhóm 2 - Nhóm S (Self-employed):</strong> Đây là nhóm những người làm việc theo hình thức tự do hoặc tự kinh doanh, hoặc tự làm chủ. Một số người làm thuê hiện nay khi đã có khả năng nắm vững quy trình làm việc, họ luôn muốn xây dựng và tự quản lý công việc của chính mình, để hướng đến mục tiêu trở thành người lao động tự do.</p><p>Họ có thể tự mình đích thân đi giao dịch những sản phẩm, hay các loại dịch vụ họ tự cung cấp mà không cần phải phụ thuộc vào bất cứ ai, hay doanh nghiệp nào. Thu nhập nhận về thường là tương đương với giá trị công sức mà người lao động đã bỏ ra. Nếu các công việc kinh doanh cá nhân này gặp bất trắc, và không thể tiếp tục duy trì hoạt động thì hầu hết các nguồn tiền của họ cũng sẽ biến mất.</p><p></p><h3><strong>2.3 – Business owner: Chủ doanh nghiệp, doanh nhân</strong></h3><p><strong>Nhóm 3 - Nhóm B (Business Owner)</strong> hay còn được biết đến là tập hợp của những chủ doanh nghiệp hoặc có thể gọi là các doanh nhân. Họ sẽ là những người không trực tiếp làm việc để tạo thu nhập mà sẽ đi thuê nhân công để hỗ trợ làm việc cho doanh nghiệp của mình.</p><p>Nói theo cách khác thì những người này sẽ tạo ra một “hệ thống” có thể kiếm tiền về cho mình nhưng họ không cần trực tiếp tham gia. Nhóm người này thường tương đối giống với nhóm S nhưng về mặt quy mô thì có phần lớn hơn nên các khoản lợi nhuận thu thường cũng lớn hơn rất nhiều so với nhóm tự làm chủ.</p><p>Họ sẵn sàng bỏ tiền để có thể tuyển dụng được những người có chuyên môn, kinh nghiệm cao, có thể đảm nhiệm tốt các vị trí cần làm để có thể tạo ra được hiệu suất công việc tốt nhất, giảm tải cho năng lực bản thân có hạn.</p><p></p><h3><strong>2.4&nbsp;– Investor: Nhà đầu tư</strong></h3><p><strong>Nhóm 4 - Nhóm I (Investor)</strong> là nhóm những nhà đầu tư, hoặc là những người mượn tiền để tạo ra lợi nhuận, doanh thu. Thường thì đối với nhóm người này, họ có thể dễ dàng mua bán tài sản sau đó trao đổi chúng để có thể kiếm được nguồn lợi nhuận từ việc ăn chia chênh lệch giá.</p><p>Thu nhập của nhóm người này đều được gọi là nguồn thu nhập thụ động, họ sẽ làm việc theo tư duy và hoàn toàn do suy nghĩ của bản thân mà không chịu bất kỳ sự áp đặt nào. Đối với một số tài sản phổ biến có trong lĩnh vực đầu tư thì phải kể đến như: cổ phiếu, bất động sản, hoặc các loại hàng hóa thành phẩm cuối cùng, hay các loại dịch vụ…</p><p></p><h2><strong>3Cách kiếm tiền và hành trình tự do tài chính của từng nhóm</strong></h2><p>Mỗi nhóm trong Kim tứ đồ có cách kiếm tiền khác nhau để thành công trên hành trình tự do tài chính</p><h3><strong>3.1 Nhóm 1 - E: Employee (Người làm thuê)</strong></h3><p>Thu nhập của nhóm này chủ yếu đến từ mức lương của công việc họ đang làm. Để đạt được tự do tài chính, họ có thể để dành một phần tiền lương của mình mỗi tháng để tiến hành xây dựng quy tiết kiệm cá nhân, hoặc nói theo cách khác là lập quỹ dự phòng cho tương lai. Hoặc cũng có thể gửi ngân hàng để có thể hưởng lãi suất hàng năm.</p><p>Nhóm người này cũng cũng có thể làm thêm một số công việc khác ngoài giờ để có thể cải thiện thu nhập. Đôi khi họ cũng sẽ sử dụng phần tiền rảnh rỗi của mình để đi đầu tư kiếm món lợi nhỏ. Ngoài ra, nhóm người làm thuê nên trau dồi thêm kiến thức và kinh nghiệm làm việc để có thể từ đó cải thiện vị trí và mức lương ngày một tốt hơn.</p><p></p><h3><strong>3.2 Nhóm 2 - S: Self-Employed (Người làm tư)</strong></h3><p>Nhóm người này nên tìm hiểu thêm về các nhu cầu khác nhau của thị trường rồi tiến hành đẩy mạnh việc bán các sản phẩm, hoặc cung cấp các loại dịch vụ liên quan đến các nhu cầu đó để thúc đẩy doanh số, lợi nhuận.</p><p>Bên cạnh đó, những người làm chủ cần tìm mọi phương pháp nhằm hướng đến mục đích giảm bớt hầu hết các chi phí, vì số tiền lợi nhuận sẽ được tính bằng tổng thu nhập khấu trừ đi toàn bộ các chi phí khác. Khi chi phí được cắt giảm thì chắc chắn số tiền lợi nhuận thu lại sẽ tăng lên đáng kể.</p><p></p><h3><strong>3.3 Nhóm 3 - B: Business Owner (Chủ doanh nghiệp)</strong></h3><p>Vì những người thuộc nhóm này đã có cho mình một hệ thống kiếm tiền hoàn thiện rồi nên để có thể gia tăng thu nhập nhanh chóng thì họ có thể lựa chọn cách mở rộng về mặt quy mô sản xuất, cũng như thúc đẩy mạnh hơn về số lượng hàng hoá bán ra, tăng giá thành bán lẻ các sản phẩm, dịch vụ hoặc dùng để đầu tư thêm vào các dự án khác nhằm tăng nguồn thu.</p><p></p><h3><strong>3.4 Nhóm 4 - I: Investor (Nhà đầu tư)</strong></h3><p>Nhóm các nhà đầu tư thường có xu hướng gia tăng tài sản của bản thân đồng thời cũng là tăng thêm thu nhập một cách thụ động. Tài sản thường được tính là những thứ có giá trị sẽ tăng lên hoặc giảm đi theo thời gian, bạn càng có sự đa dạng tài sản thì khả năng sinh lời của bạn sẽ càng cao.</p><p>Tuy nhiên, để đi kèm với đó là sự rủi ro cũng sẽ cao hơn, nhưng nhóm đối tượng thuộc này sẽ có những quan niệm về rủi ro chính là nơi bắt đầu cho sự phát triển về lợi nhuận. Để trở thành một nhà đầu tư chuyên nghiệp, các bạn cần tập cho mình tính kiên trì, nhẫn nại, đồng thời trau dồi thêm thật nhiều các kiến thức về thị trường và bổ sung cho mình nguồn vốn dồi dào. Bên cạnh đó, cũng không thể không chuẩn bị các biện pháp quản trị để lường trước các vấn đề rủi ro có thể xảy đến bất cứ lúc nào.</p><p>&gt;&gt; <em>Xem thêm bài viết về “</em><a target="_blank" rel="noopener noreferrer nofollow" href="https://tikop.vn/blog/tu-do-tai-chinh-la-gi-2001"><em>Tự do tài chính là gì?</em></a><em>"</em></p><p></p><h2><strong>4Nguyên nhân của sự phân hóa 4 nhóm trong Kim tứ đồ</strong></h2><p>Tại sao lại có 4 nhóm người được chia như ở trên là câu hỏi của đại đa số người khi mới tìm hiểu về mô hình Kim tứ đồ? Để trả lời cho câu hỏi này, chúng ta cầntìm hiểu nguyên nhân ảnh hưởng đến cách kiếm tiền của họ.</p><p>Chính những quan điểm khác nhau về các giá trị lợi ích, các mối quan tâm, hay đơn giản là lối suy nghĩ trong vấn đề tài chính,… khác nhau. Đặc biệt cũng là điều ảnh hưởng lớn nhất đó là cách cư xử và đối diện với sự thất bại khác nhau sẽ tạo nên những quan điểm về cách kiếm tiền khác nhau cho từng nhóm người, từ đó vô tình hình thành nên 4 nhóm người kể trên.</p><h2><strong>5Những lưu ý về 5 sai lầm cần tránh khi nhảy nhóm</strong></h2><p>Có 5 sai lầm cần đặc biệt phải tránh khi muốn nhảy từ nhóm đối tượng này sang đối tượng khác trong Kim tứ đồ.</p><ol class="list-decimal"><li><p>Đầu tiên, khi nhảy từ nhóm E sang nhóm S, các bạn cần chuẩn bị cho mình tâm lý không sợ thất bại và phải dám làm, dám trải nghiệm. Bởi nếu các bạn không tự tin và thua từ trong suy nghĩ của bản thân thì sẽ thật sự khó để bạn tìm được lối đi đúng đắn hướng đến thành công của tự do tài chính.</p></li></ol><ol class="list-decimal" start="2"><li><p>Cần chuyển bị cho mình tiềm lực cá nhân từ vấn đề tài chính đến kiến thức thật tốt, cùng với đó là tâm lý vững vàng trước khi quyết định “nhảy nhóm" hay chuyển đổi phương thức làm việc cá nhân để tìm kiếm thêm hoặc nâng cao thu nhập.</p></li></ol><ol class="list-decimal" start="3"><li><p>Nên bỏ qua hoàn toàn suy nghĩ mỗi người chỉ phù hợp với một ngành nghề hay chuyên môn riêng biệt bởi kiến thức là điều mà chúng ta có thể hoàn toàn trau dồi được khi bản thân cố gắng.</p></li></ol><ol class="list-decimal" start="4"><li><p>Không phải cứ nhóm đối tượng làm chủ thì sẽ có thành công hơn về mặt tài chính mà bất cứ một đối tượng nào cũng có thể thành công về mặt tài chính một cách riêng biệt miễn là các bạn có thể tìm cho mình định hướng tốt trong công việc.</p></li></ol><ol class="list-decimal" start="5"><li><p>Không tiêu cực hoá suy nghĩ bản thân theo chiều hướng ở nhóm này thì sẽ tốt hơn ở nhóm kia, bởi dù ở bất cứ nhóm nào nếu các bạn không cố gắng và tìm ra chìa khoá thành công của bản thân thì cũng sẽ đi tới thất bại bất cứ lúc nào.</p></li></ol><ol class="list-decimal" start="6"><li><p>Trong nền kinh tế hiện đại ngày nay luôn tồn tại đầy đủ 4 nhóm người như Kim tứ đồ. Và để có thể trở nên giàu có và tự do hoàn toàn về mặt tài chính, thì mỗi người đều nên tìm cho mình cách để nâng cao năng lực, cũng như mục tiêu của bản thân và đặt mình vào ít nhất 2 nhóm dựa trên Kim tứ đồ.</p></li></ol><p></p><h2><strong>6Yêu cầu cần thiết trước khi nhảy nhóm</strong></h2><p>Dựa trên những thông tin ở trên về Kim tứ đồ thì dường như những hành động của bạn cần phải thay đổi, mà trước hết các bạn cần thay đổi chính cách suy nghĩ của bản thân mình để có thể tiến gần với mục tiêu tự do tài chính hơn.</p><p>Hay nói theo cách khác dễ hiểu hơn thì chính là thay đổi cách suy nghĩ, thay đổi thói quen hành động, rèn luyện thái độ tiếp cận với công việc, cũng như tập cho bản bản thân cá tính cần có để có thể phù hợp với nhóm đối tượng mà chúng ta hướng đến. Sau đó là quá trình rèn luyện và trau dồi những kiến thức, các kỹ năng chuyên môn cần phải có của nhóm đó.</p><p>Và dưới đây là những yêu cầu cực kỳ cần thiết cho bất cứ ai khi muốn thay đổi bản thân để trở thành một nhóm đối tượng khác trong Kim tứ đồ mà bạn có thể tham khảo:</p><ul class="list-disc"><li><p>Vượt qua nỗi sợ hãi khi phải đối diện với thất bại và rủi ro của bản thân.</p></li><li><p>Chấp nhận những khuyết điểm và chịu thay đổi, cũng như đặt niềm tin cho bản thân.</p></li><li><p>Tìm hiểu ra các vấn đề cốt lõi của mục tiêu mà mình mong muốn hướng tới.</p></li><li><p>Xác định rõ ràng điểm mạnh và sở trường để phát huy đúng theo năng lực.</p></li><li><p>Dành thời gian trau dồi và học hỏi thêm các kiến thức liên quan đến chuyên môn hướng tới.</p></li></ul><p>​​</p><h2><strong>7Bạn là ai trong kim tứ đồ và lựa chọn cho tương lai như thế nào?</strong></h2><p>Dựa vào mô hình Kim tứ đồ đã nhắc đến thì đại đa số các bạn đọc cũng thấy được rõ ràng nhóm đối tượng thuộc nhóm Business Owner và nhóm 4: Investor - là nhóm đối tượng có khả năng kiếm được nhiều tiền, mức sống cao, sự thành công những vẫn đảm bảo linh hoạt được vấn đề thời gian để thư giãn, cũng như việc nghỉ ngơi tốt hơn so với 2 nhóm đối tượng còn lại.</p><h3><strong>7.1 Người làm thuê có thể kiếm được nhiều tiền?</strong></h3><p>Câu trả lời cho vấn đề này chắc chắn là có và những người này là đối tượng mà chúng ta cực kỳ dễ dàng bắt gặp hàng ngày.</p><p>Điều này chứng tỏ rằng nếu các bạn có đầy đủ khả năng và năng lực, thì tại sao không trở thành những người làm thuê ở trình độ chuyên nghiệp cho các doanh nghiệp lớn.</p><p>Những doanh nghiệp này luôn sẵn sàng chi trả mức cũng như cung cấp đãi ngộ hàng năm rất cao cho các cá nhân làm việc tốt, miễn là các bạn có thể đáp ứng và đạt đủ trình độ mà họ yêu cầu.</p><p></p><h3><strong>7.2 Bạn muốn trở thành ai trong tương lai?</strong></h3><p>Nếu các bạn đã từng biết đến cuốn sách “<a target="_blank" rel="nofollow" href="https://vi.wikipedia.org/wiki/Rich_Dad,_Poor_Dad">Cha giàu, Cha nghèo</a>”, thì chắc hẳn đã biết đến nội dung cuốn sách ấy viết về các bài học khác nhau và do chính hai người cha truyền dạy lại cho tác giả về quan niệm tiền bạc và những sự lựa chọn về cách sống trong đời. Một người là cha ruột, và người còn lại là cha người bạn cực kỳ thân thiết của chính&nbsp;tác giả Kiyosaki.</p><p>Người cha nghèo với tư duy học vấn cao đã đưa ra lời khuyên “Hãy tới trường và cố gắng học tập tốt, sau đó tìm một công việc thật ổn định để sống một cuộc sống an toàn”. Do đó, người cha này đã hướng Robert trở thành đối tượng thuộc nhóm người E hoặc S cũng giống như quan điểm của số đông các ông bố bà mẹ tại Việt Nam.</p><p>Ngược lại, người cha giàu với tư duy của một doanh nhân lại khuyến khích “Hãy tới trường học tập kiến thức, sau khi tốt nghiệp đại học hãy trau dồi thêm kiến thức, tiếp tục tự mình kinh doanh và định hướng bản thân trở thành doanh nhân hoặc nhà đầu tư thật thành công”. Do đó, người cha này đang định hướng cho tác giả tiếp bước và hướng tới cái đích của sự tự do tài chính dài lâu thông qua việc sở hữu doanh nghiệp hoặc đầu tư.</p><p></p><p><em>sách cha giàu cha nghèo của tác giả Rober T. Kiyosaky</em></p><h2><strong>8Bạn đã có lựa chọn cho bản thân chưa?</strong></h2><p>Trên thực tế, thì việc bận thuộc nhóm nào hay bạn là ai trong Kim tứ đồ hoàn toàn không quan trọng. Việc quan trọng nhất đó là các bạn cần có đủ khả năng để có thể kiếm được nhiều tiền nhất có thể.</p><p>Vậy nên, dù đang ở nhóm nào trong Kim tứ đồ thì các bạn cũng đang đóng góp một phần giá trị không nhỏ của mình cho xã hội. Dù bạn có thuộc nhóm đối tượng nào đi nữa, thì các bạn cũng có thể đạt được mức sống, cũng như mục tiêu tự do tài chính mà bản thân muốn nếu các bạn biết cách tìm ra chìa khoá và thực hiện tốt những nguyên tắc tài chính cá nhân hiệu quả!</p><p></p><h2><strong>9Tổng kết</strong></h2><p>Hy vọng với những thông tin trên đây về Kim tứ đồ, các bạn đã có thể xác định được bản thân mong muốn trở thành nhóm người nào và đưa ra được định hướng cho bản thân để sớm đạt tới đích tự do tài chính.</p><p>Bên cạnh đó, hãy xây dựng thói quen quản lý tài chính cá nhân, tích lũy và đầu tư càng sớm càng tốt để xây dựng được nguồn vốn vững chắc và tận dụng sức mạnh của lãi kép</p>	f	3.jpg	2024-06-04 16:50:06.304	2024-06-04 16:50:06.304	\N	\N
+98c2eba7-516f-43fa-a774-a7aa3bec8ce2	Săn Sale 4/4 – Mua hàng đỡ tốn: Giảm đến 40% dụng cụ vệ sinh. Chốt đơn nhận quà hàng hiệu	<p><strong>Mua sắm vô tư nhân ngày SALE tháng 4 tại </strong><a target="_blank" rel="noopener" href="https://dungcuvesinhsaoviet.com/"><strong>Sao Việt</strong></a><strong>. Nhanh tay lưu lại loạt ưu đãi hấp dẫn với hàng chục deal dụng cụ vệ sinh chính hãng. Chương trình áp dụng cho khách hàng mua sắm trên các sàn thương mại điện tử.</strong></p><h2><strong>NỘI DUNG CHƯƠNG TRÌNH</strong></h2><ul class="list-disc"><li><p><strong>GIẢM ĐẾN 40% </strong>các dụng cụ vệ sinh cao cấp của<a target="_blank" rel="noopener" href="https://dungcuvesinhsaoviet.com/danh-muc-san-pham/dung-cu-ve-sinh-rubbermaid-usa/"> <strong>Rubbermaid, Hoa Kỳ</strong></a>; máy hút bụi hiện đại của<a target="_blank" rel="noopener" href="https://dungcuvesinhsaoviet.com/danh-muc-san-pham/thiet-bi-lam-sach-cong-nghiep/"> <strong>Ghibli &amp; Wirbel, Ý</strong></a> và dụng cụ lau kính chuyên dụng<a target="_blank" rel="noopener" href="https://dungcuvesinhsaoviet.com/danh-muc-san-pham/dung-cu-lam-sach-kinh-moerman/"> <strong>Moerman, Bỉ</strong></a>.</p></li></ul><ul class="list-disc"><li><p><strong>“DOUBLE GIẢM GIÁ” COMBO MUA THÊM DEAL SỐC</strong> – Áp dụng cho một số gia dụng bếp, dụng cụ vệ sinh <a target="_blank" rel="noopener" href="https://dungcuvesinhsaoviet.com/danh-muc-san-pham/dung-cu-ve-sinh-rubbermaid-usa/"><strong>Rubbermaid</strong></a><strong>.</strong></p></li><li><p><strong>HỐT LIỀN HÀNG HIỆU – </strong>Nhận ngay quà tặng hấp dẫn khi mua khăn giấy, hộp đựng khăn giấy của<a target="_blank" rel="noopener" href="https://www.facebook.com/kimberlyclarksaoviet/"> <strong>Kimberly-Clark Professional</strong></a>; dụng cụ vệ sinh chính hãng.</p></li></ul><p><strong>Thời gian:</strong> Duy nhất <em>3 – 5/4/2024</em></p><p><strong>Áp dụng trên các trang bán hàng TMĐT chính thống của </strong><a target="_blank" rel="noopener" href="https://dungcuvesinhsaoviet.com/"><strong>Sao Việt</strong></a></p><p></p><h2><strong>CHI TIẾT ƯU ĐÃI</strong></h2><h3><strong>VÔ VÀN QUÀ TẶNG KHI MUA KHĂN GIẤY CAO CẤP KIMBERLY-CLARK</strong></h3><p><strong>Ngày sale tháng 4, mua sắm vô tư:</strong> Nhận ngay 1 mẫu khăn giấy cao cấp khi mua 5 sản phẩm cùng loại <strong>(Mua 5 tặng 1)</strong>, áp dụng cho các mã khăn giấy bên dưới.</p>	f	3.jpg	2024-06-04 16:50:06.304	2024-06-04 16:50:06.304	\N	\N
+c4ea1e41-6522-4371-9970-6425bd364d54		<h2><strong>Kim tứ đồ là gì? Ý nghĩa của kim tứ đồ Robert Kiyosaki</strong></h2><p>Kim Tứ Đồ còn có được biết đến theo tên tiếng Anh là <a target="_blank" rel="nofollow" href="https://www.richdad.com/the-cashflow-quadrant">Cashflow Quadrant</a>, hay cái tên Kim Tứ Đồ Robert Kiyosaki. Đây là một trong những thuật ngữ do nhà đầu tư, người doanh nhân, hay người diễn giả và là tác giả nổi tiếng người Mỹ - <a target="_blank" rel="nofollow" href="https://vi.wikipedia.org/wiki/Robert_Kiyosaki">Robert Kiyosaki</a> đã đặt tên cho mô hình về tiền tệ trên thế giới, cũng như cách nó được tạo ra.</p><p>Trong Kim Tứ Đồ có chia con người ra thành làm 4 nhóm cơ bản: <strong>nhóm người làm thuê </strong>(Employee), <strong>nhóm người làm tự do&nbsp;</strong>(Self-employed), <strong>nhóm chủ doanh nghiệp&nbsp;</strong>(Business Owner) và <strong>nhóm nhà đầu tư&nbsp;</strong>(Investor). Những người này thường có điểm giống nhau ở chỗ luôn có mong muốn kiếm được nhiều tiền một cách mãnh liệt nhưng lại có những điểm khác biệt ở cách mà họ kiếm tiền.</p><p>Với Kim tứ đồ, Robert Kiyosaki sẽ giúp các bạn nhận ra những điều sau:</p><ul class="list-disc"><li><p>Bạn là ai và đứng ở đâu trong nhóm có 4 người.</p></li><li><p>Bạn đang kiếm tiền và tạo thêm thu nhập từ phần nào ở trên thang của Kim tứ đồ.</p></li><li><p>Bạn nên gia nhập vào nhóm nào để có thể thực hiện được tự do tài chính.</p></li></ul><p></p><h2><strong>2Kim tứ đồ gồm những yếu tố nào?</strong></h2><p>Tác giả Robert Kiyosaki đã căn cứ trên nhiều phương diện và phân chia theo tính chất công việc để tạo thành 4 nhóm yếu tố như sau:</p><p></p><p><em>kim tứ đồ gồm 4 nhóm E,B,S,I</em></p><h3><strong>2.1 – Employee: Người làm thuê, làm công</strong></h3><p><strong>Nhóm 1 - Nhóm E (Employee):</strong> Đây là nhóm tập hợp những người chỉ đi làm công, làm thuê. Họ là những cán bộ công nhân viên có công việc cố định và tiền lương được trả đều đặn hàng tháng để làm việc cho một công ty, hay tập đoàn, hoặc xí nghiệp nào đó.</p><p>Thậm chí nếu bạn đang công tác trong ban giám đốc, hoặc chỉ là nhân viên văn phòng, hay công nhân, bảo vệ… thì vẫn đều tính là thuộc nhóm Employee. Bởi đây là vốn là nhóm người đang sử dụng sức lao động, cũng như thời gian và trí tuệ của mình để đổi lấy tiền.</p><h3><strong>2.2 – Self-employed/small business owner: Người làm tự do/ làm chủ doanh nghiệp nhỏ</strong></h3><p><strong>Nhóm 2 - Nhóm S (Self-employed):</strong> Đây là nhóm những người làm việc theo hình thức tự do hoặc tự kinh doanh, hoặc tự làm chủ. Một số người làm thuê hiện nay khi đã có khả năng nắm vững quy trình làm việc, họ luôn muốn xây dựng và tự quản lý công việc của chính mình, để hướng đến mục tiêu trở thành người lao động tự do.</p><p>Họ có thể tự mình đích thân đi giao dịch những sản phẩm, hay các loại dịch vụ họ tự cung cấp mà không cần phải phụ thuộc vào bất cứ ai, hay doanh nghiệp nào. Thu nhập nhận về thường là tương đương với giá trị công sức mà người lao động đã bỏ ra. Nếu các công việc kinh doanh cá nhân này gặp bất trắc, và không thể tiếp tục duy trì hoạt động thì hầu hết các nguồn tiền của họ cũng sẽ biến mất.</p><p></p><h3><strong>2.3 – Business owner: Chủ doanh nghiệp, doanh nhân</strong></h3><p><strong>Nhóm 3 - Nhóm B (Business Owner)</strong> hay còn được biết đến là tập hợp của những chủ doanh nghiệp hoặc có thể gọi là các doanh nhân. Họ sẽ là những người không trực tiếp làm việc để tạo thu nhập mà sẽ đi thuê nhân công để hỗ trợ làm việc cho doanh nghiệp của mình.</p><p>Nói theo cách khác thì những người này sẽ tạo ra một “hệ thống” có thể kiếm tiền về cho mình nhưng họ không cần trực tiếp tham gia. Nhóm người này thường tương đối giống với nhóm S nhưng về mặt quy mô thì có phần lớn hơn nên các khoản lợi nhuận thu thường cũng lớn hơn rất nhiều so với nhóm tự làm chủ.</p><p>Họ sẵn sàng bỏ tiền để có thể tuyển dụng được những người có chuyên môn, kinh nghiệm cao, có thể đảm nhiệm tốt các vị trí cần làm để có thể tạo ra được hiệu suất công việc tốt nhất, giảm tải cho năng lực bản thân có hạn.</p><p></p><h3><strong>2.4&nbsp;– Investor: Nhà đầu tư</strong></h3><p><strong>Nhóm 4 - Nhóm I (Investor)</strong> là nhóm những nhà đầu tư, hoặc là những người mượn tiền để tạo ra lợi nhuận, doanh thu. Thường thì đối với nhóm người này, họ có thể dễ dàng mua bán tài sản sau đó trao đổi chúng để có thể kiếm được nguồn lợi nhuận từ việc ăn chia chênh lệch giá.</p><p>Thu nhập của nhóm người này đều được gọi là nguồn thu nhập thụ động, họ sẽ làm việc theo tư duy và hoàn toàn do suy nghĩ của bản thân mà không chịu bất kỳ sự áp đặt nào. Đối với một số tài sản phổ biến có trong lĩnh vực đầu tư thì phải kể đến như: cổ phiếu, bất động sản, hoặc các loại hàng hóa thành phẩm cuối cùng, hay các loại dịch vụ…</p><p></p><h2><strong>3Cách kiếm tiền và hành trình tự do tài chính của từng nhóm</strong></h2><p>Mỗi nhóm trong Kim tứ đồ có cách kiếm tiền khác nhau để thành công trên hành trình tự do tài chính</p><h3><strong>3.1 Nhóm 1 - E: Employee (Người làm thuê)</strong></h3><p>Thu nhập của nhóm này chủ yếu đến từ mức lương của công việc họ đang làm. Để đạt được tự do tài chính, họ có thể để dành một phần tiền lương của mình mỗi tháng để tiến hành xây dựng quy tiết kiệm cá nhân, hoặc nói theo cách khác là lập quỹ dự phòng cho tương lai. Hoặc cũng có thể gửi ngân hàng để có thể hưởng lãi suất hàng năm.</p><p>Nhóm người này cũng cũng có thể làm thêm một số công việc khác ngoài giờ để có thể cải thiện thu nhập. Đôi khi họ cũng sẽ sử dụng phần tiền rảnh rỗi của mình để đi đầu tư kiếm món lợi nhỏ. Ngoài ra, nhóm người làm thuê nên trau dồi thêm kiến thức và kinh nghiệm làm việc để có thể từ đó cải thiện vị trí và mức lương ngày một tốt hơn.</p><p></p><h3><strong>3.2 Nhóm 2 - S: Self-Employed (Người làm tư)</strong></h3><p>Nhóm người này nên tìm hiểu thêm về các nhu cầu khác nhau của thị trường rồi tiến hành đẩy mạnh việc bán các sản phẩm, hoặc cung cấp các loại dịch vụ liên quan đến các nhu cầu đó để thúc đẩy doanh số, lợi nhuận.</p><p>Bên cạnh đó, những người làm chủ cần tìm mọi phương pháp nhằm hướng đến mục đích giảm bớt hầu hết các chi phí, vì số tiền lợi nhuận sẽ được tính bằng tổng thu nhập khấu trừ đi toàn bộ các chi phí khác. Khi chi phí được cắt giảm thì chắc chắn số tiền lợi nhuận thu lại sẽ tăng lên đáng kể.</p><p></p><h3><strong>3.3 Nhóm 3 - B: Business Owner (Chủ doanh nghiệp)</strong></h3><p>Vì những người thuộc nhóm này đã có cho mình một hệ thống kiếm tiền hoàn thiện rồi nên để có thể gia tăng thu nhập nhanh chóng thì họ có thể lựa chọn cách mở rộng về mặt quy mô sản xuất, cũng như thúc đẩy mạnh hơn về số lượng hàng hoá bán ra, tăng giá thành bán lẻ các sản phẩm, dịch vụ hoặc dùng để đầu tư thêm vào các dự án khác nhằm tăng nguồn thu.</p><p></p><h3><strong>3.4 Nhóm 4 - I: Investor (Nhà đầu tư)</strong></h3><p>Nhóm các nhà đầu tư thường có xu hướng gia tăng tài sản của bản thân đồng thời cũng là tăng thêm thu nhập một cách thụ động. Tài sản thường được tính là những thứ có giá trị sẽ tăng lên hoặc giảm đi theo thời gian, bạn càng có sự đa dạng tài sản thì khả năng sinh lời của bạn sẽ càng cao.</p><p>Tuy nhiên, để đi kèm với đó là sự rủi ro cũng sẽ cao hơn, nhưng nhóm đối tượng thuộc này sẽ có những quan niệm về rủi ro chính là nơi bắt đầu cho sự phát triển về lợi nhuận. Để trở thành một nhà đầu tư chuyên nghiệp, các bạn cần tập cho mình tính kiên trì, nhẫn nại, đồng thời trau dồi thêm thật nhiều các kiến thức về thị trường và bổ sung cho mình nguồn vốn dồi dào. Bên cạnh đó, cũng không thể không chuẩn bị các biện pháp quản trị để lường trước các vấn đề rủi ro có thể xảy đến bất cứ lúc nào.</p><p>&gt;&gt; <em>Xem thêm bài viết về “</em><a target="_blank" rel="noopener noreferrer nofollow" href="https://tikop.vn/blog/tu-do-tai-chinh-la-gi-2001"><em>Tự do tài chính là gì?</em></a><em>"</em></p><p></p><h2><strong>4Nguyên nhân của sự phân hóa 4 nhóm trong Kim tứ đồ</strong></h2><p>Tại sao lại có 4 nhóm người được chia như ở trên là câu hỏi của đại đa số người khi mới tìm hiểu về mô hình Kim tứ đồ? Để trả lời cho câu hỏi này, chúng ta cầntìm hiểu nguyên nhân ảnh hưởng đến cách kiếm tiền của họ.</p><p>Chính những quan điểm khác nhau về các giá trị lợi ích, các mối quan tâm, hay đơn giản là lối suy nghĩ trong vấn đề tài chính,… khác nhau. Đặc biệt cũng là điều ảnh hưởng lớn nhất đó là cách cư xử và đối diện với sự thất bại khác nhau sẽ tạo nên những quan điểm về cách kiếm tiền khác nhau cho từng nhóm người, từ đó vô tình hình thành nên 4 nhóm người kể trên.</p><h2><strong>5Những lưu ý về 5 sai lầm cần tránh khi nhảy nhóm</strong></h2><p>Có 5 sai lầm cần đặc biệt phải tránh khi muốn nhảy từ nhóm đối tượng này sang đối tượng khác trong Kim tứ đồ.</p><ol class="list-decimal"><li><p>Đầu tiên, khi nhảy từ nhóm E sang nhóm S, các bạn cần chuẩn bị cho mình tâm lý không sợ thất bại và phải dám làm, dám trải nghiệm. Bởi nếu các bạn không tự tin và thua từ trong suy nghĩ của bản thân thì sẽ thật sự khó để bạn tìm được lối đi đúng đắn hướng đến thành công của tự do tài chính.</p></li></ol><ol class="list-decimal" start="2"><li><p>Cần chuyển bị cho mình tiềm lực cá nhân từ vấn đề tài chính đến kiến thức thật tốt, cùng với đó là tâm lý vững vàng trước khi quyết định “nhảy nhóm" hay chuyển đổi phương thức làm việc cá nhân để tìm kiếm thêm hoặc nâng cao thu nhập.</p></li></ol><ol class="list-decimal" start="3"><li><p>Nên bỏ qua hoàn toàn suy nghĩ mỗi người chỉ phù hợp với một ngành nghề hay chuyên môn riêng biệt bởi kiến thức là điều mà chúng ta có thể hoàn toàn trau dồi được khi bản thân cố gắng.</p></li></ol><ol class="list-decimal" start="4"><li><p>Không phải cứ nhóm đối tượng làm chủ thì sẽ có thành công hơn về mặt tài chính mà bất cứ một đối tượng nào cũng có thể thành công về mặt tài chính một cách riêng biệt miễn là các bạn có thể tìm cho mình định hướng tốt trong công việc.</p></li></ol><ol class="list-decimal" start="5"><li><p>Không tiêu cực hoá suy nghĩ bản thân theo chiều hướng ở nhóm này thì sẽ tốt hơn ở nhóm kia, bởi dù ở bất cứ nhóm nào nếu các bạn không cố gắng và tìm ra chìa khoá thành công của bản thân thì cũng sẽ đi tới thất bại bất cứ lúc nào.</p></li></ol><ol class="list-decimal" start="6"><li><p>Trong nền kinh tế hiện đại ngày nay luôn tồn tại đầy đủ 4 nhóm người như Kim tứ đồ. Và để có thể trở nên giàu có và tự do hoàn toàn về mặt tài chính, thì mỗi người đều nên tìm cho mình cách để nâng cao năng lực, cũng như mục tiêu của bản thân và đặt mình vào ít nhất 2 nhóm dựa trên Kim tứ đồ.</p></li></ol><p></p><h2><strong>6Yêu cầu cần thiết trước khi nhảy nhóm</strong></h2><p>Dựa trên những thông tin ở trên về Kim tứ đồ thì dường như những hành động của bạn cần phải thay đổi, mà trước hết các bạn cần thay đổi chính cách suy nghĩ của bản thân mình để có thể tiến gần với mục tiêu tự do tài chính hơn.</p><p>Hay nói theo cách khác dễ hiểu hơn thì chính là thay đổi cách suy nghĩ, thay đổi thói quen hành động, rèn luyện thái độ tiếp cận với công việc, cũng như tập cho bản bản thân cá tính cần có để có thể phù hợp với nhóm đối tượng mà chúng ta hướng đến. Sau đó là quá trình rèn luyện và trau dồi những kiến thức, các kỹ năng chuyên môn cần phải có của nhóm đó.</p><p>Và dưới đây là những yêu cầu cực kỳ cần thiết cho bất cứ ai khi muốn thay đổi bản thân để trở thành một nhóm đối tượng khác trong Kim tứ đồ mà bạn có thể tham khảo:</p><ul class="list-disc"><li><p>Vượt qua nỗi sợ hãi khi phải đối diện với thất bại và rủi ro của bản thân.</p></li><li><p>Chấp nhận những khuyết điểm và chịu thay đổi, cũng như đặt niềm tin cho bản thân.</p></li><li><p>Tìm hiểu ra các vấn đề cốt lõi của mục tiêu mà mình mong muốn hướng tới.</p></li><li><p>Xác định rõ ràng điểm mạnh và sở trường để phát huy đúng theo năng lực.</p></li><li><p>Dành thời gian trau dồi và học hỏi thêm các kiến thức liên quan đến chuyên môn hướng tới.</p></li></ul><p>​​</p><h2><strong>7Bạn là ai trong kim tứ đồ và lựa chọn cho tương lai như thế nào?</strong></h2><p>Dựa vào mô hình Kim tứ đồ đã nhắc đến thì đại đa số các bạn đọc cũng thấy được rõ ràng nhóm đối tượng thuộc nhóm Business Owner và nhóm 4: Investor - là nhóm đối tượng có khả năng kiếm được nhiều tiền, mức sống cao, sự thành công những vẫn đảm bảo linh hoạt được vấn đề thời gian để thư giãn, cũng như việc nghỉ ngơi tốt hơn so với 2 nhóm đối tượng còn lại.</p><h3><strong>7.1 Người làm thuê có thể kiếm được nhiều tiền?</strong></h3><p>Câu trả lời cho vấn đề này chắc chắn là có và những người này là đối tượng mà chúng ta cực kỳ dễ dàng bắt gặp hàng ngày.</p><p>Điều này chứng tỏ rằng nếu các bạn có đầy đủ khả năng và năng lực, thì tại sao không trở thành những người làm thuê ở trình độ chuyên nghiệp cho các doanh nghiệp lớn.</p><p>Những doanh nghiệp này luôn sẵn sàng chi trả mức cũng như cung cấp đãi ngộ hàng năm rất cao cho các cá nhân làm việc tốt, miễn là các bạn có thể đáp ứng và đạt đủ trình độ mà họ yêu cầu.</p><p></p><h3><strong>7.2 Bạn muốn trở thành ai trong tương lai?</strong></h3><p>Nếu các bạn đã từng biết đến cuốn sách “<a target="_blank" rel="nofollow" href="https://vi.wikipedia.org/wiki/Rich_Dad,_Poor_Dad">Cha giàu, Cha nghèo</a>”, thì chắc hẳn đã biết đến nội dung cuốn sách ấy viết về các bài học khác nhau và do chính hai người cha truyền dạy lại cho tác giả về quan niệm tiền bạc và những sự lựa chọn về cách sống trong đời. Một người là cha ruột, và người còn lại là cha người bạn cực kỳ thân thiết của chính&nbsp;tác giả Kiyosaki.</p><p>Người cha nghèo với tư duy học vấn cao đã đưa ra lời khuyên “Hãy tới trường và cố gắng học tập tốt, sau đó tìm một công việc thật ổn định để sống một cuộc sống an toàn”. Do đó, người cha này đã hướng Robert trở thành đối tượng thuộc nhóm người E hoặc S cũng giống như quan điểm của số đông các ông bố bà mẹ tại Việt Nam.</p><p>Ngược lại, người cha giàu với tư duy của một doanh nhân lại khuyến khích “Hãy tới trường học tập kiến thức, sau khi tốt nghiệp đại học hãy trau dồi thêm kiến thức, tiếp tục tự mình kinh doanh và định hướng bản thân trở thành doanh nhân hoặc nhà đầu tư thật thành công”. Do đó, người cha này đang định hướng cho tác giả tiếp bước và hướng tới cái đích của sự tự do tài chính dài lâu thông qua việc sở hữu doanh nghiệp hoặc đầu tư.</p><p></p><p><em>sách cha giàu cha nghèo của tác giả Rober T. Kiyosaky</em></p><h2><strong>8Bạn đã có lựa chọn cho bản thân chưa?</strong></h2><p>Trên thực tế, thì việc bận thuộc nhóm nào hay bạn là ai trong Kim tứ đồ hoàn toàn không quan trọng. Việc quan trọng nhất đó là các bạn cần có đủ khả năng để có thể kiếm được nhiều tiền nhất có thể.</p><p>Vậy nên, dù đang ở nhóm nào trong Kim tứ đồ thì các bạn cũng đang đóng góp một phần giá trị không nhỏ của mình cho xã hội. Dù bạn có thuộc nhóm đối tượng nào đi nữa, thì các bạn cũng có thể đạt được mức sống, cũng như mục tiêu tự do tài chính mà bản thân muốn nếu các bạn biết cách tìm ra chìa khoá và thực hiện tốt những nguyên tắc tài chính cá nhân hiệu quả!</p><p></p><h2><strong>9Tổng kết</strong></h2><p>Hy vọng với những thông tin trên đây về Kim tứ đồ, các bạn đã có thể xác định được bản thân mong muốn trở thành nhóm người nào và đưa ra được định hướng cho bản thân để sớm đạt tới đích tự do tài chính.</p><p>Bên cạnh đó, hãy xây dựng thói quen quản lý tài chính cá nhân, tích lũy và đầu tư càng sớm càng tốt để xây dựng được nguồn vốn vững chắc và tận dụng sức mạnh của lãi kép</p>	f	3.jpg	2024-06-04 16:50:06.304	2024-06-04 16:50:06.304	\N	\N
+f6e1a373-dbce-49ea-9fe5-602cbe3686a0	[LỊCH LÀM VIỆC THÁNG 5] Thông báo lịch nghỉ dưỡng thường niên cho cán bộ, công nhân viên khối văn phòng	<p><strong>Hoạt động du lịch, nghỉ dưỡng tại </strong><a target="_blank" rel="noopener" href="https://dungcuvesinhsaoviet.com/"><strong>Công ty TNHH TM DV Vệ Sinh Sao Việt</strong></a><strong> là một trong số những quyền lợi hấp dẫn cho cán bộ, công nhân viên khối văn phòng, được diễn ra vào quý II hàng năm.</strong></p><p>Sao Việt trân trọng thông báo đến quý khách hàng, quý đối tác lịch làm việc tháng 5, cụ thể như sau:</p><h2><strong>Thời gian diễn ra du lịch, nghỉ dưỡng:</strong></h2><ul class="list-disc"><li><p>Bắt đầu nghỉ từ thứ 6, ngày 17/05/2024</p></li><li><p>Đến hết chủ nhật, ngày 19/05/2024</p></li><li><p>Thời gian làm việc lại: thứ 2, ngày 20/05/2024</p></li></ul><h2><strong>Lịch làm việc tháng 5</strong></h2><p>Hoạt động bình thường từ 8:00 – 17:00, thứ 2 – thứ 6. Riêng thứ 7 từ 8:00 – 12:00</p><p></p><img src="https://dungcuvesinhsaoviet.com/wp-content/uploads/2024/05/Thong-bao-lich-nghi-duong-cong-ty-sao-viet-cover.jpg"><h2><strong>Một số lưu ý</strong></h2><ul class="list-disc"><li><p>Trong thời gian diễn ra hoạt động nghỉ dưỡng, <a target="_blank" rel="noopener" href="https://dungcuvesinhsaoviet.com/"><strong>Công ty TNHH TM DV Vệ Sinh Sao Việt</strong></a>&nbsp;sẽ tạm ngừng tiếp nhận và xử lý các yêu cầu phát sinh từ khách hàng.</p></li><li><p>Để được hỗ trợ, giải quyết về các vấn đề liên quan đến giao dịch, bán hàng, sản phẩm và dịch vụ, quý khách hàng vui lòng thu xếp và thực hiện trước hoặc sau thời gian trên hoặc liên hệ qua số <strong>HOTLINE 090 380 2979.</strong></p></li></ul><h2><strong>Một số hình ảnh của chuyến du lịch, nghỉ dưỡng của Sao Việt trong năm 2023</strong></h2><p><br></p>	f	3.jpg	2024-06-04 16:50:06.304	2024-06-04 16:50:06.304	\N	\N
+\.
+
+
+--
+-- Data for Name: order_history; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.order_history (id, product_id) FROM stdin;
+6d1cf73a-5184-43c8-8149-b809eb4c91ab	xe-vat-nuoc-lau-san-tay-ep-1-ben-mau-do
+685e192e-d361-437c-8030-7a2efcbacfe4	xe-vat-nuoc-lau-san-tay-ep-1-ben-mau-do
+cb6049e0-4d19-4c3a-912b-f8f2ff5df02b	xe-vat-nuoc-lau-san-tay-ep-1-ben-mau-do
+f55bafee-3e93-4f66-8e43-b513e8e50050	"cay-dao-13-5-inch-mau-do"
+202adb17-ba85-43b6-8e9b-ba12a7eb77b4	"cay-dao-13-5-inch-mau-do"
+3be6fb6a-5710-4cab-aeee-5b0a64c22bf6	ghe-ngoi-em-be-khong-co-banh-xe-chua-lap-rap-mau-den
+b54898a9-b518-4789-997a-03c142955cda	bien-canh-bao-tru-caution-wet-floor-in-4-mat-2
+bdba1b47-e0fe-4cdb-8f69-57c4e6182d50	bien-canh-bao-tru-caution-wet-floor-in-4-mat-2
+496d8b2e-bfed-4c69-a8cb-c365a3c345c6	bien-canh-bao-tru-caution-wet-floor-in-4-mat-2
+97f01d69-a9a1-4761-959b-4f30258b1f29	bien-canh-bao-tru-caution-wet-floor-in-4-mat-2
+db908ee8-dc58-49b5-b4f3-763463c83fac	bien-canh-bao-tru-caution-wet-floor-in-4-mat-2
+6ae7bd40-38e9-4c5b-8c1f-4bd9982a6abe	bien-canh-bao-tru-caution-wet-floor-in-4-mat-2
+8cc9d57d-f364-4bb4-99a7-61c28d2df3fc	hop-dung-khan-lau-sieu-sach-microfiber
+e7561587-0098-4729-9e87-3be2e84e90c2	hop-dung-khan-lau-sieu-sach-microfiber
+2c382c3f-8b6c-4dab-9354-dee8a966eb45	hop-dung-khan-lau-sieu-sach-microfiber
+d091955e-f203-45d7-9a24-af299927ea41	hop-dung-khan-lau-sieu-sach-microfiber
+d7153d3a-fe57-40be-8ea5-1f878ed0934e	hop-dung-khan-lau-sieu-sach-microfiber
+3242f0a5-22e2-4d08-a8fb-8bb5174da310	hop-dung-khan-lau-sieu-sach-microfiber
+97a45fcd-c256-4034-9f53-4232ff05513e	hop-dung-khan-lau-sieu-sach-microfiber
+9120f809-8d4b-452d-9ee1-9c4b332469d4	hop-dung-khan-lau-sieu-sach-microfiber
+56b79091-24b1-49e0-b19a-41a14e20b233	hop-dung-khan-lau-sieu-sach-microfiber
+819d480f-bccc-4878-af37-a6d424220210	hop-dung-khan-lau-sieu-sach-microfiber
+c354192b-9880-4035-9d6e-296b14cab3f8	ky-hot-rac-khong-nap-can-dai
+dcbf94c9-1a00-420c-bb50-2b15ffe7c168	ky-hot-rac-khong-nap-can-dai
+4edb53e0-5e44-4db2-9e01-3ce7d6fd92ec	ky-hot-rac-khong-nap-can-dai
+ae866761-d218-4ab8-af05-5dac3611fc4a	ky-hot-rac-khong-nap-can-dai
+0de114a7-e38a-4b93-b035-05ecfa77087e	ky-hot-rac-khong-nap-can-dai
+f9ccf7a8-62fe-4082-83ac-5e45fc135ff2	ky-hot-rac-khong-nap-can-dai
+7fd729b9-49ad-4f42-8eb5-30ea8419538f	khan-lau-san-uot-24-oz-soi-rayon
+0b7d0e26-717c-41c8-9748-1362bfbb639e	khan-lau-san-uot-24-oz-soi-rayon
+88d80174-4252-46ea-8b7b-cc773bbb028e	khan-lau-san-uot-24-oz-soi-rayon
+01ce71f5-3aa5-4385-9ba9-6883cc7c9556	khan-lau-san-uot-24-oz-soi-rayon
+e5ef472c-435b-428c-b932-1ee572010073	khan-lau-san-uot-24-oz-soi-rayon
+720821f4-4818-4908-b281-8179b04601f0	khan-lau-san-uot-24-oz-soi-rayon
+2ea5eb07-fc84-4fbd-9d1f-ea0ebba9979d	khan-lau-san-uot-24-oz-soi-rayon
+3fb27f44-b14a-413c-a70e-d9841367f74a	khan-lau-san-uot-24-oz-soi-rayon
+1a1218a4-837e-4c7c-ab04-ee4e1a1a8f69	khan-lau-san-uot-24-oz-soi-rayon
+7b43157a-5dde-4f1a-8d5f-fe431746a3f0	cay-dao-13-5-inch-mau-do
+8c888eea-901f-44d1-a745-83abbf01d365	cay-dao-13-5-inch-mau-do
+\.
+
+
+--
+-- Data for Name: product; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.product (sub_category_id, name, image_url, image_alt, created_at, updated_at, id, "categoryId", active, description) FROM stdin;
+3d166364-5fd8-4612-9068-90a87c5fe4b9	GHẾ NGỒI EM BÉ KHÔNG CÓ BÁNH XE CHƯA LẮP RÁP (MÀU ĐEN)	3.jpg	ghe-ngoi-em-be-khong-co-banh-xe-chua-lap-rap-mau-den	2024-05-22 10:31:30.15	2024-05-22 10:18:46.356	ghe-ngoi-em-be-khong-co-banh-xe-chua-lap-rap-mau-den	Moerman	t	\N
+3d166364-5fd8-4612-9068-90a87c5fe4b9	BIỂN CẢNH BÁO TRỤ “CAUTION WET FLOOR” IN 4 MẶT	3.jpg	BIỂN CẢNH BÁO TRỤ “CAUTION WET FLOOR” IN 4 MẶT	2024-05-24 09:55:05.046	2024-05-24 09:55:05.046	bien-canh-bao-tru-caution-wet-floor-in-4-mat-4	Rubbermaid	t	\N
+3d166364-5fd8-4612-9068-90a87c5fe4b9	BIỂN CẢNH BÁO TRỤ “CAUTION WET FLOOR” IN 4 MẶT	3.jpg	BIỂN CẢNH BÁO TRỤ “CAUTION WET FLOOR” IN 4 MẶT	2024-05-24 09:55:07.843	2024-05-24 09:55:07.843	bien-canh-bao-tru-caution-wet-floor-in-4-mat-5	Rubbermaid	t	\N
+3d166364-5fd8-4612-9068-90a87c5fe4b9	HỘP ĐỰNG KHĂN LAU SIÊU SẠCH MICROFIBER	image-cropped-8x10.jpg	HỘP ĐỰNG KHĂN LAU SIÊU SẠCH MICROFIBER	2024-05-22 10:25:43.718	2024-05-22 10:18:46.356	hop-dung-khan-lau-sieu-sach-microfiber	Moerman	t	\N
+3d166364-5fd8-4612-9068-90a87c5fe4b9	KY HỐT RÁC KHÔNG NẮP, CÁN DÀI	Screenshot 2024-05-27 at 15.28.27.png	ky-hot-rac-khong-nap-can-dai	2024-05-22 10:18:46.356	2024-05-22 10:18:46.356	ky-hot-rac-khong-nap-can-dai	Rubbermaid	t	\N
+3d166364-5fd8-4612-9068-90a87c5fe4b9	BIỂN CẢNH BÁO TRỤ “CAUTION WET FLOOR” IN 4 MẶT	3.jpg	BIỂN CẢNH BÁO TRỤ “CAUTION WET FLOOR” IN 4 MẶT	2024-05-24 09:55:01.139	2024-05-24 09:55:01.139	bien-canh-bao-tru-caution-wet-floor-in-4-mat-3	Ghibli	t	\N
+3d166364-5fd8-4612-9068-90a87c5fe4b9	KHĂN LAU SÀN ƯỚT 24 OZ SỢI RAYON	3.jpg	khan-lau-san-uot-24-oz-soi-rayon	2024-05-22 10:18:46.356	2024-05-22 10:18:46.356	khan-lau-san-uot-24-oz-soi-rayon	Mapa	f	\N
+3d166364-5fd8-4612-9068-90a87c5fe4b9	BIỂN 	3.jpg	BIỂN CẢNH BÁO TRỤ “CAUTION WET FLOOR” IN 4 MẶT	2024-05-24 09:55:22.958	2024-05-24 09:55:22.958	bien-canh-bao-tru-caution-wet-floor-in-4-mat-10	Rubbermaid	f	\N
+3d166364-5fd8-4612-9068-90a87c5fe4b9	CÂY ĐẢO 13.5 INCH MÀU ĐỎ	3.jpg	cay-dao-13-5-inch-mau-do	2024-05-22 10:25:43.718	2024-05-22 10:18:46.356	cay-dao-13-5-inch-mau-do	Mapa	t	\N
+3d166364-5fd8-4612-9068-90a87c5fe4b9	BIỂN CẢNH BÁO TRỤ “CAUTION WET FLOOR” IN 4 MẶT	3.jpg	BIỂN CẢNH BÁO TRỤ “CAUTION WET FLOOR” IN 4 MẶT	2024-05-24 09:55:16.558	2024-05-24 09:55:16.558	bien-canh-bao-tru-caution-wet-floor-in-4-mat-8	Rubbermaid	f	\N
+3d166364-5fd8-4612-9068-90a87c5fe4b9	XE VẮT NƯỚC LAU SÀN 35QT MÀU XANH ĐỎ (TAY ÉP GIỮA)	3.jpg	XE VẮT NƯỚC LAU SÀN 35QT MÀU XANH ĐỎ (TAY ÉP GIỮA)	2024-05-22 10:18:46.356	2024-05-22 10:18:46.356	xe-vat-nuoc-lau-san-35-qt-mau-xanh-do-tay-ep-giua	Ghibli	t	\N
+3d166364-5fd8-4612-9068-90a87c5fe4b9	XE VẮT NƯỚC LAU SÀN 35QT TAY ÉP 1 BÊN MÀU ĐỎ	3.jpg	xe-vat-nuoc-lau-san-tay-ep-1-ben-mau-do	2024-05-22 10:18:46.356	2024-05-22 10:18:46.356	xe-vat-nuoc-lau-san-tay-ep-1-ben-mau-do	Mapa	t	\N
+3d166364-5fd8-4612-9068-90a87c5fe4b9	BIỂN CẢNH BÁO TRỤ “CAUTION WET FLOOR” IN 4 MẶT	3.jpg		2024-05-24 09:55:13.725	2024-05-24 09:55:13.725	bien-canh-bao-tru-caution-wet-floor-in-4-mat-7	Rubbermaid	t	Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+3d166364-5fd8-4612-9068-90a87c5fe4b9	BỘ PHÂN LOẠI RÁC 3 NGĂN	image-enhancer-after.webp	bo-phan-loai-rac-3-ngan	2024-05-22 10:18:46.356	2024-05-22 10:18:46.356	bo-phan-loai-rac-3-ngan	Rubbermaid	f	\N
+3d166364-5fd8-4612-9068-90a87c5fe4b9	BIỂN CẢNH BÁO TRỤ “CAUTION WET FLOOR” IN 4 MẶT	3.jpg	BIỂN CẢNH BÁO TRỤ “CAUTION WET FLOOR” IN 4 MẶT	2024-05-22 10:18:46.356	2024-05-22 10:18:46.356	bien-canh-bao-tru-caution-wet-floor-in-4-mat-2	Ghibli	t	\N
+3d166364-5fd8-4612-9068-90a87c5fe4b9	BIỂN CẢNH BÁO TRỤ “CAUTION WET FLOOR” IN 4 MẶT	image-enhancer-after.webp	BIỂN CẢNH BÁO TRỤ “CAUTION WET FLOOR” IN 4 MẶT	2024-05-24 09:55:10.765	2024-05-24 09:55:10.765	bien-canh-bao-tru-caution-wet-floor-in-4-mat-6	Rubbermaid	t	BIỂN CẢNH BÁO TRỤ “CAUTION WET FLOOR” IN 4 MẶT\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum facilisis leo vel fringilla est ullamcorper eget. Tincidunt dui ut ornare lectus sit. Nam aliquam sem et tortor consequat id porta nibh venenatis. Risus ultricies tristique nulla aliquet enim tortor at auctor urna. Ut diam quam nulla porttitor massa id neque. Est placerat in egestas erat imperdiet sed euismod nisi. Eleifend donec pretium vulputate sapien nec sagittis aliquam malesuada. Quam lacus suspendisse faucibus interdum posuere lorem ipsum. Sagittis orci a scelerisque purus semper eget duis at tellus. Suscipit adipiscing bibendum est ultricies integer quis auctor elit sed. Ac auctor augue mauris augue neque gravida in. Feugiat sed lectus vestibulum mattis ullamcorper velit sed. Mauris rhoncus aenean vel elit scelerisque mauris pellentesque. Sit amet mauris commodo quis. Purus in massa tempor nec feugiat nisl pretium fusce id. Semper viverra nam libero justo laoreet sit amet cursus sit.
+\.
+
+
+--
+-- Data for Name: sale_detail; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.sale_detail (id, product_id, value, price, "parentSaleDetailId", "sale_detailId") FROM stdin;
+51c420ba-7847-4d2f-ad91-b9d2d767820f	bien-canh-bao-tru-caution-wet-floor-in-4-mat-6	100x100x100	1000000	\N	\N
+0af78b93-6e4c-4205-abc6-8691b72c25b3	bien-canh-bao-tru-caution-wet-floor-in-4-mat-6	Vàng	100000000	51c420ba-7847-4d2f-ad91-b9d2d767820f	\N
+b1491dce-5f1c-4219-b26d-4b12f3ed9b24	bien-canh-bao-tru-caution-wet-floor-in-4-mat-6	Đỏ	20000000	51c420ba-7847-4d2f-ad91-b9d2d767820f	\N
+0867704f-ca8b-4ba1-bd4b-6b6d307065fe	bien-canh-bao-tru-caution-wet-floor-in-4-mat-6	200x200x200	3000000	\N	\N
+\.
+
+
+--
+-- Data for Name: subCategory; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."subCategory" (name, category_id, created_at, updated_at, id) FROM stdin;
+Biển báo sàn	Rubbermaid	2024-05-22 09:05:31.561	2024-05-22 09:05:31.561	3d166364-5fd8-4612-9068-90a87c5fe4b9
+Máy chà sàn đơn	Ghibli	2024-05-22 09:06:38.714	2024-05-22 09:06:38.714	450669ae-daad-4201-b153-fe3707406b52
+Máy hút bụi	Ghibli	2024-05-22 09:07:01.135	2024-05-22 09:07:01.135	f8f6ce9f-2565-42e2-b7f3-aa6050396691
+Cây gắp rác	Moerman	2024-05-22 09:07:27.178	2024-05-22 09:07:27.178	4e3f3d79-2353-4c85-ab1b-1b8639d3f93f
+Các loại cây nối lau kính	Moerman	2024-05-22 09:07:50.881	2024-05-22 09:07:50.881	1c43f886-c85b-42c0-9fe1-f550e51a2560
+Găng tay bảo hộ	Mappa	2024-05-22 09:08:10.199	2024-05-22 09:08:10.199	35b62248-17fe-423a-8f06-eacc827a7e0e
+Găng tay cao su	Mappa	2024-05-22 09:08:21.689	2024-05-22 09:08:21.689	e2b52479-f9af-46e5-9b61-b71afbbae7ce
+Bàn chải	Rubbermaid	2024-05-22 09:33:12.558	2024-05-22 09:33:12.558	48b7d950-5ea3-4dd1-b46f-5a9acf68c177
+\.
+
+
+--
+-- Data for Name: technical_detail; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.technical_detail (id, key, value, product_id) FROM stdin;
+455f22f3-a46d-4dbc-ad5a-1d251704a9bd	Chiều dài sản phẩm	10.50 in	bien-canh-bao-tru-caution-wet-floor-in-4-mat-6
+7d2c147b-2e23-41e7-9ff0-fb5b7d6b279e	Chiều rộng sản phẩm	10.50 in	bien-canh-bao-tru-caution-wet-floor-in-4-mat-6
+7b33a4cf-8b45-46eb-b44d-efb312b65c2f	Chiều cao sản phẩm	10.50 in	bien-canh-bao-tru-caution-wet-floor-in-4-mat-6
+64c92dd4-0590-4f9c-ad78-aac13cf17b97	Chiều cao sản phẩm	10.50 in	bien-canh-bao-tru-caution-wet-floor-in-4-mat-6
+900f01b8-1a7d-4c92-9d15-eda9a67995c4	Chiều cao sản phẩm	10.50 in	bien-canh-bao-tru-caution-wet-floor-in-4-mat-6
+2acbe644-6109-4130-a34b-9fad5a247758	Chiều rộng sản phẩm	10.50 in	bien-canh-bao-tru-caution-wet-floor-in-4-mat-6
+938364a9-bb39-4b07-b44d-288807bf29de	Chiều dài sản phẩm	10.50 in	bien-canh-bao-tru-caution-wet-floor-in-4-mat-6
+\.
+
+
+--
+-- Name: blog blog_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.blog
+    ADD CONSTRAINT blog_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: order_history order_history_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.order_history
+    ADD CONSTRAINT order_history_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: product product_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.product
+    ADD CONSTRAINT product_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sale_detail sale_detail_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.sale_detail
+    ADD CONSTRAINT sale_detail_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: subCategory subCategory_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."subCategory"
+    ADD CONSTRAINT "subCategory_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: technical_detail technical_detail_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.technical_detail
+    ADD CONSTRAINT technical_detail_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: order_history_product_id_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX order_history_product_id_idx ON public.order_history USING btree (product_id);
+
+
+--
+-- Name: product_sub_category_id_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX product_sub_category_id_idx ON public.product USING btree (sub_category_id);
+
+
+--
+-- Name: sale_detail_parentSaleDetailId_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX "sale_detail_parentSaleDetailId_idx" ON public.sale_detail USING btree ("parentSaleDetailId");
+
+
+--
+-- Name: sale_detail_product_id_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX sale_detail_product_id_idx ON public.sale_detail USING btree (product_id);
+
+
+--
+-- Name: technical_detail_product_id_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX technical_detail_product_id_idx ON public.technical_detail USING btree (product_id);
+
+
+--
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE USAGE ON SCHEMA public FROM PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

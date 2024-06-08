@@ -28,7 +28,7 @@ const responsive = {
 	}
 };
 
-export default BlogCarousel = ({ items }) => {
+export default ({ items }) => {
 	return (
 		<Carousel
 			responsive={responsive}

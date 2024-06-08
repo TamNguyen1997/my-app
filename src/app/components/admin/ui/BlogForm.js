@@ -43,16 +43,20 @@ const RichTextEditor = ({ blog }) => {
     content: blog.content
   })
 
-  const onSubmit = (data) => {
-    fetch('/api/blogs', {
+  const onSubmit = async (data) => {
+    data.thumbnail = thumbnail
+    
+    await fetch('/api/blogs', {
       method: "POST",
       body: JSON.stringify({
         id: blog.id,
         title: data.title,
         content: editor.getHTML(),
-        active: isSelected
+        active: isSelected,
+        thumbnail: thumbnail
       })
-    }).then(() => window.location.reload())
+    })
+    window.location.reload()
   }
 
   const focus = () => {
@@ -63,8 +67,10 @@ const RichTextEditor = ({ blog }) => {
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
+  const [thumbnail, setThumbnail] = useState(blog?.thumbnail)
   const selectedImage = (value) => {
     blog.thumbnail = value
+    setThumbnail(value)
     onOpenChange()
   }
 

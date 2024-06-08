@@ -25,7 +25,7 @@ export async function GET(req) {
   return NextResponse.json(result)
 }
 
-export async function upload(req, path) {
+async function upload(req, path) {
   const formData = await req.formData();
   const file = formData.get("file");
   const arrayBuffer = await file.arrayBuffer();

@@ -101,7 +101,7 @@ const Blog = () => {
                 <BlogCarousel items={blogs} />
               </div>
               <div className="w-full lg:w-[43%] mb-5">
-                <TopBlogs items={blogs?.slice(0, 4)} />
+                <TopBlogs items={blogs.slice(0, 4)} />
               </div>
             </div>
 
@@ -134,7 +134,7 @@ const Blog = () => {
 
                     <div className="space-y-4 mb-2">
                       {
-                        blogs?.slice(0, 3).map(item => {
+                        blogs.slice(0, 3).map(item => {
                           return (
                             <BlogItem item={item} key={item.id} containerClass="lg:grid-cols-[192px_auto] pb-5" />
                           )

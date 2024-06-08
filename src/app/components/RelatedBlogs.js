@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 
-export default RelatedBlogs = () => {
+export default () => {
   return (
     <>
       <div className="text-lg text-[#FFD300] leading-none font-semibold border-l-4 border-[#83e214] pl-3 mb-4">BÀI VIẾT LIÊN QUAN</div>
@@ -17,6 +17,7 @@ export default RelatedBlogs = () => {
                   height="120"
                   alt=""
                   title=""
+                  
                   className="rounded"
                 />
                 <div className="pl-4">

@@ -4,7 +4,14 @@ import { NextResponse } from 'next/server';
 export async function POST(req, { params }) {
   try {
     let body = await req.json()
-    console.log(body)
+    await db.sale_detail.deleteMany({
+      where: {
+        productId: params.id,
+        NOT: {
+          parentSaleDetailId: null
+        }
+      }
+    })
     await db.sale_detail.deleteMany({
       where: {
         productId: params.id

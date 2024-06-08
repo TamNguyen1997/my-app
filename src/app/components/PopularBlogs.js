@@ -35,9 +35,10 @@ export default function PopularBlogs() {
   }, [])
 
   if (isLoading) return <Spinner className="m-auto" />
-
+  
   if (blogs.length === 0) return <></>
 
+  console.log(blogs)
   return (
     <>
       <div className="pb-2">
@@ -58,7 +59,7 @@ export default function PopularBlogs() {
                         width={400}
                         height={200}
                         className="h-[250px] w-[300px]"
-                        src={blog.thumbnail}
+                        src={`/gallery/${blog.thumbnail}`}
                       />
                     </CardHeader>
                     <Divider />

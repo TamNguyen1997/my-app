@@ -3,8 +3,8 @@ import StarterKit from '@tiptap/starter-kit';
 import TipTapImage from '@tiptap/extension-image'
 import OrderedList from '@tiptap/extension-ordered-list'
 import BulletList from '@tiptap/extension-bullet-list'
-import BlogToolbar from "../BlogToolBar"
-import ImageCms from "../ImageCms";
+import BlogToolbar from "@/components/admin/ui/BlogToolBar"
+import ImageCms from "@/components/admin/ui/ImageCms";
 import Placeholder from '@tiptap/extension-placeholder'
 import Link from '@tiptap/extension-link'
 import './Tiptap.css'

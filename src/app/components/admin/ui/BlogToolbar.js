@@ -12,7 +12,8 @@ import {
   RiLink,
   RiImage2Fill
 } from 'react-icons/ri'
-function BlogToolbar({ editor }) {
+
+export default ({ editor }) => {
   const iconClassName = "border w-6 h-6 justify-items-center items-center"
   const imageModal = useDisclosure();
   const linkModal = useDisclosure();
@@ -126,4 +127,3 @@ function BlogToolbar({ editor }) {
     </div>
   )
 }
-export default BlogToolbar

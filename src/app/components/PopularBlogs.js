@@ -60,6 +60,7 @@ export default function PopularBlogs() {
                         height={200}
                         className="h-[250px] w-[300px]"
                         src={`/gallery/${blog.thumbnail}`}
+                        alt="Thumbnail image"
                       />
                     </CardHeader>
                     <Divider />

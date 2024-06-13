@@ -14,7 +14,7 @@ module.exports = {
     extend: {
       container: {
         center: true,
-        padding: '1rem',
+        padding: '0.5rem',
         screens: {
           DEFAULT: '1024px',
           sm: '1024px',

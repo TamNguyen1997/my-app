@@ -107,7 +107,7 @@ const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) =>
         </Modal>
       </div>
 
-      <div className=" gallery p-5">
+      {/* <div className=" gallery p-5">
         {
           images.map((img) => (
             <div key={img} className="gallery-item hover:opacity-70 image">
@@ -126,6 +126,35 @@ const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) =>
                     <span className="delete-image animate-vote bg-red-500 rounded-full hover:bg-red-700 delete-button" onClick={() => deleteImage(img)}><X color="#FFFFFF" /></span>
                   )
                 }
+              </div>
+            </div>
+          ))
+        }
+      </div> */}
+
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-[30px] p-5">
+        {
+          [...Array(10)].map((img = "free-images.jpg") => (
+            <div key={img} className={`
+              group relative flex flex-col rounded hover:opacity-70 cursor-pointer
+              shadow-[0px_2px_10px_rgba(0,0,0,0.15)] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)]
+              hover:-translate-y-2.5 hover:scale-[1.02]
+              transition duration-400
+            `}>
+              <img
+                src={`/gallery/free-images.jpg`}
+                alt={img}
+                className="aspect-[16/10] object-cover rounded-t shrink-0"
+                onClick={() => onImageClick(img)}
+              />
+              {
+                disableDelete ? null : (
+                  <span className="absolute -top-2.5 -right-2.5 hidden group-hover:block animate-vote bg-red-500 rounded-full hover:bg-red-700" onClick={() => deleteImage(img)}><X color="#FFFFFF" /></span>
+                )
+              }
+              <div className="grow bg-white text-center rounded-b p-5">
+                <h6 className="text-[17px] font-bold text-[#212529] break-words mb-2">Lorem Ipsum</h6>
+                <p className="text-[15px] text-[#6c757d] break-words">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quam urna.</p>
               </div>
             </div>
           ))

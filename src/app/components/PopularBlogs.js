@@ -72,7 +72,7 @@ export default function PopularBlogs() {
                       </div>
                       <div>
                         <div className="italic">
-                          {new Date('2024-06-04T16:50:06.304Z').toLocaleDateString()}
+                          {new Date(blog.updatedAt).toLocaleDateString()}
                         </div>
                       </div>
                     </CardBody>

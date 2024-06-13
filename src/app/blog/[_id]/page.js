@@ -54,9 +54,9 @@ const Blog = () => {
               viewport={{ once: true }}
               className="text-sm text-[#6d6d6d] flex items-center mb-4"
             >
-              <span>Đóng góp bởi: <b className="ml-1">Võ Thị Mỹ Duyên</b></span>
+              <span>Đóng góp bởi: <b className="ml-1">{blog.author}</b></span>
               <span className="w-1 h-1 min-w-1 bg-[#e9e9e9] rounded-full mx-2"></span>
-              <span>Cập nhật: <b className="ml-1">18/05/2024</b></span>
+              <span>Cập nhật: <b className="ml-1">{new Date(blog.updatedAt).toLocaleDateString()}</b></span>
             </motion.div>
             
             <motion.p

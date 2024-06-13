@@ -73,11 +73,11 @@ export default ({ items }) => {
 								containerClass=""
 								noBorder
 								textClass={`
-                                    [&>.blog-category]:text-[15px]
-                                    [&>.blog-category]:leading-normal
-                                    [&>.blog-title]:text-[22px]
-                                    [&>.blog-description]:text-base
-                                `}
+														[&>.blog-category]:text-[15px]
+														[&>.blog-category]:leading-normal
+														[&>.blog-title]:text-[22px]
+														[&>.blog-description]:text-base
+													`}
 							/>
 						</div>
 					)

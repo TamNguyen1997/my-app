@@ -83,7 +83,7 @@ const Blog = () => {
                     <div
                       className={`
                         text-[17px] font-semibold cursor-pointer relative pb-2 
-                        after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-[0px] after:bg-[#83e214] after:h-[3px] after:transition-width
+                        after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-[0px] after:bg-[#ffd300] after:h-[3px] after:transition-width
                         ${category.slug === activeCategory && 'after:!w-[100%]'}
                       `}
                       key={category.slug}
@@ -111,7 +111,7 @@ const Blog = () => {
               blogCategories.map(category => {
                 return (
                   <div className="mb-10" key={category.slug}>
-                    <div className="text-xl text-[#191919] leading-none font-bold uppercase border-l-4 border-[#83e214] pl-3 mb-4">{category.title}</div>
+                    <div className="text-xl text-[#191919] leading-none font-bold uppercase border-l-4 border-[#ffd300] pl-3 mb-4">{category.title}</div>
                     <div className="flex flex-wrap">
                       {
                         blogTags.map(tag => {
@@ -144,7 +144,7 @@ const Blog = () => {
 
                     <Link
                       href=""
-                      className="flex justify-center items-center text-[#153f17] font-semibold w-[181px] h-[43px] rounded-[30px] border border-[#83e214] hover:bg-[#ccefdc] transition mx-auto"
+                      className="flex justify-center items-center text-[#153f17] font-semibold w-[181px] h-[43px] rounded-[30px] border border-[#ffd300] hover:bg-[#ccefdc] transition mx-auto"
                     >
                       Xem tất cả
                     </Link>

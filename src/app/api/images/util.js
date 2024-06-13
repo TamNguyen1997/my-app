@@ -1,4 +1,16 @@
 import fs from 'node:fs/promises'
+import { db } from '@/app/db';
+
+async function save(formData, path) {
+  await db.image.create({
+    data: {
+      description: formData.get("description"),
+      path: path,
+      name: formData.get("name"),
+      alt: formData.get("alt"),
+    }
+  })
+}
 
 async function upload(req, path) {
   const formData = await req.formData();
@@ -6,7 +18,10 @@ async function upload(req, path) {
   const arrayBuffer = await file.arrayBuffer();
   const buffer = new Uint8Array(arrayBuffer);
 
-  fs.writeFile(`./public${path}/${file.name}`, buffer);
+  const filePath = `./public${path}/${file.name}`
+
+  await save(formData, filePath)
+  fs.writeFile(filePath, buffer);
 }
 
 async function getFile(dir, req) {

@@ -10,5 +10,5 @@ export async function POST(req) {
 
 export async function GET(req) {
   const dir = path.resolve('./public', 'gallery');
-  return NextResponse.json(getFile(dir, req))
+  return NextResponse.json(await getFile(dir, req))
 }

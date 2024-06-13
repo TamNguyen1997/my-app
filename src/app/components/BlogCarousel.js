@@ -44,7 +44,7 @@ export default ({ items }) => {
                 [&_button]:!border-none
                 [&_button]:!rounded-none 
                 [&_button]:!bg-[#bdbdbd]
-                [&>.react-multi-carousel-dot--active>button]:!bg-[#83e214]
+                [&>.react-multi-carousel-dot--active>button]:!bg-[#ffd300]
             `}
 			draggable={false}
 			swipeable={false}

@@ -38,7 +38,6 @@ export default function PopularBlogs() {
   
   if (blogs.length === 0) return <></>
 
-  console.log(blogs)
   return (
     <>
       <div className="pb-2">

@@ -17,8 +17,8 @@ export default ({ noBorder = false, item, containerClass = "lg:grid-cols-[160px_
         <div
           className={`${textClass}`}
         >
-          <p className="text-xs font-bold text-[#153f17] truncate line-clamp-2 whitespace-normal border-l-3 border-[#83e214] pl-2 mb-2 blog-category">KIẾN THỨC CƠ BẢN</p>
-          <p className="text-sm font-bold text-[#191919] leading-normal truncate line-clamp-2 whitespace-normal hover:text-[#00b14f] transition mb-2 blog-title">{item.title}</p>
+          <p className="text-xs font-bold text-[#153f17] truncate line-clamp-2 whitespace-normal border-l-3 border-[#ffd300] pl-2 mb-2 blog-category">KIẾN THỨC CƠ BẢN</p>
+          <p className="text-sm font-bold text-[#191919] leading-normal truncate line-clamp-2 whitespace-normal hover:text-[#bb9051] transition mb-2 blog-title">{item.title}</p>
           <p className="text-[13px] truncate line-clamp-2 whitespace-normal mb-2 blog-description">{item.summary}</p>
           <div className="text-xs text-[#a5a5a5] flex items-center flex-wrap">
             <span className="flex items-center">

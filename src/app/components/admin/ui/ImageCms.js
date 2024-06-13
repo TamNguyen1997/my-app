@@ -25,9 +25,13 @@ const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) =>
     })
   }
 
-  const upload = (file) => {
+  const upload = (files) => {
+    const file = files[0]
     const formData = new FormData()
-    formData.append('file', file[0])
+    formData.append('file', file)
+    formData.append('description', "description")
+    formData.append('name', file.name)
+    formData.append('alt', "alt")
     fetch('/api/images/gallery', {
       method: 'POST',
       body: formData

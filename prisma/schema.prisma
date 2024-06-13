@@ -74,6 +74,16 @@ model order_history {
   @@index([productId])
 }
 
+model image {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  path        String
+  name        String 
+  alt         String
+  description String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+}
+
 model blog {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title     String

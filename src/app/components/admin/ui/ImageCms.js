@@ -2,8 +2,8 @@
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import "./ImageCms.css"
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spinner, useDisclosure } from '@nextui-org/react'
-import Dropzone from 'react-dropzone'
+import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spinner, Textarea, useDisclosure } from '@nextui-org/react'
+import Dropzone, { useDropzone } from 'react-dropzone'
 import { redirect } from 'next/navigation'
 import { X } from 'lucide-react'
 
@@ -25,9 +25,16 @@ const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) =>
     })
   }
 
-  const upload = (file) => {
+  const [uploadImage, setUploadImage] = useState()
+  const [imageDescription, setImageDescription] = useState("")
+  const [imageName, setImageName] = useState("")
+
+  const upload = () => {
     const formData = new FormData()
-    formData.append('file', file[0])
+    formData.append('file', uploadImage)
+    formData.append('description', imageDescription)
+    formData.append('name', imageName)
+    formData.append('alt', "alt")
     fetch('/api/images/gallery', {
       method: 'POST',
       body: formData
@@ -36,8 +43,14 @@ const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) =>
     })
   }
 
+  const setImage = (files) => {
+    const file = files[0]
+    setUploadImage(file)
+    setImageName(file.name)
+  }
+
   const deleteImage = async (image) => {
-    await fetch(`/api/images/gallery${image}`, {
+    await fetch(`/api/images/gallery/${image}`, {
       method: 'DELETE'
     }).then(() => {
       setReload(true)
@@ -72,31 +85,52 @@ const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) =>
       </div>
       <div>
         <Modal
-          size="sm" scrollBehavior="inside"
+          size="3xl" scrollBehavior="inside"
           isOpen={isOpen} onOpenChange={onOpenChange}>
           <ModalContent>
             {(onClose) => (
               <>
                 <ModalBody>
                   <ModalHeader>Upload ảnh</ModalHeader>
-                  <Dropzone
-                    maxFiles={1}
-                    multiple={false}
-                    accept="image/*"
-                    onDrop={acceptedFiles => upload(acceptedFiles)}
-                  >
-                    {({ getRootProps, getInputProps }) => (
-                      <section className="container">
-                        <div {...getRootProps({ className: 'dropzone' })}>
-                          <input {...getInputProps()} />
-                          <p className="text-center mx-auto">Kéo thả hoặc click để tải hình</p>
-                          <em>(Chỉ chấp nhận *.jpeg and *.png)</em>
-                        </div>
-                      </section>
-                    )}
-                  </Dropzone>
+                  <div className='grid grid-cols-2 gap-5'>
+                    <div className='flex flex-col gap-3'>
+                      <Input aria-label="Tên ảnh" label="Tên ảnh" value={imageName} onValueChange={setImageName}></Input>
+                      <Textarea aria-label="Mô tả" label="Mô tả" value={imageDescription} onValueChange={setImageDescription}></Textarea>
+                    </div>
+                    <Dropzone
+                      maxFiles={1}
+                      multiple={false}
+                      accept="image/*"
+                      onDrop={acceptedFiles => setImage(acceptedFiles)}
+                    >
+                      {({ getRootProps, getInputProps }) => (
+                        <section className="container">
+                          <div {...getRootProps({ className: 'dropzone' })}>
+                            <input {...getInputProps()} />
+                            <p className="text-center mx-auto">Kéo thả hoặc click để tải hình</p>
+                            <em>(Chỉ chấp nhận *.jpeg and *.png)</em>
+                          </div>
+                        </section>
+                      )}
+                    </Dropzone>
+                  </div>
+                  <div className='pr-4'>
+                    {
+                      uploadImage ?
+
+                        <img
+                          width="100%"
+                          height="100%"
+                          src={URL.createObjectURL(uploadImage)}
+                        />
+                        : null
+                    }
+                  </div>
                 </ModalBody>
                 <ModalFooter>
+                  <Button color="primary" variant="solid" onPress={upload}>
+                    Lưu
+                  </Button>
                   <Button color="danger" variant="light" onPress={onClose}>
                     Close
                   </Button>

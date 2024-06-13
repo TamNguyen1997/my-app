@@ -41,7 +41,7 @@ const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) =>
   }
 
   const deleteImage = async (image) => {
-    await fetch(`/api/images/gallery${image}`, {
+    await fetch(`/api/images/gallery/${image}`, {
       method: 'DELETE'
     }).then(() => {
       setReload(true)

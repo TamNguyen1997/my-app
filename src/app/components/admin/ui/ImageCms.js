@@ -13,14 +13,14 @@ const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) =>
   const [isLoading, setIsLoading] = useState(true)
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   useEffect(() => {
-    fetch('/api/images/').then(async res => {
+    fetch('/api/images/gallery').then(async res => {
       setImages(await res.json())
       setIsLoading(false)
     })
   }, [])
 
   const onSearch = (value) => {
-    fetch(`/api/images/?name=${value}`).then(async res => {
+    fetch(`/api/images/gallery?name=${value}`).then(async res => {
       setImages(await res.json())
     })
   }
@@ -28,7 +28,7 @@ const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) =>
   const upload = (file) => {
     const formData = new FormData()
     formData.append('file', file[0])
-    fetch('/api/images/', {
+    fetch('/api/images/gallery', {
       method: 'POST',
       body: formData
     }).then(() => {
@@ -37,7 +37,7 @@ const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) =>
   }
 
   const deleteImage = async (image) => {
-    await fetch(`/api/images/${image}`, {
+    await fetch(`/api/images/gallery${image}`, {
       method: 'DELETE'
     }).then(() => {
       setReload(true)

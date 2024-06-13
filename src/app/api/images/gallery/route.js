@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import path from 'path'
-import { upload, getFile } from './util'
+import { upload, getFile } from '../util'
 
 export async function POST(req) {
   upload(req, "/gallery")

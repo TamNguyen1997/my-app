@@ -168,7 +168,7 @@ const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) =>
 
       <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-[30px] p-5">
         {
-          [...Array(10)].map((img = "free-images.jpg") => (
+          images?.map?.((img) => (
             <div key={img} className={`
               group relative flex flex-col rounded hover:opacity-70 cursor-pointer
               shadow-[0px_2px_10px_rgba(0,0,0,0.15)] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)]
@@ -176,7 +176,7 @@ const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) =>
               transition duration-400
             `}>
               <img
-                src={`/gallery/free-images.jpg`}
+                src={`/gallery/${img}`}
                 alt={img}
                 className="aspect-[16/10] object-cover rounded-t shrink-0"
                 onClick={() => onImageClick(img)}

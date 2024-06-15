@@ -77,7 +77,7 @@ model order_history {
 model image {
   id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   path        String
-  name        String 
+  name        String
   alt         String
   description String
   createdAt   DateTime @default(now()) @map("created_at")
@@ -92,6 +92,17 @@ model blog {
   active    Boolean  @default(false)
   author    String?
   summary   String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+}
+
+model user {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  username  String
+  password  String
+  email     String
+  name      String
+  active    Boolean  @default(false)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 }

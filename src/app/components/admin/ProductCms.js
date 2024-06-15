@@ -1,4 +1,3 @@
-import { useAsyncList } from "@react-stately/data"
 import {
   Spinner, Table,
   TableCell, TableColumn,
@@ -7,9 +6,10 @@ import {
   Modal, ModalHeader,
   ModalBody, ModalFooter,
   Button, ModalContent,
-  Switch
+  Switch,
+  Pagination
 } from "@nextui-org/react"
-import { createContext, useCallback, useState } from "react"
+import { createContext, useCallback, useEffect, useMemo, useState } from "react"
 import { EditIcon, Trash2 } from "lucide-react"
 import { Card, CardBody, Tab, Tabs } from "@nextui-org/react";
 import TechnicalDetailForm from "@/components/admin/ui/TechnicalDetailForm";
@@ -20,23 +20,31 @@ import { redirect } from "next/navigation";
 export const ProductContext = createContext()
 
 const ProductCms = () => {
-  const [isLoading, setIsLoading] = useState(true)
+  const [loadingState, setLoadingState] = useState("loading")
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [selectedProduct, setSelectedProduct] = useState({})
   const value = [selectedProduct, setSelectedProduct]
   const [reload, setReload] = useState(false)
+  const [total, setTotal] = useState(0)
 
-  let list = useAsyncList({
-    async load() {
-      let res = await fetch('/api/products/')
-      let json = await res.json()
-      setIsLoading(false)
+  const [page, setPage] = useState(1);
+  const [products, setProducts] = useState([]);
 
-      return {
-        items: json,
-      }
-    }
-  })
+  useEffect(() => {
+    console.log("fetching products")
+    fetch(`/api/products/?size=${10}&page=${page}`).then(async (res) => {
+      let data = await res.json()
+      setProducts(data.result)
+      setTotal(data.total)
+      setLoadingState("idle")
+    })
+  }, [page])
+
+  const rowsPerPage = 10;
+
+  const pages = useMemo(() => {
+    return total ? Math.ceil(total / rowsPerPage) : 0;
+  }, [total, rowsPerPage]);
 
   const openModal = async (product) => {
     let res = await fetch(`/api/products/${product.id}`)
@@ -116,7 +124,22 @@ const ProductCms = () => {
       <div className="flex flex-col gap-2 border-r min-h-full p-2">
         <div className="px-1 py-2 border-default-200">
           <Table
-            aria-label="Tất cả sản phẩm">
+            aria-label="Tất cả sản phẩm"
+            loadingState={loadingState}
+            bottomContent={
+              loadingState === "loading" ? null :
+                <div className="flex w-full justify-center">
+                  <Pagination
+                    isCompact
+                    showControls
+                    showShadow
+                    page={page}
+                    total={pages}
+                    onChange={(page) => setPage(page)}
+                  />
+                </div>
+            }
+          >
             <TableHeader>
               <TableColumn key="id" textValue="Mã sản phẩm" aria-label="Mã sản phẩm">Mã sản phẩm</TableColumn>
               <TableColumn key="name" textValue="Tên sản phẩm" aria-label="Tên sản phẩm">Tên sản phẩm</TableColumn>
@@ -125,8 +148,7 @@ const ProductCms = () => {
               <TableColumn key="actions" textValue="actions" width="100"></TableColumn>
             </TableHeader>
             <TableBody
-              items={list.items}
-              isLoading={isLoading}
+              items={products}
               emptyContent={"Không có sản phẩm nào"}
               loadingContent={<Spinner label="Loading..." />}>
               {(item) => (

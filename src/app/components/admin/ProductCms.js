@@ -31,7 +31,6 @@ const ProductCms = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    console.log("fetching products")
     fetch(`/api/products/?size=${10}&page=${page}`).then(async (res) => {
       let data = await res.json()
       setProducts(data.result)

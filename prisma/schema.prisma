@@ -98,11 +98,13 @@ model blog {
 
 model user {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  username  String
+  username  String   @unique
   password  String
-  email     String
+  email     String   @unique
   name      String
-  active    Boolean  @default(false)
+  active    Boolean  @default(true)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@index([username, email])
 }

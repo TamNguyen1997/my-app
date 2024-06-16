@@ -1,3 +1,5 @@
+"use client"
+
 import {
   Spinner, Table,
   TableCell, TableColumn,

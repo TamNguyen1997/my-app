@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import "./ImageCms.css"
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spinner, Textarea, useDisclosure } from '@nextui-org/react'
-import Dropzone, { useDropzone } from 'react-dropzone'
+import Dropzone from 'react-dropzone'
 import { redirect } from 'next/navigation'
 import { X } from 'lucide-react'
 

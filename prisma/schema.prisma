@@ -82,6 +82,11 @@ model image {
   description String
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+  type        image_type
+  active      Boolean @default(true)
+  activeFrom  DateTime?
+  activeTo    DateTime?
+  order       Int?
 }
 
 model blog {
@@ -107,4 +112,10 @@ model user {
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@index([username, email])
+}
+
+enum image_type {
+  PRODUCT
+  BLOG
+  BANNER
 }

@@ -28,9 +28,12 @@ const Sidebar = () => {
           variant="flat">
           {
             menu.map(item => {
-              return <ListboxItem key={item.id}>
-                <Link href={item.link}>{item.name}</Link>
-              </ListboxItem>
+              <div key={item.id}>
+                <ListboxItem>
+                  <Link href={item.link}>{item.name}</Link>
+                </ListboxItem>
+              </div>
+              return
             })
           }
         </Listbox>

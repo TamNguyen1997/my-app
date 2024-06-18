@@ -3,7 +3,7 @@ import StarterKit from '@tiptap/starter-kit';
 import TipTapImage from '@tiptap/extension-image'
 import OrderedList from '@tiptap/extension-ordered-list'
 import BulletList from '@tiptap/extension-bullet-list'
-import BlogToolbar from "./BlogToolBar"
+// import BlogToolbar from "./BlogToolBar"
 import ImageCms from "./ImageCms";
 import Placeholder from '@tiptap/extension-placeholder'
 import Link from '@tiptap/extension-link'
@@ -76,7 +76,7 @@ const RichTextEditor = ({ blog }) => {
 
   return (
     <div className="p-3">
-      <BlogToolbar editor={editor} />
+      {/* <BlogToolbar editor={editor} /> */}
       <div className="h-full w-full shadow-md min-h-44 p-3 border" onClick={focus}>
         <EditorContent editor={editor} />
       </div>

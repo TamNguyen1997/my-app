@@ -14,6 +14,7 @@ const Sidebar = () => {
       name: "Sản phẩm"
     },
     {
+      id: "blog",
       link: "/admin/blog",
       name: "Blog"
     }

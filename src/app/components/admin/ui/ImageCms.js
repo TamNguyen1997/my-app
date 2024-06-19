@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import { useEffect, useState, useTransition } from 'react'
 import "./ImageCms.css"
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spinner, Textarea, useDisclosure, Tabs, Tab } from '@nextui-org/react'
+import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spinner, Textarea, useDisclosure, Tabs, Tab, DateInput, Switch } from '@nextui-org/react'
 import Dropzone from 'react-dropzone'
 import { redirect } from 'next/navigation'
 import { X } from 'lucide-react'
@@ -198,7 +198,7 @@ const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) =>
                 <div
                   ref={droppableProvided.innerRef}
                   {...droppableProvided.droppableProps}
-                  className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-3"
+                  className="grid grid-cols-[repeat(auto-fill,minmax(350px,1fr))] gap-3"
                 >
                   {
                     draggableList.map((item, index) =>
@@ -219,9 +219,15 @@ const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) =>
                               <div className="aspect-[1/1] text-xl flex items-center justify-center border cursor-pointer hover:bg-[rgba(0,0,0,0.03)] transition">
                                 +
                               </div>
-                              <div className="flex flex-col space-y-2.5">
-                                <Button color="primary" className="h-[25px] rounded">Date</Button>
-                                <Button color="primary" className="h-[25px] rounded">On/Off</Button>
+                              <div className="flex flex-col space-y-2.5 items-end">
+                                <DateInput
+                                  className={`
+                                    [&>div]:min-h-7
+                                    [&>div]:h-7
+                                    [&>div]:rounded
+                                  `}
+                                />
+                                <Switch defaultSelected />
                               </div>
                             </div>
                         }

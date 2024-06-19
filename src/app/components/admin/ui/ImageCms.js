@@ -215,7 +215,14 @@ const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) =>
                               {...provided.dragHandleProps}
                               className="grid grid-cols-[1.5fr_1fr_auto] gap-3 border rounded-2xl select-none p-[24px_12px] cursor-grab"
                             >
-                              <img src={item.image} className="aspect-[16/10] h-full object-cover mr-1" />
+                              <div className="group relative hover:opacity-70">
+                                <img src={item.image} className="aspect-[16/10] h-full object-cover mr-1" />
+                                {
+                                  disableDelete ? null : (
+                                    <span className="absolute -top-2.5 -right-2.5 hidden group-hover:block animate-vote bg-red-500 rounded-full hover:bg-red-700 cursor-pointer" onClick={() => deleteImage(img)}><X color="#FFFFFF" /></span>
+                                  )
+                                }
+                              </div>
                               <div className="aspect-[1/1] text-xl flex items-center justify-center border cursor-pointer hover:bg-[rgba(0,0,0,0.03)] transition">
                                 +
                               </div>

@@ -6,37 +6,54 @@ import moment from 'moment';
 
 export async function POST(req) {
   try {
-    const formData = await req.formData()
-    const file = formData.get("file")
-    const arrayBuffer = await file.arrayBuffer()
-    const buffer = new Uint8Array(arrayBuffer)
-    const imageType = formData.get("type")
+    const formData = await req.formData();
+    const file = formData.get("file");
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = new Uint8Array(arrayBuffer);
+    const imageType = formData.get("type");
 
-    if (!(imageType in image_type)) {
-      return NextResponse.json({ message: "Image type incorrect" })
+    let name = formData.get("name");
+    let slug = converStringToSlug(name);
+
+    let oldImage = await db.image.findMany({ where: { slug: slug } })
+    if (oldImage[0] != null) {
+      return NextResponse.json({ message: "Name already exists " }, { status: 400 });
     }
 
-    const filePath = `./public/gallery/${imageType.toLowerCase()}/${file.name}`
+    if (!(imageType in image_type)) {
+      return NextResponse.json({ message: "Image type incorrect" }, { status: 400 });
+    }
 
-    await save(formData, filePath)
-    fs.writeFile(filePath, buffer)
+    const extension = file.type.split("/")[1];
 
-    return NextResponse.json({ message: "Upload success" })
+    if (!['png', 'jpeg', 'svg'].includes(extension)) {
+      return NextResponse.json({ message: "Image extension not allow" }, { status: 400 });
+    }
+
+    const filePath = `./public/gallery/${imageType.toLowerCase()}/${slug}.${extension}`;
+
+    await save(formData, filePath);
+    fs.writeFile(filePath, buffer);
+
+    return NextResponse.json({ message: "Upload success" });
   } catch (e) {
-    return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
+    return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 });
   }
 }
 
 async function save(formData, path) {
-  let activeFrom = formData.get("active_from")
-  activeFrom = activeFrom != null ? moment(activeFrom).toDate() : null
+  let activeFrom = formData.get("active_from");
+  activeFrom = activeFrom != null ? moment(activeFrom).toDate() : null;
 
-  let activeTo = formData.get("active_to")
-  activeTo = activeTo != null ? moment(activeTo).toDate() : null
+  let activeTo = formData.get("active_to");
+  activeTo = activeTo != null ? moment(activeTo).toDate() : null;
 
+  let name = formData.get("name");
+  let slug = converStringToSlug(name);
   console.log({
     path: path,
-    name: formData.get("name"),
+    name: name,
+    slug: slug,
     alt: formData.get("alt"),
     description: formData.get("description"),
     type: formData.get("type"),
@@ -48,7 +65,8 @@ async function save(formData, path) {
   await db.image.create({
     data: {
       path: path,
-      name: formData.get("name"),
+      name: name,
+      slug: slug,
       alt: formData.get("alt"),
       description: formData.get("description"),
       type: formData.get("type"),
@@ -58,4 +76,13 @@ async function save(formData, path) {
       order: formData.get("order"),
     }
   })
+}
+
+function converStringToSlug(str) {
+  return str
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
 }

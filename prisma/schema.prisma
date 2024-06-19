@@ -84,9 +84,10 @@ model image {
   updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
   type        image_type
   active      Boolean @default(true)
-  activeFrom  DateTime?
-  activeTo    DateTime?
+  activeFrom  DateTime? @map("active_from")
+  activeTo    DateTime? @map("active_to")
   order       Int?
+  slug        String @unique
 }
 
 model blog {

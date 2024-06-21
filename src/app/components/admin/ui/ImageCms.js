@@ -7,13 +7,22 @@ import Dropzone from 'react-dropzone'
 import { redirect } from 'next/navigation'
 import { X } from 'lucide-react'
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
+import { parseDate } from "@internationalized/date";
 
 const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) => {
   const [images, setImages] = useState([])
   const [reload, setReload] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [selectedTab, setSelectedTab] = useState("Gallery")
-  const [draggableList, setDraggableList] = useState([...Array(10)].map((_, index) => ({ id: index + 1, image: index % 3 ? "/gallery/3.jpg" : "/gallery/free-images.jpg" })));
+  const testImages = ["/gallery/3.jpg", "/gallery/free-images.jpg", "/gallery/image-cropped-8x10.jpg"];
+  const [draggableList, setDraggableList] = useState(
+    [...Array(10)].map((_, index) => ({
+      id: index + 1,
+      images: [...Array(Math.round(Math.random() * 3))].map(_ => testImages[Math.round(Math.random() * testImages.length)]),
+      date: parseDate("2024-04-04"),
+      status: 1
+    }))
+  );
   const [, startTransition] = useTransition();
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   useEffect(() => {
@@ -65,6 +74,13 @@ const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) =>
     redirect('/admin/image')
   }
 
+  const deleteImagePos = (blockIndex, imageIndex) => {
+    const newState = [...draggableList];
+    if(!newState[blockIndex]?.images?.[imageIndex]) return;
+    newState[blockIndex].images.splice(imageIndex, 1);
+    setDraggableList(newState);
+  }
+
   const onDragEnd = (result) => {
     const sourceId = result.draggableId;
     const destinationId = draggableList[result.destination?.index]?.id;
@@ -74,8 +90,10 @@ const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) =>
       const newState = [...state];
       const sourceIndex = state.findIndex(item => item.id == sourceId);
       const destinationIndex = state.findIndex(item => item.id == destinationId);
-      newState[sourceIndex] = state[destinationIndex];
-      newState[destinationIndex] = state[sourceIndex];
+      // newState[sourceIndex] = state[destinationIndex];
+      // newState[destinationIndex] = state[sourceIndex];
+      newState.splice(sourceIndex, 1);
+      newState.splice(destinationIndex, 0, state[sourceIndex]);
       setDraggableList(newState);
     });
   }
@@ -198,7 +216,7 @@ const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) =>
                 <div
                   ref={droppableProvided.innerRef}
                   {...droppableProvided.droppableProps}
-                  className="grid grid-cols-[repeat(auto-fill,minmax(350px,1fr))] gap-3"
+                  className="grid md:grid-cols-2 gap-3"
                 >
                   {
                     draggableList.map((item, index) =>
@@ -213,28 +231,40 @@ const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) =>
                               ref={provided.innerRef}
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
-                              className="grid grid-cols-[1.5fr_1fr_auto] gap-3 border rounded-2xl select-none p-[24px_12px] cursor-grab"
+                              className="border rounded-2xl select-none p-[24px_12px] cursor-grab"
                             >
-                              <div className="group relative hover:opacity-70">
-                                <img src={item.image} className="aspect-[16/10] h-full object-cover mr-1" />
-                                {
-                                  disableDelete ? null : (
-                                    <span className="absolute -top-2.5 -right-2.5 hidden group-hover:block animate-vote bg-red-500 rounded-full hover:bg-red-700 cursor-pointer" onClick={() => deleteImage(img)}><X color="#FFFFFF" /></span>
-                                  )
-                                }
-                              </div>
-                              <div className="aspect-[1/1] text-xl flex items-center justify-center border cursor-pointer hover:bg-[rgba(0,0,0,0.03)] transition">
-                                +
-                              </div>
-                              <div className="flex flex-col space-y-2.5 items-end">
-                                <DateInput
-                                  className={`
-                                    [&>div]:min-h-7
-                                    [&>div]:h-7
-                                    [&>div]:rounded
-                                  `}
-                                />
-                                <Switch defaultSelected />
+                              <div className="grid grid-cols-[auto_120px] gap-3">
+                                <div className="flex flex-wrap items-start">
+                                  {
+                                    item.images?.map((img, imgIndex) =>
+                                      <div
+                                        key={imgIndex}
+                                        className="group relative hover:opacity-70 aspect-[16/10] w-[min(120px,100%)] mr-3 mb-3"
+                                      >
+                                        <img src={img} className="w-full h-full object-cover mr-1" />
+                                        {
+                                          disableDelete ? null : (
+                                            <span className="absolute -top-2.5 -right-2.5 hidden group-hover:block animate-vote bg-red-500 rounded-full hover:bg-red-700 cursor-pointer" onClick={() => deleteImagePos(index, imgIndex)}><X color="#FFFFFF" /></span>
+                                          )
+                                        }
+                                      </div>
+                                    )
+                                  }
+                                  <div className="aspect-[1/1] w-[min(75px,100%)] text-xl flex items-center justify-center border cursor-pointer hover:bg-[rgba(0,0,0,0.03)] transition">
+                                    +
+                                  </div>
+                                </div>
+                                <div className="flex flex-col space-y-2.5 items-end">
+                                  <DateInput
+                                    className={`
+                                      [&>div]:min-h-7
+                                      [&>div]:h-7
+                                      [&>div]:rounded
+                                    `}
+                                    defaultValue={item.date}
+                                  />
+                                  <Switch isSelected={item.status} />
+                                </div>
                               </div>
                             </div>
                         }

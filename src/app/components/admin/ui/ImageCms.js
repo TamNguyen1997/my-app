@@ -1,13 +1,17 @@
 "use client"
 import Image from 'next/image'
-import { useEffect, useState, useTransition } from 'react'
+import { useEffect, useState, useTransition, useCallback, forwardRef } from 'react'
 import "./ImageCms.css"
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spinner, Textarea, useDisclosure, Tabs, Tab, DateInput, Switch } from '@nextui-org/react'
 import Dropzone from 'react-dropzone'
 import { redirect } from 'next/navigation'
 import { X } from 'lucide-react'
-import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import { parseDate } from "@internationalized/date";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import update from "immutability-helper";
+import { ImageDraggable } from "./ImageDraggable";
+import FlipMove from 'react-flip-move';
 
 const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) => {
   const [images, setImages] = useState([])
@@ -70,6 +74,19 @@ const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) =>
     })
   }
 
+  const moveRow = useCallback((dragIndex, hoverIndex) => {
+    startTransition(() => {
+      setDraggableList((prevList) =>
+        update(prevList, {
+          $splice: [
+            [dragIndex, 1],
+            [hoverIndex, 0, prevList[dragIndex]]
+          ]
+        })
+      );
+    });
+  }, []);
+
   if (reload) {
     redirect('/admin/image')
   }
@@ -81,22 +98,11 @@ const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) =>
     setDraggableList(newState);
   }
 
-  const onDragEnd = (result) => {
-    const sourceId = result.draggableId;
-    const destinationId = draggableList[result.destination?.index]?.id;
-
-    startTransition(() => {
-      const state = [...draggableList];
-      const newState = [...state];
-      const sourceIndex = state.findIndex(item => item.id == sourceId);
-      const destinationIndex = state.findIndex(item => item.id == destinationId);
-      // newState[sourceIndex] = state[destinationIndex];
-      // newState[destinationIndex] = state[sourceIndex];
-      newState.splice(sourceIndex, 1);
-      newState.splice(destinationIndex, 0, state[sourceIndex]);
-      setDraggableList(newState);
-    });
-  }
+  const FunctionalDraggable = forwardRef((props, ref) => (
+    <div ref={ref}>
+      <ImageDraggable {...props} />
+    </div>
+  ));
 
   if (isLoading) return <Spinner size="lg" className="p-10" />
   return (
@@ -210,71 +216,23 @@ const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) =>
           </div>
         </Tab>
         <Tab key="Draggable Gallery" title="Draggable Gallery">
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="droppable-gallery">
-              {(droppableProvided, snapshot) => (
-                <div
-                  ref={droppableProvided.innerRef}
-                  {...droppableProvided.droppableProps}
-                  className="grid md:grid-cols-2 gap-3"
-                >
-                  {
-                    draggableList.map((item, index) =>
-                      <Draggable
-                        key={item.id}
-                        draggableId={String(item.id)}
-                        index={index}
-                      >
-                        {
-                          (provided) =>
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              className="border rounded-2xl select-none p-[24px_12px] cursor-grab"
-                            >
-                              <div className="grid grid-cols-[auto_120px] gap-3">
-                                <div className="flex flex-wrap items-start">
-                                  {
-                                    item.images?.map((img, imgIndex) =>
-                                      <div
-                                        key={imgIndex}
-                                        className="group relative hover:opacity-70 aspect-[16/10] w-[min(120px,100%)] mr-3 mb-3"
-                                      >
-                                        <img src={img} className="w-full h-full object-cover mr-1" />
-                                        {
-                                          disableDelete ? null : (
-                                            <span className="absolute -top-2.5 -right-2.5 hidden group-hover:block animate-vote bg-red-500 rounded-full hover:bg-red-700 cursor-pointer" onClick={() => deleteImagePos(index, imgIndex)}><X color="#FFFFFF" /></span>
-                                          )
-                                        }
-                                      </div>
-                                    )
-                                  }
-                                  <div className="aspect-[1/1] w-[min(75px,100%)] text-xl flex items-center justify-center border cursor-pointer hover:bg-[rgba(0,0,0,0.03)] transition">
-                                    +
-                                  </div>
-                                </div>
-                                <div className="flex flex-col space-y-2.5 items-end">
-                                  <DateInput
-                                    className={`
-                                      [&>div]:min-h-7
-                                      [&>div]:h-7
-                                      [&>div]:rounded
-                                    `}
-                                    defaultValue={item.date}
-                                  />
-                                  <Switch isSelected={item.status} />
-                                </div>
-                              </div>
-                            </div>
-                        }
-                      </Draggable>
-                    )
-                  }
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
+          <DndProvider backend={HTML5Backend}>
+            <div>
+              <FlipMove className="grid md:grid-cols-2 gap-3">
+                {
+                  draggableList.map((item, index) => (
+                    <FunctionalDraggable
+                      index={index}
+                      key={item.id}
+                      itemData={item}
+                      moveRow={moveRow}
+                      deleteImagePos={deleteImagePos}
+                    />
+                  ))
+                }
+              </FlipMove>
+            </div>
+          </DndProvider>
           <Button color="primary" className="min-w-[120px] rounded-lg mt-3">Lưu</Button>
         </Tab>
       </Tabs>

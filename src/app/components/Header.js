@@ -22,7 +22,7 @@ const Header = () => {
           </Link>
         </div>
 
-        <div className="bg-[#ffd300] w-[75%] rounded-tl-[50px] rounded-bl-[50px]">
+        <div className="bg-[#ffd300] w-[75%] rounded-tl-[50px] rounded-bl-[50px] font-raleway">
           <div className="pl-[50px] h-full">
             <div className="h-1/2 p-3 flex gap-7">
               <div className="w-[1/4] flex items-center gap-5">

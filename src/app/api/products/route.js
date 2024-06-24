@@ -8,25 +8,12 @@ export async function POST(req) {
     return NextResponse.json(
       await db.product.create(
         {
-          data: {
-            ...body,
-            technicalDetails: {
-              createMany: { data: body.technicalDetails ? body.technicalDetails : [] }
-            },
-            saleDetails: {
-              createMany: {
-                data: body.saleDetails ? body.saleDetails : []
-              }
-            }
-          },
-          include: {
-            technicalDetails: true,
-            saleDetails: true
-          }
+          data: body
         }
       )
     )
   } catch (e) {
+    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }
@@ -44,7 +31,6 @@ export async function GET(req) {
   try {
     const result = await db.product.findMany({
       include: {
-        technicalDetails: true,
         saleDetails: true
       },
       orderBy: [

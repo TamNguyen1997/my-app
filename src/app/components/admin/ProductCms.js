@@ -25,7 +25,9 @@ const ProductCms = () => {
   const [loadingState, setLoadingState] = useState("loading")
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [selectedProduct, setSelectedProduct] = useState({})
-  const value = [selectedProduct, setSelectedProduct]
+  const [technicalDetailRows, setTechnicalDetailRows] = useState([])
+  const [technicalDetailColumns, setTechnicalDetailColumns] = useState([])
+  const value = [selectedProduct, setSelectedProduct, technicalDetailColumns, setTechnicalDetailColumns, technicalDetailRows, setTechnicalDetailRows]
   const [reload, setReload] = useState(false)
   const [total, setTotal] = useState(0)
 
@@ -96,27 +98,26 @@ const ProductCms = () => {
     e.preventDefault()
 
     let productToUpdate = selectedProduct
-    const technicalDetails = productToUpdate.technicalDetails
-    const saleDetails = productToUpdate.saleDetails
-    delete productToUpdate.technicalDetails
-    delete productToUpdate.saleDetails
+    // const technicalDetails = technicalDetails
+    // const saleDetails = productToUpdate.saleDetails
+    // delete productToUpdate.saleDetails
 
-    await fetch(`/api/products/${productToUpdate.id}`, {
-      method: "PUT",
+    await fetch(`/api/products/`, {
+      method: "POST",
       body: JSON.stringify(productToUpdate)
     })
-    if (saleDetails.length) {
-      await fetch(`/api/products/${productToUpdate.id}/sale-details`, {
-        method: "POST",
-        body: JSON.stringify(saleDetails)
-      })
-    }
-    if (technicalDetails.length) {
-      await fetch(`/api/products/${productToUpdate.id}/technical-details`, {
-        method: "POST",
-        body: JSON.stringify(technicalDetails)
-      })
-    }
+    // if (saleDetails.length) {
+    //   await fetch(`/api/products/${productToUpdate.id}/sale-details`, {
+    //     method: "POST",
+    //     body: JSON.stringify(saleDetails)
+    //   })
+    // }
+    // if (technicalDetails.length) {
+    //   await fetch(`/api/products/${productToUpdate.id}/technical-details`, {
+    //     method: "POST",
+    //     body: JSON.stringify(technicalDetails)
+    //   })
+    // }
     setReload(true)
   }
 

@@ -8,7 +8,9 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <Sidebar />
-        {children}
+        <div className="p-4 sm:ml-64">
+          {children}
+        </div>
       </body>
     </html>
   );

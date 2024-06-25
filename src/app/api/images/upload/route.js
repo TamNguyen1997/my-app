@@ -37,7 +37,7 @@ export async function POST(req) {
     }
 
     const dir = typeToDirs[imageType]
-    const filePath = `${dir}/${slug}.${extension}`;
+    const filePath = `./public/${dir}/${slug}.${extension}`;
 
     await save(formData, filePath);
     fs.writeFile(filePath, buffer);

@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import { Autocomplete, AutocompleteItem, Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Textarea, useDisclosure } from "@nextui-org/react";
 import { ProductContext } from "../ProductCms";
-import ImageCms from "@/components/admin/ui/ImageCms";
+import ImagePicker from "@/components/admin/ui/ImagePicker";
 import Image from "next/image";
 
 const ProductDetailForm = () => {
@@ -15,7 +15,8 @@ const ProductDetailForm = () => {
   }, [])
 
   const selectedImage = (value) => {
-    setSelectedProduct(Object.assign({}, selectedProduct, { imageUrl: value }))
+    console.log(value)
+    setSelectedProduct(Object.assign({}, selectedProduct, { imageUrl: value.path }))
     onOpenChange()
   }
   return (
@@ -72,7 +73,7 @@ const ProductDetailForm = () => {
           {
             selectedProduct.imageUrl ?
               <Image
-                src={`/gallery/${selectedProduct.imageUrl}`}
+                src={`${selectedProduct.imageUrl}`}
                 alt="favicon"
                 width="300"
                 height="300"
@@ -97,7 +98,7 @@ const ProductDetailForm = () => {
             <>
               <ModalHeader className="flex flex-col gap-1">Chọn hình ảnh</ModalHeader>
               <ModalBody>
-                <ImageCms disableAdd={true} onImageClick={selectedImage} disableDelete={true}></ImageCms>
+                <ImagePicker disableAdd={true} onImageClick={selectedImage} disableDelete={true}></ImagePicker>
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>

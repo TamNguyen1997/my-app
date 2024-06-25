@@ -8,7 +8,7 @@ import { redirect } from 'next/navigation'
 import ImagePicker from './ImagePicker'
 import BannerScheduler from './BannerScheduler'
 
-const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) => {
+const ImageCms = () => {
   const [reload, setReload] = useState(false)
 
   const [selectedTab, setSelectedTab] = useState("Gallery")
@@ -51,11 +51,7 @@ const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) =>
       <Tabs aria-label="Gallery" selectedKey={selectedTab} onSelectionChange={setSelectedTab}>
         <Tab key="Gallery" title="Gallery">
           <div className='flex w-full flex-wrap md:flex-nowrap gap-4 py-5'>
-            {
-              disableAdd ? null : (
-                <Button color="primary" onClick={onOpen}>Thêm ảnh</Button>
-              )
-            }
+            <Button color="primary" onClick={onOpen}>Thêm ảnh</Button>
           </div>
           <div>
             <Modal

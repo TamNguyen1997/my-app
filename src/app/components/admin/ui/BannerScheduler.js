@@ -14,7 +14,7 @@ const generateList = (list, type) => {
     list.push({
       id: v4(),
       type: type,
-      status: false
+      active: false
     })
   }
   return list
@@ -37,7 +37,8 @@ const saveImage = (id, image, list, setList) => {
 
   newState.forEach(item => {
     if (item.id === id) {
-      item.image = `/gallery/${image}`
+      item.imageId = image.id
+      item.image = image
     }
   })
 

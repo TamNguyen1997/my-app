@@ -10,23 +10,21 @@ const ImagePicker = ({ disableSearch, onImageClick, disableDelete }) => {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/images/gallery').then(async res => {
+    fetch('/api/images/').then(async res => {
       setImages(await res.json())
       setIsLoading(false)
     })
   }, [])
 
   const onSearch = (value) => {
-    fetch(`/api/images/gallery?name=${value}`).then(async res => {
+    fetch(`/api/images/?name=${value}`).then(async res => {
       setImages(await res.json())
     })
   }
 
   const deleteImage = async (image) => {
-    await fetch(`/api/images/gallery/${image}`, {
+    await fetch(`/api/images/${image}`, {
       method: 'DELETE'
-    }).then(() => {
-      setReload(true)
     })
   }
 
@@ -51,15 +49,15 @@ const ImagePicker = ({ disableSearch, onImageClick, disableDelete }) => {
       <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-[30px]">
         {
           images?.map?.((img) => (
-            <div key={img} className={`
+            <div key={img.id} className={`
                   group relative flex flex-col rounded hover:opacity-70 cursor-pointer
                   shadow-[0px_2px_10px_rgba(0,0,0,0.15)] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)]
                   hover:-translate-y-2.5 hover:scale-[1.02]
                   transition duration-400
                 `}>
               <img
-                src={`/gallery/${img}`}
-                alt={img}
+                src={`${img.path}`}
+                alt={img.alt}
                 className="aspect-[16/10] object-cover rounded-t shrink-0"
                 onClick={() => onImageClick(img)}
               />
@@ -69,7 +67,7 @@ const ImagePicker = ({ disableSearch, onImageClick, disableDelete }) => {
                 )
               }
               <div className="grow bg-white text-center rounded-b p-5">
-                <h6 className="text-[17px] font-bold text-[#212529] break-words mb-2">Lorem Ipsum</h6>
+                <h6 className="text-[17px] font-bold text-[#212529] break-words mb-2">{img.name}</h6>
                 <p className="text-[15px] text-[#6c757d] break-words">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quam urna.</p>
               </div>
             </div>

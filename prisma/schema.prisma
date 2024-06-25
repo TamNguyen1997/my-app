@@ -105,8 +105,8 @@ model banner {
   createdAt DateTime   @default(now()) @map("created_at")
   updatedAt DateTime   @default(now()) @updatedAt @map("updated_at")
 
-  imageId String @map("image_id")
-  image   image  @relation(fields: [imageId], references: [id])
+  imageId String? @map("image_id")
+  image   image?  @relation(fields: [imageId], references: [id])
 
   @@index([imageId])
 }

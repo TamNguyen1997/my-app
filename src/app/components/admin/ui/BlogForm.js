@@ -4,7 +4,7 @@ import TipTapImage from '@tiptap/extension-image'
 import OrderedList from '@tiptap/extension-ordered-list'
 import BulletList from '@tiptap/extension-bullet-list'
 // import BlogToolbar from "./BlogToolBar"
-import ImageCms from "./ImageCms";
+import ImagePicker from "@/components/admin/ui/ImagePicker";
 import Placeholder from '@tiptap/extension-placeholder'
 import Link from '@tiptap/extension-link'
 import './Tiptap.css'
@@ -45,7 +45,7 @@ const RichTextEditor = ({ blog }) => {
 
   const onSubmit = async (data) => {
     data.thumbnail = thumbnail
-    
+
     await fetch('/api/blogs', {
       method: "POST",
       body: JSON.stringify({
@@ -69,7 +69,7 @@ const RichTextEditor = ({ blog }) => {
 
   const [thumbnail, setThumbnail] = useState(blog?.thumbnail)
   const selectedImage = (value) => {
-    blog.thumbnail = value
+    blog.thumbnail = value.path
     setThumbnail(value)
     onOpenChange()
   }
@@ -122,7 +122,7 @@ const RichTextEditor = ({ blog }) => {
             <>
               <ModalHeader className="flex flex-col gap-1">Chọn hình ảnh</ModalHeader>
               <ModalBody>
-                <ImageCms disableAdd={true} onImageClick={selectedImage} disableDelete={true}></ImageCms>
+                <ImagePicker disableAdd={true} onImageClick={selectedImage} disableDelete={true}></ImagePicker>
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>

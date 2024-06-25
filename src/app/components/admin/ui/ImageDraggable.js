@@ -78,7 +78,7 @@ export function ImageDraggable({ itemData, moveRow, index, deleteImagePos, isSch
                 key={itemData.id}
                 className="group relative hover:opacity-70 aspect-[16/10] w-[min(160px,100%)] mr-3 mb-3"
               >
-                <img src={itemData.image} className="w-full h-full object-cover mr-1" />
+                <img src={itemData.image.path} className="w-full h-full object-cover mr-1" />
                 <span className="absolute -top-2.5 -right-2.5 hidden group-hover:block animate-vote bg-red-500 rounded-full hover:bg-red-700 cursor-pointer" onClick={() => deleteImagePos(itemData.id)}><X color="#FFFFFF" /></span>
               </div>
               : <AddPicture saveImage={saveImage} />
@@ -110,7 +110,7 @@ export function ImageDraggable({ itemData, moveRow, index, deleteImagePos, isSch
                 aria-label="Date"
               />
             </div>
-            <Switch isSelected={itemData.status} />
+            <Switch isSelected={itemData.active} />
           </div> : null
         }
 

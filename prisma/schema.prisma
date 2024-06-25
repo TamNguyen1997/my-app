@@ -25,7 +25,8 @@ model product {
   id            String       @id
   subCategoryId String?      @map("sub_category_id")
   subCategory   subCategory? @relation(fields: [subCategoryId], references: [id])
-  categoryId    String?
+  categoryId    String?      @map("category_id")
+  category      category?    @relation(fields: [categoryId], references: [id])
   name          String?
   imageUrl      String?      @map("image_url")
   imageAlt      String?      @map("image_alt")
@@ -121,6 +122,7 @@ model blog {
   summary   String?
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  type      blog_type @default(BLOG)
 }
 
 model user {
@@ -140,4 +142,26 @@ enum image_type {
   PRODUCT
   BLOG
   BANNER
+}
+
+model category {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  product    product[]
+}
+
+model blog_category {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  blogId      String   @map("blog_id")
+  categoryId  String   @map("category_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+}
+
+enum blog_type {
+  BLOG
+  CONTACT
+  LEGAL
 }

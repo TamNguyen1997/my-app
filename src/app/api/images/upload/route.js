@@ -39,14 +39,11 @@ export async function POST(req) {
     const dir = typeToDirs[imageType]
     const filePath = `${dir}/${slug}.${extension}`;
 
-    console.log(filePath)
-    console.log(`./public${filePath}`)
     await save(formData, filePath);
     fs.writeFile(`./public${filePath}`, buffer);
 
     return NextResponse.json({ message: "Upload success" });
   } catch (e) {
-    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 });
   }
 }

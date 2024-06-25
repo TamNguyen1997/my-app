@@ -20,31 +20,6 @@ const generateList = (list, type) => {
   return list
 }
 
-const deleteImagePos = (imageId, list, setList) => {
-  const newState = [...list];
-
-  newState.forEach(item => {
-    if (item.id === imageId) {
-      item.image = null
-    }
-  })
-
-  setList(newState);
-}
-
-const saveImage = (id, image, list, setList) => {
-  const newState = [...list];
-
-  newState.forEach(item => {
-    if (item.id === id) {
-      item.imageId = image.id
-      item.image = image
-    }
-  })
-
-  setList(newState);
-}
-
 const BannerScheduler = () => {
   const [, startTransition] = useTransition();
   const [scheduledBanners, setScheduledBanners] = useState([])
@@ -54,6 +29,21 @@ const BannerScheduler = () => {
     fetch(`${imageUrl}?type=DEFAULT`).then(res => res.json()).then((banners) => generateList(banners, "DEFAULT")).then(setDefaultBanners)
     fetch(`${imageUrl}?type=SCHEDULED`).then(res => res.json()).then((banners) => generateList(banners, "SCHEDULED")).then(setScheduledBanners)
   }, [])
+
+  const setValue = useCallback((id, value, list, setList) => {
+    let newState = [...list];
+
+    newState.forEach(item => {
+      if (item.id === id) {
+        Object.assign(item, value)
+      }
+    })
+
+
+    setList(newState)
+  })
+
+  console.log(scheduledBanners)
 
   const moveScheduledRow = useCallback((dragIndex, hoverIndex) => {
     startTransition(() => {
@@ -82,8 +72,21 @@ const BannerScheduler = () => {
   }, []);
 
   const onSave = () => {
-    fetch(`${imageUrl}`, { method: "POST", body: JSON.stringify(defaultBanners) })
-    fetch(`${imageUrl}`, { method: "POST", body: JSON.stringify(scheduledBanners) })
+    let defaultBannersToCreate = defaultBanners
+    let scheduledBannersToCreate = scheduledBanners
+
+    console.log(defaultBannersToCreate)
+    console.log(scheduledBannersToCreate)
+    defaultBannersToCreate.forEach((item, index) => {
+      item.order = index
+    })
+
+    scheduledBannersToCreate.forEach((item, index) => {
+      item.order = index
+    })
+
+    fetch(`${imageUrl}`, { method: "POST", body: JSON.stringify(defaultBannersToCreate) })
+    fetch(`${imageUrl}`, { method: "POST", body: JSON.stringify(scheduledBannersToCreate) })
   }
 
   return (
@@ -100,9 +103,12 @@ const BannerScheduler = () => {
                     key={item.id}
                     itemData={item}
                     moveRow={moveScheduledRow}
-                    deleteImagePos={(id) => deleteImagePos(id, scheduledBanners, setScheduledBanners)}
+                    deleteImagePos={() => setValue(item.id, { imageId: null, image: null }, scheduledBanners, setScheduledBanners)}
                     isScheduled
-                    saveImage={(image) => saveImage(item.id, image, scheduledBanners, setScheduledBanners)}
+                    saveImage={(image) => setValue(item.id, { imageId: image.id, image: image }, scheduledBanners, setScheduledBanners)}
+                    setActiveFrom={(activeFrom) => setValue(item.id, { activeFrom: new Date(activeFrom.toString()) }, scheduledBanners, setScheduledBanners)}
+                    setActiveTo={(activeTo) => setValue(item.id, { activeTo: new Date(activeTo.toString()) }, scheduledBanners, setScheduledBanners)}
+                    setActive={(value) => setValue(item.id, { active: value }, scheduledBanners, setScheduledBanners)}
                   />
                 ))
               }
@@ -120,8 +126,8 @@ const BannerScheduler = () => {
                     key={item.id}
                     itemData={item}
                     moveRow={moveDefaultRow}
-                    deleteImagePos={(id) => deleteImagePos(id, defaultBanners, setDefaultBanners)}
-                    saveImage={(image) => saveImage(item.id, image, defaultBanners, setDefaultBanners)}
+                    deleteImagePos={() => setValue(item.id, { imageId: null, image: null }, defaultBanners, setDefaultBanners)}
+                    saveImage={(image) => setValue(item.id, { imageId: image.id, image: image }, defaultBanners, setDefaultBanners)}
                   />
                 ))
               }

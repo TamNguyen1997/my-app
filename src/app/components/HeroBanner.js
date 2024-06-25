@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import Carousel from "react-multi-carousel"
 import "react-multi-carousel/lib/styles.css"
 
@@ -21,20 +22,32 @@ const responsive = {
   }
 }
 
-const images = [
-  "/banner/5c29faad-d59f-4f24-a487-7f8c8f03e8da.jpg",
-  "/banner/1147b9ec-bdbb-4387-96f6-82b6462bcdb7.jpg",
-  "/banner/1147b9ec-bdbb-4387-96f6-82b6462bcdb7.jpg",
-  "/banner/1147b9ec-bdbb-4387-96f6-82b6462bcdb7.jpg",
-  "/banner/1147b9ec-bdbb-4387-96f6-82b6462bcdb7.jpg",
-]
-
 const HeroBanner = () => {
+  const [banners, setBanners] = useState([])
+
+  useEffect(() => {
+    fetch("/api/images/banner/display").then(res => res.json()).then(body => {
+      const scheduledBanners = body.scheduledBanners ? Object.groupBy(body.scheduledBanners, ({ order }) => order) : {}
+      const defaultBanners = body.defaultBanners ? Object.groupBy(body.defaultBanners, ({ order }) => order) : {}
+
+      let images = []
+      for (let i = 0; i < 5; i++) {
+        if (scheduledBanners[i]) {
+          images.push(scheduledBanners[i][0].image)
+        } else if (defaultBanners[i]) {
+          images.push(defaultBanners[i][0].image)
+        }
+      }
+
+      setBanners(images)
+    })
+  }, [])
+  console.log(banners)
   return (
     <Carousel responsive={responsive} infinite autoPlay autoPlaySpeed={5000}>
       {
-        images.map((s, i) => {
-          return <Image key={i} width="1280" height="720" className="w-full h-full" src={s} alt={s}/>
+        banners.map((banner, i) => {
+          return <Image key={i} width="1280" height="720" className="w-full h-full" src={banner?.path} alt={banner?.alt} />
         })
       }
     </Carousel>

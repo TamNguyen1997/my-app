@@ -5,7 +5,7 @@ import { parseDate } from "@internationalized/date";
 import { Button, DatePicker, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Switch, useDisclosure } from '@nextui-org/react';
 import ImagePicker from "./ImagePicker";
 
-export function ImageDraggable({ itemData, moveRow, index, deleteImagePos, isScheduled, saveImage }) {
+export function ImageDraggable({ itemData, moveRow, index, deleteImagePos, isScheduled, saveImage, setActiveFrom, setActiveTo, setActive }) {
   const { id } = itemData;
   const ref = useRef(null);
 
@@ -101,16 +101,22 @@ export function ImageDraggable({ itemData, moveRow, index, deleteImagePos, isSch
             <div className="flex gap-2">
               <DatePicker
                 label="Từ ngày"
-                defaultValue={itemData.activeFrom ? parseDate(itemData.activeFrom) : ""}
+                onChange={setActiveFrom}
+                defaultValue={itemData.activeFrom ? getDateString(itemData.activeFrom) : ""}
                 aria-label="Date"
               />
               <DatePicker
                 label="Đến ngày"
-                defaultValue={itemData.activeTo ? parseDate(itemData.activeTo) : ""}
+                onChange={setActiveTo}
+                defaultValue={itemData.activeTo ? getDateString(itemData.activeTo) : ""}
                 aria-label="Date"
               />
             </div>
-            <Switch isSelected={itemData.active} />
+            <Switch isSelected={itemData.active} onValueChange={setActive} />
+
+            {
+              itemData.active
+            }
           </div> : null
         }
 
@@ -119,6 +125,7 @@ export function ImageDraggable({ itemData, moveRow, index, deleteImagePos, isSch
   );
 }
 
+const getDateString = (isoDate) => parseDate(new Date(isoDate).toISOString().split('T')[0])
 
 const AddPicture = ({ saveImage }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()

@@ -4,9 +4,9 @@ import { db } from '@/app/db';
 import { image_type } from "@prisma/client";
 
 const typeToDirs = {
-  "PRODUCT": "./public/gallery/product",
-  "BANNER": "./public/gallery/banner",
-  "BLOG": "./public/gallery/blog",
+  "PRODUCT": "/gallery/product",
+  "BANNER": "/gallery/banner",
+  "BLOG": "/gallery/blog",
 }
 
 export async function POST(req) {

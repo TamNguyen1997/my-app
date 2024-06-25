@@ -7,14 +7,41 @@ import { ImageDraggable } from "./ImageDraggable";
 import { Button } from "@nextui-org/react";
 import { v4 } from "uuid";
 
-const generateList = (list) => {
+const imageUrl = "/api/images/banner"
+
+const generateList = (list, type) => {
   while (list.length < 5) {
     list.push({
       id: v4(),
+      type: type,
       status: false
     })
   }
   return list
+}
+
+const deleteImagePos = (imageId, list, setList) => {
+  const newState = [...list];
+
+  newState.forEach(item => {
+    if (item.id === imageId) {
+      item.image = null
+    }
+  })
+
+  setList(newState);
+}
+
+const saveImage = (id, image, list, setList) => {
+  const newState = [...list];
+
+  newState.forEach(item => {
+    if (item.id === id) {
+      item.image = `/gallery/${image}`
+    }
+  })
+
+  setList(newState);
 }
 
 const BannerScheduler = () => {
@@ -23,58 +50,9 @@ const BannerScheduler = () => {
   const [defaultBanners, setDefaultBanners] = useState([])
 
   useEffect(() => {
-    const imageUrl = "/api/images/banner"
-    fetch(`${imageUrl}?type=DEFAULT`).then(res => res.json()).then(generateList).then(setDefaultBanners)
-    fetch(`${imageUrl}?type=SCHEDULED`).then(res => res.json()).then(generateList).then(setScheduledBanners)
+    fetch(`${imageUrl}?type=DEFAULT`).then(res => res.json()).then((banners) => generateList(banners, "DEFAULT")).then(setDefaultBanners)
+    fetch(`${imageUrl}?type=SCHEDULED`).then(res => res.json()).then((banners) => generateList(banners, "SCHEDULED")).then(setScheduledBanners)
   }, [])
-
-  const deleteScheduledImagePos = (imageId) => {
-    const newState = [...scheduledBanners];
-
-    newState.forEach(item => {
-      if (item.id === imageId) {
-        item.image = null
-      }
-    })
-
-    setScheduledBanners(newState);
-  }
-
-  const deleteDefaultImagePos = (imageId) => {
-    const newState = [...defaultBanners];
-
-    newState.forEach(item => {
-      if (item.id === imageId) {
-        item.image = null
-      }
-    })
-
-    setDefaultBanners(newState);
-  }
-
-  const saveDefaultImage = (id, image) => {
-    const newState = [...defaultBanners];
-
-    newState.forEach(item => {
-      if (item.id === id) {
-        item.image = `/gallery/${image}`
-      }
-    })
-
-    setDefaultBanners(newState);
-  }
-
-  const saveScheduledImage = (id, image) => {
-    const newState = [...scheduledBanners];
-
-    newState.forEach(item => {
-      if (item.id === id) {
-        item.image = `/gallery/${image}`
-      }
-    })
-
-    setScheduledBanners(newState);
-  }
 
   const moveScheduledRow = useCallback((dragIndex, hoverIndex) => {
     startTransition(() => {
@@ -102,13 +80,18 @@ const BannerScheduler = () => {
     });
   }, []);
 
+  const onSave = () => {
+    fetch(`${imageUrl}`, { method: "POST", body: JSON.stringify(defaultBanners) })
+    fetch(`${imageUrl}`, { method: "POST", body: JSON.stringify(scheduledBanners) })
+  }
+
   return (
     <div>
       <div className='grid grid-cols-2 gap-3'>
 
         <DndProvider backend={HTML5Backend}>
           <div>
-            <FlipMove>
+            <FlipMove className="flex flex-col gap-2">
               {
                 scheduledBanners.map((item, index) => (
                   <FunctionalDraggable
@@ -116,9 +99,9 @@ const BannerScheduler = () => {
                     key={item.id}
                     itemData={item}
                     moveRow={moveScheduledRow}
-                    deleteImagePos={deleteScheduledImagePos}
+                    deleteImagePos={(id) => deleteImagePos(id, scheduledBanners, setScheduledBanners)}
                     isScheduled
-                    saveImage={(image) => saveScheduledImage(item.id, image)}
+                    saveImage={(image) => saveImage(item.id, image, scheduledBanners, setScheduledBanners)}
                   />
                 ))
               }
@@ -128,7 +111,7 @@ const BannerScheduler = () => {
 
         <DndProvider backend={HTML5Backend}>
           <div>
-            <FlipMove>
+            <FlipMove className="flex flex-col gap-2">
               {
                 defaultBanners.map((item, index) => (
                   <FunctionalDraggable
@@ -136,8 +119,8 @@ const BannerScheduler = () => {
                     key={item.id}
                     itemData={item}
                     moveRow={moveDefaultRow}
-                    deleteImagePos={deleteDefaultImagePos}
-                    saveImage={(image) => saveDefaultImage(item.id, image)}
+                    deleteImagePos={(id) => deleteImagePos(id, defaultBanners, setDefaultBanners)}
+                    saveImage={(image) => saveImage(item.id, image, defaultBanners, setDefaultBanners)}
                   />
                 ))
               }
@@ -146,7 +129,7 @@ const BannerScheduler = () => {
         </DndProvider>
       </div>
 
-      <Button color="primary" className="min-w-[120px] rounded-lg mt-3">Lưu</Button>
+      <Button color="primary" className="min-w-[120px] rounded-lg mt-3" onClick={onSave}>Lưu</Button>
     </div>
   )
 }

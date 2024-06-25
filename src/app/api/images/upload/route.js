@@ -2,7 +2,12 @@ import { NextResponse } from 'next/server'
 import fs from 'node:fs/promises'
 import { db } from '@/app/db';
 import { image_type } from "@prisma/client";
-import moment from 'moment';
+
+const typeToDirs = {
+  "PRODUCT": "./public/gallery/product",
+  "BANNER": "./public/gallery/banner",
+  "BLOG": "./public/gallery/blog",
+}
 
 export async function POST(req) {
   try {
@@ -13,9 +18,10 @@ export async function POST(req) {
     const imageType = formData.get("type");
 
     let name = formData.get("name");
-    let slug = converStringToSlug(name);
+    let slug = convertStringToSlug(name);
 
-    let oldImage = await db.image.findMany({ where: { slug: slug } })
+    let oldImage = await db.image.findMany({ where: { slug: slug, type: imageType } })
+
     if (oldImage[0] != null) {
       return NextResponse.json({ message: "Name already exists " }, { status: 400 });
     }
@@ -30,7 +36,8 @@ export async function POST(req) {
       return NextResponse.json({ message: "Image extension not allow" }, { status: 400 });
     }
 
-    const filePath = `./public/gallery/${imageType.toLowerCase()}/${slug}.${extension}`;
+    const dir = typeToDirs[imageType]
+    const filePath = `${dir}/${slug}.${extension}`;
 
     await save(formData, filePath);
     fs.writeFile(filePath, buffer);
@@ -42,26 +49,10 @@ export async function POST(req) {
 }
 
 async function save(formData, path) {
-  let activeFrom = formData.get("active_from");
-  activeFrom = activeFrom != null ? moment(activeFrom).toDate() : null;
-
-  let activeTo = formData.get("active_to");
-  activeTo = activeTo != null ? moment(activeTo).toDate() : null;
 
   let name = formData.get("name");
-  let slug = converStringToSlug(name);
-  console.log({
-    path: path,
-    name: name,
-    slug: slug,
-    alt: formData.get("alt"),
-    description: formData.get("description"),
-    type: formData.get("type"),
-    active: formData.get("active") ?? true,
-    activeFrom: activeFrom,
-    activeTo: activeTo,
-    order: formData.get("order"),
-  })
+  let slug = convertStringToSlug(name);
+
   await db.image.create({
     data: {
       path: path,
@@ -70,15 +61,12 @@ async function save(formData, path) {
       alt: formData.get("alt"),
       description: formData.get("description"),
       type: formData.get("type"),
-      active: formData.get("active") ?? true,
-      activeFrom: activeFrom,
-      activeTo: activeTo,
-      order: formData.get("order"),
+      active: formData.get("active") ?? true
     }
   })
 }
 
-function converStringToSlug(str) {
+function convertStringToSlug(str) {
   return str
     .toLowerCase()
     .trim()

@@ -78,17 +78,16 @@ model image {
   id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   path        String
   name        String
-  alt         String
-  description String
+  alt         String?
+  description String?
   createdAt   DateTime   @default(now()) @map("created_at")
   updatedAt   DateTime   @default(now()) @updatedAt @map("updated_at")
-  type        image_type
+  type        image_type @default(PRODUCT)
   active      Boolean    @default(true)
-  activeFrom  DateTime?  @map("active_from")
-  activeTo    DateTime?  @map("active_to")
-  order       Int?
-  slug        String     @unique
+  slug        String
   banner      banner[]
+
+  @@unique([slug, type])
 }
 
 enum BannerType {
@@ -98,7 +97,6 @@ enum BannerType {
 
 model banner {
   id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  order      Int       @unique
   active     Boolean   @default(true)
   activeFrom DateTime? @map("active_from")
   activeTo   DateTime? @map("active_to")
@@ -110,7 +108,6 @@ model banner {
   imageId String @map("image_id")
   image   image  @relation(fields: [imageId], references: [id])
 
-  @@unique([type, order])
   @@index([imageId])
 }
 

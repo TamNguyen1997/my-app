@@ -6,6 +6,7 @@ async function save(formData, path) {
     data: {
       description: formData.get("description"),
       path: path,
+      type: formData.get("type"),
       name: formData.get("name"),
       alt: formData.get("alt"),
     }

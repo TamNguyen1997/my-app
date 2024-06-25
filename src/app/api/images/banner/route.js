@@ -1,9 +1,14 @@
 import { NextResponse } from 'next/server'
-import { upload } from '../util'
 import { db } from '@/app/db';
 
 export async function POST(req) {
-  upload(req, "/banner")
+  const body = await req.json()
+
+  try {
+    await db.banner.createMany({ data: body })
+  } catch (e) {
+    return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
+  }
 
   return NextResponse.json({ message: "Upload success" })
 }
@@ -21,7 +26,7 @@ export async function GET(req) {
     where: condition,
     orderBy: [
       {
-        order: "desc"
+        updatedAt: "desc"
       }
     ],
   })

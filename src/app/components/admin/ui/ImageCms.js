@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import "./ImageCms.css"
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Textarea, useDisclosure, Tabs, Tab } from '@nextui-org/react'
+import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Textarea, useDisclosure, Tabs, Tab, SelectItem, Select } from '@nextui-org/react'
 import Dropzone from 'react-dropzone'
 import { redirect } from 'next/navigation'
 import ImagePicker from './ImagePicker'
@@ -18,6 +18,7 @@ const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) =>
   const [uploadImage, setUploadImage] = useState()
   const [imageDescription, setImageDescription] = useState("")
   const [imageName, setImageName] = useState("")
+  const [imageType, setImageType] = useState(new Set(["PRODUCT"]))
 
   const upload = () => {
     const formData = new FormData()
@@ -25,7 +26,9 @@ const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) =>
     formData.append('description', imageDescription)
     formData.append('name', imageName)
     formData.append('alt', "alt")
-    fetch('/api/images/gallery', {
+    formData.append('type', imageType.values().next().value)
+
+    fetch('/api/images/upload', {
       method: 'POST',
       body: formData
     }).then(() => {
@@ -65,7 +68,23 @@ const ImageCms = ({ disableSearch, disableAdd, onImageClick, disableDelete }) =>
                       <ModalHeader>Upload ảnh</ModalHeader>
                       <div className='grid grid-cols-2 gap-5'>
                         <div className='flex flex-col gap-3'>
-                          <Input aria-label="Tên ảnh" label="Tên ảnh" value={imageName} onValueChange={setImageName}></Input>
+                          <Input aria-label="Tên ảnh" label="Tên ảnh" value={imageName} onValueChange={setImageName} isRequired></Input>
+                          <Select
+                            label="Loại hình"
+                            defaultSelectedKeys={imageType}
+                            onSelectionChange={setImageType}
+                            isRequired
+                          >
+                            <SelectItem key="PRODUCT">
+                              Sản phẩm
+                            </SelectItem>
+                            <SelectItem key="BLOG">
+                              Blog
+                            </SelectItem>
+                            <SelectItem key="BANNER">
+                              Banner
+                            </SelectItem>
+                          </Select>
                           <Textarea aria-label="Mô tả" label="Mô tả" value={imageDescription} onValueChange={setImageDescription}></Textarea>
                         </div>
                         <Dropzone

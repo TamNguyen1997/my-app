@@ -88,6 +88,30 @@ model image {
   activeTo    DateTime?  @map("active_to")
   order       Int?
   slug        String     @unique
+  banner      banner[]
+}
+
+enum BannerType {
+  DEFAULT
+  SCHEDULED
+}
+
+model banner {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  order      Int       @unique
+  active     Boolean   @default(true)
+  activeFrom DateTime? @map("active_from")
+  activeTo   DateTime? @map("active_to")
+
+  type      BannerType @default(DEFAULT)
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @default(now()) @updatedAt @map("updated_at")
+
+  imageId String @map("image_id")
+  image   image  @relation(fields: [imageId], references: [id])
+
+  @@unique([type, order])
+  @@index([imageId])
 }
 
 model blog {

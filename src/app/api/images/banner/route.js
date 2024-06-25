@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import path from 'path'
-import { upload, getFile } from '../util'
+import { upload } from '../util'
+import { db } from '@/app/db';
 
 export async function POST(req) {
   upload(req, "/banner")
@@ -9,6 +9,21 @@ export async function POST(req) {
 }
 
 export async function GET(req) {
-  const dir = path.resolve('./public', 'banner');
-  return NextResponse.json(getFile(dir, req))
+  const { searchParams } = new URL(req.url);
+
+  let condition = {}
+
+  if (searchParams.get("type")) {
+    condition.type = searchParams.get("type")
+  }
+
+  const result = await db.banner.findMany({
+    where: condition,
+    orderBy: [
+      {
+        order: "desc"
+      }
+    ],
+  })
+  return NextResponse.json(result)
 }

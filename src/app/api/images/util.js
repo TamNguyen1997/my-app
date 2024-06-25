@@ -2,12 +2,6 @@ import fs from 'node:fs/promises'
 import { db } from '@/app/db';
 
 async function save(formData, path) {
-  console.log({
-    description: formData.get("description"),
-    path: path,
-    name: formData.get("name"),
-    alt: formData.get("alt"),
-  })
   await db.image.create({
     data: {
       description: formData.get("description"),

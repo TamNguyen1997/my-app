@@ -2,25 +2,20 @@
 
 import { useEffect, useState } from 'react'
 import "./ImageCms.css"
-import { Input, Spinner } from '@nextui-org/react'
+import { Input, Select, SelectItem } from '@nextui-org/react'
 import { X } from 'lucide-react'
 
 const ImagePicker = ({ disableSearch, onImageClick, disableDelete }) => {
   const [images, setImages] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [type, setType] = useState(new Set([]))
+  const [name, setName] = useState()
 
   useEffect(() => {
-    fetch('/api/images/').then(async res => {
-      setImages(await res.json())
-      setIsLoading(false)
-    })
-  }, [])
-
-  const onSearch = (value) => {
-    fetch(`/api/images/?name=${value}`).then(async res => {
+    const typeValue = type.values().next().value
+    fetch(`/api/images/?name=${name}&type=${typeValue}`).then(async res => {
       setImages(await res.json())
     })
-  }
+  }, [type, name])
 
   const deleteImage = async (image) => {
     await fetch(`/api/images/${image}`, {
@@ -28,20 +23,47 @@ const ImagePicker = ({ disableSearch, onImageClick, disableDelete }) => {
     })
   }
 
-  if (isLoading) return <Spinner size="lg" className="p-10" />
+  console.log(name)
+
   return (
     <div>
       <div className='flex w-full flex-wrap md:flex-nowrap gap-4 py-5'>
         {
           disableSearch ? null : (
-            <Input
-              className="w-52"
-              type="text"
-              aria-label="Images"
-              placeholder="Tìm kiếm ảnh"
-              onValueChange={(value) => onSearch(value)}
-            >
-            </Input>
+            <div className='flex gap-3 w-1/4'>
+              <Input
+                className="w-52"
+                type="text"
+                aria-label="Images"
+                placeholder="Tìm kiếm ảnh"
+                value={name}
+                isClearable
+                onValueChange={(value) => {
+                  setName(value)
+                }}
+              >
+              </Input>
+              <Select
+                aria-label='Loại'
+                className="w-52"
+                defaultSelectedKeys={type}
+                onSelectionChange={(value) => {
+                  setType(value)
+                }}
+              >
+                <SelectItem key="PRODUCT">
+                  Sản phẩm
+                </SelectItem>
+                <SelectItem key="BANNER">
+                  Banner
+                </SelectItem>
+                <SelectItem key="BLOG">
+                  Blog
+                </SelectItem>
+              </Select>
+            </div>
+
+
           )
         }
       </div>

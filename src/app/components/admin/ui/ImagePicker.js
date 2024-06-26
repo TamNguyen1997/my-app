@@ -4,11 +4,13 @@ import { useEffect, useState } from 'react'
 import "./ImageCms.css"
 import { Input, Select, SelectItem } from '@nextui-org/react'
 import { X } from 'lucide-react'
+import { redirect } from 'next/navigation'
 
 const ImagePicker = ({ disableSearch, onImageClick, disableDelete }) => {
   const [images, setImages] = useState([])
   const [type, setType] = useState(new Set([]))
   const [name, setName] = useState()
+  const [refresh, setRefresh] = useState(false)
 
   useEffect(() => {
     const typeValue = type.values().next().value
@@ -18,12 +20,15 @@ const ImagePicker = ({ disableSearch, onImageClick, disableDelete }) => {
   }, [type, name])
 
   const deleteImage = async (image) => {
-    await fetch(`/api/images/${image}`, {
+    await fetch(`/api/images/${image.id}`, {
       method: 'DELETE'
     })
+    setRefresh(true)
   }
 
-  console.log(name)
+  if (refresh) {
+    redirect("/admin/image")
+  }
 
   return (
     <div>

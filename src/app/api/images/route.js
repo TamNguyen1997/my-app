@@ -14,7 +14,6 @@ export async function GET(req) {
     condition.name = { search: `${searchParams.get("name")}:*` }
   }
 
-  console.log(condition)
   try {
     return NextResponse.json(await db.image.findMany({ where: condition }))
 

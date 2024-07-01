@@ -109,9 +109,9 @@ const HeaderItems = () => {
     fetch('/api/categories/?type=CATEGORY').then(res => res.json()).then(setCategories)
   })
 
-  if (windowSize.width <= 1024) {
+  // if (windowSize.width <= 1024) {
 
-  }
+  // }
 
   return (<>
     <div className="flex gap-6 text-sm items-center">

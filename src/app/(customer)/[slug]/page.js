@@ -1,30 +1,33 @@
 "use client";
-
+import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/breadcrumbs";
+
+const Cate = () => {
+  const params = useParams();
+
+  return (
+    <div>
+      <Category params={params.slug} />
+    </div>
+  );
+};
 
 const Category = ({ params }) => {
   const [data, setData] = useState([])
   const [category, setCategory] = useState({ name: "" })
+
   useEffect(() => {
-    const fetchCategory = () => {
-      fetch(`/api/categories/${params}`).then(async res => {
-        if (res.ok) {
-          setCategory(await res.json())
-        }
-      })
-    };
-    const fetchProducts = () => {
-      fetch(`/api/categories/${params}/products`).then(async res => {
-        if (res.ok) {
-          setData(await res.json())
-        }
-      })
-    }
-    fetchCategory()
-    fetchProducts()
-    window.scrollTo(0, 0)
+    fetch(`/api/categories/${params}/products/`).then(async res => {
+      if (res.ok) {
+        const body = await res.json()
+        setCategory(body.category)
+        setData(body.products)
+      }
+    })
+
   }, [params]);
 
   return (
@@ -37,8 +40,16 @@ const Category = ({ params }) => {
       <div
         className="mx-auto w-11/12 px-2 py-8 sm:px-6 sm:py-12 lg:px-8 text-gray-500 text-sm"
         style={{ maxWidth: "90rem" }}>
-        Home <span className="mx-2">/</span> {params}
+        <Breadcrumbs>
+          <BreadcrumbItem>
+            <Link href="/">Trang chủ</Link>
+          </BreadcrumbItem>
+          <BreadcrumbItem>
+            <Link href={`/${category.slug}`}>{category.name}</Link>
+          </BreadcrumbItem>
+        </Breadcrumbs>
       </div>
+
       <div className="w-full lg:w-11/12 mx-auto my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
         {data.map((product) => (
           <Link
@@ -48,8 +59,8 @@ const Category = ({ params }) => {
             <Image
               width={500}
               height={400}
-              src={`/gallery/${product.imageUrl}`}
-              alt={product.imageAlt}
+              src={`${product?.image?.path}`}
+              alt={product?.imageAlt}
               className="h-[300px] w-full object-cover object-center group-hover:opacity-50 p-2" />
             <p className="mt-4 text-sm text-gray-700 font-semibold text-center">
               {product.name}
@@ -66,4 +77,4 @@ const Category = ({ params }) => {
   );
 };
 
-export default Category;
+export default Cate;

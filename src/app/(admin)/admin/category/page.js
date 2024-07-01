@@ -1,25 +1,44 @@
 "use client"
 
 import {
-  Autocomplete, AutocompleteItem,
   Button, Input,
   Modal, ModalBody,
   ModalContent, ModalFooter,
-  ModalHeader, Spinner,
+  ModalHeader, Select, SelectItem, Spinner,
   Table, TableBody,
   TableCell, TableColumn,
   TableHeader, TableRow,
   useDisclosure
 } from "@nextui-org/react";
 import { EditIcon, Trash2 } from "lucide-react";
+import { redirect } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+
+const categoryTypes = [
+  {
+    key: "BRAND",
+    label: "Nhãn hàng"
+  },
+  {
+    key: "CATEGORY",
+    label: "Category"
+  }
+]
+
 
 const Category = () => {
   const [categories, setCategories] = useState([])
-  const [subCategories, setSubCategories] = useState([])
+  const [selectedCate, setSelectedCate] = useState({})
+
   const [isLoading, setIsLoading] = useState(true)
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const [selectedSubCate, setSelectedSubCate] = useState({})
+
+  const [reload, setReload] = useState(false)
+  const [categoryType, setCategoryType] = useState(new Set(["CATEGORY"]))
+
+  if (reload) {
+    redirect("/admin/category")
+  }
 
   useEffect(() => {
     const getCategories = () => {
@@ -28,45 +47,42 @@ const Category = () => {
         setIsLoading(false)
       })
     }
-    const getSubCategories = () => {
-      fetch('/api/sub-categories/').then(async res => {
-        setSubCategories(await res.json())
-        setIsLoading(false)
-      })
-    }
+
     getCategories()
-    getSubCategories()
   }, [])
 
   const onSubmit = () => {
-    if (selectedSubCate.id) {
-      fetch(`/api/sub-categories/${selectedSubCate.id}`, { method: "PUT", body: JSON.stringify(selectedSubCate) })
+    const cate = Object.assign(selectedCate, { type: categoryType.values().next().value })
+    if (selectedCate.id) {
+      fetch(`/api/categories/${selectedCate.id}`, { method: "PUT", body: JSON.stringify(cate) })
     } else {
-      fetch('/api/sub-categories/', { method: "POST", body: JSON.stringify(selectedSubCate) })
+      fetch('/api/categories/', { method: "POST", body: JSON.stringify(cate) })
     }
   }
 
-  const openModal = (subCategory) => {
-    setSelectedSubCate(subCategory)
+  const openModal = (category) => {
+    setSelectedCate(category)
     onOpen()
   }
 
-  const deleteSubCate = (id) => [
-    fetch(`/api/sub-categories/${id}`, { method: "DELETE" }).then(() => window.location.reload())
+  const deleteCate = (id) => [
+    fetch(`/api/categories/${id}`, { method: "DELETE" }).then(() => setReload(true))
   ]
 
-  const renderCell = useCallback((subCategory, columnKey) => {
-    const cellValue = subCategory[columnKey]
+  const renderCell = useCallback((category, columnKey) => {
+    const cellValue = category[columnKey]
 
     switch (columnKey) {
+      case "type":
+        return categoryTypes.find(item => item.key === cellValue).label
       case "actions":
         return (
           <div className="relative flex items-center gap-2">
             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-              <EditIcon onClick={() => openModal(subCategory)} />
+              <EditIcon onClick={() => openModal(category)} />
             </span>
             <span className="text-lg text-danger cursor-pointer active:opacity-50 pl-5">
-              <Trash2 onClick={() => { deleteSubCate(subCategory.id) }} />
+              <Trash2 onClick={() => { deleteCate(category.id) }} />
             </span>
           </div>
         )
@@ -75,9 +91,16 @@ const Category = () => {
     }
   }, [])
 
-  const newSubCate = () => {
-    setSelectedSubCate({})
+  const newCate = () => {
+    setSelectedCate({})
     onOpen()
+  }
+
+  const onValueChange = (value) => {
+    setSelectedCate(Object.assign(
+      {},
+      selectedCate,
+      { name: value, slug: convertToSlug(value) }))
   }
 
   return (
@@ -87,8 +110,10 @@ const Category = () => {
           <Table
             aria-label="Tất cả sản phẩm">
             <TableHeader>
-              <TableColumn key="id" textValue="Mã sản phẩm">ID category</TableColumn>
-              <TableColumn key="name" textValue="name">Category</TableColumn>
+              <TableColumn key="name" textValue="name">Tên</TableColumn>
+              <TableColumn key="slug" textValue="slug">Slug</TableColumn>
+              <TableColumn key="type" textValue="type">Loại</TableColumn>
+              <TableColumn key="actions" textValue="actions"></TableColumn>
             </TableHeader>
             <TableBody
               items={categories}
@@ -97,65 +122,51 @@ const Category = () => {
               loadingContent={<Spinner label="Loading..." />}>
               {(item) => (
                 <TableRow key={item.id}>
-                  {(columnKey) => <TableCell>{item[columnKey]}</TableCell>}
+                  {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
                 </TableRow>
               )}
             </TableBody>
           </Table>
-          <div className="pt-3">
-            <Table
-              aria-label="Tất cả sản phẩm">
-              <TableHeader>
-                <TableColumn key="id" textValue="Mã sản phẩm">ID sub-category</TableColumn>
-                <TableColumn key="name" textValue="name">Sub-category</TableColumn>
-                <TableColumn key="categoryId" textValue="categoryId">Category</TableColumn>
-                <TableColumn key="actions" textValue="actions"></TableColumn>
-              </TableHeader>
-              <TableBody
-                items={subCategories}
-                isLoading={isLoading}
-                emptyContent={"Không có sub-category nào"}
-                loadingContent={<Spinner label="Loading..." />}>
-                {(item) => (
-                  <TableRow key={item.id}>
-                    {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
         </div>
       </div>
       <div className="p-3">
-        <Button color="primary" onClick={newSubCate}>Thêm sub-category</Button>
+        <Button color="primary" onClick={newCate}>Thêm category</Button>
       </div>
       <div>
         <Modal
-          size="5xl" scrollBehavior="inside"
+          scrollBehavior="inside"
           isOpen={isOpen} onOpenChange={onOpenChange}>
           <form onSubmit={onSubmit}>
             <ModalContent>
               {(onClose) => (
                 <>
-                  <ModalHeader className="flex flex-col gap-1">Chi tiết sub-category</ModalHeader>
+                  <ModalHeader className="flex flex-col gap-1">Chi tiết category</ModalHeader>
                   <ModalBody>
                     <Input
                       type="text"
-                      label="Sub category"
-                      defaultValue={selectedSubCate.name}
-                      onValueChange={(value) => setSelectedSubCate(Object.assign({}, selectedSubCate, { name: value }))}
-                      labelPlacement="outside" isRequired></Input>
-                    <Autocomplete
                       label="Category"
-                      variant="bordered"
-                      aria-label="Category"
-                      defaultItems={categories}
-                      selectedKey={selectedSubCate.categoryId}
-                      className="max-w-xs p-3"
-                      onSelectionChange={value => setSelectedSubCate(Object.assign({}, selectedSubCate, { categoryId: value }))}
-                      isRequired>
-                      {(category) => <AutocompleteItem key={category.id}>{category.name}</AutocompleteItem>}
-                    </Autocomplete>
+                      defaultValue={selectedCate.name}
+                      onValueChange={onValueChange}
+                      labelPlacement="outside" isRequired />
+                    <Input
+                      type="text"
+                      label="Slug"
+                      value={selectedCate.slug}
+                      labelPlacement="outside" isRequired disabled />
+                    <Select
+                      label="Phân loại"
+                      labelPlacement="outside"
+                      defaultSelectedKeys={categoryType}
+                      onSelectionChange={setCategoryType}
+                    >
+                      {
+                        categoryTypes.map((type) => (
+                          <SelectItem key={type.key}>
+                            {type.label}
+                          </SelectItem>
+                        ))
+                      }
+                    </Select>
                   </ModalBody>
                   <ModalFooter>
                     <Button color="primary" type="submit">
@@ -174,5 +185,11 @@ const Category = () => {
     </div>
   );
 };
+
+function convertToSlug(text) {
+  return text.toLowerCase()
+    .replace(/ /g, "-")
+    .replace(/[^\w-]+/g, "");
+}
 
 export default Category;

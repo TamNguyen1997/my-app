@@ -1,4 +1,4 @@
-import { Image, NotebookPen, ShoppingBasket } from 'lucide-react';
+import { Image, Layers, NotebookPen, ShoppingBasket } from 'lucide-react';
 
 const items = [
   {
@@ -18,6 +18,12 @@ const items = [
     name: 'Blog',
     icon: <NotebookPen />,
     link: '/admin/blog'
+  },
+  {
+    id: "category",
+    name: 'Category',
+    icon: <Layers />,
+    link: '/admin/category'
   }
 ]
 

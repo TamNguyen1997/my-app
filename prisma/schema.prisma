@@ -13,34 +13,23 @@ datasource db {
   relationMode = "prisma"
 }
 
-model subCategory {
-  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name       String
-  categoryId String    @map("category_id")
-  createdAt  DateTime  @default(now()) @map("created_at")
-  updatedAt  DateTime  @updatedAt @map("updated_at")
-  product    product[]
-}
-
 model product {
-  id            String       @id
-  subCategoryId String?      @map("sub_category_id")
-  subCategory   subCategory? @relation(fields: [subCategoryId], references: [id])
-  categoryId    String?      @map("category_id")
-  category      category?    @relation(fields: [categoryId], references: [id])
-  name          String?
-  imageUrl      String?      @map("image_url")
-  imageAlt      String?      @map("image_alt")
-  active        Boolean      @default(true)
-  createdAt     DateTime     @default(now()) @map("created_at")
-  updatedAt     DateTime     @updatedAt @map("updated_at")
-  description   String?
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String
+  slug        String
+  imageId     String?  @map("image_id")
+  image       image?   @relation(fields: [imageId], references: [id])
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  description String?
 
-  saleDetails      sale_detail[]
-  technicalDetails technical_detail[]
-  order_history    order_history[]
+  saleDetails            sale_detail[]
+  technicalDetails       technical_detail[]
+  order_history          order_history[]
+  categories_to_products categories_to_products[]
 
-  @@index([subCategoryId])
+  @@index([imageId])
 }
 
 model technical_detail {
@@ -88,6 +77,7 @@ model image {
   active      Boolean    @default(true)
   slug        String
   banner      banner[]
+  product     product[]
 
   @@unique([slug, type])
 }
@@ -147,11 +137,31 @@ enum image_type {
 }
 
 model category {
-  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name      String    @unique
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
-  product   product[]
+  id                     String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                   String                   @unique
+  slug                   String                   @default(dbgenerated("gen_random_uuid()"))
+  type                   category_type            @default(CATEGORY)
+  createdAt              DateTime                 @default(now()) @map("created_at")
+  updatedAt              DateTime                 @default(now()) @updatedAt @map("updated_at")
+  categories_to_products categories_to_products[]
+
+  @@unique([slug])
+}
+
+model categories_to_products {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
+  productId String  @map("product_id") @db.Uuid
+  product   product @relation(fields: [productId], references: [id])
+
+  categoryId String   @map("category_id") @db.Uuid
+  category   category @relation(fields: [categoryId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@index([productId])
+  @@index([categoryId])
 }
 
 model blog_category {
@@ -166,4 +176,9 @@ enum blog_type {
   BLOG
   CONTACT
   LEGAL
+}
+
+enum category_type {
+  BRAND
+  CATEGORY
 }

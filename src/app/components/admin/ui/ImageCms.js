@@ -127,7 +127,7 @@ const ImageCms = () => {
             </Modal>
           </div>
 
-          <ImagePicker />
+          <ImagePicker onImageClick={() => { }} />
         </Tab>
         <Tab key="Draggable Gallery" title="Draggable Gallery">
           <BannerScheduler />

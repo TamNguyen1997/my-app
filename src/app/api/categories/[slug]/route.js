@@ -7,7 +7,8 @@ export async function DELETE(req, { params }) {
   }
 
   try {
-    return NextResponse.json(await db.category.delete({ where: { slug: params.slug } }))
+    await db.categories_to_products.deleteMany({ where: { categoryId: params.slug } })
+    return NextResponse.json(await db.category.delete({ where: { id: params.slug } }))
   } catch (e) {
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }

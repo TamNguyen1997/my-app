@@ -48,7 +48,7 @@ const Header = () => {
                 <div className="flex gap-10">
                   <div className="flex items-center gap-10">
                     <Link href="/">Tin tức</Link>
-                    <Link href="/">Blog</Link>
+                    <Link href="/blog">Blog</Link>
                   </div>
                   <div className="flex items-center gap-10">
                     <Link href="/">Liên hệ</Link>
@@ -86,72 +86,37 @@ const Header = () => {
 };
 
 const HeaderItems = () => {
-  const [windowSize, setWindowSize] = useState({
-    width: undefined,
-    height: undefined,
-  })
+  // const [windowSize, setWindowSize] = useState({
+  //   width: undefined,
+  //   height: undefined,
+  // })
+
+  // useEffect(() => {
+  //   function handleResize() {
+  //     setWindowSize({
+  //       width: window.innerWidth,
+  //       height: window.innerHeight,
+  //     })
+  //   }
+  //   window.addEventListener("resize", handleResize)
+  //   handleResize()
+  //   return () => window.removeEventListener("resize", handleResize)
+  // }, [])
+
+  const [categories, setCategories] = useState([])
 
   useEffect(() => {
-    function handleResize() {
-      setWindowSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      })
-    }
-    window.addEventListener("resize", handleResize)
-    handleResize()
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
-
-  let items = <>
-    <Link href="/">Dụng cụ vệ sinh kính</Link>
-    <Link href="/">Găng tay</Link>
-    <Link href="/">Xe làm vệ sinh</Link>
-    <Link href="/">Máy chà sàn</Link>
-    <Link href="/">Máy hút bụi</Link>
-  </>
+    fetch('/api/categories/?type=CATEGORY').then(res => res.json()).then(setCategories)
+  })
 
   if (windowSize.width <= 1024) {
-    items = (<>
-      <Dropdown>
-        <DropdownTrigger>
-          <Button
-            variant="light">
-            Xem thêm
-          </Button>
-        </DropdownTrigger>
-        <DropdownMenu variant="faded" aria-label="Dropdown menu with icons">
-          <DropdownItem
-            key="dung-cu-ve-sinh-kinh">
-            <Link href="/">Dụng cụ vệ sinh kính</Link>
-          </DropdownItem>
-          <DropdownItem
-            key="gang-tay">
-            <Link href="/">Găng tay</Link>
-          </DropdownItem>
-          <DropdownItem
-            key="xe-lam-ve-sinh">
-            <Link href="/">Xe làm vệ sinh</Link>
-          </DropdownItem>
-          <DropdownItem
-            key="may-cha-san">
-            <Link href="/">Máy chà sàn</Link>
-          </DropdownItem>
-          <DropdownItem
-            key="may-hut-bui">
-            <Link href="/">Máy hút bụi</Link>
-          </DropdownItem>
-        </DropdownMenu>
-      </Dropdown >
-    </>)
+
   }
 
   return (<>
     <div className="flex gap-6 text-sm items-center">
-      <Link href="/">Dụng cụ vệ sinh</Link>
-      <Link href="/">Xe đẩy</Link>
       {
-        items
+        categories.map((category) => <Link href={`/${category.slug}`}>{category.name}</Link>)
       }
     </div>
   </>)

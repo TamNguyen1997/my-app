@@ -16,12 +16,12 @@ import { useCallback, useEffect, useState } from "react";
 
 const categoryTypes = [
   {
-    key: "BRAND",
-    label: "Nhãn hàng"
-  },
-  {
     key: "CATEGORY",
     label: "Category"
+  },
+  {
+    key: "BRAND",
+    label: "Nhãn hàng"
   }
 ]
 

@@ -54,7 +54,7 @@ export default function PopularBlogs() {
                 <div>
                   <Card>
                     <CardHeader className="flex flex-col items-center justify-center h-64">
-                      <Image
+                      <img
                         width={400}
                         height={200}
                         className="h-[250px] w-[300px]"

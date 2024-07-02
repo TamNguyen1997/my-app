@@ -21,7 +21,6 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { EditIcon, Plus, Trash2 } from "lucide-react"
 import { redirect } from "next/navigation";
 import ImagePicker from "@/components/admin/ui/ImagePicker";
-import Image from "next/image";
 import slugify from "slugify"
 
 const rowsPerPage = 10;
@@ -328,7 +327,7 @@ const ProductDetailForm = ({ categories, product, setProduct, selectedCategory, 
           <div>
             {
               product.image ?
-                <Image
+                <img
                   src={`${process.env.NEXT_PUBLIC_FILE_PATH + product.image?.path}`}
                   alt={`${product.imageAlt}`}
                   width="300"

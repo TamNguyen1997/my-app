@@ -1,6 +1,5 @@
 "use client";
 import { useParams } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/breadcrumbs";
@@ -56,7 +55,7 @@ const Category = ({ params }) => {
             href={`/products/${product.id}`}
             key={product.id}
             className="group border rounded h-[450px] overflow-clip">
-            <Image
+            <img
               width={500}
               height={400}
               src={`${process.env.NEXT_PUBLIC_FILE_PATH + product?.image?.path}`}

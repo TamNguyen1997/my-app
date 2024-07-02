@@ -18,7 +18,6 @@ import './Tiptap.css'
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Switch, Textarea, useDisclosure } from '@nextui-org/react';
 import { useForm } from "react-hook-form"
 import { useState } from 'react';
-import Image from 'next/image';
 
 import {
   RiBold,
@@ -139,7 +138,7 @@ const RichTextEditor = ({ blog }) => {
             <div>
               {
                 blog?.thumbnail ?
-                  <Image
+                  <img
                     src={`${process.env.NEXT_PUBLIC_FILE_PATH + blog.thumbnail}`}
                     width="300"
                     height="300"

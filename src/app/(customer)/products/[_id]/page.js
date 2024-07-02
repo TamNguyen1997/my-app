@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import TechnicalDetail from "@/components/TechnicalDetail";
@@ -25,7 +24,7 @@ const Product = () => {
             <div className="w-full px-4 md:w-1/2 ">
               <div className="sticky top-0 z-30 overflow-hidden pb-6">
                 <div className="relative mb-6 lg:mb-10 lg:h-2/4 ">
-                  <Image
+                  <img
                     width={400}
                     height={400}
                     src={`${process.env.NEXT_PUBLIC_FILE_PATH + product.image?.path}`}

@@ -1,7 +1,6 @@
 "use client"
 
 import { Button, Spinner } from "@nextui-org/react";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react"
 import Carousel from "react-multi-carousel"
@@ -155,7 +154,7 @@ const ProductCarousel = ({ products, responsive }) => {
               <Link href={`/products/${product.id}`}>
                 <div className="h-2/3">
                   <div className="aspect-h-1 aspect-w-1 w-full h-full overflow-hidden rounded-lg  xl:aspect-h-8 xl:aspect-w-7">
-                    <Image
+                    <img
                       width={500}
                       height={400}
                       src={`${process.env.NEXT_PUBLIC_FILE_PATH + product.image?.path}`}
@@ -214,12 +213,11 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
             <div className="text-black font-bold text-xl">
               {
                 brandDescription[selectedBrand] && brandDescription[selectedBrand].logo ?
-                  <Image
+                  <img
                     width={400}
                     height={400}
                     src={brandDescription[selectedBrand].logo}
-                  >
-                  </Image> : null
+                  /> : null
               }
             </div>
           </div>

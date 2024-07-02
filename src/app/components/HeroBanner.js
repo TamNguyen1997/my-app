@@ -42,7 +42,6 @@ const HeroBanner = () => {
       setBanners(images)
     })
   }, [])
-  console.log(banners)
   return (
     <Carousel responsive={responsive} infinite autoPlay autoPlaySpeed={5000}>
       {

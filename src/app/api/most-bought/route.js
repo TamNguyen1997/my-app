@@ -23,7 +23,6 @@ export async function GET(req) {
       include: { image: true }
     }))
   } catch (e) {
-    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }

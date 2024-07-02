@@ -8,11 +8,12 @@ export async function GET(req, { params }) {
   try {
 
     const { searchParams } = new URL(req.url);
+
     return NextResponse.json(await db.product.findFirst(
       {
         where: { id: params.id },
         include: {
-          technicalDetails: searchParams && searchParams.get("includeTechnical") !== "undefined" && searchParams.get("includeTechnical") !== null,
+          technical_detail: searchParams && searchParams.get("includeTechnical") !== "undefined" && searchParams.get("includeTechnical") !== null,
           saleDetails: searchParams && searchParams.get("includeSale") !== "undefined" && searchParams.get("includeSale") !== null,
           image: true
         }

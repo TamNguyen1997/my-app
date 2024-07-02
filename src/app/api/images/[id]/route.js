@@ -7,7 +7,6 @@ export async function DELETE(req, { params }) {
 
     const image = await db.image.findFirst({ where: { id: params.id } });
 
-    console.log(image)
     if (!image) return NextResponse.json({ message: "Image not found" }, { status: 4004 });
 
     const blogs = await db.blog.findFirst({ where: { thumbnail: { contains: `/${params.image}.` } } });
@@ -24,7 +23,6 @@ export async function DELETE(req, { params }) {
     }
     return NextResponse.json({ message: "Image not found" }, { status: 400 });
   } catch (e) {
-    console.log(e)
     return NextResponse.json({ message: "Something went wrong ", error: e }, { status: 400 });
   }
 }

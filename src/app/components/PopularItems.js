@@ -60,7 +60,6 @@ export default function PopularItems() {
     fetch("/api/most-bought").then(res => res.json()).then(setProducts).then(() => setIsLoading(false))
   }, [])
 
-  console.log(products)
   if (isLoading) return <Spinner className="m-auto" />
 
   if (!products.length) return <></>

@@ -28,13 +28,11 @@ export async function POST(req, { params }) {
 
 export async function GET(req, { params }) {
   if (!params.id) {
-    console.log("??????????????????")
     return NextResponse.json({ message: `Resource not found ${params.id}` }, { status: 400 })
   }
 
   try {
     const result = await db.sale_detail.findMany({ where: { productId: params.id } })
-    console.log(result)
     return NextResponse.json(result)
   } catch (e) {
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })

@@ -12,11 +12,7 @@ const Product = () => {
   const [product, setProduct] = useState({});
   const { _id } = useParams();
   useEffect(() => {
-    const fetchProduct = () => {
-      fetch(`/api/products/${_id}`).then((res) => res.json()).then(json => setProduct(json))
-    }
-
-    fetchProduct()
+    fetch(`/api/products/${_id}?includeTechnical=true&includeSale=true`).then((res) => res.json()).then(json => setProduct(json))
   }, [_id])
   if (!product.id) {
     return <Skeleton />
@@ -54,7 +50,7 @@ const Product = () => {
                 </h2>
               </div>
               <SaleDetail data={product.saleDetails}></SaleDetail>
-              <TechnicalDetail data={product.technicalDetails}></TechnicalDetail>
+              <TechnicalDetail data={product.technical_detail}></TechnicalDetail>
 
               <RelatedProducts productId={_id}></RelatedProducts>
             </div>

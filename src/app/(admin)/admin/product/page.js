@@ -17,14 +17,12 @@ import {
   SelectItem
 } from "@nextui-org/react"
 import { v4 } from "uuid";
-import { createContext, useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { EditIcon, Plus, Trash2 } from "lucide-react"
 import { redirect } from "next/navigation";
 import ImagePicker from "@/components/admin/ui/ImagePicker";
 import Image from "next/image";
 import slugify from "slugify"
-
-export const ProductContext = createContext()
 
 const rowsPerPage = 10;
 
@@ -39,7 +37,6 @@ const ProductCms = () => {
   const [selectedProduct, setSelectedProduct] = useState({})
   const [selectedProductCategory, setSelectedProductCategory] = useState(new Set([]))
 
-  const value = [selectedProduct, setSelectedProduct]
   const [reload, setReload] = useState(false)
   const [total, setTotal] = useState(0)
   const [categories, setCategories] = useState([])
@@ -212,59 +209,57 @@ const ProductCms = () => {
         <Button color="primary" onClick={newProduct}>Thêm sản phẩm</Button>
       </div>
 
-      <ProductContext.Provider value={value}>
-        <Modal
-          size="5xl" scrollBehavior="inside"
-          isOpen={isOpen} onOpenChange={onOpenChange}>
-          <form onSubmit={onSubmit}>
-            <ModalContent>
-              {(onClose) => (
-                <>
-                  <ModalHeader className="flex flex-col gap-1">Chi tiết sản phẩm</ModalHeader>
-                  <ModalBody>
-                    <Tabs>
-                      <Tab title="Thông tin chung">
-                        <Card>
-                          <CardBody>
-                            <ProductDetailForm
-                              categories={categories}
-                              product={selectedProduct}
-                              setProduct={setSelectedProduct}
-                              selectedCategory={selectedProductCategory}
-                              setSelectedCategory={setSelectedProductCategory} />
-                          </CardBody>
-                        </Card>
-                      </Tab>
-                      <Tab title="Thông số kĩ thuật">
-                        <Card>
-                          <CardBody>
-                            <TechnicalDetailForm rows={technicalRows} setRows={setTechnicalRows} columns={technicalColumns} setColumns={setTechnicalColumns} />
-                          </CardBody>
-                        </Card>
-                      </Tab>
-                      <Tab title="Thông số bán hàng">
-                        <Card>
-                          <CardBody>
-                            <SaleDetailForm saleDetails={saleDetails} setSaleDetails={setSaleDetails} productId={selectedProduct.id} />
-                          </CardBody>
-                        </Card>
-                      </Tab>
-                    </Tabs>
-                  </ModalBody>
-                  <ModalFooter>
-                    <Button color="primary" type="submit">
-                      Lưu
-                    </Button>
-                    <Button color="danger" variant="light" onPress={onClose}>
-                      Close
-                    </Button>
-                  </ModalFooter>
-                </>
-              )}
-            </ModalContent>
-          </form>
-        </Modal>
-      </ProductContext.Provider>
+      <Modal
+        size="5xl" scrollBehavior="inside"
+        isOpen={isOpen} onOpenChange={onOpenChange}>
+        <form onSubmit={onSubmit}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">Chi tiết sản phẩm</ModalHeader>
+                <ModalBody>
+                  <Tabs>
+                    <Tab title="Thông tin chung">
+                      <Card>
+                        <CardBody>
+                          <ProductDetailForm
+                            categories={categories}
+                            product={selectedProduct}
+                            setProduct={setSelectedProduct}
+                            selectedCategory={selectedProductCategory}
+                            setSelectedCategory={setSelectedProductCategory} />
+                        </CardBody>
+                      </Card>
+                    </Tab>
+                    <Tab title="Thông số kĩ thuật">
+                      <Card>
+                        <CardBody>
+                          <TechnicalDetailForm rows={technicalRows} setRows={setTechnicalRows} columns={technicalColumns} setColumns={setTechnicalColumns} />
+                        </CardBody>
+                      </Card>
+                    </Tab>
+                    <Tab title="Thông số bán hàng">
+                      <Card>
+                        <CardBody>
+                          <SaleDetailForm saleDetails={saleDetails} setSaleDetails={setSaleDetails} productId={selectedProduct.id} />
+                        </CardBody>
+                      </Card>
+                    </Tab>
+                  </Tabs>
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="primary" type="submit">
+                    Lưu
+                  </Button>
+                  <Button color="danger" variant="light" onPress={onClose}>
+                    Close
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </form>
+      </Modal>
     </>
   )
 }

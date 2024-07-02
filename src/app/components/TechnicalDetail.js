@@ -19,7 +19,7 @@ const TechnicalDetail = ({ data }) => {
                 JSON.parse(data.row).map((value) => {
                   return <TableRow key={value.id}>
                     {
-                      Object.keys(value).filter(item => item !== "id").map(item => <TableCell>{value[item]}</TableCell>)
+                      Object.keys(value).filter(item => item !== "id").map(item => <TableCell key={item.id}>{value[item]}</TableCell>)
                     }
                   </TableRow>
                 })

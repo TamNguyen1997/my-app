@@ -3,6 +3,11 @@ import { db } from '@/app/db';
 
 export async function POST(req) {
   const body = await req.json()
+
+  await db.categories_to_products.deleteMany({
+    where: body
+  })
+
   return NextResponse.json(await db.categories_to_products.create(
     {
       data: body

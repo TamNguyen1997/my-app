@@ -6,7 +6,7 @@ export async function GET(req, { params }) {
     return NextResponse.json({ message: `Resource not found ${params.id}` }, { status: 400 })
   }
   try {
-    const product = await db.product.findFirst({where: {id: params.id}})
+    const product = await db.product.findFirst({ where: { id: params.id } })
     return NextResponse.json(await db.product.findMany(
       {
         where: {
@@ -14,6 +14,9 @@ export async function GET(req, { params }) {
             id: params.id
           },
           categoryId: product.categoryId
+        },
+        include: {
+          image: true
         },
         take: 4
       }

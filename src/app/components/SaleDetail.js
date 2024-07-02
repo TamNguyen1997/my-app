@@ -12,19 +12,20 @@ const SaleDetail = ({ data }) => {
   const [selectedSecondary, setSelectedSecondary] = useState({})
 
   useEffect(() => {
-      let primary = []
-      let detailGroup = {}
+    if (!data) return
+    let primary = []
+    let detailGroup = {}
 
-      data.forEach((detail) => {
-        if (detail.parentSaleDetailId) {
-          if (!detailGroup[detail.parentSaleDetailId]) detailGroup[detail.parentSaleDetailId] = [detail]
-          else detailGroup[detail.parentSaleDetailId].push(detail)
-        } else {
-          primary.push(detail)
-        }
-      })
-      setDetail(detailGroup)
-      setPrimarySaleDetails(primary)
+    data.forEach((detail) => {
+      if (detail.parentSaleDetailId) {
+        if (!detailGroup[detail.parentSaleDetailId]) detailGroup[detail.parentSaleDetailId] = [detail]
+        else detailGroup[detail.parentSaleDetailId].push(detail)
+      } else {
+        primary.push(detail)
+      }
+    })
+    setDetail(detailGroup)
+    setPrimarySaleDetails(primary)
   }, [data])
 
   const onPrimarySelect = (e) => {
@@ -54,9 +55,9 @@ const SaleDetail = ({ data }) => {
       {
         primarySaleDetails.map(detail => {
           return <div className="pl-4" key={detail.id}>
-            <Button color="default" 
+            <Button color="default"
               variant={getVariant(detail.id, selectedPrimary.id)}
-              onPress={onPrimarySelect} 
+              onPress={onPrimarySelect}
               value={detail.id}>{detail.value}</Button>
           </div>
         })
@@ -65,13 +66,13 @@ const SaleDetail = ({ data }) => {
 
     <div className="flex pt-3 pb-6">
       {
-        secondarySaleDetails ? 
-        secondarySaleDetails.map(detail => {
-          return <div className="pl-4" key={detail.id}>
-            <Button color="default" variant={getVariant(detail.id, selectedSecondary.id)} onPress={onSecondarySelect} value={detail.id}>{detail.value}</Button>
-          </div>
-        }) :
-        <></>
+        secondarySaleDetails ?
+          secondarySaleDetails.map(detail => {
+            return <div className="pl-4" key={detail.id}>
+              <Button color="default" variant={getVariant(detail.id, selectedSecondary.id)} onPress={onSecondarySelect} value={detail.id}>{detail.value}</Button>
+            </div>
+          }) :
+          <></>
       }
     </div>
 

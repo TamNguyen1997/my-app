@@ -1,6 +1,12 @@
-import { Image, Layers, NotebookPen, ShoppingBasket } from 'lucide-react';
+import { HomeIcon, Image, Layers, NotebookPen, ShoppingBasket } from 'lucide-react';
 
 const items = [
+  {
+    id: 'homepage',
+    name: 'Homepage',
+    icon: <HomeIcon />,
+    link: '/'
+  },
   {
     id: 'gallery',
     name: 'Gallery',

@@ -32,8 +32,8 @@ const Product = () => {
                   <Image
                     width={400}
                     height={400}
-                    src={`/gallery/${product.imageUrl}`}
-                    alt="product"
+                    src={`${product.image?.path}`}
+                    alt={`${product.image?.imageAlt}`}
                     className="object-cover w-full lg:h-full "
                   />
                 </div>

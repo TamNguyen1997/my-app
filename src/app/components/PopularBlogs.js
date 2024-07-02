@@ -58,7 +58,7 @@ export default function PopularBlogs() {
                         width={400}
                         height={200}
                         className="h-[250px] w-[300px]"
-                        src={`${blog.thumbnail}`}
+                        src={`${process.env.NEXT_PUBLIC_FILE_PATH + blog.thumbnail}`}
                         alt="Thumbnail image"
                       />
                     </CardHeader>

@@ -24,7 +24,7 @@ const RelatedProducts = ({ productId }) => {
                     <Image
                       width={500}
                       height={400}
-                      src={`${product.image ? product.image?.path : ""}`}
+                      src={`${product.image ? process.env.NEXT_PUBLIC_FILE_PATH + product.image?.path : ""}`}
                       alt={product.imageAlt}
                       className="h-full w-full object-cover object-center group-hover:opacity-75"
                     />

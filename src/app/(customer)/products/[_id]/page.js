@@ -28,7 +28,7 @@ const Product = () => {
                   <Image
                     width={400}
                     height={400}
-                    src={`${product.image?.path}`}
+                    src={`${process.env.NEXT_PUBLIC_FILE_PATH + product.image?.path}`}
                     alt={`${product.image?.imageAlt}`}
                     className="object-cover w-full lg:h-full "
                   />

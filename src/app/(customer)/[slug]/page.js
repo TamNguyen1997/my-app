@@ -59,7 +59,7 @@ const Category = ({ params }) => {
             <Image
               width={500}
               height={400}
-              src={`${product?.image?.path}`}
+              src={`${process.env.NEXT_PUBLIC_FILE_PATH + product?.image?.path}`}
               alt={product?.imageAlt}
               className="h-[300px] w-full object-cover object-center group-hover:opacity-50 p-2" />
             <p className="mt-4 text-sm text-gray-700 font-semibold text-center">

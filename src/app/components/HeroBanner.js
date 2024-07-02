@@ -46,7 +46,7 @@ const HeroBanner = () => {
     <Carousel responsive={responsive} infinite autoPlay autoPlaySpeed={5000}>
       {
         banners.map((banner, i) => {
-          return <Image key={i} width="1280" height="720" className="w-full h-full" src={banner?.path} alt={banner?.alt} />
+          return <Image key={i} width="1280" height="720" className="w-full h-full" src={process.env.NEXT_PUBLIC_FILE_PATH + banner?.path} alt={banner?.alt} />
         })
       }
     </Carousel>

@@ -329,7 +329,7 @@ const ProductDetailForm = ({ categories, product, setProduct, selectedCategory, 
             {
               product.image ?
                 <Image
-                  src={`${product.image?.path}`}
+                  src={`${process.env.NEXT_PUBLIC_FILE_PATH + product.image?.path}`}
                   alt={`${product.imageAlt}`}
                   width="300"
                   height="200"

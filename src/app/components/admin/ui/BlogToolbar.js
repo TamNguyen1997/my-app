@@ -37,8 +37,11 @@ export default ({ editor }) => {
     <div className="flex p-3">
       <div className="w-1/4"></div>
       <div className="flex w-1/2">
-        <div className={iconClassName}
-          onClick={() => editor.chain().focus().toggleBold().run()}>
+        <div className={iconClassName} style={{backgroundColor : editor.isActive('bold') ? 'white' : '9ca3af'}}
+          onClick={(e) => {
+            e.preventDefault();
+            editor.chain().focus().toggleBold().run();
+          }}>
           <RiBold className="w-full h-full" />
         </div>
         <div className={iconClassName} onClick={() => editor.chain().focus().toggleItalic().run()}>

@@ -3,9 +3,11 @@ import StarterKit from '@tiptap/starter-kit';
 import TipTapImage from '@tiptap/extension-image'
 import OrderedList from '@tiptap/extension-ordered-list'
 import BulletList from '@tiptap/extension-bullet-list'
-// import BlogToolbar from "./BlogToolBar"
+import BlogToolbar from "./BlogToolBar"
 import ImagePicker from "@/components/admin/ui/ImagePicker";
 import Placeholder from '@tiptap/extension-placeholder'
+import TipTapBold from '@tiptap/extension-bold';
+import TipTapItalic from '@tiptap/extension-italic';
 import Link from '@tiptap/extension-link'
 import './Tiptap.css'
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Switch, Textarea, useDisclosure } from '@nextui-org/react';
@@ -20,9 +22,10 @@ const RichTextEditor = ({ blog }) => {
   } = useForm()
 
   const [isSelected, setIsSelected] = useState(blog?.active);
+
   const editor = useEditor({
     extensions: [
-      StarterKit, TipTapImage,
+      StarterKit, TipTapImage, TipTapBold, TipTapItalic,
       OrderedList.configure({
         HTMLAttributes: {
           class: 'list-decimal'
@@ -76,7 +79,7 @@ const RichTextEditor = ({ blog }) => {
 
   return (
     <div className="p-3">
-      {/* <BlogToolbar editor={editor} /> */}
+      {<BlogToolbar editor={editor}/>}
       <div className="h-full w-full shadow-md min-h-44 p-3 border" onClick={focus}>
         <EditorContent editor={editor} />
       </div>

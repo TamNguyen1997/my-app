@@ -18,6 +18,7 @@ model product {
   name        String
   slug        String
   imageId     String?  @map("image_id")
+  imageAlt    String?  @map("image_alt")
   image       image?   @relation(fields: [imageId], references: [id])
   active      Boolean  @default(true)
   createdAt   DateTime @default(now()) @map("created_at")
@@ -25,19 +26,20 @@ model product {
   description String?
 
   saleDetails            sale_detail[]
-  technicalDetails       technical_detail[]
   order_history          order_history[]
   categories_to_products categories_to_products[]
+  technicalDetailId      String?                  @map("technical_detail_id") @db.Uuid
+  technical_detail       technical_detail?
 
   @@index([imageId])
 }
 
 model technical_detail {
   id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  rows      String
-  columns   String
+  row       String
+  column    String
   product   product @relation(fields: [productId], references: [id])
-  productId String  @map("product_id")
+  productId String  @unique @db.Uuid
 
   @@index([productId])
 }

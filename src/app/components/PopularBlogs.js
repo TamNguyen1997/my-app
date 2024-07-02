@@ -35,7 +35,7 @@ export default function PopularBlogs() {
   }, [])
 
   if (isLoading) return <Spinner className="m-auto" />
-  
+
   if (blogs.length === 0) return <></>
 
   return (
@@ -54,11 +54,11 @@ export default function PopularBlogs() {
                 <div>
                   <Card>
                     <CardHeader className="flex flex-col items-center justify-center h-64">
-                      <Image
+                      <img
                         width={400}
                         height={200}
                         className="h-[250px] w-[300px]"
-                        src={`/gallery/${blog.thumbnail}`}
+                        src={`${process.env.NEXT_PUBLIC_FILE_PATH + blog.thumbnail}`}
                         alt="Thumbnail image"
                       />
                     </CardHeader>

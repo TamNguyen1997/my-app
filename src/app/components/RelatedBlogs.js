@@ -17,7 +17,6 @@ export default () => {
                   height="120"
                   alt=""
                   title=""
-                  
                   className="rounded"
                 />
                 <div className="pl-4">

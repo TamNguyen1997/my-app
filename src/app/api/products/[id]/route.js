@@ -6,12 +6,16 @@ export async function GET(req, { params }) {
     return NextResponse.json({ message: `Resource not found ${params.id}` }, { status: 400 })
   }
   try {
+
+    const { searchParams } = new URL(req.url);
+
     return NextResponse.json(await db.product.findFirst(
       {
         where: { id: params.id },
         include: {
-          technicalDetails: true,
-          saleDetails: true
+          technical_detail: searchParams && searchParams.get("includeTechnical") !== "undefined" && searchParams.get("includeTechnical") !== null,
+          saleDetails: searchParams && searchParams.get("includeSale") !== "undefined" && searchParams.get("includeSale") !== null,
+          image: true
         }
       }
     ))
@@ -42,6 +46,8 @@ export async function DELETE(req, { params }) {
   }
 
   try {
+    await db.categories_to_products.deleteMany({ where: { productId: params.id } })
+    await db.technical_detail.deleteMany({ where: { productId: params.id } })
     return NextResponse.json(await db.product.delete({ where: { id: params.id } }))
   } catch (e) {
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })

@@ -43,8 +43,6 @@ const BannerScheduler = () => {
     setList(newState)
   })
 
-  console.log(scheduledBanners)
-
   const moveScheduledRow = useCallback((dragIndex, hoverIndex) => {
     startTransition(() => {
       setScheduledBanners((prevList) =>
@@ -75,8 +73,6 @@ const BannerScheduler = () => {
     let defaultBannersToCreate = defaultBanners
     let scheduledBannersToCreate = scheduledBanners
 
-    console.log(defaultBannersToCreate)
-    console.log(scheduledBannersToCreate)
     defaultBannersToCreate.forEach((item, index) => {
       item.order = index
     })

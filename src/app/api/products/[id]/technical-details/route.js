@@ -9,7 +9,7 @@ export async function POST(req, { params }) {
         productId: params.id
       }
     })
-    await db.technical_detail.createMany({
+    await db.technical_detail.create({
       data: body
     })
     return NextResponse.json({ message: "Success" })
@@ -24,7 +24,7 @@ export async function GET(req, { params }) {
   }
 
   try {
-    const result = await db.technical_detail.findMany({ where: { productId: params.id } })
+    const result = await db.technical_detail.findFirst({ where: { productId: params.id } })
     return NextResponse.json(result)
   } catch (e) {
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })

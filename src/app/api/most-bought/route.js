@@ -17,7 +17,10 @@ export async function GET(req) {
     })
     const ids = groupBy.map(item => item.productId)
     return NextResponse.json(await db.product.findMany({
-      where: { id: { in: ids } }
+      where: {
+        id: { in: ids },
+      },
+      include: { image: true }
     }))
   } catch (e) {
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })

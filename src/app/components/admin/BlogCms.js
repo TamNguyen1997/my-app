@@ -1,17 +1,18 @@
 import BlogForm from "@/components/admin/ui/BlogForm"
-import { Tabs, Tab, Table, TableHeader, TableColumn, TableRow, TableCell, TableBody } from "@nextui-org/react";
+import { Tabs, Tab, Table, TableHeader, TableColumn, TableRow, TableCell, TableBody, Spinner } from "@nextui-org/react";
 import { useCallback, useEffect, useState } from "react";
 import { EditIcon, Trash2 } from "lucide-react";
 
 const BlogCms = () => {
 
   const [blogs, setBlogs] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
 
   const [selectedTab, setSelectedTab] = useState("Tất cả blog")
   const [selectedBlog, setSelectedBlog] = useState({})
 
   useEffect(() => {
-    fetch("/api/blogs").then(res => res.json()).then(setBlogs)
+    fetch("/api/blogs").then(res => res.json()).then(setBlogs).then(() => setIsLoading(false))
   }, [])
 
   const deleteBlog = (id) => {
@@ -48,7 +49,10 @@ const BlogCms = () => {
             <TableColumn key="title">Tiêu đề</TableColumn>
             <TableColumn key="actions"></TableColumn>
           </TableHeader>
-          <TableBody emptyContent={"Không có bài viết nào"}>
+          <TableBody
+            emptyContent={"Không có bài viết nào"}
+            isLoading={isLoading}
+            loadingContent={<Spinner label="Loading..." />}>
             {
               blogs.map(blog => {
                 return <TableRow key={blog.id}>

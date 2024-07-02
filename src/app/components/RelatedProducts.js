@@ -1,5 +1,4 @@
 "use client"
-import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { Heart, ShoppingCart } from "lucide-react";
@@ -25,10 +24,10 @@ const RelatedProducts = ({ productId }) => {
               products.map((product) => {
                 return <Link key={product.id} href={`/products/${product.id}`} className="group">
                   <div className="aspect-h-1 aspect-w-1 w-full  md:h-5/6 overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-                    <Image
+                    <img
                       width={500}
                       height={400}
-                      src={`/gallery/${product.imageUrl}`}
+                      src={`${product.image ? process.env.NEXT_PUBLIC_FILE_PATH + product.image?.path : ""}`}
                       alt={product.imageAlt}
                       className="h-full w-full object-cover object-center group-hover:opacity-75"
                     />

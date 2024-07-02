@@ -83,7 +83,7 @@ const ImagePicker = ({ disableSearch, onImageClick, disableDelete }) => {
                   transition duration-400
                 `}>
               <img
-                src={`${img.path}`}
+                src={`${process.env.NEXT_PUBLIC_FILE_PATH + img.path}`}
                 alt={img.alt}
                 className="aspect-[16/10] object-cover rounded-t shrink-0"
                 onClick={() => onImageClick(img)}
@@ -95,7 +95,6 @@ const ImagePicker = ({ disableSearch, onImageClick, disableDelete }) => {
               }
               <div className="grow bg-white text-center rounded-b p-5">
                 <h6 className="text-[17px] font-bold text-[#212529] break-words mb-2">{img.name}</h6>
-                <p className="text-[15px] text-[#6c757d] break-words">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quam urna.</p>
               </div>
             </div>
           ))

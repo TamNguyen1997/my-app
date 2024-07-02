@@ -1,6 +1,5 @@
 
 import { useRouter } from 'next/router'
-import Image from "next/image";
 import Link from "next/link";
 import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/breadcrumbs";
 
@@ -49,10 +48,10 @@ const Cate = async () => {
             href={`/products/${product.id}`}
             key={product.id}
             className="group border rounded h-[450px] overflow-clip">
-            <Image
+            <img
               width={500}
               height={400}
-              src={`${product?.image?.path}`}
+              src={`${process.env.NEXT_PUBLIC_FILE_PATH + product?.image?.path}`}
               alt={product?.imageAlt}
               className="h-[300px] w-full object-cover object-center group-hover:opacity-50 p-2" />
             <p className="mt-4 text-sm text-gray-700 font-semibold text-center">

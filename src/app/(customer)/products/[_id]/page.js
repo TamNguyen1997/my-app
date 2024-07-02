@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BreadcrumbItem, Breadcrumbs, Button } from "@nextui-org/react";
@@ -17,11 +16,7 @@ const Product = () => {
   const [product, setProduct] = useState({});
   const { _id } = useParams();
   useEffect(() => {
-    const fetchProduct = () => {
-      fetch(`/api/products/${_id}`).then((res) => res.json()).then(json => setProduct(json))
-    }
-
-    fetchProduct()
+    fetch(`/api/products/${_id}?includeTechnical=true&includeSale=true`).then((res) => res.json()).then(json => setProduct(json))
   }, [_id])
   if (!product.id) {
     return <Skeleton />
@@ -37,8 +32,8 @@ const Product = () => {
   //                 <Image
   //                   width={400}
   //                   height={400}
-  //                   src={`/gallery/${product.imageUrl}`}
-  //                   alt="product"
+  //                   src={`${process.env.NEXT_PUBLIC_FILE_PATH + product.image?.path}`}
+  //                   alt={`${product.image?.imageAlt}`}
   //                   className="object-cover w-full lg:h-full "
   //                 />
   //               </div>

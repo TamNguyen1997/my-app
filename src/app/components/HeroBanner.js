@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import Carousel from "react-multi-carousel"
 import "react-multi-carousel/lib/styles.css"
@@ -42,12 +41,11 @@ const HeroBanner = () => {
       setBanners(images)
     })
   }, [])
-  console.log(banners)
   return (
     <Carousel responsive={responsive} infinite autoPlay autoPlaySpeed={5000}>
       {
         banners.map((banner, i) => {
-          return <Image key={i} width="1280" height="720" className="w-full h-full" src={banner?.path} alt={banner?.alt} />
+          return <img key={i} width="1280" height="720" className="w-full h-full" src={process.env.NEXT_PUBLIC_FILE_PATH + banner?.path} alt={banner?.alt} />
         })
       }
     </Carousel>

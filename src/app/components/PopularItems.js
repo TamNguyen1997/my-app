@@ -60,6 +60,7 @@ export default function PopularItems() {
     fetch("/api/most-bought").then(res => res.json()).then(setProducts).then(() => setIsLoading(false))
   }, [])
 
+  console.log(products)
   if (isLoading) return <Spinner className="m-auto" />
 
   if (!products.length) return <></>
@@ -158,7 +159,7 @@ const ProductCarousel = ({ products, responsive }) => {
                     <Image
                       width={500}
                       height={400}
-                      src={`/gallery/${product.imageUrl}`}
+                      src={`${product.image?.path}`}
                       alt={product.imageAlt}
                       className="h-full w-full object-cover object-center group-hover:opacity-75"
                     />

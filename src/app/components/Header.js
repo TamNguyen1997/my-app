@@ -107,7 +107,7 @@ const HeaderItems = () => {
 
   useEffect(() => {
     fetch('/api/categories/?type=CATEGORY').then(res => res.json()).then(setCategories)
-  })
+  }, [])
 
   // if (windowSize.width <= 1024) {
 
@@ -116,7 +116,7 @@ const HeaderItems = () => {
   return (<>
     <div className="flex gap-6 text-sm items-center">
       {
-        categories.map((category) => <Link href={`/${category.slug}`}>{category.name}</Link>)
+        categories.map((category) => <Link href={`/${category.slug}`} key={category.id}>{category.name}</Link>)
       }
     </div>
   </>)

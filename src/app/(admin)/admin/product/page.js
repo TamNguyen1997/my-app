@@ -129,6 +129,8 @@ const ProductCms = () => {
       return
     }
 
+    delete productToUpdate.image
+
     if (productToUpdate.id) {
       await fetch(`/api/products/${productToUpdate.id}`, {
         method: "PUT",
@@ -195,6 +197,7 @@ const ProductCms = () => {
             <TableBody
               items={products}
               emptyContent={"Không có sản phẩm nào"}
+              isLoading={loadingState === "loading"}
               loadingContent={<Spinner label="Loading..." />}>
               {(item) => (
                 <TableRow key={item.id}>
@@ -267,13 +270,10 @@ const ProductCms = () => {
 }
 
 const ProductDetailForm = ({ categories, product, setProduct, selectedCategory, setSelectedCategory }) => {
-  const [selectedImage, setSelectedImage] = useState(product.image)
-
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   const selectImage = (value) => {
-    setProduct(Object.assign({}, product, { imageId: value.id }))
-    setSelectedImage(value)
+    setProduct(Object.assign({}, product, { imageId: value.id, image: value }))
     onOpenChange()
   }
 
@@ -319,7 +319,7 @@ const ProductDetailForm = ({ categories, product, setProduct, selectedCategory, 
             <Input type="text"
               aria-label="Hình ảnh"
               label="Hình ảnh"
-              value={selectedImage?.name} isDisabled />
+              value={product.image?.name} isDisabled />
             <Input type="text"
               aria-label="Alt"
               label="Alt"
@@ -332,12 +332,12 @@ const ProductDetailForm = ({ categories, product, setProduct, selectedCategory, 
 
           <div>
             {
-              selectedImage ?
+              product.image ?
                 <Image
-                  src={`${selectedImage?.path}`}
+                  src={`${product.image?.path}`}
                   alt={`${product.imageAlt}`}
                   width="300"
-                  height="300"
+                  height="200"
                   className="float-right"
                 /> : null
             }

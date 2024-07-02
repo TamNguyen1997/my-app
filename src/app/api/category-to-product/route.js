@@ -9,3 +9,22 @@ export async function POST(req) {
     }
   ))
 }
+
+export async function GET(req) {
+  const { searchParams } = new URL(req.url);
+  let condition = {}
+
+  if (searchParams.get("productId") && searchParams.get("productId") !== "undefined") {
+    condition.productId = searchParams.get("productId")
+  }
+
+  if (searchParams.get("categoryId") && searchParams.get("categoryId") !== "undefined") {
+    condition.categoryId = searchParams.get("categoryId")
+  }
+
+  return NextResponse.json(await db.categories_to_products.findMany(
+    {
+      where: condition
+    }
+  ))
+}

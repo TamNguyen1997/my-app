@@ -18,6 +18,7 @@ model product {
   name        String
   slug        String
   imageId     String?  @map("image_id")
+  imageAlt    String?  @map("image_alt")
   image       image?   @relation(fields: [imageId], references: [id])
   active      Boolean  @default(true)
   createdAt   DateTime @default(now()) @map("created_at")

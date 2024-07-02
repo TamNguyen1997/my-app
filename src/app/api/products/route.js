@@ -5,13 +5,25 @@ import queryString from 'query-string';
 export async function POST(req) {
   try {
     const body = await req.json()
-    return NextResponse.json(
-      await db.product.create(
-        {
-          data: body
-        }
-      )
+    const categoryId = body.categoryId
+    delete body.categoryId
+    delete body.image
+    delete body.technicalDetails
+    delete body.saleDetails
+    const product = await db.product.create(
+      {
+        data: body
+      }
     )
+
+    await db.categories_to_products.create({
+      data: {
+        categoryId: categoryId,
+        productId: product.id
+      }
+    })
+
+    return NextResponse.json(product)
   } catch (e) {
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }

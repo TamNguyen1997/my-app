@@ -13,6 +13,7 @@ import {
 import { EditIcon, Trash2 } from "lucide-react";
 import { redirect } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import slugify from "slugify"
 
 const categoryTypes = [
   {
@@ -100,7 +101,7 @@ const Category = () => {
     setSelectedCate(Object.assign(
       {},
       selectedCate,
-      { name: value, slug: convertToSlug(value) }))
+      { name: value, slug: slugify(value, { locale: 'vi' }) }))
   }
 
   return (
@@ -185,11 +186,5 @@ const Category = () => {
     </div>
   );
 };
-
-function convertToSlug(text) {
-  return text.toLowerCase()
-    .replace(/ /g, "-")
-    .replace(/[^\w-]+/g, "");
-}
 
 export default Category;

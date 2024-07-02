@@ -7,9 +7,12 @@ import ImagePicker from "@/components/admin/ui/ImagePicker";
 import Placeholder from '@tiptap/extension-placeholder'
 import TipTapBold from '@tiptap/extension-bold';
 import TipTapItalic from '@tiptap/extension-italic';
-import Blockquote from '@tiptap/extension-blockquote'
+import HardBreak from '@tiptap/extension-hard-break'
 import TextAlign from '@tiptap/extension-text-align'
+import Highlight from '@tiptap/extension-highlight'
 import Underline from '@tiptap/extension-underline'
+import Subscript from '@tiptap/extension-subscript'
+import Superscript from '@tiptap/extension-superscript'
 import Link from '@tiptap/extension-link'
 import './Tiptap.css'
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Switch, Textarea, useDisclosure } from '@nextui-org/react';
@@ -32,9 +35,15 @@ import {
   RiAlignCenter,
   RiAlignRight,
   RiAlignJustify,
-  RiUnderline
+  RiUnderline,
+  RiH3,
+  RiH4,
+  RiTextWrap,
+  RiSubscript,
+  RiSubscript2,
+  RiSuperscript2
 } from 'react-icons/ri'
-import { Quote } from "lucide-react";
+import { LucideHighlighter } from 'lucide-react';
 
 const RichTextEditor = ({ blog }) => {
   const {
@@ -46,7 +55,8 @@ const RichTextEditor = ({ blog }) => {
 
   const editor = useEditor({
     extensions: [
-      StarterKit, TipTapImage, TipTapBold, TipTapItalic, Blockquote, Underline,
+      StarterKit, TipTapImage, TipTapBold, TipTapItalic, Underline, HardBreak, Subscript, Superscript,
+      Highlight.configure({ multicolor: true }),
       TextAlign.configure({
         types: ['heading', 'paragraph'],
       }),
@@ -185,60 +195,69 @@ const BlogToolBar = ({ editor }) => {
     <div className="flex p-3">
       <div className="w-1/4"></div>
       <div className="flex w-1/2">
-        <div className={iconClassName} style={{ backgroundColor: editor.isActive('bold') ? 'white' : '9ca3af' }}
+        <div className={`${iconClassName} ${editor.isActive('bold') ? "opacity-25" : ""}`}
           onClick={(e) => {
             e.preventDefault();
             editor.chain().focus().toggleBold().run();
           }}>
           <RiBold className="w-full h-full" />
         </div>
-        <div className={iconClassName} onClick={() => editor.chain().focus().toggleItalic().run()}>
+        <div className={`${iconClassName} ${editor.isActive('italic') ? "opacity-25" : ""}`}
+          onClick={() => editor.chain().focus().toggleItalic().run()}>
           <RiItalic className="w-full h-full" />
         </div>
-        <div className={iconClassName} onClick={() => editor.chain().focus().toggleStrike().run()}>
+        <div className={`${iconClassName} ${editor.isActive('strike') ? "opacity-25" : ""}`}
+          onClick={() => editor.chain().focus().toggleStrike().run()}>
           <RiStrikethrough className="w-full h-full" />
         </div>
-        <div className={iconClassName} onClick={() => editor.chain().focus().setUnderline().run()}>
+        <div className={`${iconClassName} ${editor.isActive('underline') ? "opacity-25" : ""}`}
+          onClick={() => editor.chain().focus().setUnderline().run()}>
           <RiUnderline className="w-full h-full" />
         </div>
-        <div className={iconClassName} onClick={() => editor.chain().focus().toggleCode().run()}>
+        <div className={`${iconClassName} ${editor.isActive('code') ? "opacity-25" : ""}`}
+          onClick={() => editor.chain().focus().toggleCode().run()}>
           <RiCodeSSlashLine className="w-full h-full" />
         </div>
         <div className="pr-5"></div>
-        <div className={iconClassName}
+        <div className={`${iconClassName} ${editor.isActive('heading', { level: 1 }) ? "opacity-25" : ""}`}
           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}>
           <RiH1 className="w-full h-full" />
         </div>
-        <div className={iconClassName}
+
+        <div className={`${iconClassName} ${editor.isActive('heading', { level: 2 }) ? "opacity-25" : ""}`}
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}>
           <RiH2 className="w-full h-full" />
         </div>
+        <div className={`${iconClassName} ${editor.isActive('heading', { level: 3 }) ? "opacity-25" : ""}`}
+          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}>
+          <RiH3 className="w-full h-full" />
+        </div>
+        <div className={`${iconClassName} ${editor.isActive('heading', { level: 4 }) ? "opacity-25" : ""}`}
+          onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}>
+          <RiH4 className="w-full h-full" />
+        </div>
         <div className="pr-5"></div>
-        <div className={iconClassName}
+        <div className={`${iconClassName} ${editor.isActive('orderedList') ? "opacity-25" : ""}`}
           onClick={() => editor.chain().focus().toggleOrderedList().run()}>
           <RiListOrdered className="w-full h-full" />
         </div>
-        <div className={iconClassName}
+        <div className={`${iconClassName} ${editor.isActive('bulletList') ? "opacity-25" : ""}`}
           onClick={() => editor.chain().focus().toggleBulletList().run()}>
           <RiListUnordered className="w-full h-full" />
         </div>
-        <div className={iconClassName}
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}>
-          <Quote className="w-full h-full" />
-        </div>
-        <div className={iconClassName}
+        <div className={`${iconClassName} ${editor.isActive({ textAlign: 'left' }) ? "opacity-25" : ""}`}
           onClick={() => editor.chain().focus().setTextAlign("left").run()}>
           <RiAlignLeft className="w-full h-full" />
         </div>
-        <div className={iconClassName}
+        <div className={`${iconClassName} ${editor.isActive({ textAlign: 'center' }) ? "opacity-25" : ""}`}
           onClick={() => editor.chain().focus().setTextAlign("center").run()}>
           <RiAlignCenter className="w-full h-full" />
         </div>
-        <div className={iconClassName}
+        <div className={`${iconClassName} ${editor.isActive({ textAlign: 'right' }) ? "opacity-25" : ""}`}
           onClick={() => editor.chain().focus().setTextAlign("right").run()}>
           <RiAlignRight className="w-full h-full" />
         </div>
-        <div className={iconClassName}
+        <div className={`${iconClassName} ${editor.isActive({ textAlign: 'justify' }) ? "opacity-25" : ""}`}
           onClick={() => editor.chain().focus().setTextAlign("justify").run()}>
           <RiAlignJustify className="w-full h-full" />
         </div>
@@ -249,6 +268,24 @@ const BlogToolBar = ({ editor }) => {
         </div>
         <div className={iconClassName} onClick={linkModal.onOpen}>
           <RiLink className="w-full h-full" />
+        </div>
+
+        <div className="pr-5"></div>
+        <div className={iconClassName}
+          onClick={() => editor.chain().focus().setHardBreak().run()}>
+          <RiTextWrap className="w-full h-full" />
+        </div>
+        <div className={`${iconClassName} ${editor.isActive('highlight') ? "opacity-25" : ""}`}
+          onClick={() => editor.chain().focus().toggleHighlight().run()}>
+          <LucideHighlighter className="w-full h-full" />
+        </div>
+        <div className={`${iconClassName} ${editor.isActive('subscript') ? "opacity-25" : ""}`}
+          onClick={() => editor.chain().focus().toggleSubscript().run()}>
+          <RiSubscript2 className="w-full h-full" />
+        </div>
+        <div className={`${iconClassName} ${editor.isActive('superscript') ? "opacity-25" : ""}`}
+          onClick={() => editor.chain().focus().toggleSuperscript().run()}>
+          <RiSuperscript2 className="w-full h-full" />
         </div>
       </div>
       <div className="w-1/4"></div>

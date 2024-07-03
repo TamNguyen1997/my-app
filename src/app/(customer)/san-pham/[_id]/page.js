@@ -8,7 +8,6 @@ import SaleDetail from "@/components/SaleDetail";
 import ProductImageCarousel from "@/components/ProductImageCarousel";
 import ProductDetailTabs from "@/components/ProductDetailTabs";
 import { motion } from "framer-motion";
-import { Link } from "lucide-react";
 
 const Product = () => {
   const [product, setProduct] = useState({});

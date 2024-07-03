@@ -90,7 +90,7 @@ const RelatedProducts = ({ productId }) => {
       >
         {
           products.map((product) => {
-            return <Link key={product.id} href={`/products/${product.id}`} className="group p-4">
+            return <Link key={product.id} href={`/san-pham/${product.slug}`} className="group p-4">
               <div className="relative pb-[100%] mb-3">
                 <img src={process.env.NEXT_PUBLIC_FILE_PATH + product?.image?.path} className="absolute inset-0 w-full h-full object-cover group-hover:opacity-75 transition" />
               </div>

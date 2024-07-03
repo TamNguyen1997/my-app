@@ -151,7 +151,7 @@ const ProductCarousel = ({ products, responsive }) => {
         products.map((product) => {
           return <div key={product.id} className="p-2">
             <div className="rounded-md border h-[400px] shadow-md p-2">
-              <Link href={`/products/${product.id}`}>
+              <Link href={`/san-pham/${product.slug}`}>
                 <div className="h-2/3">
                   <div className="aspect-h-1 aspect-w-1 w-full h-full overflow-hidden rounded-lg  xl:aspect-h-8 xl:aspect-w-7">
                     <img

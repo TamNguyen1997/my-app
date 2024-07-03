@@ -1,5 +1,6 @@
 import { db } from '@/app/db';
 import { NextResponse } from 'next/server';
+import { parse } from 'uuid';
 
 export async function GET(req, { params }) {
   if (!params.id) {
@@ -9,9 +10,19 @@ export async function GET(req, { params }) {
 
     const { searchParams } = new URL(req.url);
 
+    let condition = {}
+
+    try {
+      parse(params.id)
+      condition = { id: params.id }
+    } catch (e) {
+      console.log(e)
+      condition = { slug: params.id }
+    }
+
     return NextResponse.json(await db.product.findFirst(
       {
-        where: { id: params.id },
+        where: condition,
         include: {
           technical_detail: searchParams && searchParams.get("includeTechnical") !== "undefined" && searchParams.get("includeTechnical") !== null,
           saleDetails: searchParams && searchParams.get("includeSale") !== "undefined" && searchParams.get("includeSale") !== null,

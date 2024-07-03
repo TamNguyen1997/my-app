@@ -52,7 +52,7 @@ const Category = ({ params }) => {
       <div className="w-full lg:w-11/12 mx-auto my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
         {data.map((product) => (
           <Link
-            href={`/products/${product.id}`}
+            href={`/san-pham/${product.slug}`}
             key={product.id}
             className="group border rounded h-[450px] overflow-clip">
             <img

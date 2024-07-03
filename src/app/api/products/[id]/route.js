@@ -31,6 +31,7 @@ export async function PUT(req, { params }) {
 
   let body = await req.json()
 
+  delete body.saleDetails
   if (!body) return NextResponse.json({ message: "Invalid request body" }, { status: 400 })
   try {
     await db.product.update({ where: { id: params.id }, data: body })

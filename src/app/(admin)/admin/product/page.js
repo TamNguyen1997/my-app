@@ -30,15 +30,22 @@ const updateProductActive = async (product, active) => {
   await fetch(`/api/products/${product.id}`, { method: "PUT", body: JSON.stringify(product) })
 }
 
+const updateProductHighlight = async (product, active) => {
+  product.highlight = active
+  await fetch(`/api/products/${product.id}`, { method: "PUT", body: JSON.stringify(product) })
+}
+
 const ProductCms = () => {
   const [loadingState, setLoadingState] = useState("loading")
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [selectedProduct, setSelectedProduct] = useState({})
   const [selectedProductCategory, setSelectedProductCategory] = useState(new Set([]))
+  const [selectedProductBrand, setSelectedProductBrand] = useState(new Set([]))
 
   const [reload, setReload] = useState(false)
   const [total, setTotal] = useState(0)
   const [categories, setCategories] = useState([])
+  const [brands, setBrands] = useState([])
 
   const [page, setPage] = useState(1);
   const [products, setProducts] = useState([]);
@@ -55,7 +62,6 @@ const ProductCms = () => {
       setTotal(data.total)
       setLoadingState("idle")
     })
-    fetch('/api/categories').then(res => res.json()).then(json => setCategories(json))
   }, [page])
 
   const pages = useMemo(() => {
@@ -75,10 +81,19 @@ const ProductCms = () => {
       }),
       fetch(`/api/category-to-product?productId=${product.id}`).then(res => res.json()).then((json) => {
         if (json.length) {
-          setSelectedProductCategory(new Set(json.map(item => item.categoryId)))
+          json.forEach(item => {
+            if (item.category?.type === "CATEGORY") {
+              setSelectedProductCategory(new Set([item.categoryId]))
+            }
+            if (item.category?.type === "BRAND") {
+              setSelectedProductBrand(new Set([item.categoryId]))
+            }
+          })
         }
       }),
-      fetch(`/api/products/${product.id}/sale-details`).then(res => res.json()).then(setSaleDetails)
+      fetch(`/api/products/${product.id}/sale-details`).then(res => res.json()).then(setSaleDetails),
+      fetch('/api/categories?type=CATEGORY').then(res => res.json()).then(setCategories),
+      fetch('/api/categories?type=BRAND').then(res => res.json()).then(setBrands)
     ]).then(() => onOpen())
   }
 
@@ -105,6 +120,12 @@ const ProductCms = () => {
         return (
           <div className="relative flex items-center gap-2">
             <Switch defaultSelected={product.active} onValueChange={(value) => updateProductActive(product, value)}></Switch>
+          </div>
+        )
+      case "highlight":
+        return (
+          <div className="relative flex items-center gap-2">
+            <Switch defaultSelected={product.highlight} onValueChange={(value) => updateProductHighlight(product, value)}></Switch>
           </div>
         )
       default:
@@ -154,13 +175,22 @@ const ProductCms = () => {
       })
     })
 
-    await fetch(`/api/category-to-product`, {
-      method: "POST",
-      body: JSON.stringify({
-        categoryId: selectedProductCategory.values().next().value,
-        productId: productToUpdate.id
+    await Promise.all([
+      fetch(`/api/category-to-product`, {
+        method: "POST",
+        body: JSON.stringify({
+          categoryId: selectedProductCategory.values().next().value,
+          productId: productToUpdate.id
+        })
+      }),
+      fetch(`/api/category-to-product`, {
+        method: "POST",
+        body: JSON.stringify({
+          categoryId: selectedProductBrand.values().next().value,
+          productId: productToUpdate.id
+        })
       })
-    })
+    ])
     setReload(true)
   }
   return (
@@ -182,11 +212,11 @@ const ProductCms = () => {
                     onChange={(page) => setPage(page)}
                   />
                 </div>
-            }
-          >
+            }>
             <TableHeader>
               <TableColumn key="name" textValue="Tên sản phẩm" aria-label="Tên sản phẩm">Tên sản phẩm</TableColumn>
               <TableColumn key="slug" textValue="slug" aria-label="slug">Slug</TableColumn>
+              <TableColumn key="highlight" textValue="highlight" aria-label="active">Nổi bật</TableColumn>
               <TableColumn key="active" textValue="active" aria-label="active"></TableColumn>
               <TableColumn key="actions" textValue="actions" width="100"></TableColumn>
             </TableHeader>
@@ -226,7 +256,11 @@ const ProductCms = () => {
                             product={selectedProduct}
                             setProduct={setSelectedProduct}
                             selectedCategory={selectedProductCategory}
-                            setSelectedCategory={setSelectedProductCategory} />
+                            setSelectedCategory={setSelectedProductCategory}
+                            brands={brands}
+                            selectedBrand={selectedProductBrand}
+                            setSelectedBrand={setSelectedProductBrand}
+                          />
                         </CardBody>
                       </Card>
                     </Tab>
@@ -263,17 +297,12 @@ const ProductCms = () => {
   )
 }
 
-const ProductDetailForm = ({ categories, product, setProduct, selectedCategory, setSelectedCategory }) => {
+const ProductDetailForm = ({ categories, product, setProduct, selectedCategory, setSelectedCategory, brands, selectedBrand, setSelectedBrand }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   const selectImage = (value) => {
     setProduct(Object.assign({}, product, { imageId: value.id, image: value }))
     onOpenChange()
-  }
-
-  const selectCategory = (value) => {
-    setSelectedCategory(value)
-    setProduct(Object.assign({}, product, { categoryId: value.values().next().value }))
   }
 
   return (
@@ -299,17 +328,36 @@ const ProductDetailForm = ({ categories, product, setProduct, selectedCategory, 
             disabled
           />
         </div>
-        <Select
-          label="Phân loại"
-          aria-label="Phân loại"
-          selectedKeys={selectedCategory}
-          onSelectionChange={selectCategory}
-          isRequired
-        >
-          {categories.map(category => <SelectItem key={category.id}>{category.name}</SelectItem>)}
-        </Select>
+        <div className="flex gap-2">
+          <Select
+            label="Phân loại"
+            aria-label="Phân loại"
+            selectedKeys={selectedCategory}
+            onSelectionChange={setSelectedCategory}
+            isRequired
+          >
+            {categories.map(category => <SelectItem key={category.id}>{category.name}</SelectItem>)}
+          </Select>
+          <Select
+            label="Thương hiệu"
+            aria-label="Thương hiệu"
+            selectedKeys={selectedBrand}
+            onSelectionChange={setSelectedBrand}
+            isRequired
+          >
+            {brands.map(brand => <SelectItem key={brand.id}>{brand.name}</SelectItem>)}
+          </Select>
+        </div>
         <div className='grid grid-cols-2 gap-3'>
           <div className="flex flex-col gap-3">
+            <Input
+              type="text"
+              label="SKU"
+              labelPlacement="outside"
+              aria-label="SKU"
+              defaultValue={product.sku}
+              onValueChange={(value) => setProduct(Object.assign({}, product, { sku: value }))}
+            />
             <Input type="text"
               aria-label="Hình ảnh"
               label="Hình ảnh"

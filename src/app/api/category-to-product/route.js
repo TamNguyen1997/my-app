@@ -29,7 +29,10 @@ export async function GET(req) {
 
   return NextResponse.json(await db.categories_to_products.findMany(
     {
-      where: condition
+      where: condition,
+      include: {
+        category: true
+      }
     }
   ))
 }

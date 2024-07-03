@@ -4,6 +4,7 @@ import { Button } from '@nextui-org/react';
 import RelatedProducts from "@/components/RelatedProducts";
 import TechnicalDetail from './TechnicalDetail';
 import parse from 'html-react-parser'
+import "./ProductDetailTabs.css"
 
 const ID = {
   DESCRIPTION: "DESCRIPTION",
@@ -17,7 +18,7 @@ const TabContent = ({ id, product }) => {
   switch (id) {
     case ID.DESCRIPTION:
       return (
-        <div className="text-sm whitespace-pre-wrap mb-9">
+        <div className="text-sm whitespace-pre-wrap mb-9 product-description">
           {product.description ? parse(product.description) : ""}
         </div>
       )
@@ -41,44 +42,11 @@ const TabContent = ({ id, product }) => {
       )
     case ID.SPECIFICATIONS:
       return (
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(455px,1fr))] gap-[30px] mb-9">
+        <div className="mb-9 items-center">
           <div>
-            <p className="font-bold mb-2">Thông số kỹ thuật</p>
             {
               <TechnicalDetail data={product.technical_detail}></TechnicalDetail>
             }
-          </div>
-          <div>
-            <div className="mb-[30px]">
-              <div>
-                <p className="font-bold mb-2">Scope of supply</p>
-                {
-                  product?.technicalDetails?.map((item, index) => {
-                    return (
-                      <div className="text-sm grid grid-cols-[2fr_1fr] bg-[#f8f8f8] border-b border-white" key={index}>
-                        <div className="font-medium p-4">{item.key}</div>
-                        <div className="p-4">{item.value}</div>
-                      </div>
-                    )
-                  })
-                }
-              </div>
-            </div>
-            <div>
-              <div>
-                <p className="font-bold mb-2">Thiết bị</p>
-                {
-                  product?.technicalDetails?.map((item, index) => {
-                    return (
-                      <div className="text-sm grid grid-cols-[2fr_1fr] bg-[#f8f8f8] border-b border-white" key={index}>
-                        <div className="font-medium p-4">{item.key}</div>
-                        <div className="p-4">{item.value}</div>
-                      </div>
-                    )
-                  })
-                }
-              </div>
-            </div>
           </div>
         </div>
       )
@@ -104,7 +72,7 @@ const TabContent = ({ id, product }) => {
 export default ({ product }) => {
   const tabs = [
     { id: ID.DESCRIPTION, title: "Mô tả" },
-    { id: ID.FEATURES, title: "Tính năng và ưu điểm" },
+    // { id: ID.FEATURES, title: "Tính năng và ưu điểm" },
     { id: ID.SPECIFICATIONS, title: "Thông số kỹ thuật" },
     { id: ID.VIDEOS, title: "Videos" },
     { id: ID.RELATED_ITEMS, title: "Sản phẩm liên quan" },
@@ -152,9 +120,9 @@ export default ({ product }) => {
             return (
               <Button
                 className={`
-                                    uppercase font-bold  h-[39px] rounded-none px-5 py-3 mr-0.5 last:mr-0 transition tab
-                                    ${currentTab == tab.id ? 'text-[#ffed00] bg-[#333]' : 'text-[#2b2b2b] bg-[#f8f8f8]'}
-                                `}
+                              uppercase font-bold  h-[39px] rounded-none px-5 py-3 mr-0.5 last:mr-0 transition tab
+                              ${currentTab == tab.id ? 'text-[#ffed00] bg-[#333]' : 'text-[#2b2b2b] bg-[#f8f8f8]'}
+                          `}
                 key={index}
                 data-id={tab.id}
                 onClick={() => {

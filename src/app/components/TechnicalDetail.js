@@ -1,15 +1,16 @@
 import { Table, TableBody, TableColumn, TableHeader, TableRow, TableCell } from "@nextui-org/react";
 
 const TechnicalDetail = ({ data }) => {
+  console.log(data)
   if (!data || !data.column || !data.row) return <></>
   const columns = JSON.parse(data.column)
   const rows = JSON.parse(data.row)
 
-  if (!columns.length || rows.length) return <></>
+  if (!columns.length || !rows.length) return <></>
 
   return (<>
     <div className="pt-6">
-      <Table removeWrapper aria-label="Example static collection table">
+      <Table aria-label="Example static collection table" isStriped>
         <TableHeader>
           {
             columns.map(item => <TableColumn key={item.id}>{item.name}</TableColumn>)

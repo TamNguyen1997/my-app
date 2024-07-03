@@ -44,16 +44,10 @@ const Product = () => {
           </Breadcrumbs>
 
           <h1 className="text-[30px] font-extrabold m-[10px_0_18px]">{product.name}</h1>
-          <p className="text-sm truncate mb-2.5">{product.description}</p>
         </div>
       </div>
 
       <div className="container py-[30px]">
-        <div className="text-sm text-white bg-[#b61a2d] p-4 pt-2.5 mb-4">
-          <p>Lưu ý: Máy không bao gồm bộ dây cấp nước.</p>
-          <p>&nbsp;</p>
-          <p>&nbsp;</p>
-        </div>
 
         <motion.div
           initial={{ y: 100, opacity: 0 }}

@@ -14,13 +14,16 @@ datasource db {
 }
 
 model product {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name        String
-  slug        String
-  imageId     String?  @map("image_id")
-  imageAlt    String?  @map("image_alt")
-  image       image?   @relation(fields: [imageId], references: [id])
-  active      Boolean  @default(true)
+  id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String
+  slug      String
+  imageId   String? @map("image_id")
+  imageAlt  String? @map("image_alt")
+  image     image?  @relation(fields: [imageId], references: [id])
+  active    Boolean @default(true)
+  sku       String?
+  highlight Boolean @default(false)
+
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
   description String?

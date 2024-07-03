@@ -1,43 +1,17 @@
 import { Button } from "@nextui-org/react"
 import { ShoppingCart } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
-const SaleDetail = ({ data }) => {
-  const [detail, setDetail] = useState({})
-
-  const [primarySaleDetails, setPrimarySaleDetails] = useState([])
-  const [secondarySaleDetails, setSecondarySaleDetails] = useState([])
-
-  const [selectedPrimary, setSelectedPrimary] = useState({})
-  const [selectedSecondary, setSelectedSecondary] = useState({})
-
-  useEffect(() => {
-    if (!data) return
-    let primary = []
-    let detailGroup = {}
-
-    data.forEach((detail) => {
-      if (detail.parentSaleDetailId) {
-        if (!detailGroup[detail.parentSaleDetailId]) detailGroup[detail.parentSaleDetailId] = [detail]
-        else detailGroup[detail.parentSaleDetailId].push(detail)
-      } else {
-        primary.push(detail)
-      }
-    })
-    setDetail(detailGroup)
-    setPrimarySaleDetails(primary)
-  }, [data])
+const SaleDetail = ({ saleDetails }) => {
+  const [selectedDetail, setSelectedDetail] = useState(saleDetails[0])
 
   const onPrimarySelect = (e) => {
     const buttonValue = e.target.getAttribute("value")
-    setSelectedPrimary(primarySaleDetails.find(detail => detail.id === buttonValue))
-    setSelectedSecondary({})
-    setSecondarySaleDetails(detail[buttonValue])
+    setSelectedDetail(saleDetails.find(detail => detail.id === buttonValue))
   }
 
-  const onSecondarySelect = (e) => {
-    const buttonValue = e.target.getAttribute("value")
-    setSelectedSecondary(secondarySaleDetails.find(detail => detail.id === buttonValue))
+  const onColorSelect = (id) => {
+    setSelectedDetail(saleDetails.find(detail => detail.id === id))
   }
 
   const getVariant = (id, selected) => {
@@ -45,50 +19,45 @@ const SaleDetail = ({ data }) => {
     return "ghost"
   }
 
-  const getPrice = () => {
-    if (selectedPrimary.price && !detail[selectedPrimary.id]) return selectedPrimary.price.toLocaleString()
-    if (selectedSecondary.price) return selectedSecondary.price.toLocaleString()
+  const getColor = (detail, selected) => {
+    const className = `rounded-full bg-[${detail.value}] w-8 h-8 border-[#e3e3e3] border hover:opacity-50 hover:border-4 hover:border-blue-500`
+    if (detail.id === selected) return `${className} border-4 border-blue-500`
+    return className
   }
 
   return (<>
-    <div className="flex">
-      {
-        primarySaleDetails.map(detail => {
-          return <div className="pl-4" key={detail.id}>
-            <Button color="default"
-              variant={getVariant(detail.id, selectedPrimary.id)}
-              onPress={onPrimarySelect}
-              value={detail.id}>{detail.value}</Button>
-          </div>
-        })
-      }
-    </div>
+    <p className="text-[32px] font-medium text-[#b61a2d] mb-2.5">{selectedDetail?.price}</p>
+    <p className="text-sm mb-[30px]">Đã bao gồm VAT, chưa bao gồm phí giao hàng</p>
+    <p className="text-sm mb-2.5">Giao hàng trong vòng 1-3 ngày</p>
 
-    <div className="flex pt-3 pb-6">
-      {
-        secondarySaleDetails ?
-          secondarySaleDetails.map(detail => {
-            return <div className="pl-4" key={detail.id}>
-              <Button color="default" variant={getVariant(detail.id, selectedSecondary.id)} onPress={onSecondarySelect} value={detail.id}>{detail.value}</Button>
+    <div className="flex flex-col gap-3">
+      <div className="flex gap-2 flex-wrap">
+        {
+          saleDetails.map(detail => {
+            return <div key={detail.id}>
+              {
+                detail.type === "COLOR" ?
+                  <>
+                    <div className={getColor(detail, selectedDetail.id)} onClick={() => onColorSelect(detail.id)}></div>
+                  </>
+                  : <Button color="default"
+                    variant={getVariant(detail.id, selectedDetail.id)}
+                    onPress={onPrimarySelect}
+                    value={detail.id}>{detail.value}</Button>
+              }
+
             </div>
-          }) :
-          <></>
-      }
-    </div>
-
-    <p className="inline-block mb-8 text-4xl font-bold text-gray-700  ">
-      <span>{getPrice()}</span>
-    </p>
-
-    <div className="flex pb-3">
-      <div className="pr-3 w-1/3">
-        <Button color="primary" fullWidth radius="full" isDisabled={!getPrice()}>Mua ngay <ShoppingCart /></Button>
+          })
+        }
       </div>
-      <div className="pr-3 w-1/3">
-        <Button color="primary" fullWidth radius="full" isDisabled={!getPrice()}>Thêm vào giỏ hàng</Button>
-      </div>
-      <div className="w-1/3">
-        <Button color="default" fullWidth variant="faded" radius="full">Liên hệ</Button>
+
+      <div className="flex pb-3">
+        <div className="pr-3">
+          <Button color="primary" fullWidth isDisabled={!selectedDetail?.price}>Mua ngay <ShoppingCart /></Button>
+        </div>
+        <div className="pr-3">
+          <Button color="primary" fullWidth isDisabled={!selectedDetail?.price}>Thêm vào giỏ hàng</Button>
+        </div>
       </div>
     </div>
 

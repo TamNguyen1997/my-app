@@ -3,7 +3,6 @@
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { Children } from "react";
-import { Heart, Search } from "lucide-react";
 
 const responsive = {
 	desktop: {
@@ -29,12 +28,11 @@ const responsive = {
 	}
 };
 
-const images = [...Array(6)].map((_, index) => `/gallery/${index % 2 ? "free-images" : "3"}.jpg`);
-
 const CustomDot = ({
 	index,
 	onClick,
 	active,
+	items,
 	carouselState: { currentSlide }
 }) => {
 	return (
@@ -47,7 +45,7 @@ const CustomDot = ({
 				"custom-dot--active": active
 			})}
 		>
-			<img src={Children.toArray(images)[index]} alt="" />
+			<img src={Children.toArray(items)[index]} alt="" />
 		</button>
 	);
 };
@@ -99,12 +97,10 @@ export default ({ items }) => {
 				customDot={<CustomDot />}
 			>
 				{
-					images.map((img, index) => {
+					items.map((img, index) => {
 						return (
 							<div className="relative" key={index}>
 								<img src={img} alt="" className="w-full" />
-								<Heart size="24" className="absolute top-9 left-9" />
-								<Search size="24" className="absolute bottom-5 right-2" />
 							</div>
 						)
 					})

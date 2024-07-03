@@ -1,7 +1,7 @@
 "use client"
 import Link from "next/link"
 import { useEffect, useState } from "react"
-import { Heart, ShoppingCart } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { Button } from "@nextui-org/react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
@@ -16,32 +16,6 @@ const RelatedProducts = ({ productId }) => {
   }, [])
 
   return (<>
-    {/* <div className="pt-6">
-      <div className="mx-auto">
-        <div className="mx-auto lg:max-w-full">
-          <div className=" grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-6">
-            {
-              products.map((product) => {
-                return <Link key={product.id} href={`/products/${product.id}`} className="group">
-                  <div className="aspect-h-1 aspect-w-1 w-full  md:h-5/6 overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-                    <img
-                      width={500}
-                      height={400}
-                      src={`${product.image ? process.env.NEXT_PUBLIC_FILE_PATH + product.image?.path : ""}`}
-                      alt={product.imageAlt}
-                      className="h-full w-full object-cover object-center group-hover:opacity-75"
-                    />
-                  </div>
-                  <h3 className="mt-4 text-sm text-gray-700">
-                    {product.name}
-                  </h3>
-                </Link>
-              })
-            }
-          </div>
-        </div>
-      </div>
-    </div> */}
     <div className="relative">
       <Carousel
         additionalTransfrom={0}
@@ -118,8 +92,7 @@ const RelatedProducts = ({ productId }) => {
           products.map((product) => {
             return <Link key={product.id} href={`/products/${product.id}`} className="group p-4">
               <div className="relative pb-[100%] mb-3">
-                <img src="/gallery/3.jpg" className="absolute inset-0 w-full h-full object-cover group-hover:opacity-75 transition" />
-                <Heart size="24" className="absolute top-4 left-4" />
+                <img src={process.env.NEXT_PUBLIC_FILE_PATH + product?.image?.path} className="absolute inset-0 w-full h-full object-cover group-hover:opacity-75 transition" />
               </div>
               <p className="text-sm">Chăm sóc và vệ sinh xe</p>
               <h3 className="text-sm font-bold mb-4">

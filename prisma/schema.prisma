@@ -47,19 +47,20 @@ model technical_detail {
   @@index([productId])
 }
 
+enum sale_detail_type {
+  COLOR
+  TEXT
+}
+
 model sale_detail {
-  id                 String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  product            product       @relation(fields: [productId], references: [id])
-  productId          String        @map("product_id")
-  value              String
-  price              Int?
-  parentSaleDetailId String?       @db.Uuid
-  saleDetails        sale_detail[] @relation("SaleDetail")
-  sale_detailId      String?       @db.Uuid
-  parentSaleDetail   sale_detail?  @relation("SaleDetail", fields: [parentSaleDetailId], references: [id], onUpdate: Restrict, onDelete: Restrict)
+  id        String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  product   product          @relation(fields: [productId], references: [id])
+  productId String           @map("product_id")
+  value     String
+  price     Int?
+  type      sale_detail_type @default(TEXT)
 
   @@index([productId])
-  @@index([parentSaleDetailId])
 }
 
 model order_history {

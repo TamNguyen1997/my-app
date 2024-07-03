@@ -12,16 +12,31 @@ import {
   Pagination,
   Card, CardBody, Tab, Tabs,
   Input,
-  Textarea,
   Select,
   SelectItem
 } from "@nextui-org/react"
 import { v4 } from "uuid";
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { EditIcon, Plus, Trash2 } from "lucide-react"
+import { EditIcon, Trash2 } from "lucide-react"
 import { redirect } from "next/navigation";
 import ImagePicker from "@/components/admin/ui/ImagePicker";
 import slugify from "slugify"
+import { useEditor } from "@tiptap/react";
+import StarterKit from '@tiptap/starter-kit';
+import TipTapImage from '@tiptap/extension-image'
+import OrderedList from '@tiptap/extension-ordered-list'
+import BulletList from '@tiptap/extension-bullet-list'
+import Placeholder from '@tiptap/extension-placeholder'
+import TipTapBold from '@tiptap/extension-bold';
+import TipTapItalic from '@tiptap/extension-italic';
+import HardBreak from '@tiptap/extension-hard-break'
+import TextAlign from '@tiptap/extension-text-align'
+import Highlight from '@tiptap/extension-highlight'
+import Underline from '@tiptap/extension-underline'
+import Subscript from '@tiptap/extension-subscript'
+import Superscript from '@tiptap/extension-superscript'
+import Link from '@tiptap/extension-link'
+import RichTextEditor from "@/app/components/admin/ui/RichTextArea";
 
 const rowsPerPage = 10;
 
@@ -55,9 +70,36 @@ const ProductCms = () => {
 
   const [saleDetails, setSaleDetails] = useState([])
 
+
+  const editor = useEditor({
+    extensions: [
+      StarterKit, TipTapImage, TipTapBold, TipTapItalic, Underline, HardBreak, Subscript, Superscript,
+      Highlight.configure({ multicolor: true }),
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+      }),
+      OrderedList.configure({
+        HTMLAttributes: {
+          class: 'list-decimal'
+        }
+      }),
+      BulletList.configure({
+        HTMLAttributes: {
+          class: 'list-disc'
+        }
+      }),
+      Link.configure({
+        protocols: ["http", "https"]
+      }),
+      Placeholder.configure({
+        placeholder: "Nhập văn bản"
+      })
+    ]
+  })
+
   useEffect(() => {
     fetch(`/api/products/?size=${10}&page=${page}`).then(async (res) => {
-      let data = await res.json()
+      const data = await res.json()
       setProducts(data.result)
       setTotal(data.total)
       setLoadingState("idle")
@@ -72,9 +114,12 @@ const ProductCms = () => {
     fetch(`/api/products/${id}`, { method: "DELETE" }).then(() => setReload(true))
   }
 
-  const openModal = async (product) => {
+  const openModal = async (product, editor) => {
     Promise.all([
-      fetch(`/api/products/${product.id}`).then(res => res.json()).then(setSelectedProduct),
+      fetch(`/api/products/${product.id}`).then(res => res.json()).then((json) => {
+        setSelectedProduct(json)
+        editor.commands.setContent(json.description)
+      }),
       fetch(`/api/products/${product.id}/technical-details`).then(res => res.json()).then(technical => {
         setTechnicalColumns(technical ? JSON.parse(technical.column) : [])
         setTechnicalRows(technical ? JSON.parse(technical.row) : [])
@@ -102,14 +147,14 @@ const ProductCms = () => {
     onOpen()
   }
 
-  const renderCell = useCallback((product, columnKey) => {
+  const renderCell = useCallback((product, columnKey, editor) => {
     const cellValue = product[columnKey]
     switch (columnKey) {
       case "actions":
         return (
           <div className="relative flex items-center gap-2">
             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-              <EditIcon onClick={() => openModal(product)} />
+              <EditIcon onClick={() => openModal(product, editor)} />
             </span>
             <span className="text-lg text-danger cursor-pointer active:opacity-50 pl-5">
               <Trash2 onClick={() => deleteProduct(product.id)} />
@@ -148,6 +193,7 @@ const ProductCms = () => {
 
     delete productToUpdate.image
 
+    productToUpdate.description = editor.getHTML()
     if (productToUpdate.id) {
       await fetch(`/api/products/${productToUpdate.id}`, {
         method: "PUT",
@@ -193,6 +239,7 @@ const ProductCms = () => {
     ])
     setReload(true)
   }
+
   return (
     <>
       <div className="flex flex-col gap-2 border-r min-h-full p-2">
@@ -227,7 +274,7 @@ const ProductCms = () => {
               loadingContent={<Spinner label="Loading..." />}>
               {(item) => (
                 <TableRow key={item.id}>
-                  {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
+                  {(columnKey) => <TableCell>{renderCell(item, columnKey, editor)}</TableCell>}
                 </TableRow>
               )}
             </TableBody>
@@ -260,6 +307,7 @@ const ProductCms = () => {
                             brands={brands}
                             selectedBrand={selectedProductBrand}
                             setSelectedBrand={setSelectedProductBrand}
+                            editor={editor}
                           />
                         </CardBody>
                       </Card>
@@ -297,7 +345,7 @@ const ProductCms = () => {
   )
 }
 
-const ProductDetailForm = ({ categories, product, setProduct, selectedCategory, setSelectedCategory, brands, selectedBrand, setSelectedBrand }) => {
+const ProductDetailForm = ({ categories, product, setProduct, selectedCategory, setSelectedCategory, brands, selectedBrand, setSelectedBrand, editor }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   const selectImage = (value) => {
@@ -384,13 +432,9 @@ const ProductDetailForm = ({ categories, product, setProduct, selectedCategory, 
                 /> : null
             }
           </div>
-          <Textarea
-            labelPlacement="outside"
-            placeholder="Mô tả sản phẩm"
-            value={product.description ? product.description : ""}
-            onValueChange={(value) => setProduct(Object.assign({}, product, { description: value }))}
-          />
+
         </div>
+        <RichTextEditor editor={editor} />
       </div>
 
       <Modal
@@ -521,11 +565,7 @@ const TechnicalDetailForm = ({ rows, setRows, columns, setColumns }) => {
 
 const SaleDetailForm = ({ saleDetails, setSaleDetails, productId }) => {
   const addEmptySaleDetail = () => {
-    setSaleDetails([...saleDetails, { id: v4(), productId: productId }])
-  }
-
-  const addDetail = (parentId) => {
-    setSaleDetails([...saleDetails, { id: v4(), parentSaleDetailId: parentId, productId: productId }])
+    setSaleDetails([...saleDetails, { id: v4(), productId: productId, type: "TEXT" }])
   }
 
   const removeDetail = (id) => {
@@ -538,80 +578,111 @@ const SaleDetailForm = ({ saleDetails, setSaleDetails, productId }) => {
         detail[key] = value
       }
     })
-    setSaleDetails(updateDetails)
+    setSaleDetails([...updateDetails])
+  }
+
+  const ColorSelect = ({ detail }) => {
+    return (<>
+      <Select
+        label="Màu"
+        placeholder="Chọn màu cho sản phẩm"
+        defaultSelectedKeys={new Set([detail.value])}
+        onSelectionChange={(value) => handleDetailChange(value.values().next().value, detail.id, "value")}
+      >
+        <SelectItem key="#ffffff" textValue="Trắng">
+          <div className="flex gap-2 items-center">
+            <div className="rounded-full bg-white w-8 h-8"></div>
+            <p>Trắng</p>
+          </div>
+        </SelectItem>
+        <SelectItem key="#4b5563" textValue="Xám">
+          <div className="flex gap-2 items-center">
+            <div className="rounded-full bg-gray-600 w-8 h-8"></div>
+            <p>Xám</p>
+          </div>
+        </SelectItem>
+        <SelectItem key="#1e3a8a" textValue="Xanh">
+          <div className="flex gap-2 items-center">
+            <div className="rounded-full bg-blue-900 w-8 h-8"></div>
+            <p>Xanh</p>
+          </div>
+        </SelectItem>
+        <SelectItem key="#facc15" textValue="Vàng">
+          <div className="flex gap-2 items-center">
+            <div className="rounded-full bg-yellow-400 w-8 h-8"></div>
+            <p>Vàng</p>
+          </div>
+        </SelectItem>
+        <SelectItem key="#dc2626" textValue="Đỏ">
+          <div className="flex gap-2 items-center">
+            <div className="rounded-full bg-red-600 w-8 h-8"></div>
+            <p>Đỏ</p>
+          </div>
+        </SelectItem>
+        <SelectItem key="#000000" textValue="Đen">
+          <div className="flex gap-2 items-center">
+            <div className="rounded-full bg-black w-8 h-8"></div>
+            <p>Đen</p>
+          </div>
+        </SelectItem>
+      </Select>
+    </>)
   }
 
   return (
     <>
-      <div>
-        <Button color="default" variant="ghost" size="sm" className="float-right" onPress={addEmptySaleDetail}> <Plus></Plus> </Button>
+      <div className="p-2">
+        <Button color="default" variant="ghost" size="sm" className="float-right" onPress={addEmptySaleDetail}>Thêm thông số</Button>
       </div>
-      {
-        saleDetails.filter(detail => !detail.parentSaleDetailId).map(detail => {
-          return <div className="flex" key={detail.id}>
-            <div className="w-11/12">
-              <div className="flex">
-                <Input
-                  type="text"
-                  label="Option"
-                  defaultValue={detail.value}
-                  aria-label={detail.value}
-                  onValueChange={value => handleDetailChange(value, detail.id, "value")}
-                  isRequired
-                  className="p-3"
-                />
-                <Input type="number"
-                  label="Giá"
-                  defaultValue={detail.price}
-                  aria-label="Giá"
-                  className="p-3"
-                  onValueChange={(value) => { handleDetailChange(parseInt(value), detail.id, "price") }}
-                />
-              </div>
-              <div className="pl-10">
-                <span className="text-lg text-default-500 cursor-pointer active:opacity-50">
-                  <Plus onClick={() => addDetail(detail.id)} />
-                </span>
-                {
-                  saleDetails.filter(sDetail => sDetail.parentSaleDetailId === detail.id).map(sDetail => {
-                    return <div key={sDetail.id} className="flex">
-                      <Input type="text"
-                        defaultValue={sDetail.value}
-                        label="Option phụ"
-                        aria-label="Giá trị"
-                        className="p-3"
+      <div className="flex flex-col gap-2">
+        {
+          saleDetails.map(detail => {
+            return <div className="flex" key={detail.id}>
+              <div className="w-11/12">
+                <div className="flex gap-2">
+                  <Select
+                    label="Loại"
+                    defaultSelectedKeys={new Set([detail.type])}
+                    onSelectionChange={(value) => handleDetailChange(value.values().next().value, detail.id, "type")}
+                  >
+                    <SelectItem key="COLOR">
+                      Màu
+                    </SelectItem>
+                    <SelectItem key="TEXT">
+                      Text
+                    </SelectItem>
+                  </Select>
+                  {
+                    detail.type === "TEXT" ?
+                      <Input
+                        type="text"
+                        label="Option"
+                        defaultValue={detail.value}
+                        aria-label={detail.value}
+                        onValueChange={value => handleDetailChange(value, detail.id, "value")}
                         isRequired
-                        onValueChange={(value) => { handleDetailChange(value, sDetail.id, "value") }}
                       />
-                      <Input type="number"
-                        label="Giá"
-                        defaultValue={sDetail.price}
-                        aria-label="Giá"
-                        className="p-3"
-                        onValueChange={(value) => { handleDetailChange(parseInt(value), sDetail.id, "price") }}
-                      />
+                      : <ColorSelect detail={detail} />
+                  }
 
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg text-danger cursor-pointer active:opacity-50 pl-5">
-                          <Trash2 onClick={() => removeDetail(sDetail.id)} />
-                        </span>
-                      </div>
+                  <Input type="number"
+                    label="Giá"
+                    defaultValue={detail.price}
+                    aria-label="Giá"
+                    onValueChange={(value) => { handleDetailChange(parseInt(value), detail.id, "price") }}
+                  />
+                </div>
+              </div>
 
-                    </div>
-                  })
-                }
-
+              <div className="pt-3 pl-3">
+                <div className="text-lg text-danger cursor-pointer active:opacity-50 pl-5 float-right">
+                  <Trash2 onClick={() => removeDetail(detail.id)} />
+                </div>
               </div>
             </div>
-
-            <div className="pt-3 pl-3">
-              <div className="text-lg text-danger cursor-pointer active:opacity-50 pl-5 float-right">
-                <Trash2 onClick={() => removeDetail(detail.id)} />
-              </div>
-            </div>
-          </div>
-        })
-      }
+          })
+        }
+      </div>
     </>
   )
 }

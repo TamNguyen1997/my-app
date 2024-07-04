@@ -1,5 +1,6 @@
 import { db } from '@/app/db';
 import { NextResponse } from 'next/server';
+import queryString from 'query-string';
 
 export async function GET(req, { params }) {
   if (!params.slug) {
@@ -15,11 +16,52 @@ export async function GET(req, { params }) {
     const categoriesToProducts = await db.categories_to_products.findMany({
       where: { categoryId: category.id }, include: {
         product: {
-          include: { image: true }
+          include: {
+            image: true,
+            saleDetails: {
+              orderBy: {
+                price: 'desc'
+              }
+            }
+          }
         }
       }
     })
-    const products = categoriesToProducts.map(item => item.product)
+
+    let products = categoriesToProducts.map(item => item.product)
+
+    const { query } = queryString.parseUrl(req.url);
+    if (query.brand) {
+      const brand = await db.category.findMany({ where: { slug: { in: query.brand.split(',') } } })
+      if (!brand) return
+
+      const brandIds = brand.map(item => item.id)
+
+      const brandsToProducts = (await db.categories_to_products.findMany({
+        where: {
+          categoryId: {
+            in: brandIds
+          }
+        },
+        include: { product: true }
+      })).map(item => item.product.id)
+
+      products = products.filter(item => brandsToProducts.includes(item.id))
+    }
+
+    if (query.range) {
+      const minMax = query.range.split('-')
+      if (minMax.length != 2) return
+
+      products = products.filter(item => {
+        const hasSaleDetails = item.saleDetails.length > 0
+
+        const max = item.saleDetails[0]?.price <= parseInt(minMax[1])
+        const min = item.saleDetails.filter(detail => detail.price >= parseInt(minMax[0])).length >= 0
+
+        return hasSaleDetails && max && min
+      })
+    }
     return NextResponse.json({
       category: category,
       products: products

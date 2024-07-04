@@ -1,12 +1,79 @@
 "use client";
+
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/breadcrumbs";
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Slider } from "@nextui-org/react";
+import Image from "next/image";
+
+const BRANDS = {
+  "Kimberly": {
+    id: "Kimberly",
+    image: "/brand/Logo-Kimberly-Clark.png",
+    name: "Kimberly"
+  },
+  "Rubbermaid": {
+    id: "Rubbermaid",
+    image: "/brand/Rubbermaid.png",
+    name: "Rubbermaid"
+  },
+  "Ghibli": {
+    id: "Ghibli",
+    image: "/brand/Logo-Ghibli.png",
+    name: "Ghibli"
+  },
+  "Mappa": {
+    id: "Mappa",
+    image: "/brand/Logo-Mapa.png",
+    name: "Mappa"
+  },
+  "Moerman": {
+    id: "Moerman",
+    image: "/brand/Logo-Moerman.png",
+    name: "Moerman"
+  },
+}
+
+const comparePriceDesc = (product1, product2) => {
+  return product1.saleDetails[0]?.price - product2.saleDetails[0]?.price
+}
+
+const comparePriceAsc = (product1, product2) => {
+  return product2.saleDetails[0]?.price - product1.saleDetails[0]?.price
+}
+
+const FILTER = {
+  "highlight": {
+    id: "highlight",
+    name: "Nổi bật",
+    filter: (products) => {
+      return products.filter(item => item.highlight)
+    }
+  },
+  "priceAsc": {
+    id: "priceAsc",
+    name: "Giá tăng",
+    filter: (products) => {
+      return products
+        .filter(product => product.saleDetails && product.saleDetails.length && product.saleDetails.filter(detail => detail.price).length)
+        .sort(comparePriceAsc)
+    }
+  },
+  "priceDesc": {
+    id: "priceDesc",
+    name: "Giá giảm",
+    filter: (products) => {
+      return products
+        .filter(product => product.saleDetails && product.saleDetails.length && product.saleDetails.filter(detail => detail.price).length)
+        .sort(comparePriceDesc)
+    }
+  },
+
+}
 
 const Cate = () => {
   const params = useParams();
-
   return (
     <div>
       <Category params={params.slug} />
@@ -17,17 +84,70 @@ const Cate = () => {
 const Category = ({ params }) => {
   const [data, setData] = useState([])
   const [category, setCategory] = useState({ name: "" })
+  const [value, setValue] = useState([0, 100000000])
+  const [brands, setBrands] = useState([])
+  const [selectedFilters, setSelectedFilters] = useState(new Set([]))
 
   useEffect(() => {
-    fetch(`/api/categories/${params}/products/`).then(async res => {
+    getProduct()
+  }, [params]);
+
+  const getProduct = () => {
+    const hash = window.location.hash?.split('#')
+    fetch(`/api/categories/${params}/products/?${hash.length == 2 ? hash[1] : ""}`).then(async res => {
       if (res.ok) {
         const body = await res.json()
         setCategory(body.category)
         setData(body.products)
       }
     })
+  }
 
-  }, [params]);
+  const addBrand = (brand) => {
+    if (brands.includes(brand.id)) {
+      setBrands([...brands].filter(item => item != brand.id))
+    } else {
+      setBrands([...brands, brand.id])
+    }
+  }
+
+  const filter = () => {
+    let range = ""
+    if (value[0] && value[1] === 100000000) {
+      range = `range=${value.join('-')}`
+    }
+    window.location.replace(`/${category.slug}#brand=${brands.join(',')}&${range}`)
+    getProduct()
+  }
+
+  const getVariant = (id) => {
+    return brands.includes(id) ? 'solid' : 'ghost'
+  }
+
+  const getColor = (id) => {
+    return brands.includes(id) ? 'default' : ''
+  }
+
+  const getPrice = (product) => {
+    if (!product.saleDetails?.length) return <></>
+
+    if (product.saleDetails.length === 1) return <>{product.saleDetails[0].price.toLocaleString()}</>
+
+    return <>{product.saleDetails[0].price.toLocaleString()} - {product.saleDetails[product.saleDetails.length - 1].price.toLocaleString()} </>
+  }
+
+  const onFilterSelect = (value) => {
+    setSelectedFilters(value)
+    if (!value.size) {
+      filter()
+      return
+    }
+
+    const productFilter = FILTER[value.values().next().value]
+    if (!filter) return
+
+    setData(productFilter.filter(data))
+  }
 
   return (
     <>
@@ -36,44 +156,160 @@ const Category = ({ params }) => {
           <h1 className="text-4xl font-bold text-white">{category.name}</h1>
         </div>
       </div>
-      <div
-        className="mx-auto w-11/12 px-2 py-8 sm:px-6 sm:py-12 lg:px-8 text-gray-500 text-sm"
-        style={{ maxWidth: "90rem" }}>
-        <Breadcrumbs>
-          <BreadcrumbItem>
-            <Link href="/">Trang chủ</Link>
-          </BreadcrumbItem>
-          <BreadcrumbItem>
-            <Link href={`/${category.slug}`}>{category.name}</Link>
-          </BreadcrumbItem>
-        </Breadcrumbs>
-      </div>
+      <div className="w-9/12 mx-auto ">
+        <div className="sm:py-8 text-gray-500 text-sm">
+          <Breadcrumbs size="lg" color="foreground">
+            <BreadcrumbItem>
+              <Link href="/">Trang chủ</Link>
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <Link href={`/${category.slug}`}>{category.name}</Link>
+            </BreadcrumbItem>
+          </Breadcrumbs>
+        </div>
 
-      <div className="w-full lg:w-11/12 mx-auto my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
-        {data.map((product) => (
-          <Link
-            href={`/san-pham/${product.slug}`}
-            key={product.id}
-            className="group border rounded h-[450px] overflow-clip">
-            <img
-              width={500}
-              height={400}
-              src={`${process.env.NEXT_PUBLIC_FILE_PATH + product?.image?.path}`}
-              alt={product?.imageAlt}
-              className="h-[300px] w-full object-cover object-center group-hover:opacity-50 p-2" />
-            <p className="mt-4 text-sm text-gray-700 font-semibold text-center">
-              {product.name}
-            </p>
-            <p className="text-center text-red-500 font-bold text-xl pt-3">
+        <div className="flex gap-2">
+          <Dropdown >
+            <DropdownTrigger>
+              <Button
+                variant="bordered">
+                Nhãn hàng
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Example with disabled actions" variant="light" closeOnSelect={false}>
+              <DropdownItem textValue="item">
+                <div>
+                  <div className="p-4 flex flex-col gap-2 items-center">
+                    <div className="flex flex-wrap gap-2">
+                      {
+                        Object.keys(BRANDS).map(key =>
+                          <Button
+                            variant={getVariant(BRANDS[key].id)}
+                            color={getColor(BRANDS[key].id)}
+                            key={BRANDS[key].id}
+                            onClick={() => addBrand(BRANDS[key])}>
+                            <Image src={BRANDS[key].image} width="100" height="100" alt={BRANDS[key].name} />
+                          </Button>
+                        )
+                      }
+                    </div>
+                    <div className="flex gap-1">
+                      <Button color="primary" onClick={filter}>Tìm</Button>
+                      <Button variant="ghost" color="danger" onClick={() => setBrands([])}>Bỏ chọn</Button>
+                    </div>
+                  </div>
+                </div>
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+
+          <Dropdown >
+            <DropdownTrigger>
+              <Button
+                variant="bordered"
+              >
+                Giá
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Example with disabled actions" variant="light" closeOnSelect={false}>
+              <DropdownItem textValue="item">
+                <>
+                  <div className="p-4 flex flex-col gap-2 items-center">
+                    <div>
+                      <div className="flex flex-wrap gap-2">
+                        <Button variant="ghost" onClick={() => setValue([0, 2000000])}>
+                          Dưới 2 triệu
+                        </Button>
+                        <Button variant="ghost" onClick={() => setValue([2000000, 3000000])}>
+                          Từ 2 - 3 triệu
+                        </Button>
+                        <Button variant="ghost" onClick={() => setValue([3000000, 4000000])}>
+                          Từ 3 - 4 triệu
+                        </Button>
+                        <Button variant="ghost" onClick={() => setValue([4000000, 100000000])}>
+                          Trên 4 triệu
+                        </Button>
+                      </div>
+                      <div>
+                        <Slider
+                          label="Mức giá"
+                          step={50}
+                          minValue={0}
+                          maxValue={100000000}
+                          value={value}
+                          onChange={setValue}
+                          formatOptions={{ style: "currency", currency: "VND" }}
+                          className="max-w-md m-auto p-3"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex gap-1">
+                      <Button color="primary" onClick={filter}>Tìm</Button>
+                      <Button variant="ghost" color="danger" onClick={() => setValue([0, 100000000])}>Bỏ chọn</Button>
+                    </div>
+                  </div>
+                </>
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+
+          <Button color="primary" onClick={filter}>Tìm</Button>
+        </div>
+
+        <div className="float-right">
+          <Dropdown className="float-right">
+            <DropdownTrigger>
+              <Button
+                variant="bordered">
+                {
+                  selectedFilters.size ? FILTER[selectedFilters.values().next().value].name : "Sắp xếp"
+                }
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu
+              aria-label="Example with disabled actions"
+              variant="light"
+              selectionMode="single"
+              selectedKeys={selectedFilters}
+              onSelectionChange={onFilterSelect}>
               {
-                (Math.random() * 1000000).toLocaleString()
+                Object.keys(FILTER).map(key =>
+                  <DropdownItem textValue="item" key={key}>
+                    {
+                      FILTER[key].name
+                    }
+                  </DropdownItem>
+                )
               }
-            </p>
-          </Link>
-        ))}
+            </DropdownMenu>
+          </Dropdown>
+        </div>
+        <div className="w-full my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
+          {data.map((product) => (
+            <Link
+              href={`/san-pham/${product.slug}`}
+              key={product.id}
+              className="group border rounded overflow-clip">
+              <img
+                src={`${process.env.NEXT_PUBLIC_FILE_PATH + product?.image?.path}`}
+                alt={product?.imageAlt}
+                className="object-cover object-center group-hover:opacity-50 p-2 hover:-translate-y-2.5 hover:scale-[1.02] shadow-[0px_2px_10px_rgba(0,0,0,0.15)] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)]" />
+              <p className="mt-4 text-sm text-gray-700 font-semibold text-center">
+                {product.name}
+              </p>
+
+              <p className="text-center text-red-500 font-bold text-xl pt-3 border-t-medium">
+                {
+                  getPrice(product)
+                }
+              </p>
+            </Link>
+          ))}
+        </div>
       </div>
     </>
   );
 };
+
 
 export default Cate;

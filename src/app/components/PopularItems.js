@@ -60,7 +60,7 @@ export default function PopularItems() {
   const [rubberMaidProducts, setRubberMaidProducts] = useState([])
   const [moermanProducts, setMoermanProducts] = useState([])
   const [mapaProducts, setMapaProducts] = useState([])
-  const [ghibliProducts, setGhibleProducts] = useState([])
+  const [ghibliProducts, setGhibliProducts] = useState([])
   const [selectedBrand, setSelectedBrand] = useState("RUBBERMAID")
 
   const [brandProducts, setBrandProducts] = useState([])
@@ -69,20 +69,18 @@ export default function PopularItems() {
 
   useEffect(() => {
     Promise.all([
-      fetch(`/api/products/?size=${10}&page=${1}&highlight=true`).then(res => res.json()).then((value) => setProducts(value.result)).then(() => setIsLoading(false)),
-      fetch(`/api/categories/rubbermaid/products/`).then(res => res.json()),
-      fetch(`/api/categories/moerman/products/`).then(res => res.json()),
-      fetch(`/api/categories/mapa/products/`).then(res => res.json()),
-      fetch(`/api/categories/ghibli/products/`).then(res => res.json()),
-    ]).then(values => {
-      setRubberMaidProducts(values[1].products)
-      setMoermanProducts(values[2].products)
-      setMapaProducts(values[3].products)
-      setGhibleProducts(values[4].products)
-      setBrandProducts(values[1].products)
+      fetch(`/api/products/?size=${10}&page=${1}&highlight=true`).then(res => res.json()).then((value) => setProducts(value.result)),
+      fetch(`/api/brands/thuong-hieu-rubbermaid/products/`).then(res => res.json()).then(json => setRubberMaidProducts(json.products)),
+      fetch(`/api/brands/thuong-hieu-moerman/products/`).then(res => res.json()).then(json => setMoermanProducts(json.products)),
+      fetch(`/api/brands/thuong-hieu-mapa/products/`).then(res => res.json()).then(json => setMapaProducts(json.products)),
+      fetch(`/api/brands/thuong-hieu-ghibli/products/`).then(res => res.json()).then(json => setGhibliProducts(json.products)),
+    ]).then(() => {
+      setBrandProducts(rubberMaidProducts)
+      setIsLoading(false)
     })
   }, [])
 
+  console.log(ghibliProducts)
   if (isLoading) return <Spinner className="m-auto" />
 
   const getSelectedColor = (value) => {

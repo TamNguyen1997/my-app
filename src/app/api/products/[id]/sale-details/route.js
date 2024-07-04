@@ -7,9 +7,6 @@ export async function POST(req, { params }) {
     await db.sale_detail.deleteMany({
       where: {
         productId: params.id,
-        NOT: {
-          parentSaleDetailId: null
-        }
       }
     })
     await db.sale_detail.deleteMany({

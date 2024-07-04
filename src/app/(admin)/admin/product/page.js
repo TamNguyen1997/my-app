@@ -162,6 +162,9 @@ const ProductCms = () => {
 
   const newProduct = () => {
     setSelectedProduct({})
+    setSelectedProductCategory(new Set([]))
+    setSelectedProductBrand(new Set([]))
+    editor.commands.setContent()
     onOpen()
   }
 

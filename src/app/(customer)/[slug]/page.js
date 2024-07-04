@@ -3,7 +3,6 @@
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/breadcrumbs";
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Slider } from "@nextui-org/react";
 import Image from "next/image";
 
@@ -76,17 +75,25 @@ const Cate = () => {
   const params = useParams();
   return (
     <div>
-      <Category params={params.slug} />
+      <SubCategory params={params.slug} />
     </div>
   );
 };
 
-const Category = ({ params }) => {
-  const [data, setData] = useState([])
-  const [category, setCategory] = useState({ name: "" })
+const SubCategory = ({ params }) => {
+  const [products, setProducts] = useState([])
+  const [subCategory, setSubCategory] = useState({ name: "" })
+
   const [value, setValue] = useState([0, 100000000])
   const [brands, setBrands] = useState([])
+  const [categories, setCategories] = useState([])
+  const [selectedCategories, setSelectedCategories] = useState([])
+
   const [selectedFilters, setSelectedFilters] = useState(new Set([]))
+
+  useEffect(() => {
+    fetch(`/api/categories/`).then(res => res.json()).then(setCategories)
+  }, []);
 
   useEffect(() => {
     getProduct()
@@ -94,11 +101,11 @@ const Category = ({ params }) => {
 
   const getProduct = () => {
     const hash = window.location.hash?.split('#')
-    fetch(`/api/categories/${params}/products/?${hash.length == 2 ? hash[1] : ""}`).then(async res => {
+    fetch(`/api/sub-categories/${params}/products/?${hash.length == 2 ? hash[1] : ""}`).then(async res => {
       if (res.ok) {
         const body = await res.json()
-        setCategory(body.category)
-        setData(body.products)
+        setSubCategory(body.subCategory)
+        setProducts(body.products)
       }
     })
   }
@@ -111,12 +118,20 @@ const Category = ({ params }) => {
     }
   }
 
+  const addCategory = (category) => {
+    if (selectedCategories.includes(category.slug)) {
+      setSelectedCategories([...selectedCategories].filter(item => item != category.slug))
+    } else {
+      setSelectedCategories([...selectedCategories, category.slug])
+    }
+  }
+
   const filter = () => {
     let range = ""
     if (value[0] && value[1] === 100000000) {
       range = `range=${value.join('-')}`
     }
-    window.location.replace(`/${category.slug}#brand=${brands.join(',')}&${range}`)
+    window.location.replace(`/${subCategory.slug}#brand=${brands.join(',')}&${range}&category=${selectedCategories.join(',')}`)
     getProduct()
   }
 
@@ -126,6 +141,14 @@ const Category = ({ params }) => {
 
   const getColor = (id) => {
     return brands.includes(id) ? 'default' : ''
+  }
+
+  const getCategoryVariant = (id) => {
+    return selectedCategories.includes(id) ? 'solid' : 'ghost'
+  }
+
+  const getCategoryColor = (id) => {
+    return selectedCategories.includes(id) ? 'default' : ''
   }
 
   const getPrice = (product) => {
@@ -153,22 +176,11 @@ const Category = ({ params }) => {
     <>
       <div className="flex flex-col items-center justify-center w-full h-60 bg-cover bg-center bg-no-repeat">
         <div className="flex flex-col items-center justify-center w-full h-full bg-no-repeat bg-cover bg-slate-700">
-          <h1 className="text-4xl font-bold text-white">{category.name}</h1>
+          <h1 className="text-4xl font-bold text-white">{subCategory.name}</h1>
         </div>
       </div>
-      <div className="w-9/12 mx-auto ">
-        <div className="sm:py-8 text-gray-500 text-sm">
-          <Breadcrumbs size="lg" color="foreground">
-            <BreadcrumbItem>
-              <Link href="/">Trang chủ</Link>
-            </BreadcrumbItem>
-            <BreadcrumbItem>
-              <Link href={`/${category.slug}`}>{category.name}</Link>
-            </BreadcrumbItem>
-          </Breadcrumbs>
-        </div>
-
-        <div className="flex gap-2">
+      <div className="w-9/12 mx-auto">
+        <div className="flex gap-2 pt-5">
           <Dropdown >
             <DropdownTrigger>
               <Button
@@ -196,6 +208,40 @@ const Category = ({ params }) => {
                     <div className="flex gap-1">
                       <Button color="primary" onClick={filter}>Tìm</Button>
                       <Button variant="ghost" color="danger" onClick={() => setBrands([])}>Bỏ chọn</Button>
+                    </div>
+                  </div>
+                </div>
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+
+          <Dropdown >
+            <DropdownTrigger>
+              <Button
+                variant="bordered">
+                Category
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Example with disabled actions" variant="light" closeOnSelect={false}>
+              <DropdownItem textValue="item">
+                <div>
+                  <div className="p-4 flex flex-col gap-2 items-center">
+                    <div className="flex flex-wrap gap-2">
+                      {
+                        categories.map(category =>
+                          <Button
+                            variant={getCategoryVariant(category.slug)}
+                            color={getCategoryColor(category.slug)}
+                            key={category.slug}
+                            onClick={() => addCategory(category)}>
+                            {category.name}
+                          </Button>
+                        )
+                      }
+                    </div>
+                    <div className="flex gap-1">
+                      <Button color="primary" onClick={filter}>Tìm</Button>
+                      <Button variant="ghost" color="danger" onClick={() => setSelectedCategories([])}>Bỏ chọn</Button>
                     </div>
                   </div>
                 </div>
@@ -283,7 +329,7 @@ const Category = ({ params }) => {
           </Dropdown>
         </div>
         <div className="w-full my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
-          {data.map((product) => (
+          {products.map((product) => (
             <Link
               href={`/san-pham/${product.slug}`}
               key={product.id}

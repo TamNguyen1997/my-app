@@ -28,9 +28,9 @@ const responsive = {
 const getPrice = (product) => {
   if (!product.saleDetails?.length) return <></>
 
-  if (product.saleDetails.length === 1) return <>{product.saleDetails[0].price.toLocaleString()}</>
+  if (product.saleDetails.length === 1) return <>{product.saleDetails[0].price?.toLocaleString()}</>
 
-  return <>{product.saleDetails[0].price.toLocaleString()} - {product.saleDetails[product.saleDetails.length - 1].price.toLocaleString()} </>
+  return <>{product.saleDetails[0].price?.toLocaleString()} - {product.saleDetails[product.saleDetails.length - 1].price?.toLocaleString()} </>
 }
 
 export default function PopularItems() {
@@ -45,7 +45,7 @@ export default function PopularItems() {
 
   useEffect(() => {
     Promise.all([
-      fetch("/api/most-bought").then(res => res.json()).then(setProducts).then(() => setIsLoading(false)),
+      fetch(`/api/products/?size=${10}&page=${1}&highlight=true`).then(res => res.json()).then((value) => setProducts(value.result)).then(() => setIsLoading(false)),
       fetch(`/api/categories/rubbermaid/products/`).then(res => res.json()),
       fetch(`/api/categories/moerman/products/`).then(res => res.json()),
       fetch(`/api/categories/mapa/products/`).then(res => res.json()),
@@ -136,13 +136,8 @@ const ProductCarousel = ({ products, responsive }) => {
                     {product.name}
                   </p>
                 </div>
-                <div className="absolute inset-x-0 bottom-3">
+                <div className="inset-x-0 bottom-3">
                   <p className="text-center text-red-500 font-bold text-xl pt-3">
-                    {
-                      getPrice(product)
-                    }
-                  </p>
-                  <p className="text-center text-md line-through text-gray-500">
                     {
                       getPrice(product)
                     }

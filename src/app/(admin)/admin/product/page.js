@@ -109,6 +109,7 @@ const ProductCms = () => {
     let filteredCondition = { ...condition }
     Object.keys(filteredCondition).forEach(key => filteredCondition[key] === undefined && delete filteredCondition[key])
     const queryString = new URLSearchParams(filteredCondition).toString()
+
     await fetch(`/api/products/?size=${10}&page=${page}&${queryString}`).then(async (res) => {
       const data = await res.json()
       setProducts(data.result)

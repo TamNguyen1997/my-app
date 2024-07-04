@@ -60,8 +60,6 @@ export default function PopularItems() {
 
   if (isLoading) return <Spinner className="m-auto" />
 
-  if (!products.length) return <></>
-
   return (
     <div className="flex flex-col gap-11">
       <div>

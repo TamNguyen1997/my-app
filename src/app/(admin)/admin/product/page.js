@@ -136,7 +136,6 @@ const ProductCms = () => {
               setSelectedProductCategory(new Set([item.categoryId]))
             }
             if (item.category?.type === "BRAND") {
-              console.log("????????????????????")
               setSelectedProductBrand(new Set([item.categoryId]))
             }
           })

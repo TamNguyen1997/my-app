@@ -2,6 +2,15 @@ import { Button } from "@nextui-org/react"
 import { ShoppingCart } from "lucide-react"
 import { useState } from "react"
 
+const COLOR_VARIANT = {
+  "#ffffff": "bg-[#ffffff]",
+  "#4b5563": "bg-[#4b5563]",
+  "#1e3a8a": "bg-[#1e3a8a]",
+  "#facc15": "bg-[#facc15]",
+  "#dc2626": "bg-[#dc2626]",
+  "#000000": "bg-[#000000]",
+}
+
 const SaleDetail = ({ saleDetails }) => {
   const [selectedDetail, setSelectedDetail] = useState(saleDetails[0])
 
@@ -20,7 +29,7 @@ const SaleDetail = ({ saleDetails }) => {
   }
 
   const getColor = (detail, selected) => {
-    const className = `rounded-full bg-[${detail.value}] w-8 h-8 border-[#e3e3e3] border hover:opacity-50 hover:border-4 hover:border-blue-500`
+    const className = `rounded-full ${COLOR_VARIANT[detail.value]} w-7 h-7 border-[#e3e3e3] border hover:opacity-50 hover:border-4 hover:border-blue-500`
     if (detail.id === selected) return `${className} border-4 border-blue-500`
     return className
   }

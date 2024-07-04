@@ -34,7 +34,17 @@ model product {
   technicalDetailId      String?                  @map("technical_detail_id") @db.Uuid
   technical_detail       technical_detail?
 
+  subCategory   sub_category? @relation(fields: [subcategoryId], references: [id])
+  subcategoryId String?       @map("sub_category_id") @db.Uuid
+
+  category   category? @relation(fields: [categoryId], references: [id])
+  categoryId String?   @map("category_id") @db.Uuid
+
+  quantity Int @default(0)
+
   @@index([imageId])
+  @@index([subcategoryId])
+  @@index([categoryId])
 }
 
 model technical_detail {
@@ -114,6 +124,7 @@ model blog {
   id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title     String
   content   String
+  slug      String    @unique @default(dbgenerated("gen_random_uuid()"))
   thumbnail String    @default("")
   active    Boolean   @default(false)
   author    String?
@@ -150,8 +161,25 @@ model category {
   createdAt              DateTime                 @default(now()) @map("created_at")
   updatedAt              DateTime                 @default(now()) @updatedAt @map("updated_at")
   categories_to_products categories_to_products[]
+  sub_category           sub_category[]
+  product                product[]
 
   @@unique([slug])
+}
+
+model sub_category {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String   @unique
+  slug      String   @default(dbgenerated("gen_random_uuid()"))
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  categoryId String    @db.Uuid
+  category   category  @relation(fields: [categoryId], references: [id])
+  product    product[]
+
+  @@unique([slug])
+  @@index([categoryId])
 }
 
 model categories_to_products {

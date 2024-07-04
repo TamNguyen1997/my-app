@@ -29,16 +29,11 @@ import {
 import { LucideHighlighter } from 'lucide-react';
 
 const RichTextEditor = ({ editor }) => {
-  const focus = () => {
-    if (!editor.content) {
-      editor.commands.focus('end')
-    }
-  }
 
   return (
     <div >
       <BlogToolBar editor={editor} />
-      <div className="h-full w-full shadow-md min-h-44 p-3 border" onClick={focus}>
+      <div className="h-full w-full shadow-md min-h-44 p-3 border">
         <EditorContent editor={editor} />
       </div>
     </div>

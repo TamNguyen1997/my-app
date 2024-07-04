@@ -49,6 +49,8 @@ const getPrice = (product) => {
 
   if (product.saleDetails.length === 1) return <>{product.saleDetails[0].price?.toLocaleString()}</>
 
+  if (!product.saleDetails[0].price) return <>{product.saleDetails[product.saleDetails.length - 1].price.toLocaleString()}</>
+
   return <>{product.saleDetails[0].price?.toLocaleString()} - {product.saleDetails[product.saleDetails.length - 1].price?.toLocaleString()} </>
 }
 
@@ -134,26 +136,6 @@ export default function PopularItems() {
           selectedBrand={selectedBrand}
           setSelectedBrand={setSelectedBrand} />
       </div>
-
-      {/* <div className="flex flex-col gap-3">
-        <img src="/gallery/banner/Rubbermaid-banner.jpg" />
-        <ProductCard category="RUBBERMAID" products={rubberMaidProducts} />
-      </div>
-
-      <div className="flex flex-col gap-3">
-        <img src="/gallery/banner/Rubbermaid-banner-2.jpg" />
-        <ProductCard category="MOERMAN" products={moermanProducts} />
-      </div>
-
-      <div className="flex flex-col gap-3">
-        <img src="/gallery/banner/Rubbermaid-banner-3.jpg" />
-        <ProductCard category="MAPA" products={mapaProducts} />
-      </div>
-
-      <div className="flex flex-col gap-3">
-        <img src="/gallery/banner/Rubbermaid-banner-4.jpg" />
-        <ProductCard category="GHIBLI & WIRBEL" products={ghibliProducts} />
-      </div> */}
     </div>
   );
 }

@@ -56,8 +56,6 @@ const ProductCms = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [selectedProduct, setSelectedProduct] = useState({})
 
-  const [selectedProductBrand, setSelectedProductBrand] = useState(new Set([]))
-
   const [condition, setCondition] = useState({})
 
   const [reload, setReload] = useState(false)
@@ -121,7 +119,7 @@ const ProductCms = () => {
 
   useEffect(() => {
     fetch('/api/categories?type=CATEGORY').then(res => res.json()).then(setCategories)
-    fetch('/api/categories?type=BRAND').then(res => res.json()).then(setBrands)
+    fetch('/api/brands').then(res => res.json()).then(setBrands)
     fetch('/api/sub-categories').then(res => res.json()).then(setSubCategories)
   }, [])
 

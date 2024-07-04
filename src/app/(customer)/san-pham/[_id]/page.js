@@ -32,8 +32,8 @@ const Product = () => {
               base: "[&>span]:text-black"
             }}
           >
-            <BreadcrumbItem href="/">Trang chủ</BreadcrumbItem>
             <BreadcrumbItem href={`/${product.category?.slug}`}>{product.category?.name}</BreadcrumbItem>
+            <BreadcrumbItem href={`/${product.category?.slug}/${product.subCategory?.slug}`}>{product.subCategory?.name}</BreadcrumbItem>
             <BreadcrumbItem>{product.name}</BreadcrumbItem>
           </Breadcrumbs>
 

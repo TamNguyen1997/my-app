@@ -13,11 +13,12 @@ import {
   Card, CardBody, Tab, Tabs,
   Input,
   Select,
-  SelectItem
+  SelectItem,
+  Checkbox
 } from "@nextui-org/react"
 import { v4 } from "uuid";
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { EditIcon, Trash2 } from "lucide-react"
+import { EditIcon, Search, Trash2 } from "lucide-react"
 import { redirect } from "next/navigation";
 import ImagePicker from "@/components/admin/ui/ImagePicker";
 import slugify from "slugify"
@@ -56,6 +57,8 @@ const ProductCms = () => {
   const [selectedProduct, setSelectedProduct] = useState({})
   const [selectedProductCategory, setSelectedProductCategory] = useState(new Set([]))
   const [selectedProductBrand, setSelectedProductBrand] = useState(new Set([]))
+
+  const [condition, setCondition] = useState({})
 
   const [reload, setReload] = useState(false)
   const [total, setTotal] = useState(0)
@@ -98,13 +101,21 @@ const ProductCms = () => {
   })
 
   useEffect(() => {
-    fetch(`/api/products/?size=${10}&page=${page}`).then(async (res) => {
+    getProduct()
+  }, [page])
+
+  const getProduct = async () => {
+    setLoadingState("loading")
+    let filteredCondition = { ...condition }
+    Object.keys(filteredCondition).forEach(key => filteredCondition[key] === undefined && delete filteredCondition[key])
+    const queryString = new URLSearchParams(filteredCondition).toString()
+    await fetch(`/api/products/?size=${10}&page=${page}&${queryString}`).then(async (res) => {
       const data = await res.json()
       setProducts(data.result)
       setTotal(data.total)
       setLoadingState("idle")
     })
-  }, [page])
+  }
 
   useEffect(() => {
     fetch('/api/categories?type=CATEGORY').then(res => res.json()).then(setCategories)
@@ -246,9 +257,53 @@ const ProductCms = () => {
     setReload(true)
   }
 
+  const onConditionChange = (value) => {
+    setCondition(Object.assign({}, condition, value))
+  }
+
   return (
     <>
       <div className="flex flex-col gap-2 border-r min-h-full p-2">
+        <div className="flex gap-3 w-1/2">
+          <Input label="Tên sản phẩm" aria-label="Tên sản phẩm" labelPlacement="outside" value={condition.name}
+            onValueChange={(value) => {
+              onConditionChange({ name: value })
+              if (value.length > 2) getProduct()
+            }}
+          />
+          <Input label="Slug" aria-label="slug" labelPlacement="outside" value={condition.slug}
+            onValueChange={(value) => {
+              onConditionChange({ slug: value })
+              if (value.length > 2) getProduct()
+            }}
+          />
+
+          <Select
+            label="Nổi bật"
+            labelPlacement="outside"
+            onSelectionChange={(value) => onConditionChange({ highlight: value.values().next().value })}>
+            <SelectItem key="true">
+              Nổi bật
+            </SelectItem>
+            <SelectItem key="false">
+              Không nổi bật
+            </SelectItem>
+          </Select>
+          <Select
+            label="Active"
+            labelPlacement="outside"
+            onSelectionChange={(value) => onConditionChange({ active: value.values().next().value })}>
+            <SelectItem key="true">
+              Active
+            </SelectItem>
+            <SelectItem key="false">
+              Inactive
+            </SelectItem>
+          </Select>
+          <div className="items-end flex min-h-full">
+            <Button onClick={getProduct} color="primary"><Search /></Button>
+          </div>
+        </div>
         <div className="px-1 py-2 border-default-200">
           <Table
             aria-label="Tất cả sản phẩm"
@@ -270,7 +325,7 @@ const ProductCms = () => {
               <TableColumn key="name" textValue="Tên sản phẩm" aria-label="Tên sản phẩm">Tên sản phẩm</TableColumn>
               <TableColumn key="slug" textValue="slug" aria-label="slug">Slug</TableColumn>
               <TableColumn key="highlight" textValue="highlight" aria-label="active">Nổi bật</TableColumn>
-              <TableColumn key="active" textValue="active" aria-label="active"></TableColumn>
+              <TableColumn key="active" textValue="active" aria-label="active">Active</TableColumn>
               <TableColumn key="actions" textValue="actions" width="100"></TableColumn>
             </TableHeader>
             <TableBody

@@ -74,7 +74,7 @@ export default ({ product }) => {
     { id: ID.DESCRIPTION, title: "Mô tả" },
     // { id: ID.FEATURES, title: "Tính năng và ưu điểm" },
     { id: ID.SPECIFICATIONS, title: "Thông số kỹ thuật" },
-    { id: ID.VIDEOS, title: "Videos" },
+    // { id: ID.VIDEOS, title: "Videos" },
     { id: ID.RELATED_ITEMS, title: "Sản phẩm liên quan" },
   ];
 

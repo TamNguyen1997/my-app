@@ -13,41 +13,20 @@ export async function GET(req, { params }) {
       return NextResponse.json({ message: "No category found" }, { status: 404 })
     }
 
-    const categoriesToProducts = await db.categories_to_products.findMany({
-      where: { categoryId: category.id }, include: {
-        product: {
-          include: {
-            image: true,
-            saleDetails: {
-              orderBy: {
-                price: 'desc'
-              }
-            }
-          }
-        }
-      }
-    })
-
-    let products = categoriesToProducts.map(item => item.product)
 
     const { query } = queryString.parseUrl(req.url);
-    if (query.brand) {
-      const brand = await db.category.findMany({ where: { slug: { in: query.brand.split(',') } } })
-      if (!brand) return
-
-      const brandIds = brand.map(item => item.id)
-
-      const brandsToProducts = (await db.categories_to_products.findMany({
-        where: {
-          categoryId: {
-            in: brandIds
-          }
-        },
-        include: { product: true }
-      })).map(item => item.product.id)
-
-      products = products.filter(item => brandsToProducts.includes(item.id))
+    let condition = {
+      categoryId: category.id
     }
+    if (query.brand) {
+      const brandIds = (await db.brand.findMany({ where: { slug: { in: query.brand.split(',') } } })).map(brand => brand.id)
+
+      condition.brandId = {
+        in: brandIds
+      }
+    }
+
+    let products = await db.product.findMany({ where: condition })
 
     if (query.range) {
       const minMax = query.range.split('-')

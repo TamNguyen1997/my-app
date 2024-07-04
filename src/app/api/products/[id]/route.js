@@ -25,7 +25,10 @@ export async function GET(req, { params }) {
         include: {
           technical_detail: searchParams && searchParams.get("includeTechnical") !== "undefined" && searchParams.get("includeTechnical") !== null,
           saleDetails: searchParams && searchParams.get("includeSale") !== "undefined" && searchParams.get("includeSale") !== null,
-          image: true
+          image: true,
+          category: true,
+          subCategory: true,
+          brand: true
         }
       }
     ))
@@ -48,6 +51,7 @@ export async function PUT(req, { params }) {
     await db.product.update({ where: { id: params.id }, data: body })
     return NextResponse.json({ message: "Success" })
   } catch (e) {
+    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }
@@ -58,7 +62,6 @@ export async function DELETE(req, { params }) {
   }
 
   try {
-    await db.categories_to_products.deleteMany({ where: { productId: params.id } })
     await db.technical_detail.deleteMany({ where: { productId: params.id } })
     return NextResponse.json(await db.product.delete({ where: { id: params.id } }))
   } catch (e) {

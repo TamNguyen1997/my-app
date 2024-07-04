@@ -48,6 +48,14 @@ const brandDescription = {
   }
 }
 
+const getPrice = (product) => {
+  if (!product.saleDetails?.length) return <></>
+
+  if (product.saleDetails.length === 1) return <>{product.saleDetails[0].price.toLocaleString()}</>
+
+  return <>{product.saleDetails[0].price.toLocaleString()} - {product.saleDetails[product.saleDetails.length - 1].price.toLocaleString()} </>
+}
+
 export default function PopularItems() {
 
   const [products, setProducts] = useState([])
@@ -67,21 +75,18 @@ export default function PopularItems() {
     return selectedBrand === value ? "bg-slate-700" : "bg-black"
   }
   return (
-    <div>
-      <div className="pt-[35px]">
-        <ProductCard category="SẢN PHẨM BÁN CHẠY" products={products} redirect="/category/Rubbermaid" />
-      </div>
-      <div className="pt-[35px]">
-        <ProductCard category="SẢN PHẨM MỚI NHẤT" products={products} redirect="/category/Ghibli" />
+    <div className="flex flex-col gap-11">
+      <div>
+        <ProductCard category="SẢN PHẨM NỔI BẬT" products={products} />
       </div>
 
-      <div className="pt-[60px]">
+      <div>
         <div className="bg-[#ffd300] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-1/3 h-[50px] m-auto shadow-md">
           <span className="m-auto text-black font-bold text-xl">THƯƠNG HIỆU NỔI BẬT</span>
         </div>
       </div>
 
-      <div className="pt-2">
+      <div>
         <div className="bg-black grid grid-cols-5">
           <Button radius="none"
             onClick={() => setSelectedBrand("RUBBERMAID")}
@@ -132,9 +137,12 @@ const ProductCard = ({ category, products, redirect }) => {
           <div className="text-xl text-black p-3 pl-10 font-extrabold w-[85%]">
             {category}
           </div>
-          <div className="bg-black text-white rounded-tr-[42px] rounded-bl-[42px] text-md font-bold italic flex items-center w-[15%] min-w-[100px]">
-            <Link href={redirect} className="m-auto">Xem thêm</Link>
-          </div>
+          {
+            redirect ? <div className="bg-black text-white rounded-tr-[42px] rounded-bl-[42px] text-md font-bold italic flex items-center w-[15%] min-w-[100px]">
+              <Link href={redirect} className="m-auto">Xem thêm</Link>
+            </div> : <></>
+          }
+
         </div>
         <div className="mx-auto lg:max-w-full">
           <ProductCarousel products={products} responsive={responsive}></ProductCarousel>
@@ -171,12 +179,12 @@ const ProductCarousel = ({ products, responsive }) => {
                 <div className="absolute inset-x-0 bottom-3">
                   <p className="text-center text-red-500 font-bold text-xl pt-3">
                     {
-                      (10000000).toLocaleString()
+                      getPrice(product)
                     }
                   </p>
                   <p className="text-center text-md line-through text-gray-500">
                     {
-                      (10000000).toLocaleString()
+                      getPrice(product)
                     }
                   </p>
                 </div>

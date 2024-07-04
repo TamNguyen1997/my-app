@@ -205,9 +205,7 @@ const Category = ({ params }) => {
 
           <Dropdown >
             <DropdownTrigger>
-              <Button
-                variant="bordered"
-              >
+              <Button variant="bordered">
                 Giá
               </Button>
             </DropdownTrigger>
@@ -306,7 +304,7 @@ const Category = ({ params }) => {
             </Link>
           ))}
         </div>
-      </div>
+      </div >
     </>
   );
 };

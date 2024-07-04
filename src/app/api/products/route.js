@@ -42,7 +42,8 @@ export async function GET(req) {
   try {
     const result = await db.product.findMany({
       include: {
-        saleDetails: true
+        saleDetails: true,
+        image: true
       },
       orderBy: [
         {

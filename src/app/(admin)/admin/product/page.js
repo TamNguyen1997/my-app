@@ -63,6 +63,7 @@ const ProductCms = () => {
   const [reload, setReload] = useState(false)
   const [total, setTotal] = useState(0)
   const [categories, setCategories] = useState([])
+  const [subCategories, setSubCategories] = useState([])
   const [brands, setBrands] = useState([])
 
   const [page, setPage] = useState(1);
@@ -121,6 +122,7 @@ const ProductCms = () => {
   useEffect(() => {
     fetch('/api/categories?type=CATEGORY').then(res => res.json()).then(setCategories)
     fetch('/api/categories?type=BRAND').then(res => res.json()).then(setBrands)
+    fetch('/api/sub-categories').then(res => res.json()).then(setSubCategories)
   }, [])
 
   const pages = useMemo(() => {
@@ -156,7 +158,7 @@ const ProductCms = () => {
           setSelectedProductBrand(new Set([]))
         }
       }),
-      fetch(`/api/products/${product.id}/sale-details`).then(res => res.json()).then(setSaleDetails)
+      fetch(`/api/products/${product.id}/sale-details`).then(res => res.json()).then(setSaleDetails),
     ]).then(() => onOpen())
   }
 
@@ -373,6 +375,7 @@ const ProductCms = () => {
                             selectedBrand={selectedProductBrand}
                             setSelectedBrand={setSelectedProductBrand}
                             editor={editor}
+                            subCategories={subCategories}
                           />
                         </CardBody>
                       </Card>
@@ -410,7 +413,11 @@ const ProductCms = () => {
   )
 }
 
-const ProductDetailForm = ({ categories, product, setProduct, selectedCategory, setSelectedCategory, brands, selectedBrand, setSelectedBrand, editor }) => {
+const ProductDetailForm = ({
+  categories, product, setProduct,
+  selectedCategory, setSelectedCategory,
+  brands, selectedBrand, setSelectedBrand,
+  editor, subCategories }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   const selectImage = (value) => {
@@ -455,6 +462,21 @@ const ProductDetailForm = ({ categories, product, setProduct, selectedCategory, 
             selectedKeys={selectedBrand}
             onSelectionChange={setSelectedBrand}>
             {brands.map(brand => <SelectItem key={brand.id}>{brand.name}</SelectItem>)}
+          </Select>
+          <Select
+            label="Sub category"
+            aria-label="Sub category"
+            defaultSelectedKeys={new Set([product.subCategoryId])}
+            onSelectionChange={(value) =>
+              setProduct(Object.assign({}, product, { subCategoryId: value.values().next().value }))}
+          >
+            {
+              subCategories.map((subCategory) => (
+                <SelectItem key={subCategory.id}>
+                  {subCategory.name}
+                </SelectItem>
+              ))
+            }
           </Select>
         </div>
         <div className='grid grid-cols-2 gap-3'>

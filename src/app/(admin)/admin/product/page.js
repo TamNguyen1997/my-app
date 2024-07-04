@@ -565,6 +565,10 @@ const TechnicalDetailForm = ({ rows, setRows, columns, setColumns }) => {
     setRows(rows)
   }
 
+  const removeRow = (id) => {
+    setRows(rows.filter(row => row.id !== id))
+  }
+
   return (
     <>
       <div>
@@ -582,6 +586,7 @@ const TechnicalDetailForm = ({ rows, setRows, columns, setColumns }) => {
                       aria-label={column.name}
                       defaultValue={column.name}
                       onValueChange={(value) => columnValueChange(column.id, value)}
+                      isClearable
                       endContent={
                         <div className="relative flex items-center gap-2">
                           <span className="text-lg text-danger cursor-pointer active:opacity-50 pl-5">
@@ -598,7 +603,7 @@ const TechnicalDetailForm = ({ rows, setRows, columns, setColumns }) => {
           <tbody>
             {
               rows.map(row =>
-                <tr key={row.id} className="p-1">
+                <tr key={row.id} className="p-1 min-h-full">
                   {
                     Object.keys(row).filter(key => key !== "id").map(key =>
                       <td key={key} className="p-1">
@@ -611,7 +616,15 @@ const TechnicalDetailForm = ({ rows, setRows, columns, setColumns }) => {
                       </td>
                     )
                   }
+                  <td>
+                    <div className="m-auto">
+                      <div className="text-lg text-danger cursor-pointer active:opacity-50">
+                        <Trash2 onClick={() => removeRow(row.id)} />
+                      </div>
+                    </div>
+                  </td>
                 </tr>
+
               )
             }
           </tbody>

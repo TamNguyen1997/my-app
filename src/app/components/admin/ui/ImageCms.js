@@ -129,7 +129,7 @@ const ImageCms = () => {
 
           <ImagePicker onImageClick={() => { }} />
         </Tab>
-        <Tab key="Draggable Gallery" title="Draggable Gallery">
+        <Tab key="Draggable Gallery" title="Quản lý banner">
           <BannerScheduler />
         </Tab>
       </Tabs>

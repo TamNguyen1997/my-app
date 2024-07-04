@@ -26,8 +26,8 @@ const BannerScheduler = () => {
   const [defaultBanners, setDefaultBanners] = useState([])
 
   useEffect(() => {
-    fetch(`${imageUrl}?type=DEFAULT`).then(res => res.json()).then((banners) => generateList(banners, "DEFAULT")).then(setDefaultBanners)
-    fetch(`${imageUrl}?type=SCHEDULED`).then(res => res.json()).then((banners) => generateList(banners, "SCHEDULED")).then(setScheduledBanners)
+    fetch(`${imageUrl}?type=DEFAULT`).then(res => res.json()).then((banners) => generateList(banners, "DEFAULT")).then(setDefaultBanners).catch(console.log)
+    fetch(`${imageUrl}?type=SCHEDULED`).then(res => res.json()).then((banners) => generateList(banners, "SCHEDULED")).then(setScheduledBanners).catch(console.log)
   }, [])
 
   const setValue = useCallback((id, value, list, setList) => {
@@ -38,7 +38,6 @@ const BannerScheduler = () => {
         Object.assign(item, value)
       }
     })
-
 
     setList(newState)
   })

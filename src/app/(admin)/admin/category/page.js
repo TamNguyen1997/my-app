@@ -52,12 +52,13 @@ const Category = () => {
     getCategories()
   }, [])
 
-  const onSubmit = () => {
+  const onSubmit = (e) => {
+    e.preventDefault()
     const cate = Object.assign(selectedCate, { type: categoryType.values().next().value })
     if (selectedCate.id) {
-      fetch(`/api/categories/${selectedCate.id}`, { method: "PUT", body: JSON.stringify(cate) })
+      fetch(`/api/categories/${selectedCate.id}`, { method: "PUT", body: JSON.stringify(cate) }).then(() => setReload(true))
     } else {
-      fetch('/api/categories/', { method: "POST", body: JSON.stringify(cate) })
+      fetch('/api/categories/', { method: "POST", body: JSON.stringify(cate) }).then(() => setReload(true))
     }
   }
 

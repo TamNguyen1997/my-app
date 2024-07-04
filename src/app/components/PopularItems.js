@@ -36,11 +36,26 @@ const getPrice = (product) => {
 export default function PopularItems() {
 
   const [products, setProducts] = useState([])
+  const [rubberMaidProducts, setRubberMaidProducts] = useState([])
+  const [moermanProducts, setMoermanProducts] = useState([])
+  const [mapaProducts, setMapaProducts] = useState([])
+  const [ghibliProducts, setGhibleProducts] = useState([])
 
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    fetch("/api/most-bought").then(res => res.json()).then(setProducts).then(() => setIsLoading(false))
+    Promise.all([
+      fetch("/api/most-bought").then(res => res.json()).then(setProducts).then(() => setIsLoading(false)),
+      fetch(`/api/categories/rubbermaid/products/`).then(res => res.json()),
+      fetch(`/api/categories/moerman/products/`).then(res => res.json()),
+      fetch(`/api/categories/mapa/products/`).then(res => res.json()),
+      fetch(`/api/categories/ghibli/products/`).then(res => res.json()),
+    ]).then(values => {
+      setRubberMaidProducts(values[1].products)
+      setMoermanProducts(values[2].products)
+      setMapaProducts(values[3].products)
+      setGhibleProducts(values[4].products)
+    })
   }, [])
 
   if (isLoading) return <Spinner className="m-auto" />
@@ -55,27 +70,22 @@ export default function PopularItems() {
 
       <div className="flex flex-col gap-3">
         <img src="/gallery/banner/Rubbermaid-banner.jpg" />
-        <ProductCard category="RUBBERMAID" products={products} />
+        <ProductCard category="RUBBERMAID" products={rubberMaidProducts} />
       </div>
 
       <div className="flex flex-col gap-3">
         <img src="/gallery/banner/Rubbermaid-banner-2.jpg" />
-        <ProductCard category="MOERMAN" products={products} />
+        <ProductCard category="MOERMAN" products={moermanProducts} />
       </div>
 
       <div className="flex flex-col gap-3">
         <img src="/gallery/banner/Rubbermaid-banner-3.jpg" />
-        <ProductCard category="MAPA" products={products} />
+        <ProductCard category="MAPA" products={mapaProducts} />
       </div>
 
       <div className="flex flex-col gap-3">
         <img src="/gallery/banner/Rubbermaid-banner-4.jpg" />
-        <ProductCard category="GHIBLI & WIRBEL" products={products} />
-      </div>
-
-      <div className="flex flex-col gap-3">
-        <img src="/gallery/banner/Rubbermaid-banner-5.jpg" />
-        <ProductCard category="KIMBERLY" products={products} />
+        <ProductCard category="GHIBLI & WIRBEL" products={ghibliProducts} />
       </div>
     </div>
   );

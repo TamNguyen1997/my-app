@@ -18,7 +18,6 @@ export async function GET(req) {
     return NextResponse.json(await db.image.findMany({ where: condition }))
 
   } catch (e) {
-    console.log(e)
     return NextResponse.json([])
   }
 }

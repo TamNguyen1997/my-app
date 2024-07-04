@@ -1,7 +1,6 @@
 import { Table, TableBody, TableColumn, TableHeader, TableRow, TableCell } from "@nextui-org/react";
 
 const TechnicalDetail = ({ data }) => {
-  console.log(data)
   if (!data || !data.column || !data.row) return <></>
   const columns = JSON.parse(data.column)
   const rows = JSON.parse(data.row)

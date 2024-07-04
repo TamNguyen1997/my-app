@@ -16,7 +16,6 @@ export async function GET(req, { params }) {
       parse(params.id)
       condition = { id: params.id }
     } catch (e) {
-      console.log(e)
       condition = { slug: params.id }
     }
 

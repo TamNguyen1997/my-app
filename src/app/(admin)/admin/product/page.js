@@ -106,6 +106,11 @@ const ProductCms = () => {
     })
   }, [page])
 
+  useEffect(() => {
+    fetch('/api/categories?type=CATEGORY').then(res => res.json()).then(setCategories)
+    fetch('/api/categories?type=BRAND').then(res => res.json()).then(setBrands)
+  }, [])
+
   const pages = useMemo(() => {
     return total ? Math.ceil(total / rowsPerPage) : 0;
   }, [total, rowsPerPage]);
@@ -131,14 +136,16 @@ const ProductCms = () => {
               setSelectedProductCategory(new Set([item.categoryId]))
             }
             if (item.category?.type === "BRAND") {
+              console.log("????????????????????")
               setSelectedProductBrand(new Set([item.categoryId]))
             }
           })
+        } else {
+          setSelectedProductCategory(new Set([]))
+          setSelectedProductBrand(new Set([]))
         }
       }),
-      fetch(`/api/products/${product.id}/sale-details`).then(res => res.json()).then(setSaleDetails),
-      fetch('/api/categories?type=CATEGORY').then(res => res.json()).then(setCategories),
-      fetch('/api/categories?type=BRAND').then(res => res.json()).then(setBrands)
+      fetch(`/api/products/${product.id}/sale-details`).then(res => res.json()).then(setSaleDetails)
     ]).then(() => onOpen())
   }
 
@@ -364,7 +371,7 @@ const ProductDetailForm = ({ categories, product, setProduct, selectedCategory, 
             aria-label="Tên sản phẩm"
             defaultValue={product.name}
             isRequired
-            onValueChange={(value) => setProduct(Object.assign({}, product, { name: value, slug: slugify(value, { locale: "vi" }) }))}
+            onValueChange={(value) => setProduct(Object.assign({}, product, { name: value, slug: slugify(value, { locale: "vi" }).toLowerCase() }))}
           />
           <Input
             type="text"
@@ -381,18 +388,14 @@ const ProductDetailForm = ({ categories, product, setProduct, selectedCategory, 
             label="Phân loại"
             aria-label="Phân loại"
             selectedKeys={selectedCategory}
-            onSelectionChange={setSelectedCategory}
-            isRequired
-          >
+            onSelectionChange={setSelectedCategory}>
             {categories.map(category => <SelectItem key={category.id}>{category.name}</SelectItem>)}
           </Select>
           <Select
             label="Thương hiệu"
             aria-label="Thương hiệu"
             selectedKeys={selectedBrand}
-            onSelectionChange={setSelectedBrand}
-            isRequired
-          >
+            onSelectionChange={setSelectedBrand}>
             {brands.map(brand => <SelectItem key={brand.id}>{brand.name}</SelectItem>)}
           </Select>
         </div>

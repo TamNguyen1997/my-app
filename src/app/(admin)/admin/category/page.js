@@ -101,7 +101,7 @@ const Category = () => {
     setSelectedCate(Object.assign(
       {},
       selectedCate,
-      { name: value, slug: slugify(value, { locale: 'vi' }) }))
+      { name: value, slug: slugify(value, { locale: 'vi' }).toLowerCase() }))
   }
 
   return (

@@ -291,7 +291,7 @@ const Category = ({ params }) => {
               <img
                 src={`${process.env.NEXT_PUBLIC_FILE_PATH + product?.image?.path}`}
                 alt={product?.imageAlt}
-                className="object-cover object-center group-hover:opacity-50 p-2 hover:-translate-y-2.5 hover:scale-[1.02] shadow-[0px_2px_10px_rgba(0,0,0,0.15)] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)]" />
+                className="object-cover object-center group-hover:opacity-50 p-2 hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)]" />
               <p className="mt-4 text-sm text-gray-700 font-semibold text-center">
                 {product.name}
               </p>
@@ -304,7 +304,7 @@ const Category = ({ params }) => {
             </Link>
           ))}
         </div>
-      </div >
+      </div>
     </>
   );
 };

@@ -80,50 +80,29 @@ export default function PopularItems() {
         <ProductCard category="SẢN PHẨM NỔI BẬT" products={products} />
       </div>
 
-      <div>
-        <div className="bg-[#ffd300] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-1/3 h-[50px] m-auto shadow-md">
-          <span className="m-auto text-black font-bold text-xl">THƯƠNG HIỆU NỔI BẬT</span>
-        </div>
+      <div className="flex flex-col gap-3">
+        <img src="/gallery/banner/Rubbermaid-banner.jpg" />
+        <ProductCard category="RUBBERMAID" products={products} />
       </div>
 
-      <div>
-        <div className="bg-black grid grid-cols-5">
-          <Button radius="none"
-            onClick={() => setSelectedBrand("RUBBERMAID")}
-            className={`${getSelectedColor("RUBBERMAID")} text-white text-medium font-bold hover:bg-slate-800`}>
-            RUBBERMAID
-          </Button>
-          <Button radius="none"
-            onClick={() => setSelectedBrand("MOERMAN")}
-            className={`${getSelectedColor("MOERMAN")} text-white text-medium font-bold hover:bg-slate-800`}>
-            MOERMAN
-          </Button>
-          <Button radius="none"
-            onClick={() => setSelectedBrand("MAPA")}
-            className={`${getSelectedColor("MAPA")} text-white text-medium font-bold hover:bg-slate-800`}>
-            MAPA
-          </Button>
-          <Button radius="none"
-            onClick={() => setSelectedBrand("GHIBLI & WIRBEL")}
-            className={`${getSelectedColor("GHIBLI & WIRBEL")} text-white text-medium font-bold hover:bg-slate-800`}>
-            GHIBLI & WIRBEL
-          </Button>
-          <Button radius="none"
-            onClick={() => setSelectedBrand("KIMMBERLY")}
-            className={`${getSelectedColor("KIMMBERLY")} text-white text-medium font-bold hover:bg-slate-800`}>
-            KIMMBERLY
-          </Button>
-        </div>
+      <div className="flex flex-col gap-3">
+        <img src="/gallery/banner/Rubbermaid-banner-2.jpg" />
+        <ProductCard category="MOERMAN" products={products} />
+      </div>
 
-        <PopularBrandCard products={products} selectedBrand={selectedBrand}></PopularBrandCard>
+      <div className="flex flex-col gap-3">
+        <img src="/gallery/banner/Rubbermaid-banner-3.jpg" />
+        <ProductCard category="MAPA" products={products} />
+      </div>
 
-        <Link
-          href="/"
-          className="flex items-center w-1/3 h-[50px] m-auto rounded-large border-medium border-slate-950 hover:opacity-30">
-          <span className="m-auto text-black">
-            Xem tất cả sản phẩm
-          </span>
-        </Link>
+      <div className="flex flex-col gap-3">
+        <img src="/gallery/banner/Rubbermaid-banner-4.jpg" />
+        <ProductCard category="GHIBLI & WIRBEL" products={products} />
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <img src="/gallery/banner/Rubbermaid-banner-5.jpg" />
+        <ProductCard category="KIMBERLY" products={products} />
       </div>
     </div>
   );
@@ -133,8 +112,8 @@ const ProductCard = ({ category, products, redirect }) => {
   return (
     <div>
       <section className="rounded-tr-[50px] rounded-tl-[50px]">
-        <div className="bg-[#ffd300] h-[60px] rounded-tr-[50px] rounded-tl-[50px] flex flex-row shadow-md">
-          <div className="text-xl text-black p-3 pl-10 font-extrabold w-[85%]">
+        <div className="bg-[#ffd300] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-1/3 h-[50px] m-auto shadow-md">
+          <div className="m-auto text-black font-bold text-xl">
             {category}
           </div>
           {
@@ -158,7 +137,7 @@ const ProductCarousel = ({ products, responsive }) => {
       {
         products.map((product) => {
           return <div key={product.id} className="p-2">
-            <div className="rounded-md border h-[400px] shadow-md p-2">
+            <div className="rounded-md border h-[400px] object-cover object-center group-hover:opacity-50 p-2 hover:-translate-y-2.5 hover:scale-[1.02] shadow-[0px_2px_10px_rgba(0,0,0,0.15)] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)]">
               <Link href={`/san-pham/${product.slug}`}>
                 <div className="h-2/3">
                   <div className="aspect-h-1 aspect-w-1 w-full h-full overflow-hidden rounded-lg  xl:aspect-h-8 xl:aspect-w-7">

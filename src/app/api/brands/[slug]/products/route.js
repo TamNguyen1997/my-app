@@ -7,17 +7,16 @@ export async function GET(req, { params }) {
     return NextResponse.json({ message: `Resource not found ${params.slug}` }, { status: 400 })
   }
   try {
-    const category = await db.category.findFirst({ where: { slug: params.slug } })
+    const brand = await db.brand.findFirst({ where: { slug: params.slug } })
 
-    if (!category) {
-      return NextResponse.json({ message: "No category found" }, { status: 404 })
+    if (!brand) {
+      return NextResponse.json({ message: "No brand found" }, { status: 404 })
     }
 
+    let condition = { brandId: brand.id }
 
     const { query } = queryString.parseUrl(req.url);
-    let condition = {
-      categoryId: category.id
-    }
+
     if (query.brand) {
       const brandIds = (await db.brand.findMany({ where: { slug: { in: query.brand.split(',') } } })).map(brand => brand.id)
 
@@ -26,7 +25,29 @@ export async function GET(req, { params }) {
       }
     }
 
-    let products = await db.product.findMany({ where: condition })
+    if (query.category) {
+      const categoryIds = (await db.category.findMany({ where: { slug: { in: query.category.split(',') } } })).map(category => category.id)
+
+      condition.categoryId = {
+        in: categoryIds
+      }
+    }
+
+    if (query.subCategory) {
+      const subCategoryIds = (await db.sub_category.findMany({ where: { slug: { in: query.subCategory.split(',') } } })).map(subcate => subcate.id)
+
+      condition.subCategoryId = {
+        in: subCategoryIds
+      }
+    }
+
+    let products = await db.product.findMany({
+      where: condition,
+      include: {
+        image: true,
+        subCategory: true
+      }
+    })
 
     if (query.range) {
       const minMax = query.range.split('-')
@@ -41,10 +62,8 @@ export async function GET(req, { params }) {
         return hasSaleDetails && max && min
       })
     }
-    return NextResponse.json({
-      category: category,
-      products: products
-    })
+
+    return NextResponse.json({ brand, products })
   } catch (e) {
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }

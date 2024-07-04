@@ -11,16 +11,10 @@ import { motion } from "framer-motion";
 
 const Product = () => {
   const [product, setProduct] = useState({});
-  const [category, setCategory] = useState({});
   const { _id } = useParams();
   useEffect(() => {
     fetch(`/api/products/${_id}?includeTechnical=true&includeSale=true`).then((res) => res.json()).then((json) => {
       setProduct(json)
-      fetch(`/api/category-to-product?productId=${json.id}`).then((res) => res.json()).then(json => {
-        if (json.length) {
-          setCategory(json.find(item => item.category.type === "CATEGORY")?.category)
-        }
-      })
     })
   }, [_id])
   if (!product.id) {
@@ -38,8 +32,8 @@ const Product = () => {
               base: "[&>span]:text-black"
             }}
           >
-            <BreadcrumbItem href="/">Trang chủ</BreadcrumbItem>
-            <BreadcrumbItem href={`/${category.slug}`}>{category.name}</BreadcrumbItem>
+            <BreadcrumbItem href={`/${product.category?.slug}`}>{product.category?.name}</BreadcrumbItem>
+            <BreadcrumbItem href={`/${product.category?.slug}/${product.subCategory?.slug}`}>{product.subCategory?.name}</BreadcrumbItem>
             <BreadcrumbItem>{product.name}</BreadcrumbItem>
           </Breadcrumbs>
 

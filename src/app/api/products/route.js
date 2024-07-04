@@ -72,7 +72,6 @@ export async function GET(req) {
 
     return NextResponse.json({ result, total: await db.product.count() })
   } catch (e) {
-    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }

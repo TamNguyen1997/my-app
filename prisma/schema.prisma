@@ -14,12 +14,14 @@ datasource db {
 }
 
 model product {
-  id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name      String
-  slug      String
-  imageId   String? @map("image_id")
-  imageAlt  String? @map("image_alt")
-  image     image?  @relation(fields: [imageId], references: [id])
+  id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name     String
+  slug     String
+  imageAlt String? @map("image_alt")
+
+  imageId String? @map("image_id") @db.Uuid
+  image   image?  @relation(fields: [imageId], references: [id])
+
   active    Boolean @default(true)
   sku       String?
   highlight Boolean @default(false)
@@ -28,23 +30,26 @@ model product {
   updatedAt   DateTime @updatedAt @map("updated_at")
   description String?
 
-  saleDetails            sale_detail[]
-  order_history          order_history[]
-  categories_to_products categories_to_products[]
-  technicalDetailId      String?                  @map("technical_detail_id") @db.Uuid
-  technical_detail       technical_detail?
+  saleDetails       sale_detail[]
+  order_history     order_history[]
+  technicalDetailId String?           @map("technical_detail_id") @db.Uuid
+  technical_detail  technical_detail?
 
-  subCategory   sub_category? @relation(fields: [subcategoryId], references: [id])
-  subcategoryId String?       @map("sub_category_id") @db.Uuid
+  subCategory   sub_category? @relation(fields: [subCategoryId], references: [id])
+  subCategoryId String?       @map("sub_category_id") @db.Uuid
 
   category   category? @relation(fields: [categoryId], references: [id])
   categoryId String?   @map("category_id") @db.Uuid
 
   quantity Int @default(0)
 
+  brand   brand?  @relation(fields: [brandId], references: [id])
+  brandId String? @db.Uuid
+
   @@index([imageId])
-  @@index([subcategoryId])
+  @@index([subCategoryId])
   @@index([categoryId])
+  @@index([brandId])
 }
 
 model technical_detail {
@@ -154,15 +159,14 @@ enum image_type {
 }
 
 model category {
-  id                     String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name                   String                   @unique
-  slug                   String                   @default(dbgenerated("gen_random_uuid()"))
-  type                   category_type            @default(CATEGORY)
-  createdAt              DateTime                 @default(now()) @map("created_at")
-  updatedAt              DateTime                 @default(now()) @updatedAt @map("updated_at")
-  categories_to_products categories_to_products[]
-  sub_category           sub_category[]
-  product                product[]
+  id           String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name         String         @unique
+  slug         String         @default(dbgenerated("gen_random_uuid()"))
+  type         category_type  @default(CATEGORY)
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @default(now()) @updatedAt @map("updated_at")
+  sub_category sub_category[]
+  product      product[]
 
   @@unique([slug])
 }
@@ -182,20 +186,16 @@ model sub_category {
   @@index([categoryId])
 }
 
-model categories_to_products {
-  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-
-  productId String  @map("product_id") @db.Uuid
-  product   product @relation(fields: [productId], references: [id])
-
-  categoryId String   @map("category_id") @db.Uuid
-  category   category @relation(fields: [categoryId], references: [id])
-
+model brand {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String   @unique
+  slug      String   @default(dbgenerated("gen_random_uuid()"))
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  @@index([productId])
-  @@index([categoryId])
+  product product[]
+
+  @@unique([slug])
 }
 
 model blog_category {

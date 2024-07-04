@@ -55,8 +55,6 @@ const ProductCms = () => {
   const [loadingState, setLoadingState] = useState("loading")
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [selectedProduct, setSelectedProduct] = useState({})
-  const [selectedProductCategory, setSelectedProductCategory] = useState(new Set([]))
-  const [selectedProductBrand, setSelectedProductBrand] = useState(new Set([]))
 
   const [condition, setCondition] = useState({})
 
@@ -121,7 +119,7 @@ const ProductCms = () => {
 
   useEffect(() => {
     fetch('/api/categories?type=CATEGORY').then(res => res.json()).then(setCategories)
-    fetch('/api/categories?type=BRAND').then(res => res.json()).then(setBrands)
+    fetch('/api/brands').then(res => res.json()).then(setBrands)
     fetch('/api/sub-categories').then(res => res.json()).then(setSubCategories)
   }, [])
 
@@ -143,29 +141,12 @@ const ProductCms = () => {
         setTechnicalColumns(technical ? JSON.parse(technical.column) : [])
         setTechnicalRows(technical ? JSON.parse(technical.row) : [])
       }),
-      fetch(`/api/category-to-product?productId=${product.id}`).then(res => res.json()).then((json) => {
-        if (json.length) {
-          json.forEach(item => {
-            if (item.category?.type === "CATEGORY") {
-              setSelectedProductCategory(new Set([item.categoryId]))
-            }
-            if (item.category?.type === "BRAND") {
-              setSelectedProductBrand(new Set([item.categoryId]))
-            }
-          })
-        } else {
-          setSelectedProductCategory(new Set([]))
-          setSelectedProductBrand(new Set([]))
-        }
-      }),
       fetch(`/api/products/${product.id}/sale-details`).then(res => res.json()).then(setSaleDetails),
     ]).then(() => onOpen())
   }
 
   const newProduct = () => {
     setSelectedProduct({})
-    setSelectedProductCategory(new Set([]))
-    setSelectedProductBrand(new Set([]))
     editor.commands.setContent()
     onOpen()
   }
@@ -210,11 +191,10 @@ const ProductCms = () => {
 
     let productToUpdate = selectedProduct
 
-    if (!selectedProductCategory || selectedProductCategory.size === 0) {
-      return
-    }
-
     delete productToUpdate.image
+    delete productToUpdate.subCategory
+    delete productToUpdate.brand
+    delete productToUpdate.category
 
     productToUpdate.description = editor.getHTML()
     if (productToUpdate.id) {
@@ -243,23 +223,6 @@ const ProductCms = () => {
         productId: productToUpdate.id
       })
     })
-
-    await Promise.all([
-      fetch(`/api/category-to-product`, {
-        method: "POST",
-        body: JSON.stringify({
-          categoryId: selectedProductCategory.values().next().value,
-          productId: productToUpdate.id
-        })
-      }),
-      fetch(`/api/category-to-product`, {
-        method: "POST",
-        body: JSON.stringify({
-          categoryId: selectedProductBrand.values().next().value,
-          productId: productToUpdate.id
-        })
-      })
-    ])
     setReload(true)
   }
 
@@ -369,11 +332,7 @@ const ProductCms = () => {
                             categories={categories}
                             product={selectedProduct}
                             setProduct={setSelectedProduct}
-                            selectedCategory={selectedProductCategory}
-                            setSelectedCategory={setSelectedProductCategory}
                             brands={brands}
-                            selectedBrand={selectedProductBrand}
-                            setSelectedBrand={setSelectedProductBrand}
                             editor={editor}
                             subCategories={subCategories}
                           />
@@ -415,9 +374,7 @@ const ProductCms = () => {
 
 const ProductDetailForm = ({
   categories, product, setProduct,
-  selectedCategory, setSelectedCategory,
-  brands, selectedBrand, setSelectedBrand,
-  editor, subCategories }) => {
+  brands, editor, subCategories }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   const selectImage = (value) => {
@@ -447,20 +404,33 @@ const ProductDetailForm = ({
             isRequired
             disabled
           />
+          <Input
+            type="number"
+            label="Số lượng"
+            labelPlacement="outside"
+            aria-label="Số lượng"
+            value={product.quantity}
+            isRequired
+            onValueChange={(value) => setProduct(Object.assign({}, product, { quantity: parseInt(value) }))}
+          />
         </div>
         <div className="flex gap-2">
           <Select
-            label="Phân loại"
-            aria-label="Phân loại"
-            selectedKeys={selectedCategory}
-            onSelectionChange={setSelectedCategory}>
+            label="Category"
+            aria-label="Category"
+            selectedKeys={new Set([product.categoryId])}
+            onSelectionChange={(value) =>
+              setProduct(Object.assign({}, product, { categoryId: value.values().next().value }))}
+          >
             {categories.map(category => <SelectItem key={category.id}>{category.name}</SelectItem>)}
           </Select>
           <Select
             label="Thương hiệu"
             aria-label="Thương hiệu"
-            selectedKeys={selectedBrand}
-            onSelectionChange={setSelectedBrand}>
+            selectedKeys={new Set([product.brandId])}
+            onSelectionChange={(value) =>
+              setProduct(Object.assign({}, product, { brandId: value.values().next().value }))}
+          >
             {brands.map(brand => <SelectItem key={brand.id}>{brand.name}</SelectItem>)}
           </Select>
           <Select
@@ -476,6 +446,7 @@ const ProductDetailForm = ({
                   {subCategory.name}
                 </SelectItem>
               ))
+
             }
           </Select>
         </div>

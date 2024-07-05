@@ -6,16 +6,17 @@ import PopularBlogs from "@/components/PopularBlogs";
 import Customer from "@/components/Customer";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="w-3/4 m-auto font-open_san">
+    <div className="font-open_san">
       <motion.div
         initial={{ x: -200, opacity: 0 }}
         whileInView={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.7, delay: 0.3 }}
         viewport={{ once: true }}
-        className="mx-auto">
+        className="mx-auto w-3/4 ">
         <HeroBanner />
       </motion.div>
       <motion.div
@@ -23,7 +24,7 @@ export default function Home() {
         whileInView={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.7, delay: 0.3 }}
         viewport={{ once: true }}
-        className="pb-[60px] pt-4 mx-auto">
+        className="pb-[60px] pt-4 mx-auto w-3/4 ">
         <PopularItems />
       </motion.div>
       <motion.div
@@ -31,17 +32,57 @@ export default function Home() {
         whileInView={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.7, delay: 0.3 }}
         viewport={{ once: true }}
-        className="pb-[60px] items-center">
-        <PopularBlogs />
+        className="pb-[60px] pt-4 mx-auto w-3/4 ">
+        <PopularItems />
       </motion.div>
       <motion.div
         initial={{ x: 200, opacity: 0 }}
         whileInView={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.7, delay: 0.3 }}
         viewport={{ once: true }}
-        className="items-center">
+        className="pb-[60px] items-center">
+        <Introduction />
+      </motion.div>
+      <motion.div
+        initial={{ x: -200, opacity: 0 }}
+        whileInView={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.7, delay: 0.3 }}
+        viewport={{ once: true }}
+        className="pb-[60px] m-auto w-3/4">
+        <PopularBlogs />
+      </motion.div>
+      <motion.div
+        initial={{ x: -200, opacity: 0 }}
+        whileInView={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.7, delay: 0.3 }}
+        viewport={{ once: true }}
+        className="m-auto w-3/4">
         <Customer />
       </motion.div>
     </div>
   );
+}
+
+const Introduction = () => {
+  return (<div className="bg-introduction bg-center w-full h-[250px] bg-cover bg-no-repeat mb-8 md:h-[700px]" style={{
+    backgroundSize: "100% 100%"
+  }}>
+    <div className="flex gap-5 max-w-[1200px] px-4 mx-auto w-full flex-col pt-[120px]">
+      <div className="text-3xl font-medium pb-[76px]">
+        <p className=" pb-8">
+          Một trong những công ty dẫn đầu cung cấp các giải pháp <br /> làm vệ sinh chuyên nghiệp là đối tác tin cậy của các nhà đầu tư.
+        </p>
+        <p>
+          Các sản phẩm được Sao Việt chứng nhận chất lượng theo <br /> tiêu chuẩn quốc tế mang lại sự hài lòng cho người tiêu dùng.
+        </p>
+      </div>
+
+      <div className="flex gap-5">
+        <img src="/brand/partner-10.png" alt="Rubbermaid"></img>
+        <img src="/brand/partner-20.png" alt="Ghibli"></img>
+        <img src="/brand/partner-30.png" alt="Moerman"></img>
+        <img src="/brand/partner-40.png" alt="Mapa"></img>
+      </div>
+    </div>
+  </div>)
 }

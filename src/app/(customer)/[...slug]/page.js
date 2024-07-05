@@ -38,7 +38,7 @@ const BRANDS = {
 const getPrice = (product) => {
   if (!product.saleDetails?.length) return <></>
 
-  if (product.saleDetails.length === 1) return <>{product.saleDetails[0].price.toLocaleString()}</>
+  if (product.saleDetails.length === 1) return <>{product.saleDetails[0].price?.toLocaleString()}</>
 
   if (!product.saleDetails[0].price) return <>{product.saleDetails[product.saleDetails.length - 1].price.toLocaleString()}</>
 
@@ -724,7 +724,7 @@ const BrandSection = ({ products }) => {
   return (
     <div>
       <div className="text-black font-bold text-4xl text-center items-center">
-        {products[0].subCategory.name}
+        {products[0].subCategory?.name}
       </div>
 
       <div className="w-full my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">

@@ -28,19 +28,23 @@ const responsive = {
 const brandDescription = {
   "RUBBERMAID": {
     logo: "/brand/Rubbermaid.png",
-    description: "Với đội ngũ nhân viên tư vấn nhiệt tình, nhanh nhẹn, được đào tạo bài bản; sản phẩm nhập khẩu chất lượng cao, chế độ hậu mãi, bảo hành uy tín cùng với bề dày kinh nghiệm hoạt động lâu năm trong lĩnh vực vệ sinh công nghiệp."
+    slug: "thuong-hieu-rubbermaid",
+    description: "Rubbermaid - Với đội ngũ nhân viên tư vấn nhiệt tình, nhanh nhẹn, được đào tạo bài bản; sản phẩm nhập khẩu chất lượng cao, chế độ hậu mãi, bảo hành uy tín cùng với bề dày kinh nghiệm hoạt động lâu năm trong lĩnh vực vệ sinh công nghiệp."
   },
   "MAPA": {
     logo: "/brand/Logo-Mapa.png",
-    description: "MAPA"
+    slug: "thuong-hieu-mapa",
+    description: "Mapa - Với đội ngũ nhân viên tư vấn nhiệt tình, nhanh nhẹn, được đào tạo bài bản; sản phẩm nhập khẩu chất lượng cao, chế độ hậu mãi, bảo hành uy tín cùng với bề dày kinh nghiệm hoạt động lâu năm trong lĩnh vực vệ sinh công nghiệp."
   },
   "MOERMAN": {
     logo: "/brand/Logo-Moerman.png",
-    description: "MOERMAN"
+    slug: "thuong-hieu-moerman",
+    description: "Moerman - Với đội ngũ nhân viên tư vấn nhiệt tình, nhanh nhẹn, được đào tạo bài bản; sản phẩm nhập khẩu chất lượng cao, chế độ hậu mãi, bảo hành uy tín cùng với bề dày kinh nghiệm hoạt động lâu năm trong lĩnh vực vệ sinh công nghiệp."
   },
   "GHIBLI & WIRBEL": {
     logo: "/brand/Logo-Ghibli.png",
-    description: "GHIBLI & WIRBEL"
+    slug: "thuong-hieu-ghibli",
+    description: "Ghibli - Với đội ngũ nhân viên tư vấn nhiệt tình, nhanh nhẹn, được đào tạo bài bản; sản phẩm nhập khẩu chất lượng cao, chế độ hậu mãi, bảo hành uy tín cùng với bề dày kinh nghiệm hoạt động lâu năm trong lĩnh vực vệ sinh công nghiệp."
   }
 }
 
@@ -221,9 +225,9 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
   return (<>
     <div className="grid grid-cols-6">
       <div className="p-2 col-span-2">
-        <div className="bg-[#ffd300] shadow-lg rounded-md h-full pt-9">
+        <div className="bg-[#ffd300] shadow-lg rounded-md pt-9 h-[400px]">
           <div className="flex items-center w-2/3 m-auto h-[80px]">
-            <div className="text-black font-bold text-xl">
+            <div className="font-bold text-xl">
               {
                 brandDescription[selectedBrand] && brandDescription[selectedBrand].logo ?
                   <img
@@ -235,10 +239,13 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
             </div>
           </div>
 
-          <div className="text-black p-10 font-bold text-justify h-1/2">
+          <div className="p-10 font-bold text-justify h-[50px] min-h-[50px] max-h-[50px]">
             {
               brandDescription[selectedBrand] && brandDescription[selectedBrand].description
             }
+            <div className="pt-5 underline flex flex-row justify-center items-center">
+              <Link href={`/${brandDescription[selectedBrand].slug}`}>Xem thêm</Link>
+            </div>
           </div>
         </div>
       </div>

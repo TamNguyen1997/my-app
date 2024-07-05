@@ -27,6 +27,9 @@ module.exports = {
       fontFamily: {
         open_san: ['Open Sans', 'san-serif']
 
+      },
+      backgroundImage: {
+        'introduction': "url('/Anh-gui-27.png')",
       }
     },
   },

@@ -72,37 +72,18 @@ const Header = () => {
                   </div>
                 </div>
               </div>
-              <div className="h-1/2 flex items-center gap-5"
+              <div className="h-1/2 flex items-center gap-5 pt-6"
                 onMouseOver={() => setShowSubHeader(true)}
                 onMouseOut={() => { setShowSubHeader(false) }}>
-                <div>
-                  <div className="h-1/2 flex items-center gap-5">
-                    <div className="flex gap-1 rounded-lg shadow-md w-[121px] h-[45px] items-center text-center font-bold"
-                      onMouseOver={() => {
-                        setSubCate(BRANDS)
-                        setHoveredCate({})
-                        setShowSubHeader(true)
-                      }}
-                      onMouseOut={() => {
-                        setShowSubHeader(false)
-                      }}
-                    >
-                      <Button
-                        variant="light">
-                        Thương hiệu
-                      </Button>
-                    </div>
-                    <div>
-                      <HeaderItems
-                        onHover={() => setShowSubHeader(true)}
-                        onMouseOut={() => {
-                          setShowSubHeader(false)
-                        }}
-                        setSubCate={setSubCate}
-                        setHoveredCate={setHoveredCate}
-                      />
-                    </div>
-                  </div>
+                <div className="h-1/2 flex items-center gap-5">
+                  <HeaderItems
+                    onHover={() => setShowSubHeader(true)}
+                    onMouseOut={() => {
+                      setShowSubHeader(false)
+                    }}
+                    setSubCate={setSubCate}
+                    setHoveredCate={setHoveredCate}
+                  />
                 </div>
               </div>
             </div>
@@ -194,6 +175,15 @@ const HeaderItems = ({ onHover, onMouseOut, setSubCate, setHoveredCate }) => {
 
   return (<>
     <div className="flex gap-6 text-sm items-center">
+      <Link href=""
+        onMouseOver={() => {
+          setSubCate(BRANDS)
+          setHoveredCate({})
+        }}
+        onMouseOut={() => {
+        }}>
+        Thương hiệu
+      </Link>
       {
         categories.map((category) =>
           <Link href={`/${category.slug}`}

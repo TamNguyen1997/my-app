@@ -30,6 +30,7 @@ module.exports = {
       },
       backgroundImage: {
         'introduction': "url('/Anh-gui-27.png')",
+        'banner1': "url('/banner-1.jpg')",
       }
     },
   },

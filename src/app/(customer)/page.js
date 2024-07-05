@@ -28,14 +28,6 @@ export default function Home() {
         <PopularItems />
       </motion.div>
       <motion.div
-        initial={{ x: -200, opacity: 0 }}
-        whileInView={{ x: 0, opacity: 1 }}
-        transition={{ duration: 0.7, delay: 0.3 }}
-        viewport={{ once: true }}
-        className="pb-[60px] pt-4 mx-auto w-3/4 ">
-        <PopularItems />
-      </motion.div>
-      <motion.div
         initial={{ x: 200, opacity: 0 }}
         whileInView={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.7, delay: 0.3 }}

@@ -65,7 +65,9 @@ const SaleDetail = ({ saleDetails, product }) => {
           })
         }
 
-        <Input type="number" label="Số lượng" aria-label="Số lượng" defaultValue={0}></Input>
+        <Input type="number" label="Số lượng"
+          aria-label="Số lượng" defaultValue={0}
+          min={0} max={999}></Input>
         <div className="flex pb-3">
           <div className="pr-3">
             <Button color="primary" fullWidth isDisabled={!selectedDetail?.price}>Mua ngay <ShoppingCart /></Button>

@@ -6,9 +6,16 @@ export async function GET(req) {
   let condition = {}
   let include = {}
   const { query } = queryString.parseUrl(req.url);
+
+  let take
   if (query.type) {
     condition.type = query.type
   }
+
+  if (query.size) {
+    take = parseInt(query.size)
+  }
+
 
   if (query.includeSubCate) {
     include.sub_category = query.includeSubCate === 'true'
@@ -22,7 +29,7 @@ export async function GET(req) {
           updatedAt: "desc"
         }
       ],
-      take: 7,
+      take: take,
       include: include
     }))
   } catch (e) {

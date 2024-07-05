@@ -428,6 +428,8 @@ const ProductDetailForm = ({
             labelPlacement="outside"
             aria-label="Số lượng"
             value={product.quantity}
+            min={0}
+            max={999}
             isRequired
             onValueChange={(value) => setProduct(Object.assign({}, product, { quantity: parseInt(value) }))}
           />

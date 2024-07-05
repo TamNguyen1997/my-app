@@ -12,11 +12,15 @@ const BlogCms = () => {
   const [selectedBlog, setSelectedBlog] = useState({})
 
   useEffect(() => {
-    fetch("/api/blogs").then(res => res.json()).then(setBlogs).then(() => setIsLoading(false))
+    getBlogs()
   }, [])
 
+  const getBlogs = () => {
+    fetch("/api/blogs").then(res => res.json()).then(setBlogs).then(() => setIsLoading(false))
+  }
   const deleteBlog = (id) => {
-    fetch(`/api/blogs/${id}`, { method: "DELETE" }).then(res => res.json()).then(setBlogs)
+    setIsLoading(true)
+    fetch(`/api/blogs/${id}`, { method: "DELETE" }).then(() => getBlogs())
   }
 
   const renderCell = useCallback((blog, columnKey) => {

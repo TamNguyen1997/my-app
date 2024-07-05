@@ -87,6 +87,7 @@ const BlogForm = ({ blog, setBlog }) => {
 
   const onSubmit = async (data) => {
     const body = Object.assign(blog, data, { thumbnail: thumbnail, content: editor.getHTML(), active: isSelected })
+    console.log(body)
     await fetch('/api/blogs', {
       method: "POST",
       body: JSON.stringify(body)
@@ -127,7 +128,12 @@ const BlogForm = ({ blog, setBlog }) => {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className='flex flex-col gap-3'>
-              <Input label="Thumbnail" aria-label="Thumbnail" {...register('thumbnail')} defaultValue={blog?.thumbnail} disabled></Input>
+              <div className='flex gap-3'>
+                <Input label="Thumbnail" aria-label="Thumbnail" {...register('thumbnail')} value={blog?.thumbnail} disabled></Input>
+                <div className='pt-2'>
+                  <Button onClick={onOpen} className=''>Chọn ảnh</Button>
+                </div>
+              </div>
               <Input label="Alt bài viết" aria-label="Thumbnail" {...register('altThumb')} defaultValue={blog?.altThumb}></Input>
               <Input label="Keyword" aria-label="Keyword" {...register('keyword')} defaultValue={blog?.keyword}></Input>
               <Input label="Tác giả" aria-label="Keyword" {...register('author')} defaultValue={blog?.author}></Input>
@@ -135,7 +141,7 @@ const BlogForm = ({ blog, setBlog }) => {
                 label="Phân loại"
                 defaultSelectedKeys={new Set([blog.blogCategory])}
                 onSelectionChange={
-                  (value) => setBlog({}, blog, { blogCategory: value.values().next().value })
+                  (value) => setBlog(Object.assign({}, blog, { blogCategory: value.values().next().value }))
                 }
               >
                 {
@@ -155,7 +161,6 @@ const BlogForm = ({ blog, setBlog }) => {
               </div>
               <div>
                 <div className="float-right flex gap-3">
-                  <Button onClick={onOpen}>Chọn ảnh</Button>
                   <Button color="primary" type="submit">Lưu</Button>
                 </div>
               </div>

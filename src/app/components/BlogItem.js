@@ -1,11 +1,16 @@
 import Link from "next/link";
 import { User, Calendar } from "lucide-react";
 
+const blogCategories = {
+  "INFORMATION": "blog",
+  "NEWS": "tin-tuc"
+}
+
 export default ({ noBorder = false, item, containerClass = "lg:grid-cols-[160px_auto]", textClass = "" }) => {
   return (
     <>
       <Link
-        href={`/blog/${item.id}`}
+        href={`/${blogCategories[item.blogCategory]}/${item.slug}`}
         className={`
                     grid gap-4
                     max-w-full

@@ -10,7 +10,7 @@ export async function GET(req, { params }) {
     const brand = await db.brand.findFirst({ where: { slug: params.slug } })
 
     if (!brand) {
-      return NextResponse.json([])
+      return NextResponse.json({ message: "No brand found" }, { status: 404 })
     }
 
     let condition = { brandId: brand.id }

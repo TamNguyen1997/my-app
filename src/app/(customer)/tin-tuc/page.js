@@ -11,7 +11,6 @@ const blogCategories = [
   {
     title: "Kiến thức hay",
     id: "INFORMATION",
-    slug: "blog",
     tags: [
       {
         title: "Tất cả",
@@ -34,36 +33,18 @@ const blogCategories = [
   {
     title: "Tin tức",
     id: "NEWS",
-    slug: "tin-tuc",
     tags: []
   }
 ];
 
 const Blog = () => {
   const [blogs, setBlogs] = useState([]);
-  const [activeCategory, setActiveCategory] = useState("INFORMATION");
+  const [activeCategory, setActiveCategory] = useState("NEWS");
   const [category, setCategory] = useState({
-    title: "Kiến thức hay",
-    id: "INFORMATION",
-    tags: [
-      {
-        title: "Tất cả",
-        slug: ""
-      },
-      {
-        title: "Từ điển thuật ngữ",
-        slug: "tu-dien-thuat-ngu"
-      },
-      {
-        title: "Tư vấn chọn mua",
-        slug: "tu-van-chon-mua"
-      },
-      {
-        title: "Hướng dẫn sử dụng",
-        slug: "huong-dan-su-dung"
-      }
-    ]
-  });
+    title: "Tin tức",
+    id: "NEWS",
+    tags: []
+  })
   const [activeTag, setActiveTag] = useState("");
 
   useEffect(() => {
@@ -71,8 +52,6 @@ const Blog = () => {
       setBlogs(json)
       setCategory(blogCategories.find(item => item.id === activeCategory))
     })
-
-
   }, [activeCategory])
 
   return (

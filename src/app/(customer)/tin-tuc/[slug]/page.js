@@ -11,10 +11,12 @@ import { motion } from "framer-motion";
 
 const Blog = () => {
   const [blog, setBlog] = useState({})
-  const { _id } = useParams();
+  const [relatedBlogs, setRelatedBlogs] = useState([])
+  const { slug } = useParams();
   useState(() => {
-    fetch(`/api/blogs/${_id}`).then(res => res.json()).then(json => setBlog(json))
-  }, [_id])
+    fetch(`/api/blogs/${slug}`).then(res => res.json()).then(json => setBlog(json))
+    fetch(`/api/blogs/?blogCategory=NEWS`).then(res => res.json()).then(setRelatedBlogs)
+  }, [slug])
 
   if (!blog.id) return <></>
 
@@ -56,16 +58,16 @@ const Blog = () => {
             >
               <span>Đóng góp bởi: <b className="ml-1">{blog.author}</b></span>
               <span className="w-1 h-1 min-w-1 bg-[#e9e9e9] rounded-full mx-2"></span>
-              <span>Cập nhật: <b className="ml-1">{new Date(blog.updatedAt).toLocaleDateString()}</b></span>
+              <span>Cập nhật: <b className="ml-1">{new Date(blog.activeFrom).toLocaleDateString()}</b></span>
             </motion.div>
-            
+
             <motion.p
               initial={{ x: -100, opacity: 0 }}
               whileInView={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.7 }}
               viewport={{ once: true }}
             >
-              Short description...
+              {blog.summary}
             </motion.p>
 
             <motion.div
@@ -77,7 +79,7 @@ const Blog = () => {
             >
               <TableOfContent selector=".blog-content" />
             </motion.div>
-            
+
             <motion.div
               initial={{ y: -200, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
@@ -91,7 +93,7 @@ const Blog = () => {
                 [&_p]:my-[1.125em]
                 max-w-full prose blog-content
               `}
-              style={{"--tw-prose-bullets": "currentColor"}}
+              style={{ "--tw-prose-bullets": "currentColor" }}
             >
               {parse(blog.content)}
             </motion.div>
@@ -105,11 +107,11 @@ const Blog = () => {
             >
               <p className="font-semibold mb-4">Xem thêm</p>
               {
-                [...Array(3)].map((_, index) => {
+                relatedBlogs.map((item, index) => {
                   return (
                     <div className="flex items-center pl-4 mb-2" key={index}>
                       <div className="w-[5px] h-[5px] min-w-[5px] bg-black rounded-full mr-2"></div>
-                      <Link href="" className="hover:underline transition">Số thẻ ngân hàng là gì? Phân biệt số thẻ và số tài khoản ngân hàng {index + 1}</Link>
+                      <Link href="" className="hover:underline transition">{item.title}</Link>
                     </div>
                   )
                 })
@@ -123,7 +125,7 @@ const Blog = () => {
               viewport={{ once: true }}
               className="mt-14"
             >
-              <RelatedBlog />
+              <RelatedBlog relatedBlogs={relatedBlogs} />
             </motion.div>
           </div>
         </div>

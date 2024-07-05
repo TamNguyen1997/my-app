@@ -50,7 +50,7 @@ export default function PopularBlogs() {
         {
           blogs.map((blog) => {
             return <div className="p-1" key={blog.id}>
-              <Link href={`/blog/${blog.id}`}>
+              <Link href={`/blog/${blog.slug}`}>
                 <div className="hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)]">
                   <Card>
                     <CardHeader className="flex flex-col items-center justify-center h-64">

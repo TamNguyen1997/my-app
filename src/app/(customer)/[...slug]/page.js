@@ -125,10 +125,7 @@ const Category = ({ params }) => {
   }
 
   const filter = () => {
-    let range = ""
-    if (value[0] && value[1] === 100000000) {
-      range = `range=${value.join('-')}`
-    }
+    let range = `range=${value.join('-')}`
     window.location.replace(`/${category.slug}#brand=${brands.join(',')}&${range}`)
     getProduct()
   }
@@ -336,10 +333,7 @@ const SubCategory = ({ subCategorySlug, categorySlug }) => {
   }
 
   const filter = () => {
-    let range = ""
-    if (value[0] && value[1] === 100000000) {
-      range = `range=${value.join('-')}`
-    }
+    let range = `range=${value.join('-')}`
     window.location.replace(`/${subCategory.slug}#brand=${brands.join(',')}&${range}`)
     getProduct()
   }
@@ -578,10 +572,7 @@ const Brand = ({ params }) => {
   }
 
   const filter = () => {
-    let range = ""
-    if (value[0] && value[1] === 100000000) {
-      range = `range=${value.join('-')}`
-    }
+    let range = `range=${value.join('-')}`
     window.location.replace(`/${brand.slug}#category=${selectedCategories.join(',')}&${range}`)
     getProduct()
   }

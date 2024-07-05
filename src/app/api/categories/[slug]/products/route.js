@@ -33,8 +33,8 @@ export async function GET(req, { params }) {
       if (minMax.length != 2) return
 
       products = products.filter(item => {
-        const hasSaleDetails = item.saleDetails.length > 0
-
+        const hasSaleDetails = item.saleDetails?.length > 0
+        if (!hasSaleDetails) return false
         const max = item.saleDetails[0]?.price <= parseInt(minMax[1])
         const min = item.saleDetails.filter(detail => detail.price >= parseInt(minMax[0])).length >= 0
 

@@ -46,6 +46,9 @@ export async function PUT(req, { params }) {
 
   delete body.saleDetails
   delete body.image
+  delete body.category
+  delete body.subCategory
+  delete body.technical_detail
   if (!body) return NextResponse.json({ message: "Invalid request body" }, { status: 400 })
   try {
     await db.product.update({ where: { id: params.id }, data: body })

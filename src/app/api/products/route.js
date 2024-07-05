@@ -7,7 +7,10 @@ export async function POST(req) {
     const body = await req.json()
     delete body.image
     delete body.technicalDetails
+    delete body.technical_detail
     delete body.saleDetails
+    delete body.category
+    delete body.subCategory
     const product = await db.product.create(
       {
         data: body

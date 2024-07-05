@@ -36,9 +36,9 @@ const HeroBanner = () => {
 
       let images = []
       for (let i = 0; i < 5; i++) {
-        if (scheduledBanners[i]) {
+        if (scheduledBanners[i] && scheduledBanners[i][0]?.image) {
           images.push(scheduledBanners[i][0].image)
-        } else if (defaultBanners[i]) {
+        } else if (defaultBanners[i] && defaultBanners[i][0]?.image) {
           images.push(defaultBanners[i][0].image)
         }
       }
@@ -52,7 +52,7 @@ const HeroBanner = () => {
     <Carousel responsive={responsive} infinite autoPlay autoPlaySpeed={5000}>
       {
         banners.reverse().map((banner, i) => {
-          return <img key={i} width="1280" height="720" className="w-full h-full" src={process.env.NEXT_PUBLIC_FILE_PATH + banner?.path} alt={banner?.alt} />
+          return <img key={i} width="1280" height="720" className="w-full h-full max-h-[500px]" src={process.env.NEXT_PUBLIC_FILE_PATH + banner?.path} alt={banner?.alt} />
         })
       }
     </Carousel>

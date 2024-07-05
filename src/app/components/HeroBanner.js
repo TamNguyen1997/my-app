@@ -21,13 +21,18 @@ const responsive = {
   }
 }
 
+const imageUrl = "/api/images/banner"
+
 const HeroBanner = () => {
   const [banners, setBanners] = useState([])
 
   useEffect(() => {
-    fetch("/api/images/banner/display").then(res => res.json()).then(body => {
-      const scheduledBanners = body.scheduledBanners ? Object.groupBy(body.scheduledBanners, ({ order }) => order) : {}
-      const defaultBanners = body.defaultBanners ? Object.groupBy(body.defaultBanners, ({ order }) => order) : {}
+    const getData = async () => {
+      const dBanners = await fetch(`${imageUrl}?type=DEFAULT`).then(res => res.json())
+      const sBanners = await fetch(`${imageUrl}?type=SCHEDULED`).then(res => res.json())
+
+      const scheduledBanners = sBanners ? Object.groupBy(sBanners, ({ order }) => order) : {}
+      const defaultBanners = dBanners ? Object.groupBy(dBanners, ({ order }) => order) : {}
 
       let images = []
       for (let i = 0; i < 5; i++) {
@@ -39,7 +44,8 @@ const HeroBanner = () => {
       }
 
       setBanners(images)
-    })
+    }
+    getData()
   }, [])
 
   return (

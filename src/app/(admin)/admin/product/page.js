@@ -213,35 +213,34 @@ const ProductCms = () => {
     delete productToUpdate.brand
     delete productToUpdate.category
 
-    console.log(productToUpdate)
-    // productToUpdate.description = editor.getHTML()
-    // if (productToUpdate.id) {
-    //   await fetch(`/api/products/${productToUpdate.id}`, {
-    //     method: "PUT",
-    //     body: JSON.stringify(productToUpdate)
-    //   })
-    // } else {
-    //   productToUpdate = await fetch(`/api/products/`, {
-    //     method: "POST",
-    //     body: JSON.stringify(productToUpdate)
-    //   }).then(res => res.json())
-    // }
-    // if (saleDetails.length) {
-    //   await fetch(`/api/products/${productToUpdate.id}/sale-details`, {
-    //     method: "POST",
-    //     body: JSON.stringify(saleDetails)
-    //   })
-    // }
+    productToUpdate.description = editor.getHTML()
+    if (productToUpdate.id) {
+      await fetch(`/api/products/${productToUpdate.id}`, {
+        method: "PUT",
+        body: JSON.stringify(productToUpdate)
+      })
+    } else {
+      productToUpdate = await fetch(`/api/products/`, {
+        method: "POST",
+        body: JSON.stringify(productToUpdate)
+      }).then(res => res.json())
+    }
+    if (saleDetails.length) {
+      await fetch(`/api/products/${productToUpdate.id}/sale-details`, {
+        method: "POST",
+        body: JSON.stringify(saleDetails)
+      })
+    }
 
-    // await fetch(`/api/products/${productToUpdate.id}/technical-details`, {
-    //   method: "POST",
-    //   body: JSON.stringify({
-    //     row: JSON.stringify(technicalRows),
-    //     column: JSON.stringify(technicalColumns),
-    //     productId: productToUpdate.id
-    //   })
-    // })
-    // setReload(true)
+    await fetch(`/api/products/${productToUpdate.id}/technical-details`, {
+      method: "POST",
+      body: JSON.stringify({
+        row: JSON.stringify(technicalRows),
+        column: JSON.stringify(technicalColumns),
+        productId: productToUpdate.id
+      })
+    })
+    setReload(true)
   }
 
   const onConditionChange = (value) => {

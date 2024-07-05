@@ -120,7 +120,7 @@ const Blog = () => {
 
               <div className="space-y-4 mb-2">
                 {
-                  blogs.slice(0, 3).map(item => {
+                  blogs.map(item => {
                     return (
                       <BlogItem item={item} key={item.id} containerClass="lg:grid-cols-[192px_auto] pb-5" />
                     )

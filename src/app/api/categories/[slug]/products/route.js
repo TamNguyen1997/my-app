@@ -26,7 +26,7 @@ export async function GET(req, { params }) {
       }
     }
 
-    let products = await db.product.findMany({ where: condition })
+    let products = await db.product.findMany({ where: condition, includes: { image: true } })
 
     if (query.range) {
       const minMax = query.range.split('-')

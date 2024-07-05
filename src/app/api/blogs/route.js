@@ -23,6 +23,10 @@ export async function GET(req) {
       condition.blogCategory = query.blogCategory
     }
 
+    if (query.blogSubCategory) {
+      condition.blogSubCategory = query.blogSubCategory
+    }
+
     return NextResponse.json(await db.blog.findMany({
       where: condition
     }))

@@ -6,6 +6,8 @@ import FlipMove from 'react-flip-move';
 import { ImageDraggable } from "./ImageDraggable";
 import { Button } from "@nextui-org/react";
 import { v4 } from "uuid";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const imageUrl = "/api/images/banner"
 
@@ -80,12 +82,44 @@ const BannerScheduler = () => {
       item.order = index
     })
 
-    fetch(`${imageUrl}`, { method: "POST", body: JSON.stringify(defaultBannersToCreate) })
-    fetch(`${imageUrl}`, { method: "POST", body: JSON.stringify(scheduledBannersToCreate) })
+    toast.promise(
+      fetch(`${imageUrl}`, { method: "POST", body: JSON.stringify(defaultBannersToCreate) }).then(async res => {
+        if (!res.ok) {
+          throw new Error((await res.json()), message)
+        }
+      }),
+      {
+        pending: 'Đang lưu banner mặc định',
+        success: 'Đã lưu banner mặc định',
+        error: {
+          render({ data }) {
+            return data.message
+          }
+        }
+      }
+    )
+    toast.promise(
+      fetch(`${imageUrl}`, { method: "POST", body: JSON.stringify(scheduledBannersToCreate) }).then(async res => {
+        if (!res.ok) {
+          throw new Error((await res.json()), message)
+        }
+      }),
+      {
+        pending: 'Đang lưu banner hẹn giờ',
+        success: 'Đã lưu banner hẹn giờ',
+        error: {
+          render({ data }) {
+            return data.message
+          }
+        }
+      }
+    )
+
   }
 
   return (
     <div>
+      <ToastContainer />
       <div className='grid grid-cols-2 gap-3'>
 
         <DndProvider backend={HTML5Backend}>

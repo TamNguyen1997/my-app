@@ -15,19 +15,23 @@ const blogCategories = [
     tags: [
       {
         title: "Tất cả",
-        slug: ""
+        slug: "",
+        id: ""
       },
       {
         title: "Từ điển thuật ngữ",
-        slug: "tu-dien-thuat-ngu"
+        slug: "tu-dien-thuat-ngu",
+        id: "TERMINOLOGY",
       },
       {
         title: "Tư vấn chọn mua",
-        slug: "tu-van-chon-mua"
+        slug: "tu-van-chon-mua",
+        id: "ADVISORY",
       },
       {
         title: "Hướng dẫn sử dụng",
-        slug: "huong-dan-su-dung"
+        slug: "huong-dan-su-dung",
+        id: "MANUAL",
       }
     ]
   },
@@ -48,32 +52,35 @@ const Blog = () => {
     tags: [
       {
         title: "Tất cả",
-        slug: ""
+        slug: "",
+        id: ""
       },
       {
         title: "Từ điển thuật ngữ",
-        slug: "tu-dien-thuat-ngu"
+        slug: "tu-dien-thuat-ngu",
+        id: "TERMINOLOGY",
       },
       {
         title: "Tư vấn chọn mua",
-        slug: "tu-van-chon-mua"
+        slug: "tu-van-chon-mua",
+        id: "ADVISORY",
       },
       {
         title: "Hướng dẫn sử dụng",
-        slug: "huong-dan-su-dung"
+        slug: "huong-dan-su-dung",
+        id: "MANUAL",
       }
     ]
   });
+
   const [activeTag, setActiveTag] = useState("");
 
   useEffect(() => {
-    fetch(`/api/blogs?blogCategory=${activeCategory}`).then(res => res.json()).then(json => {
+    fetch(`/api/blogs?blogCategory=${activeCategory}&blogSubCategory=${activeTag}`).then(res => res.json()).then(json => {
       setBlogs(json)
       setCategory(blogCategories.find(item => item.id === activeCategory))
     })
-
-
-  }, [activeCategory])
+  }, [activeCategory, activeTag])
 
   return (
     <>
@@ -127,10 +134,10 @@ const Blog = () => {
                         className={`
                                 text-[13px] rounded bg-[#f2f4f9] cursor-pointer transition
                                 flex items-center justify-center text-center px-2 pt-1 pb-0.5 mr-2 mb-4
-                                ${tag.slug === activeTag && 'bg-black text-white'}
+                                ${tag.id === activeTag && 'bg-black text-white'}
                               `}
-                        key={tag.slug}
-                        onClick={() => setActiveTag(tag.slug)}
+                        key={tag.id}
+                        onClick={() => setActiveTag(tag.id)}
                       >
                         {tag.title}
                       </div>

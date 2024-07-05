@@ -30,6 +30,8 @@ import { EmojiReplacer } from './extensions/EmojiReplacer'
 
 import slugify from "slugify"
 import { parseDate } from "@internationalized/date";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const BLOG_CATEGORIES = [
   {
@@ -39,6 +41,21 @@ const BLOG_CATEGORIES = [
   {
     id: "NEWS",
     value: "Tin tức"
+  }
+]
+
+const BLOG_SUB_CATEGORIES = [
+  {
+    value: "Từ điển thuật ngữ",
+    id: "TERMINOLOGY",
+  },
+  {
+    value: "Tư vấn chọn mua",
+    id: "ADVISORY",
+  },
+  {
+    value: "Hướng dẫn sử dụng",
+    id: "MANUAL",
   }
 ]
 
@@ -87,10 +104,14 @@ const BlogForm = ({ blog, setBlog }) => {
 
   const onSubmit = async (data) => {
     const body = Object.assign(blog, data, { thumbnail: thumbnail, content: editor.getHTML(), active: isSelected })
-    await fetch('/api/blogs', {
+    const res = await fetch('/api/blogs', {
       method: "POST",
       body: JSON.stringify(body)
     })
+    if (!res.ok) {
+      toast.error((await res.json()).message)
+      return
+    }
     window.location.reload()
   }
 
@@ -105,6 +126,7 @@ const BlogForm = ({ blog, setBlog }) => {
 
   return (
     <div className="p-3">
+      <ToastContainer />
       <RichTextEditor editor={editor} />
       <div className="pt-3 pr-3">
         <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-3'>
@@ -146,6 +168,21 @@ const BlogForm = ({ blog, setBlog }) => {
                   BLOG_CATEGORIES.map((category) => (
                     <SelectItem key={category.id}>
                       {category.value}
+                    </SelectItem>
+                  ))
+                }
+              </Select>
+              <Select
+                label="Sub Category"
+                defaultSelectedKeys={new Set([blog.blogSubCategory])}
+                onSelectionChange={
+                  (value) => setBlog(Object.assign({}, blog, { blogSubCategory: value.values().next().value }))
+                }
+              >
+                {
+                  BLOG_SUB_CATEGORIES.map((subcate) => (
+                    <SelectItem key={subcate.id}>
+                      {subcate.value}
                     </SelectItem>
                   ))
                 }

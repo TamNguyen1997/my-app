@@ -262,6 +262,7 @@ const SubCategory = ({ categories }) => {
   }, [])
 
   const getSubCate = () => {
+    setIsLoading(true)
     fetch('/api/sub-categories/').then(async res => {
       setSubCategories(await res.json())
       setIsLoading(false)
@@ -272,9 +273,41 @@ const SubCategory = ({ categories }) => {
     e.preventDefault()
 
     if (selectedSubCate.id) {
-      fetch(`/api/sub-categories/${selectedSubCate.id}`, { method: "PUT", body: JSON.stringify(selectedSubCate) }).then(() => setReload(true))
+      toast.promise(
+        fetch(`/api/sub-categories/${selectedSubCate.id}`, { method: "PUT", body: JSON.stringify(selectedSubCate) }).then(async (res) => {
+          getSubCate()
+          if (!res.ok) {
+            throw new Error((await res.json()).message)
+          }
+        }),
+        {
+          pending: 'Đang chỉnh sửa sub category',
+          success: 'Đã chỉnh sửa sub category',
+          error: {
+            render({ data }) {
+              return data.message
+            }
+          }
+        }
+      )
     } else {
-      fetch('/api/sub-categories/', { method: "POST", body: JSON.stringify(selectedSubCate) }).then(() => setReload(true))
+      toast.promise(
+        fetch('/api/sub-categories/', { method: "POST", body: JSON.stringify(selectedSubCate) }).then(async (res) => {
+          getSubCate()
+          if (!res.ok) {
+            throw new Error((await res.json()).message)
+          }
+        }),
+        {
+          pending: 'Đang thêm category',
+          success: 'Đã thêm category',
+          error: {
+            render({ data }) {
+              return data.message
+            }
+          }
+        }
+      )
     }
   }
 
@@ -283,9 +316,25 @@ const SubCategory = ({ categories }) => {
     onOpen()
   }
 
-  const deleteSubCate = (id) => [
-    fetch(`/api/sub-categories/${id}`, { method: "DELETE" }).then(() => setReload(true))
-  ]
+  const deleteSubCate = (id) => {
+    toast.promise(
+      fetch(`/api/sub-categories/${id}`, { method: "DELETE" }).then(async (res) => {
+        getSubCate()
+        if (!res.ok) {
+          throw new Error((await res.json()).message)
+        }
+      }),
+      {
+        pending: 'Đang xóa category',
+        success: 'Đã xóa category',
+        error: {
+          render({ data }) {
+            return data.message
+          }
+        }
+      }
+    )
+  }
 
   const renderCell = useCallback((subCategory, columnKey) => {
     const cellValue = subCategory[columnKey]
@@ -425,6 +474,7 @@ const SubCategory = ({ categories }) => {
           </ModalContent>
         </Modal>
       </div>
+      <ToastContainer />
     </div>
   );
 };

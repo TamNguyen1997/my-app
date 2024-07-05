@@ -144,7 +144,14 @@ model blog {
   updatedAt       DateTime  @default(now()) @updatedAt @map("updated_at")
   type            blog_type @default(BLOG)
 
-  blogCategory blog_category @default(INFORMATION) @map("blog_category")
+  blogCategory    blog_category     @default(INFORMATION) @map("blog_category")
+  blogSubCategory blog_sub_category @default(MANUAL) @map("blog_sub_category")
+}
+
+enum blog_sub_category {
+  TERMINOLOGY
+  ADVISORY
+  MANUAL
 }
 
 enum blog_category {

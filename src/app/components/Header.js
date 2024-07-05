@@ -53,8 +53,8 @@ const Header = () => {
                 <div className="flex items-center text-sm">
                   <div className="flex gap-10">
                     <div className="flex items-center gap-10">
-                      <Link href="/">Tin tức</Link>
-                      <Link href="/blog">Blog</Link>
+                      <Link href="/tin-tuc">Tin tức</Link>
+                      <Link href="/blog">Kiến thức hay</Link>
                     </div>
                     <div className="flex items-center gap-10">
                       <Link href="/">Liên hệ</Link>
@@ -87,15 +87,10 @@ const Header = () => {
                         setShowSubHeader(false)
                       }}
                     >
-                      <span className="pl-1">
-                        <Menu />
-                      </span>
-                      <div>
-                        <Button
-                          variant="light">
-                          Danh mục
-                        </Button>
-                      </div>
+                      <Button
+                        variant="light">
+                        Thương hiệu
+                      </Button>
                     </div>
                     <div>
                       <HeaderItems

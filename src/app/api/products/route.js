@@ -33,6 +33,11 @@ export async function GET(req) {
     if (query.highlight) {
       condition.highlight = query.highlight === 'true'
     }
+    if (query.categoryId) {
+      condition.categoryId = {
+        in: query.categoryId.split(',')
+      }
+    }
     if (query.active) {
       condition.active = query.active === 'true'
     }
@@ -58,7 +63,8 @@ export async function GET(req) {
       where: condition,
       include: {
         saleDetails: true,
-        image: true
+        image: true,
+        category: true
       },
       orderBy: [
         {
@@ -69,8 +75,9 @@ export async function GET(req) {
       skip: (page - 1) * size
     })
 
-    return NextResponse.json({ result, total: await db.product.count() })
+    return NextResponse.json({ result, total: await db.product.count({ where: condition }) })
   } catch (e) {
+    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }

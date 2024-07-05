@@ -71,6 +71,8 @@ export default function PopularItems() {
 
   const [isLoading, setIsLoading] = useState(true)
 
+  const [popularProductsFromCates, setPopularProductsFromCates] = useState({})
+
   useEffect(() => {
     Promise.all([
       fetch(`/api/products/?size=${10}&page=${1}&highlight=true`).then(res => res.json()).then((value) => setProducts(value.result)),
@@ -81,8 +83,13 @@ export default function PopularItems() {
       fetch(`/api/brands/thuong-hieu-moerman/products/`).then(res => res.json()).then(json => setMoermanProducts(json.products)),
       fetch(`/api/brands/thuong-hieu-mapa/products/`).then(res => res.json()).then(json => setMapaProducts(json.products)),
       fetch(`/api/brands/thuong-hieu-ghibli/products/`).then(res => res.json()).then(json => setGhibliProducts(json.products)),
-    ]).then(() => {
+      fetch(`/api/categories/popular`).then(res => res.json()),
+    ]).then(async (value) => {
       setIsLoading(false)
+      const ids = value[5].filter(item => item._count.product > 0).map(item => item.id)
+      const p = await fetch(`/api/products/?size=${30}&page=${1}&categoryId=${ids.join(',')}`).then(res => res.json())
+
+      setPopularProductsFromCates(Object.groupBy(p.result, item => item.category.slug))
     })
   }, [])
 
@@ -139,6 +146,18 @@ export default function PopularItems() {
           selectedBrand={selectedBrand}
           setSelectedBrand={setSelectedBrand} />
       </div>
+
+      {
+        Object.keys(popularProductsFromCates).map((key, i) =>
+          <div key={i}>
+            <ProductCard category={`${popularProductsFromCates[key][0].category.name}`} products={popularProductsFromCates[key]} />
+            <div className="w-full flex flex-row min-w-screen justify-center items-center">
+              <Link href={`/${popularProductsFromCates[key][0].category.slug}`} className="font-bold underline">Xem thêm</Link>
+            </div>
+          </div>
+        )
+      }
+
     </div>
   );
 }

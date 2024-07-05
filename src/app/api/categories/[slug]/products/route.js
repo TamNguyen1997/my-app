@@ -26,7 +26,7 @@ export async function GET(req, { params }) {
       }
     }
 
-    let products = await db.product.findMany({ where: condition, includes: { image: true } })
+    let products = await db.product.findMany({ where: condition, include: { image: true } })
 
     if (query.range) {
       const minMax = query.range.split('-')
@@ -46,6 +46,7 @@ export async function GET(req, { params }) {
       products: products
     })
   } catch (e) {
+    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }

@@ -114,7 +114,7 @@ const Header = () => {
           </div>
         </div>
         {
-          showSubHeader && subCate ?
+          showSubHeader && subCate.length ?
             <div
               onMouseOver={() => setShowSubHeader(true)}
               onMouseOut={() => setShowSubHeader(false)}
@@ -131,7 +131,7 @@ const Header = () => {
                     <span className="flex flex-col justify-center items-center hover:opacity-35 hover:shadow-lg" key={subcate.name}>
                       <div className="flex items-center w-2/3 m-auto h-[80px]">
                         {
-                          subcate.imageUrl ? <Image src={`${process.env.NEXT_PUBLIC_FILE_PATH + subcate.imageUrl}`} width="150" height="150" alt={i} /> : ""
+                          subcate.imageUrl ? <img src={`${process.env.NEXT_PUBLIC_FILE_PATH + subcate.imageUrl}`} width="150" height="150" alt={i} /> : ""
                         }
                       </div>
                       {subcate.name}

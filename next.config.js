@@ -15,6 +15,7 @@ const nextConfig = {
       "dungcuvesinhsaoviet.com"
     ],
   },
+  matcher: "/",
 };
 
 module.exports = nextConfig;

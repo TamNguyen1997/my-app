@@ -179,8 +179,8 @@ const ProductCard = ({ category, products, redirect, banner }) => {
     </div>
   </>)
 
-  const BannerDisplay = () => (<div>
-    <img width="1280" height="720" src={banner} alt="Banner" />
+  const BannerDisplay = () => (<div className="w-full">
+    <img style={{ maxWidth: "100%", width: "100%" }} src={banner} alt="Banner" />
   </div>)
   return (
     <div>

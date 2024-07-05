@@ -5,7 +5,6 @@ import queryString from 'query-string';
 export async function POST(req) {
   try {
     const body = await req.json()
-    delete body.categoryId
     delete body.image
     delete body.technicalDetails
     delete body.saleDetails

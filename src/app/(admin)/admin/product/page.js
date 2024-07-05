@@ -37,6 +37,15 @@ import Subscript from '@tiptap/extension-subscript'
 import Superscript from '@tiptap/extension-superscript'
 import Link from '@tiptap/extension-link'
 import RichTextEditor from "@/app/components/admin/ui/RichTextArea";
+import TiptapTableRow from '@tiptap/extension-table-row'
+import TiptapTableHeader from '@tiptap/extension-table-header'
+import TiptapTableCell from '@tiptap/extension-table-cell'
+import TextStyle from "@tiptap/extension-text-style";
+import Color from "@tiptap/extension-color";
+import TiptapTable from '@tiptap/extension-table'
+import ListKeymap from "@tiptap/extension-list-keymap";
+import Gapcursor from '@tiptap/extension-gapcursor'
+import { EmojiReplacer } from "@/app/components/admin/ui/extensions/EmojiReplacer";
 
 const rowsPerPage = 10;
 
@@ -74,7 +83,15 @@ const ProductCms = () => {
 
   const editor = useEditor({
     extensions: [
-      StarterKit, TipTapImage, TipTapBold, TipTapItalic, Underline, HardBreak, Subscript, Superscript,
+      StarterKit, TipTapImage, TipTapBold, TipTapItalic, Underline, HardBreak, Subscript, Superscript, TextStyle, Color,
+      TiptapTable.configure({
+        resizable: true,
+      }),
+      ListKeymap,
+      TiptapTableRow, Gapcursor,
+      EmojiReplacer,
+      TiptapTableHeader,
+      TiptapTableCell,
       Highlight.configure({ multicolor: true }),
       TextAlign.configure({
         types: ['heading', 'paragraph'],
@@ -95,7 +112,8 @@ const ProductCms = () => {
       Placeholder.configure({
         placeholder: "Nhập văn bản"
       })
-    ]
+    ],
+    content: "<br><br><br><br><br><br><br>"
   })
 
   useEffect(() => {
@@ -195,34 +213,35 @@ const ProductCms = () => {
     delete productToUpdate.brand
     delete productToUpdate.category
 
-    productToUpdate.description = editor.getHTML()
-    if (productToUpdate.id) {
-      await fetch(`/api/products/${productToUpdate.id}`, {
-        method: "PUT",
-        body: JSON.stringify(productToUpdate)
-      })
-    } else {
-      productToUpdate = await fetch(`/api/products/`, {
-        method: "POST",
-        body: JSON.stringify(productToUpdate)
-      }).then(res => res.json())
-    }
-    if (saleDetails.length) {
-      await fetch(`/api/products/${productToUpdate.id}/sale-details`, {
-        method: "POST",
-        body: JSON.stringify(saleDetails)
-      })
-    }
+    console.log(productToUpdate)
+    // productToUpdate.description = editor.getHTML()
+    // if (productToUpdate.id) {
+    //   await fetch(`/api/products/${productToUpdate.id}`, {
+    //     method: "PUT",
+    //     body: JSON.stringify(productToUpdate)
+    //   })
+    // } else {
+    //   productToUpdate = await fetch(`/api/products/`, {
+    //     method: "POST",
+    //     body: JSON.stringify(productToUpdate)
+    //   }).then(res => res.json())
+    // }
+    // if (saleDetails.length) {
+    //   await fetch(`/api/products/${productToUpdate.id}/sale-details`, {
+    //     method: "POST",
+    //     body: JSON.stringify(saleDetails)
+    //   })
+    // }
 
-    await fetch(`/api/products/${productToUpdate.id}/technical-details`, {
-      method: "POST",
-      body: JSON.stringify({
-        row: JSON.stringify(technicalRows),
-        column: JSON.stringify(technicalColumns),
-        productId: productToUpdate.id
-      })
-    })
-    setReload(true)
+    // await fetch(`/api/products/${productToUpdate.id}/technical-details`, {
+    //   method: "POST",
+    //   body: JSON.stringify({
+    //     row: JSON.stringify(technicalRows),
+    //     column: JSON.stringify(technicalColumns),
+    //     productId: productToUpdate.id
+    //   })
+    // })
+    // setReload(true)
   }
 
   const onConditionChange = (value) => {
@@ -381,6 +400,7 @@ const ProductDetailForm = ({
     onOpenChange()
   }
 
+  console.log(product)
   return (
     <>
       <div className="flex flex-col gap-3">

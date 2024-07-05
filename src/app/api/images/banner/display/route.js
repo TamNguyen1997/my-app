@@ -7,22 +7,13 @@ export async function GET(req) {
     where: {
       active: true,
       type: BannerType.SCHEDULED,
-      OR: [
-        {
-          activeFrom: {
-            lte: new Date()
-          }
-        },
-        { activeFrom: null }
-      ],
-      OR: [
-        {
-          activeTo: {
-            gte: new Date()
-          }
-        },
-        { activeTo: null }
-      ],
+      activeFrom: {
+        lte: new Date()
+      },
+
+      activeTo: {
+        gte: new Date()
+      },
 
       NOT: {
         imageId: null

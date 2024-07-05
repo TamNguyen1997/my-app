@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/app/db';
+import queryString from 'query-string';
+
 
 export async function POST(req) {
   let body = await req.json()
@@ -19,12 +21,22 @@ export async function POST(req) {
 }
 
 export async function GET(req) {
-  const { searchParams } = new URL(req.url);
-
   let condition = {}
+  const { query } = queryString.parseUrl(req.url);
+  if (query.type) {
+    condition.type = query.type
+  }
 
-  if (searchParams.get("type")) {
-    condition.type = searchParams.get("type")
+  if (query.inrange) {
+    Object.assign(condition, {
+      activeFrom: {
+        lte: new Date()
+      },
+
+      activeTo: {
+        gte: new Date()
+      },
+    })
   }
 
   const result = await db.banner.findMany({

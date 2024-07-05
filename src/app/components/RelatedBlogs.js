@@ -6,7 +6,6 @@ const blogCategories = {
 }
 
 export default ({ relatedBlogs }) => {
-  console.log(relatedBlogs)
   return (
     <>
       <div className="text-lg text-[#FFD300] leading-none font-semibold border-l-4 border-[#83e214] pl-3 mb-4">BÀI VIẾT LIÊN QUAN</div>

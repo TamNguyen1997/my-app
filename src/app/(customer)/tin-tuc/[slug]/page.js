@@ -15,7 +15,7 @@ const Blog = () => {
   const { slug } = useParams();
   useState(() => {
     fetch(`/api/blogs/${slug}`).then(res => res.json()).then(json => setBlog(json))
-    fetch(`/api/blogs/?blogCategory=NEWS`).then(res => res.json()).then(setRelatedBlogs)
+    fetch(`/api/blogs?blogCategory=NEWS`).then(res => res.json()).then(setRelatedBlogs)
   }, [slug])
 
   if (!blog.id) return <></>

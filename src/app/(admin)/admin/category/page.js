@@ -16,6 +16,9 @@ import { redirect } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import slugify from "slugify"
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const categoryTypes = [
   {
     key: "CATEGORY",
@@ -38,28 +41,58 @@ const Category = () => {
   const [reload, setReload] = useState(false)
   const [categoryType, setCategoryType] = useState(new Set(["CATEGORY"]))
 
-  if (reload) {
-    redirect("/admin/category")
+  const getCategories = () => {
+    setIsLoading(true)
+    fetch('/api/categories/').then(async res => {
+      setCategories(await res.json())
+      setIsLoading(false)
+    })
   }
 
   useEffect(() => {
-    const getCategories = () => {
-      fetch('/api/categories/').then(async res => {
-        setCategories(await res.json())
-        setIsLoading(false)
-      })
-    }
-
     getCategories()
   }, [])
+
 
   const onSubmit = (e) => {
     e.preventDefault()
     const cate = Object.assign(selectedCate, { type: categoryType.values().next().value })
     if (selectedCate.id) {
-      fetch(`/api/categories/${selectedCate.id}`, { method: "PUT", body: JSON.stringify(cate) }).then(() => setReload(true))
+      toast.promise(
+        fetch(`/api/categories/${selectedCate.id}`, { method: "PUT", body: JSON.stringify(cate) }).then(async (res) => {
+          getCategories()
+          if (!res.ok) {
+            throw new Error((await res.json()).message)
+          }
+        }),
+        {
+          pending: 'Đang chỉnh sửa category',
+          success: 'Đã chỉnh sửa category',
+          error: {
+            render({ data }) {
+              return data.message
+            }
+          }
+        }
+      )
     } else {
-      fetch('/api/categories/', { method: "POST", body: JSON.stringify(cate) }).then(() => setReload(true))
+      toast.promise(
+        fetch('/api/categories/', { method: "POST", body: JSON.stringify(cate) }).then(async (res) => {
+          getCategories()
+          if (!res.ok) {
+            throw new Error((await res.json()).message)
+          }
+        }),
+        {
+          pending: 'Đang tạo category',
+          success: 'Đã tạo category',
+          error: {
+            render({ data }) {
+              return data.message
+            }
+          }
+        }
+      )
     }
   }
 
@@ -68,9 +101,25 @@ const Category = () => {
     onOpen()
   }
 
-  const deleteCate = (id) => [
-    fetch(`/api/categories/${id}`, { method: "DELETE" }).then(() => setReload(true))
-  ]
+  const deleteCate = (id) => {
+    toast.promise(
+      fetch(`/api/categories/${id}`, { method: "DELETE" }).then(async (res) => {
+        getCategories()
+        if (!res.ok) {
+          throw new Error((await res.json()).message)
+        }
+      }),
+      {
+        pending: 'Đang xóa category',
+        success: 'Đã xóa category',
+        error: {
+          render({ data }) {
+            return data.message
+          }
+        }
+      }
+    )
+  }
 
   const renderCell = useCallback((category, columnKey) => {
     const cellValue = category[columnKey]
@@ -175,7 +224,7 @@ const Category = () => {
                     </Select>
                   </ModalBody>
                   <ModalFooter>
-                    <Button color="primary" type="submit">
+                    <Button color="primary" type="submit" onPress={onClose}>
                       Lưu
                     </Button>
                     <Button color="danger" variant="light" onPress={onClose}>
@@ -188,6 +237,7 @@ const Category = () => {
           </form>
         </Modal>
       </div>
+      <ToastContainer />
     </div>
   );
 };
@@ -208,11 +258,15 @@ const SubCategory = ({ categories }) => {
   }
 
   useEffect(() => {
+    getSubCate()
+  }, [])
+
+  const getSubCate = () => {
     fetch('/api/sub-categories/').then(async res => {
       setSubCategories(await res.json())
       setIsLoading(false)
     })
-  }, [])
+  }
 
   const onSubmit = (e) => {
     e.preventDefault()
@@ -337,7 +391,7 @@ const SubCategory = ({ categories }) => {
                     </Select>
                   </ModalBody>
                   <ModalFooter>
-                    <Button color="primary" type="submit">
+                    <Button color="primary" type="submit" onPress={onClose}>
                       Lưu
                     </Button>
                     <Button color="danger" variant="light" onPress={onClose}>

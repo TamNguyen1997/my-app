@@ -45,7 +45,8 @@ export async function GET(req, { params }) {
       where: condition,
       include: {
         image: true,
-        subCategory: true
+        subCategory: true,
+        saleDetails: true
       }
     })
 

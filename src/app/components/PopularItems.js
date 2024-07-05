@@ -70,17 +70,18 @@ export default function PopularItems() {
   useEffect(() => {
     Promise.all([
       fetch(`/api/products/?size=${10}&page=${1}&highlight=true`).then(res => res.json()).then((value) => setProducts(value.result)),
-      fetch(`/api/brands/thuong-hieu-rubbermaid/products/`).then(res => res.json()).then(json => setRubberMaidProducts(json.products)),
+      fetch(`/api/brands/thuong-hieu-rubbermaid/products/`).then(res => res.json()).then(json => {
+        setRubberMaidProducts(json.products)
+        setBrandProducts(json.products)
+      }),
       fetch(`/api/brands/thuong-hieu-moerman/products/`).then(res => res.json()).then(json => setMoermanProducts(json.products)),
       fetch(`/api/brands/thuong-hieu-mapa/products/`).then(res => res.json()).then(json => setMapaProducts(json.products)),
       fetch(`/api/brands/thuong-hieu-ghibli/products/`).then(res => res.json()).then(json => setGhibliProducts(json.products)),
     ]).then(() => {
-      setBrandProducts(rubberMaidProducts)
       setIsLoading(false)
     })
   }, [])
 
-  console.log(ghibliProducts)
   if (isLoading) return <Spinner className="m-auto" />
 
   const getSelectedColor = (value) => {
@@ -217,6 +218,7 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
     }
   }
 
+  console.log(products)
 
   return (<>
     <div className="grid grid-cols-6">

@@ -13,11 +13,20 @@ import Highlight from '@tiptap/extension-highlight'
 import Underline from '@tiptap/extension-underline'
 import Subscript from '@tiptap/extension-subscript'
 import Superscript from '@tiptap/extension-superscript'
+import TextStyle from '@tiptap/extension-text-style'
+import Table from '@tiptap/extension-table'
+import TableCell from '@tiptap/extension-table-cell'
+import TableHeader from '@tiptap/extension-table-header'
+import TableRow from '@tiptap/extension-table-row'
+import Gapcursor from '@tiptap/extension-gapcursor'
+import ListKeymap from '@tiptap/extension-list-keymap'
+import { Color } from '@tiptap/extension-color'
 import Link from '@tiptap/extension-link'
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Switch, Textarea, useDisclosure } from '@nextui-org/react';
 import { useForm } from "react-hook-form"
 import { useState } from 'react';
 import RichTextEditor from './RichTextArea';
+import { EmojiReplacer } from './extensions/EmojiReplacer'
 
 const BlogForm = ({ blog }) => {
   const {
@@ -29,7 +38,15 @@ const BlogForm = ({ blog }) => {
 
   const editor = useEditor({
     extensions: [
-      StarterKit, TipTapImage, TipTapBold, TipTapItalic, Underline, HardBreak, Subscript, Superscript,
+      StarterKit, TipTapImage, TipTapBold, TipTapItalic, Underline, HardBreak, Subscript, Superscript, TextStyle, Color,
+      Table.configure({
+        resizable: true,
+      }),
+      ListKeymap,
+      TableRow, Gapcursor,
+      EmojiReplacer,
+      TableHeader,
+      TableCell,
       Highlight.configure({ multicolor: true }),
       TextAlign.configure({
         types: ['heading', 'paragraph'],
@@ -51,7 +68,7 @@ const BlogForm = ({ blog }) => {
         placeholder: "Nhập văn bản"
       })
     ],
-    content: blog.content
+    content: blog.content || "<br><br><br><br><br><br><br>"
   })
 
   const onSubmit = async (data) => {

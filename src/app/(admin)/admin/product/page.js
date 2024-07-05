@@ -13,8 +13,7 @@ import {
   Card, CardBody, Tab, Tabs,
   Input,
   Select,
-  SelectItem,
-  Checkbox
+  SelectItem
 } from "@nextui-org/react"
 import { v4 } from "uuid";
 import { useCallback, useEffect, useMemo, useState } from "react"

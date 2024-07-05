@@ -191,6 +191,9 @@ model sub_category {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
+  imageUrl  String?
+  bannerUrl String?
+
   categoryId String    @db.Uuid
   category   category  @relation(fields: [categoryId], references: [id])
   product    product[]

@@ -1,12 +1,17 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/app/db';
+import queryString from 'query-string';
 
 export async function GET(req) {
-  const { searchParams } = new URL(req.url);
   let condition = {}
+  let include = {}
+  const { query } = queryString.parseUrl(req.url);
+  if (query.type) {
+    condition.type = query.type
+  }
 
-  if (searchParams.get("type") && searchParams.get("type") !== "undefined") {
-    condition.type = searchParams.get("type")
+  if (query.includeSubCate) {
+    include.sub_category = query.includeSubCate === 'true'
   }
 
   try {
@@ -17,7 +22,8 @@ export async function GET(req) {
           updatedAt: "desc"
         }
       ],
-      take: 7
+      take: 7,
+      include: include
     }))
   } catch (e) {
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })

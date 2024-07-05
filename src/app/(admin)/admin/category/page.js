@@ -1,5 +1,6 @@
 "use client"
 
+import ImagePicker from "@/app/components/admin/ui/ImagePicker";
 import {
   Button, Input,
   Modal, ModalBody,
@@ -198,6 +199,8 @@ const SubCategory = ({ categories }) => {
   const [isLoading, setIsLoading] = useState(true)
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
+  const imageModal = useDisclosure();
+
   const [reload, setReload] = useState(false)
 
   if (reload) {
@@ -311,6 +314,12 @@ const SubCategory = ({ categories }) => {
                       label="Slug"
                       value={selectedSubCate.slug}
                       labelPlacement="outside" isRequired disabled />
+                    <div className='flex gap-3'>
+                      <Input label="Hình ảnh" aria-label="Hình ảnh" value={selectedSubCate?.imageUrl} disabled></Input>
+                      <div className='pt-2'>
+                        <Button onClick={imageModal.onOpen} className=''>Chọn ảnh</Button>
+                      </div>
+                    </div>
                     <Select
                       label="Phân loại"
                       labelPlacement="outside"
@@ -339,6 +348,27 @@ const SubCategory = ({ categories }) => {
               )}
             </ModalContent>
           </form>
+        </Modal>
+
+        <Modal isOpen={imageModal.isOpen} onOpenChange={imageModal.onOpenChange} size="5xl" scrollBehavior="inside">
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">Chèn hình</ModalHeader>
+                <ModalBody>
+                  <ImagePicker disableAdd onImageClick={(image) => {
+                    setSelectedSubCate(Object.assign({}, selectedSubCate, { imageUrl: image.path }))
+                    onClose()
+                  }} disableDelete></ImagePicker>
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="danger" variant="light" onPress={onClose}>
+                    Đóng
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
         </Modal>
       </div>
     </div>

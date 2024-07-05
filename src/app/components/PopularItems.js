@@ -218,8 +218,6 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
     }
   }
 
-  console.log(products)
-
   return (<>
     <div className="grid grid-cols-6">
       <div className="p-2 col-span-2">

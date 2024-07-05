@@ -26,7 +26,6 @@ export async function GET(req) {
 
 export async function POST(req) {
   const body = await req.json()
-  console.log(body)
   return NextResponse.json(await db.sub_category.create(
     {
       data: body

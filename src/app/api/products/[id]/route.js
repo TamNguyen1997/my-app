@@ -51,7 +51,6 @@ export async function PUT(req, { params }) {
     await db.product.update({ where: { id: params.id }, data: body })
     return NextResponse.json({ message: "Success" })
   } catch (e) {
-    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }

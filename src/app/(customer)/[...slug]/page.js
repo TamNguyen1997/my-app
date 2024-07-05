@@ -58,7 +58,6 @@ const FILTER = {
     id: "highlight",
     name: "Nổi bật",
     filter: (products) => {
-      console.log("?????")
       return products.filter(item => item.highlight)
     }
   },

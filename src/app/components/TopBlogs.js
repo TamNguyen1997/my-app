@@ -1,7 +1,6 @@
 import BlogItem from "@/components/BlogItem";
 
 export default ({ items }) => {
-	console.log(items)
 	return (
 		<>
 			<div className="text-lg text-[#191919] leading-none font-bold border-l-4 border-[#ffd300] pl-3 mb-4">Bài viết xem nhiều</div>

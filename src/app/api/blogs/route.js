@@ -9,7 +9,6 @@ export async function POST(req) {
 
     return NextResponse.json(await db.blog.create({ data: body }))
   } catch (e) {
-    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }

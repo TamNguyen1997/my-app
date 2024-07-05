@@ -13,7 +13,7 @@ const Blog = () => {
   const [blog, setBlog] = useState({})
   const [relatedBlogs, setRelatedBlogs] = useState([])
   const { slug } = useParams();
-  console.log(slug)
+
   useState(() => {
     fetch(`/api/blogs/${slug}`).then(res => res.json()).then(json => setBlog(json))
     fetch(`/api/blogs?blogCategory=INFORMATION`).then(res => res.json()).then(setRelatedBlogs)

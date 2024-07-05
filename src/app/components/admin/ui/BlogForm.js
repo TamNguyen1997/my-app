@@ -87,7 +87,6 @@ const BlogForm = ({ blog, setBlog }) => {
 
   const onSubmit = async (data) => {
     const body = Object.assign(blog, data, { thumbnail: thumbnail, content: editor.getHTML(), active: isSelected })
-    console.log(body)
     await fetch('/api/blogs', {
       method: "POST",
       body: JSON.stringify(body)
@@ -104,7 +103,6 @@ const BlogForm = ({ blog, setBlog }) => {
     onOpenChange()
   }
 
-  console.log(blog)
   return (
     <div className="p-3">
       <RichTextEditor editor={editor} />

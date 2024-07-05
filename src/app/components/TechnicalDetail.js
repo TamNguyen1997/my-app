@@ -12,13 +12,13 @@ const TechnicalDetail = ({ data }) => {
       <Table aria-label="Example static collection table" isStriped>
         <TableHeader>
           {
-            columns.map(item => <TableColumn key={item.id}>{item.name}</TableColumn>)
+            columns.map((item, i) => <TableColumn key={i}>{item.name}</TableColumn>)
           }
         </TableHeader>
         <TableBody>
           {
-            rows.map((value) => {
-              return <TableRow key={value.id}>
+            rows.map((value, i) => {
+              return <TableRow key={i}>
                 {
                   Object.keys(value).filter(item => item !== "id").map(item => <TableCell key={item.id}>{value[item]}</TableCell>)
                 }

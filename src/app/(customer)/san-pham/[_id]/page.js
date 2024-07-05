@@ -36,8 +36,8 @@ const Product = () => {
             <BreadcrumbItem href={`/${product.category?.slug}/${product.subCategory?.slug}`}>{product.subCategory?.name}</BreadcrumbItem>
             <BreadcrumbItem>{product.name}</BreadcrumbItem>
           </Breadcrumbs>
-
-          <h1 className="text-[30px] font-extrabold m-[10px_0_18px]">{product.name}</h1>
+          {/* 
+          <h1 className="text-[30px] font-extrabold m-[10px_0_18px]">{product.name}</h1> */}
         </div>
       </div>
 
@@ -56,7 +56,7 @@ const Product = () => {
 
           <div className="sm:w-5/12 md:w-4/12 w-full">
             <div className="p-5 border-white border-b-[3px] bg-[#f8f8f8]">
-              <SaleDetail saleDetails={product.saleDetails} />
+              <SaleDetail saleDetails={product.saleDetails} product={product} />
             </div>
             <div className="text-sm p-5 bg-[#f8f8f8]">
               <p className="mb-2.5">Bạn cần trợ giúp?</p>

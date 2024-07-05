@@ -58,7 +58,7 @@ export default ({ items }) => {
 				arrows
 				autoPlay={false}
 				autoPlaySpeed={2000}
-				className=""
+				className="h-[500px]"
 				containerClass="[&>button]:invert [&>button]:rounded-none pb-2.5"
 				dotListClass={`
 					!static

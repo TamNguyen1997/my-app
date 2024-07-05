@@ -107,7 +107,7 @@ const Category = ({ params }) => {
 
   const getProduct = () => {
     const hash = window.location.hash?.split('#')
-    fetch(`/api/categories/${params}/products/?${hash.length == 2 ? hash[1] : ""}`).then(async res => {
+    fetch(`/api/categories/${params}/products/?active=true&${hash.length == 2 ? hash[1] : ""}`).then(async res => {
       if (res.ok) {
         const body = await res.json()
         setCategory(body.category)
@@ -314,7 +314,7 @@ const SubCategory = ({ subCategorySlug, categorySlug }) => {
 
   const getProduct = () => {
     const hash = window.location.hash?.split('#')
-    fetch(`/api/sub-categories/${subCategorySlug}/products/?category=${categorySlug}&${hash.length == 2 ? hash[1] : ""}`).then(async res => {
+    fetch(`/api/sub-categories/${subCategorySlug}/products/?active=true&category=${categorySlug}&${hash.length == 2 ? hash[1] : ""}`).then(async res => {
       if (res.ok) {
         const body = await res.json()
         setSubCategory(body.subCategory)
@@ -537,7 +537,7 @@ const Brand = ({ params }) => {
   const getProduct = () => {
     const hash = window.location.hash?.split('#')
     fetch(`/api/categories/`).then(res => res.json()).then(setCategories)
-    fetch(`/api/brands/${params}/products/?${hash.length == 2 ? hash[1] : ""}`).then(async res => {
+    fetch(`/api/brands/${params}/products/?&active=true&${hash.length == 2 ? hash[1] : ""}`).then(async res => {
       if (res.ok) {
         const body = await res.json()
         setBrand(body.brand)

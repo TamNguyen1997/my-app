@@ -75,19 +75,19 @@ export default function PopularItems() {
 
   useEffect(() => {
     Promise.all([
-      fetch(`/api/products/?size=${10}&page=${1}&highlight=true`).then(res => res.json()).then((value) => setProducts(value.result)),
-      fetch(`/api/brands/thuong-hieu-rubbermaid/products/`).then(res => res.json()).then(json => {
+      fetch(`/api/products/?size=${10}&page=${1}&highlight=true&active=true`).then(res => res.json()).then((value) => setProducts(value.result)),
+      fetch(`/api/brands/thuong-hieu-rubbermaid/products/?active=true`).then(res => res.json()).then(json => {
         setRubberMaidProducts(json.products)
         setBrandProducts(json.products)
       }),
-      fetch(`/api/brands/thuong-hieu-moerman/products/`).then(res => res.json()).then(json => setMoermanProducts(json.products)),
-      fetch(`/api/brands/thuong-hieu-mapa/products/`).then(res => res.json()).then(json => setMapaProducts(json.products)),
-      fetch(`/api/brands/thuong-hieu-ghibli/products/`).then(res => res.json()).then(json => setGhibliProducts(json.products)),
+      fetch(`/api/brands/thuong-hieu-moerman/products/?active=true`).then(res => res.json()).then(json => setMoermanProducts(json.products)),
+      fetch(`/api/brands/thuong-hieu-mapa/products/?active=true`).then(res => res.json()).then(json => setMapaProducts(json.products)),
+      fetch(`/api/brands/thuong-hieu-ghibli/products/?active=true`).then(res => res.json()).then(json => setGhibliProducts(json.products)),
       fetch(`/api/categories/popular`).then(res => res.json()),
     ]).then(async (value) => {
       setIsLoading(false)
       const ids = value[5].filter(item => item._count.product > 0).map(item => item.id)
-      const p = await fetch(`/api/products/?size=${30}&page=${1}&categoryId=${ids.join(',')}`).then(res => res.json())
+      const p = await fetch(`/api/products/?size=${30}&page=${1}&categoryId=${ids.join(',')}&active=true`).then(res => res.json())
 
       setPopularProductsFromCates(Object.groupBy(p.result, item => item.category.slug))
     })

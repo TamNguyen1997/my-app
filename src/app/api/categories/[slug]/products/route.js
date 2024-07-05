@@ -26,6 +26,10 @@ export async function GET(req, { params }) {
       }
     }
 
+    if (query.active) {
+      condition.active = query.active === 'true'
+    }
+
     let products = await db.product.findMany({ where: condition, include: { image: true } })
 
     if (query.range) {

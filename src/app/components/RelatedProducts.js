@@ -12,7 +12,7 @@ const RelatedProducts = ({ productId }) => {
   const [products, setProducts] = useState([])
 
   useEffect(() => {
-    fetch(`/api/products/${productId}/related`).then(res => res.json()).then(json => setProducts(json))
+    fetch(`/api/products/${productId}/related?active=true`).then(res => res.json()).then(json => setProducts(json))
   }, [])
 
   return (<>

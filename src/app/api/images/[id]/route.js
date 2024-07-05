@@ -10,7 +10,7 @@ export async function DELETE(req, { params }) {
     if (!image) return NextResponse.json({ message: "Image not found" }, { status: 4004 });
 
     const blogs = await db.blog.findFirst({ where: { thumbnail: { contains: `/${params.image}.` } } });
-    const products = await db.product.findFirst({ where: { imageUrl: { contains: `/${params.image}.` } } });
+    const products = await db.product.findFirst({ where: { imageId: params.id } });
 
     if (blogs != null || products != null) {
       return NextResponse.json({ message: "Can't delete image" }, { status: 400 });

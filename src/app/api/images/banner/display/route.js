@@ -31,7 +31,10 @@ export async function GET(req) {
     take: 5,
     include: {
       image: true
-    }
+    },
+    orderBy: [
+      { order: "asc" }
+    ]
   })
 
   const defaultBanners = await db.banner.findMany({
@@ -44,7 +47,10 @@ export async function GET(req) {
     take: 5,
     include: {
       image: true
-    }
+    },
+    orderBy: [
+      { order: "asc" }
+    ]
   })
 
   return NextResponse.json({

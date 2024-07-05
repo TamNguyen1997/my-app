@@ -137,7 +137,7 @@ const AddPicture = ({ saveImage }) => {
   return (
     <>
       <Modal
-        size="3xl" scrollBehavior="inside"
+        size="5xl" scrollBehavior="inside"
         isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (

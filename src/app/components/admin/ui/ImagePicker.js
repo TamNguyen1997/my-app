@@ -35,7 +35,7 @@ const ImagePicker = ({ disableSearch, onImageClick, disableDelete }) => {
       <div className='flex w-full flex-wrap md:flex-nowrap gap-4 py-5'>
         {
           disableSearch ? null : (
-            <div className='flex gap-3 w-1/4'>
+            <div className='flex gap-3 w-1/2'>
               <Input
                 className="w-52"
                 type="text"
@@ -67,8 +67,6 @@ const ImagePicker = ({ disableSearch, onImageClick, disableDelete }) => {
                 </SelectItem>
               </Select>
             </div>
-
-
           )
         }
       </div>

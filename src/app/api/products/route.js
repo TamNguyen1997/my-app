@@ -45,18 +45,21 @@ export async function GET(req) {
       condition.active = query.active === 'true'
     }
     if (query.name) {
+      let name = query.name.trim().replaceAll(" ", " & ")
       condition.name = {
-        search: query.name
+        search: name
       }
     }
     if (query.sku) {
+      let sku = query.sku.trim().replaceAll(" ", " & ")
       condition.sku = {
-        search: query.sku
+        search: sku
       }
     }
     if (query.slug) {
+      let slug = query.slug.trim().replaceAll(" ", " & ")
       condition.slug = {
-        search: query.slug
+        search: slug
       }
     }
   }

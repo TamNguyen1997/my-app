@@ -150,7 +150,7 @@ export default function PopularItems() {
       {
         Object.keys(popularProductsFromCates).map((key, i) =>
           <div key={i}>
-            <ProductCard category={`${popularProductsFromCates[key][0].category.name}`} products={popularProductsFromCates[key]} />
+            <ProductCard banner={randomElement} products={popularProductsFromCates[key]} />
             <div className="w-full flex flex-row min-w-screen justify-center items-center">
               <Link href={`/${popularProductsFromCates[key][0].category.slug}`} className="font-bold underline">Xem thêm</Link>
             </div>
@@ -162,21 +162,34 @@ export default function PopularItems() {
   );
 }
 
-const ProductCard = ({ category, products, redirect }) => {
+const randomElement = ["/banner-2.jpg", "/banner-3.jpg", "/banner-4.jpg", "/banner-1.jpg", "/Anh-gui-27.png"][Math.floor(Math.random() * 3)];
+
+const ProductCard = ({ category, products, redirect, banner }) => {
+  const CategoryDisplay = () => (<>
+    <div className="bg-[#ffd300] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-1/3 h-[50px] m-auto shadow-md">
+      <div className="m-auto text-black font-bold text-xl">
+        {category}
+      </div>
+      {
+        redirect ?
+          <div className="bg-black text-white rounded-tr-[42px] rounded-bl-[42px] text-md font-bold italic flex items-center w-[15%] min-w-[100px]">
+            <Link href={redirect} className="m-auto">Xem thêm</Link>
+          </div> : ""
+      }
+    </div>
+  </>)
+
+  const BannerDisplay = () => (<div>
+    <img width="1280" height="720" src={banner} alt="Banner" />
+  </div>)
   return (
     <div>
       <section className="rounded-tr-[50px] rounded-tl-[50px]">
-        <div className="bg-[#ffd300] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-1/3 h-[50px] m-auto shadow-md">
-          <div className="m-auto text-black font-bold text-xl">
-            {category}
-          </div>
-          {
-            redirect ? <div className="bg-black text-white rounded-tr-[42px] rounded-bl-[42px] text-md font-bold italic flex items-center w-[15%] min-w-[100px]">
-              <Link href={redirect} className="m-auto">Xem thêm</Link>
-            </div> : <></>
-          }
-
-        </div>
+        {
+          banner ?
+            <BannerDisplay /> :
+            <CategoryDisplay />
+        }
         <div className="mx-auto lg:max-w-full">
           <ProductCarousel products={products} responsive={responsive}></ProductCarousel>
         </div>

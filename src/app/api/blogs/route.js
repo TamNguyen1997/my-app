@@ -1,5 +1,6 @@
 import { db } from '@/app/db';
 import { NextResponse } from 'next/server';
+import queryString from 'query-string';
 
 export async function POST(req) {
   try {
@@ -8,13 +9,24 @@ export async function POST(req) {
 
     return NextResponse.json(await db.blog.create({ data: body }))
   } catch (e) {
+    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }
 
 export async function GET(req) {
   try {
-    return NextResponse.json(await db.blog.findMany())
+    const { query } = queryString.parseUrl(req.url);
+
+    let condition = {}
+
+    if (query.blogCategory) {
+      condition.blogCategory = query.blogCategory
+    }
+
+    return NextResponse.json(await db.blog.findMany({
+      where: condition
+    }))
   } catch (e) {
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }

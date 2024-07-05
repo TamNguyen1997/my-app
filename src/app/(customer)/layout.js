@@ -1,17 +1,19 @@
-import { Inter } from "next/font/google";
+import { Open_Sans } from "next/font/google";
 import "../globals.css";
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ContactIcons from '@/components/ContactIcons'
 
-const inter = Inter({ subsets: ["latin"] });
+const open_sans = Open_Sans({ subsets: ["latin"] });
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${open_sans.className} `}>
         <Header />
-        {children}
+        <div className="min-h-screen">
+          {children}
+        </div>
         <ContactIcons />
         <Footer />
       </body>

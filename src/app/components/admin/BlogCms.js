@@ -64,7 +64,7 @@ const BlogCms = () => {
         </Table>
       </Tab>
       <Tab key="Thêm blog" title="Thêm blog">
-        <BlogForm blog={selectedBlog}></BlogForm>
+        <BlogForm blog={selectedBlog} setBlog={setSelectedBlog}></BlogForm>
       </Tab>
     </Tabs>
   </>)

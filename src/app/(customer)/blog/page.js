@@ -2,7 +2,6 @@
 
 import { Link } from "@nextui-org/react";
 import { useEffect, useState } from "react";
-import { Home } from "lucide-react";
 import BlogItem from "@/components/BlogItem";
 import BlogCarousel from "@/components/BlogCarousel";
 import TopBlogs from "@/components/TopBlogs";
@@ -10,60 +9,70 @@ import { motion } from "framer-motion";
 
 const blogCategories = [
   {
-    title: "Blog",
-    slug: ""
+    title: "Kiến thức hay",
+    id: "INFORMATION",
+    tags: [
+      {
+        title: "Tất cả",
+        slug: ""
+      },
+      {
+        title: "Từ điển thuật ngữ",
+        slug: "tu-dien-thuat-ngu"
+      },
+      {
+        title: "Tư vấn chọn mua",
+        slug: "tu-van-chon-mua"
+      },
+      {
+        title: "Hướng dẫn sử dụng",
+        slug: "huong-dan-su-dung"
+      }
+    ]
   },
   {
-    title: "Quản lý tài chính",
-    slug: "quan-ly-tai-chinh"
-  },
-  {
-    title: "Tích lũy",
-    slug: "tich-luy"
-  },
-  {
-    title: "Đầu tư",
-    slug: "dau-tu"
-  },
-  {
-    title: "Phúc lợi xã hội",
-    slug: "phuc-loi-xa-hoi"
+    title: "Tin tức",
+    id: "NEWS",
+    tags: []
   }
 ];
 
-const blogTags = [
-  {
-    title: "Tất cả",
-    slug: ""
-  },
-  {
-    title: "Kiến thức tài chính",
-    slug: "kien-thuc-tai-chinh"
-  },
-  {
-    title: "Tài chính gia đình",
-    slug: "tai-chinh-gia-dinh"
-  },
-  {
-    title: "Thu nhập và chi tiêu",
-    slug: "thu-nhap-va-chi-tieu"
-  },
-  {
-    title: "Tài chính cá nhân",
-    slug: "tai-chinh-ca-nhan"
-  }
-]
-
 const Blog = () => {
   const [blogs, setBlogs] = useState([]);
-  const [activeCategory, setActiveCategory] = useState("");
+  const [activeCategory, setActiveCategory] = useState("INFORMATION");
+  const [category, setCategory] = useState({
+    title: "Kiến thức hay",
+    id: "INFORMATION",
+    tags: [
+      {
+        title: "Tất cả",
+        slug: ""
+      },
+      {
+        title: "Từ điển thuật ngữ",
+        slug: "tu-dien-thuat-ngu"
+      },
+      {
+        title: "Tư vấn chọn mua",
+        slug: "tu-van-chon-mua"
+      },
+      {
+        title: "Hướng dẫn sử dụng",
+        slug: "huong-dan-su-dung"
+      }
+    ]
+  });
   const [activeTag, setActiveTag] = useState("");
 
   useEffect(() => {
-    fetch("/api/blogs").then(res => res.json()).then(setBlogs)
-  }, [])
+    fetch(`/api/blogs?blogCategory=${activeCategory}`).then(res => res.json()).then(json => {
+      setBlogs(json)
+      setCategory(blogCategories.find(item => item.id === activeCategory))
+    })
 
-  if (blogs.length === 0) return <></>
+
+  }, [activeCategory])
+
   return (
     <>
       <div className="bg-[#f6f6f6]">
@@ -76,7 +85,6 @@ const Blog = () => {
             viewport={{ once: true }}
           >
             <div className="flex items-center space-x-6 mb-4">
-              <Home className="cursor-pointer mb-2" color="#83e214" size="20" onClick={() => setActiveCategory('')} />              
               {
                 blogCategories.map(category => {
                   return (
@@ -84,10 +92,10 @@ const Blog = () => {
                       className={`
                         text-[17px] font-semibold cursor-pointer relative pb-2 
                         after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-[0px] after:bg-[#ffd300] after:h-[3px] after:transition-width
-                        ${category.slug === activeCategory && 'after:!w-[100%]'}
+                        ${category.id === activeCategory && 'after:!w-[100%]'}
                       `}
-                      key={category.slug}
-                      onClick={() => setActiveCategory(category.slug)}
+                      key={category.id}
+                      onClick={() => setActiveCategory(category.id)}
                     >
                       {category.title}
                     </div>
@@ -107,51 +115,45 @@ const Blog = () => {
 
             <div className="w-full border border-[#ebebeb] mb-6"></div>
 
-            {
-              blogCategories.map(category => {
-                return (
-                  <div className="mb-10" key={category.slug}>
-                    <div className="text-xl text-[#191919] leading-none font-bold uppercase border-l-4 border-[#ffd300] pl-3 mb-4">{category.title}</div>
-                    <div className="flex flex-wrap">
-                      {
-                        blogTags.map(tag => {
-                          return (
-                            <div
-                              className={`
+            <div className="mb-10" key={category.id}>
+              <div className="text-xl text-[#191919] leading-none font-bold uppercase border-l-4 border-[#ffd300] pl-3 mb-4">{category.title}</div>
+              <div className="flex flex-wrap">
+                {
+                  category.tags.map(tag => {
+                    return (
+                      <div
+                        className={`
                                 text-[13px] rounded bg-[#f2f4f9] cursor-pointer transition
                                 flex items-center justify-center text-center px-2 pt-1 pb-0.5 mr-2 mb-4
                                 ${tag.slug === activeTag && 'bg-black text-white'}
                               `}
-                              key={tag.slug}
-                              onClick={() => setActiveTag(tag.slug)}
-                            >
-                              {tag.title}
-                            </div>
-                          )
-                        })
-                      }
-                    </div>
+                        key={tag.slug}
+                        onClick={() => setActiveTag(tag.slug)}
+                      >
+                        {tag.title}
+                      </div>
+                    )
+                  })
+                }
+              </div>
 
-                    <div className="space-y-4 mb-2">
-                      {
-                        blogs.slice(0, 3).map(item => {
-                          return (
-                            <BlogItem item={item} key={item.id} containerClass="lg:grid-cols-[192px_auto] pb-5" />
-                          )
-                        })
-                      }
-                    </div>
+              <div className="space-y-4 mb-2">
+                {
+                  blogs.slice(0, 3).map(item => {
+                    return (
+                      <BlogItem item={item} key={item.id} containerClass="lg:grid-cols-[192px_auto] pb-5" />
+                    )
+                  })
+                }
+              </div>
 
-                    <Link
-                      href=""
-                      className="flex justify-center items-center text-[#153f17] font-semibold w-[181px] h-[43px] rounded-[30px] border border-[#ffd300] hover:bg-[#ccefdc] transition mx-auto"
-                    >
-                      Xem tất cả
-                    </Link>
-                  </div>
-                )
-              })
-            }
+              <Link
+                href=""
+                className="flex justify-center items-center text-[#153f17] font-semibold w-[181px] h-[43px] rounded-[30px] border border-[#ffd300] hover:bg-[#ccefdc] transition mx-auto"
+              >
+                Xem tất cả
+              </Link>
+            </div>
           </motion.div>
         </div>
       </div>

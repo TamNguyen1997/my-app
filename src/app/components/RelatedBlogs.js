@@ -20,7 +20,7 @@ export default () => {
                   className="rounded"
                 />
                 <div className="pl-4">
-                  <p className="text-sm font-semibold truncate line-clamp-2 whitespace-normal text-[#83e214] mb-2">KIẾN THỨC CƠ BẢN</p>
+                  <p className="text-sm font-semibold truncate line-clamp-2 whitespace-normal text-[#83e214] mb-2">KIẾN THỨC HAY</p>
                   <p className="font-semibold truncate line-clamp-2 whitespace-normal mb-2">Thẻ đen là gì? Các đặc quyền thẻ đen ngân hàng với nhiều lợi ích</p>
                   <div className="text-xs text-[#a5a5a5] flex items-center flex-wrap">
                     <span>Uyên Hoàng</span>

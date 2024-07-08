@@ -68,11 +68,11 @@ const SaleDetail = ({ saleDetails, product }) => {
         <Input type="number" label="Số lượng"
           aria-label="Số lượng" defaultValue={0}
           min={0} max={999}></Input>
-        <div className="flex pb-3">
-          <div className="pr-3">
+        <div className="flex lg:flex-nowrap flex-wrap">
+          <div className="pr-3 pb-3">
             <Button color="primary" fullWidth isDisabled={!selectedDetail?.price}>Mua ngay <ShoppingCart /></Button>
           </div>
-          <div className="pr-3">
+          <div className="pb-3">
             <Button color="primary" fullWidth isDisabled={!selectedDetail?.price}>Thêm vào giỏ hàng</Button>
           </div>
         </div>

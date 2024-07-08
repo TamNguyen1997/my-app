@@ -29,7 +29,7 @@ const Product = () => {
             variant="light"
             className="font-semibold mt-[15px]"
             itemClasses={{
-              base: "[&>span]:text-black"
+              base: "[&>span]:text-black [&>span]:whitespace-normal"
             }}
           >
             <BreadcrumbItem href={`/${product.category?.slug}`}>{product.category?.name}</BreadcrumbItem>

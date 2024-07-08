@@ -45,7 +45,7 @@ const CustomDot = ({
 				"custom-dot--active": active
 			})}
 		>
-			<img src={Children.toArray(items)[index]} alt="" />
+			<img src={Children.toArray(items)[index]} alt="" className="object-cover max-h-full mx-auto" />
 		</button>
 	);
 };
@@ -99,7 +99,7 @@ export default ({ items }) => {
 				{
 					items.map((img, index) => {
 						return (
-							<div className="relative" key={index}>
+							<div className="relative flex items-center h-full" key={index}>
 								<img src={img} alt="" className="w-full" />
 							</div>
 						)

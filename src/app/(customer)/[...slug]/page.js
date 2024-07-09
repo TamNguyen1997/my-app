@@ -587,7 +587,6 @@ const Brand = ({ params }) => {
     <>
       <div className="flex flex-col items-center justify-center w-full h-60 bg-cover bg-center bg-no-repeat">
         <div className="flex flex-col items-center justify-center w-full h-full bg-no-repeat bg-cover bg-banner1">
-          <h1 className="text-4xl font-bold text-white">{brand.name}</h1>
         </div>
       </div>
       <div className="w-9/12 mx-auto ">

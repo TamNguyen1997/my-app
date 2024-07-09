@@ -5,15 +5,14 @@ import {
   Button, Input,
   Modal, ModalBody,
   ModalContent, ModalFooter,
-  ModalHeader, Select, SelectItem, Spinner,
+  ModalHeader, Pagination, Select, SelectItem, Spinner,
   Table, TableBody,
   TableCell, TableColumn,
   TableHeader, TableRow,
   useDisclosure
 } from "@nextui-org/react";
 import { EditIcon, Trash2 } from "lucide-react";
-import { redirect } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import slugify from "slugify"
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -30,27 +29,37 @@ const categoryTypes = [
   }
 ]
 
+const rowsPerPage = 10;
 
 const Category = () => {
   const [categories, setCategories] = useState([])
   const [selectedCate, setSelectedCate] = useState({})
 
-  const [isLoading, setIsLoading] = useState(true)
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   const [categoryType, setCategoryType] = useState(new Set(["CATEGORY"]))
 
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0)
+  const [loadingState, setLoadingState] = useState("loading")
+
+  const pages = useMemo(() => {
+    return total ? Math.ceil(total / rowsPerPage) : 0;
+  }, [total, rowsPerPage]);
+
   const getCategories = () => {
-    setIsLoading(true)
-    fetch('/api/categories/').then(async res => {
-      setCategories((await res.json()).result)
-      setIsLoading(false)
+    setLoadingState("loading")
+    fetch(`/api/categories/?size=${10}&page=${page}`).then(async res => {
+      const data = await res.json()
+      setCategories(data.result)
+      setTotal(data.total)
+      setLoadingState("idle")
     })
   }
 
   useEffect(() => {
     getCategories()
-  }, [])
+  }, [page])
 
 
   const onSubmit = (e) => {
@@ -156,10 +165,23 @@ const Category = () => {
 
   return (
     <div className="flex flex-col gap-10">
-      <div className="flex flex-col gap-2 border-r min-h-full p-2">
-        <div className="px-1 py-2 border-default-200">
+      <div className="flex flex-col gap-2">
+        <div className="border-default-200">
           <Table
-            aria-label="Tất cả sản phẩm">
+            aria-label="Tất cả sản phẩm"
+            bottomContent={
+              loadingState === "loading" ? null :
+                <div className="flex w-full justify-center">
+                  <Pagination
+                    isCompact
+                    showControls
+                    showShadow
+                    page={page}
+                    total={pages}
+                    onChange={(page) => setPage(page)}
+                  />
+                </div>
+            }>
             <TableHeader>
               <TableColumn key="name" textValue="name">Tên</TableColumn>
               <TableColumn key="slug" textValue="slug">Slug</TableColumn>
@@ -168,8 +190,9 @@ const Category = () => {
             </TableHeader>
             <TableBody
               items={categories}
-              isLoading={isLoading}
+              isLoading={loadingState === 'loading'}
               emptyContent={"Không có category nào"}
+              loadingState={loadingState}
               loadingContent={<Spinner label="Loading..." />}>
               {(item) => (
                 <TableRow key={item.id}>
@@ -179,9 +202,9 @@ const Category = () => {
             </TableBody>
           </Table>
         </div>
-      </div>
-      <div className="p-3">
-        <Button color="primary" onClick={newCate}>Thêm category</Button>
+        <div>
+          <Button color="primary" onClick={newCate}>Thêm category</Button>
+        </div>
       </div>
 
       <SubCategory categories={categories} />
@@ -245,26 +268,29 @@ const SubCategory = ({ categories }) => {
   const [subCategories, setSubCategories] = useState([])
   const [selectedSubCate, setSelectedSubCate] = useState({})
 
-  const [isLoading, setIsLoading] = useState(true)
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   const imageModal = useDisclosure();
 
-  const [reload, setReload] = useState(false)
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0)
+  const [loadingState, setLoadingState] = useState("loading")
 
-  if (reload) {
-    redirect("/admin/category")
-  }
+  const pages = useMemo(() => {
+    return total ? Math.ceil(total / rowsPerPage) : 0;
+  }, [total, rowsPerPage]);
 
   useEffect(() => {
     getSubCate()
-  }, [])
+  }, [page])
 
   const getSubCate = () => {
-    setIsLoading(true)
-    fetch('/api/sub-categories/').then(async res => {
-      setSubCategories(await res.json())
-      setIsLoading(false)
+    setLoadingState('loading')
+    fetch(`/api/sub-categories/?size=${10}&page=${page}`).then(async res => {
+      const data = await res.json()
+      setSubCategories(data.result)
+      setTotal(data.total)
+      setLoadingState("idle")
     })
   }
 
@@ -369,10 +395,23 @@ const SubCategory = ({ categories }) => {
 
   return (
     <div>
-      <div className="flex flex-col gap-2 border-r min-h-full p-2">
-        <div className="px-1 py-2 border-default-200">
+      <div className="flex flex-col gap-2">
+        <div className="border-default-200">
           <Table
-            aria-label="Tất cả sản phẩm">
+            aria-label="Tất cả sản phẩm"
+            bottomContent={
+              loadingState === "loading" ? null :
+                <div className="flex w-full justify-center">
+                  <Pagination
+                    isCompact
+                    showControls
+                    showShadow
+                    page={page}
+                    total={pages}
+                    onChange={(page) => setPage(page)}
+                  />
+                </div>
+            }>
             <TableHeader>
               <TableColumn key="name" textValue="name">Tên</TableColumn>
               <TableColumn key="slug" textValue="slug">Slug</TableColumn>
@@ -380,7 +419,7 @@ const SubCategory = ({ categories }) => {
             </TableHeader>
             <TableBody
               items={subCategories}
-              isLoading={isLoading}
+              isLoading={loadingState === 'loading'}
               emptyContent={"Không có sub category nào"}
               loadingContent={<Spinner label="Loading..." />}>
               {(item) => (
@@ -391,9 +430,9 @@ const SubCategory = ({ categories }) => {
             </TableBody>
           </Table>
         </div>
-      </div>
-      <div className="p-3">
-        <Button color="primary" onClick={newSubCate}>Thêm sub category</Button>
+        <div>
+          <Button color="primary" onClick={newSubCate}>Thêm sub category</Button>
+        </div>
       </div>
       <div>
         <Modal

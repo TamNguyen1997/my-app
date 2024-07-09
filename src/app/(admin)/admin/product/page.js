@@ -137,7 +137,7 @@ const ProductCms = () => {
   useEffect(() => {
     fetch('/api/categories?type=CATEGORY').then(res => res.json()).then(json => setCategories(json.result))
     fetch('/api/brands').then(res => res.json()).then(setBrands)
-    fetch('/api/sub-categories').then(res => res.json()).then(setSubCategories)
+    fetch('/api/sub-categories').then(res => res.json()).then(json => setSubCategories(json.result))
   }, [])
 
   const pages = useMemo(() => {

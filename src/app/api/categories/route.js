@@ -26,10 +26,6 @@ export async function GET(req) {
     }
   }
 
-  if (query.type) {
-    condition.type = query.type
-  }
-
   if (query.includeSubCate) {
     include.sub_category = query.includeSubCate === 'true'
   }

@@ -257,8 +257,8 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
   return (<>
     <div className="grid grid-cols-6">
       <div className="p-2 col-span-2">
-        <div className="bg-[#ffd300] shadow-lg rounded-md pt-9 h-[400px]">
-          <div className="flex items-center w-2/3 m-auto h-[80px]">
+        <div className="bg-[#ffd300] shadow-lg rounded-md pt-9">
+          <div className="flex items-center w-2/3 m-auto">
             <div className="font-bold text-xl">
               {
                 brandDescription[selectedBrand] && brandDescription[selectedBrand].logo ?
@@ -271,7 +271,7 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
             </div>
           </div>
 
-          <div className="p-10 font-bold text-justify h-[50px] min-h-[50px] max-h-[50px]">
+          <div className="p-10 font-bold text-justify h-full overflow-auto">
             {
               brandDescription[selectedBrand] && brandDescription[selectedBrand].description
             }

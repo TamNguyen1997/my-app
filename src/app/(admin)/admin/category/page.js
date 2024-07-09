@@ -6,6 +6,7 @@ import {
   Modal, ModalBody,
   ModalContent, ModalFooter,
   ModalHeader, Pagination, Select, SelectItem, Spinner,
+  Switch,
   Table, TableBody,
   TableCell, TableColumn,
   TableHeader, TableRow,
@@ -17,17 +18,6 @@ import slugify from "slugify"
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-const categoryTypes = [
-  {
-    key: "CATEGORY",
-    label: "Category"
-  },
-  {
-    key: "BRAND",
-    label: "Nhãn hàng"
-  }
-]
 
 const rowsPerPage = 10;
 
@@ -129,12 +119,23 @@ const Category = () => {
     )
   }
 
+  const quickUpdate = async (category, value) => {
+    const categoryToUpdate = Object.assign({}, category, value)
+    await fetch(`/api/categories/${categoryToUpdate.id}`, { method: "PUT", body: JSON.stringify(categoryToUpdate) })
+  }
+
   const renderCell = useCallback((category, columnKey) => {
     const cellValue = category[columnKey]
 
     switch (columnKey) {
-      case "type":
-        return categoryTypes.find(item => item.key === cellValue).label
+      case "highlight":
+        return <div className="relative flex items-center">
+          <Switch defaultSelected={category.highlight} onValueChange={(value) => quickUpdate(category, { highlight: value })}></Switch>
+        </div>
+      case "showOnHeader":
+        return <div className="relative flex items-center">
+          <Switch defaultSelected={category.showOnHeader} onValueChange={(value) => quickUpdate(category, { showOnHeader: value })}></Switch>
+        </div>
       case "actions":
         return (
           <div className="relative flex items-center gap-2">
@@ -154,13 +155,6 @@ const Category = () => {
   const newCate = () => {
     setSelectedCate({})
     onOpen()
-  }
-
-  const onValueChange = (value) => {
-    setSelectedCate(Object.assign(
-      {},
-      selectedCate,
-      { name: value, slug: slugify(value, { locale: 'vi' }).toLowerCase() }))
   }
 
   return (
@@ -185,7 +179,8 @@ const Category = () => {
             <TableHeader>
               <TableColumn key="name" textValue="name">Tên</TableColumn>
               <TableColumn key="slug" textValue="slug">Slug</TableColumn>
-              <TableColumn key="type" textValue="type">Loại</TableColumn>
+              <TableColumn key="highlight" textValue="highlight">Nổi bật</TableColumn>
+              <TableColumn key="showOnHeader" textValue="showOnHeader">Hiện trên header</TableColumn>
               <TableColumn key="actions" textValue="actions"></TableColumn>
             </TableHeader>
             <TableBody
@@ -223,27 +218,27 @@ const Category = () => {
                       type="text"
                       label="Category"
                       defaultValue={selectedCate.name}
-                      onValueChange={onValueChange}
+                      onValueChange={(value) => setSelectedCate(Object.assign(
+                        {},
+                        selectedCate,
+                        { name: value, slug: slugify(value, { locale: 'vi' }).toLowerCase() }))}
                       labelPlacement="outside" isRequired />
                     <Input
                       type="text"
                       label="Slug"
                       value={selectedCate.slug}
                       labelPlacement="outside" isRequired disabled />
-                    <Select
-                      label="Phân loại"
-                      labelPlacement="outside"
-                      defaultSelectedKeys={categoryType}
-                      onSelectionChange={setCategoryType}
-                    >
-                      {
-                        categoryTypes.map((type) => (
-                          <SelectItem key={type.key}>
-                            {type.label}
-                          </SelectItem>
-                        ))
-                      }
-                    </Select>
+                    <div className="grid grid-cols-2">
+                      <Switch defaultSelected={selectedCate.highlight} onValueChange={(value) => setSelectedCate(Object.assign(
+                        {},
+                        selectedCate,
+                        { highlight: value }))}>Nổi bật</Switch>
+                      <Switch defaultSelected={selectedCate.showOnHeader}
+                        onValueChange={(value) => setSelectedCate(Object.assign(
+                          {},
+                          selectedCate,
+                          { showOnHeader: value }))}>Hiện trên header</Switch>
+                    </div>
                   </ModalBody>
                   <ModalFooter>
                     <Button color="primary" type="submit" onPress={onClose}>

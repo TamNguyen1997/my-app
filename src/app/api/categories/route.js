@@ -14,10 +14,21 @@ export async function GET(req) {
     size = parseInt(query.size) || 10
   }
 
+  if (query.slug) {
+    condition.slug = {
+      search: `${query.slug.trim().replaceAll(" ", " & ")}:*`
+    }
+  }
+
+  if (query.name) {
+    condition.name = {
+      search: `${query.name.trim().replaceAll(" ", " & ")}:*`
+    }
+  }
+
   if (query.type) {
     condition.type = query.type
   }
-
 
   if (query.includeSubCate) {
     include.sub_category = query.includeSubCate === 'true'

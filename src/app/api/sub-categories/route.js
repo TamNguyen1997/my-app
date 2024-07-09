@@ -18,6 +18,18 @@ export async function GET(req) {
     size = parseInt(query.size) || 10
   }
 
+  if (query.slug) {
+    condition.slug = {
+      search: `${query.slug.trim().replaceAll(" ", " & ")}:*`
+    }
+  }
+
+  if (query.name) {
+    condition.name = {
+      search: `${query.name.trim().replaceAll(" ", " & ")}:*`
+    }
+  }
+
   try {
     const result = await db.sub_category.findMany({
       where: condition,
@@ -31,6 +43,7 @@ export async function GET(req) {
     })
     return NextResponse.json({ result, total: await db.sub_category.count({ where: condition }) })
   } catch (e) {
+    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }

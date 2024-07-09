@@ -45,21 +45,18 @@ export async function GET(req) {
       condition.active = query.active === 'true'
     }
     if (query.name) {
-      let name = query.name.trim().replaceAll(" ", " & ")
       condition.name = {
-        search: name
+        search: `${query.name.trim().replaceAll(" ", " & ")}:*`
       }
     }
     if (query.sku) {
-      let sku = query.sku.trim().replaceAll(" ", " & ")
       condition.sku = {
-        search: sku
+        search: `${query.sku.trim().replaceAll(" ", " & ")}:*`
       }
     }
     if (query.slug) {
-      let slug = query.slug.trim().replaceAll(" ", " & ")
       condition.slug = {
-        search: slug
+        search: `${query.slug.trim().replaceAll(" ", " & ")}:*`
       }
     }
   }

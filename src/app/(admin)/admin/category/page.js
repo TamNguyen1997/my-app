@@ -12,7 +12,7 @@ import {
   TableHeader, TableRow,
   useDisclosure
 } from "@nextui-org/react";
-import { EditIcon, Trash2 } from "lucide-react";
+import { EditIcon, Search, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import slugify from "slugify"
 
@@ -24,10 +24,8 @@ const rowsPerPage = 10;
 const Category = () => {
   const [categories, setCategories] = useState([])
   const [selectedCate, setSelectedCate] = useState({})
-
+  const [condition, setCondition] = useState({})
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-
-  const [categoryType, setCategoryType] = useState(new Set(["CATEGORY"]))
 
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0)
@@ -39,7 +37,10 @@ const Category = () => {
 
   const getCategories = () => {
     setLoadingState("loading")
-    fetch(`/api/categories/?size=${10}&page=${page}`).then(async res => {
+    let filteredCondition = { ...condition }
+    Object.keys(filteredCondition).forEach(key => filteredCondition[key] === undefined && delete filteredCondition[key])
+    const queryString = new URLSearchParams(filteredCondition).toString()
+    fetch(`/api/categories/?size=${10}&page=${page}&${queryString}`).then(async res => {
       const data = await res.json()
       setCategories(data.result)
       setTotal(data.total)
@@ -49,15 +50,14 @@ const Category = () => {
 
   useEffect(() => {
     getCategories()
-  }, [page])
+  }, [page, condition])
 
 
   const onSubmit = (e) => {
     e.preventDefault()
-    const cate = Object.assign(selectedCate, { type: categoryType.values().next().value })
     if (selectedCate.id) {
       toast.promise(
-        fetch(`/api/categories/${selectedCate.id}`, { method: "PUT", body: JSON.stringify(cate) }).then(async (res) => {
+        fetch(`/api/categories/${selectedCate.id}`, { method: "PUT", body: JSON.stringify(selectedCate) }).then(async (res) => {
           getCategories()
           if (!res.ok) {
             throw new Error((await res.json()).message)
@@ -75,7 +75,7 @@ const Category = () => {
       )
     } else {
       toast.promise(
-        fetch('/api/categories/', { method: "POST", body: JSON.stringify(cate) }).then(async (res) => {
+        fetch('/api/categories/', { method: "POST", body: JSON.stringify(selectedCate) }).then(async (res) => {
           getCategories()
           if (!res.ok) {
             throw new Error((await res.json()).message)
@@ -159,6 +159,22 @@ const Category = () => {
 
   return (
     <div className="flex flex-col gap-10">
+      <div className="flex gap-3 w-1/2">
+        <Input label="Tên sản phẩm" aria-label="Tên category" labelPlacement="outside" defaultValue={condition.name}
+          onValueChange={(value) => {
+            if (value.length > 2 || !value.length) setCondition(Object.assign({}, condition, { name: value }))
+          }}
+        />
+        <Input label="Slug" aria-label="slug" labelPlacement="outside" value={condition.slug}
+          onValueChange={(value) => {
+            if (value.length > 2 || !value.length) setCondition(Object.assign({}, condition, { slug: value }))
+          }}
+        />
+
+        <div className="items-end flex min-h-full">
+          <Button onClick={getCategories} color="primary"><Search /></Button>
+        </div>
+      </div>
       <div className="flex flex-col gap-2">
         <div className="border-default-200">
           <Table
@@ -262,7 +278,7 @@ const Category = () => {
 const SubCategory = ({ categories }) => {
   const [subCategories, setSubCategories] = useState([])
   const [selectedSubCate, setSelectedSubCate] = useState({})
-
+  const [condition, setCondition] = useState({})
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   const imageModal = useDisclosure();
@@ -277,11 +293,14 @@ const SubCategory = ({ categories }) => {
 
   useEffect(() => {
     getSubCate()
-  }, [page])
+  }, [page, condition])
 
   const getSubCate = () => {
     setLoadingState('loading')
-    fetch(`/api/sub-categories/?size=${10}&page=${page}`).then(async res => {
+    let filteredCondition = { ...condition }
+    Object.keys(filteredCondition).forEach(key => filteredCondition[key] === undefined && delete filteredCondition[key])
+    const queryString = new URLSearchParams(filteredCondition).toString()
+    fetch(`/api/sub-categories/?size=${10}&page=${page}&${queryString}`).then(async res => {
       const data = await res.json()
       setSubCategories(data.result)
       setTotal(data.total)
@@ -391,6 +410,23 @@ const SubCategory = ({ categories }) => {
   return (
     <div>
       <div className="flex flex-col gap-2">
+        <div className="flex gap-3 w-1/2">
+          <Input label="Tên sản phẩm" aria-label="Tên category" labelPlacement="outside" defaultValue={condition.name}
+            isClearable
+            onValueChange={(value) => {
+              if (value.length > 2 || !value.length) setCondition(Object.assign({}, condition, { name: value }))
+            }}
+          />
+          <Input label="Slug" aria-label="slug" labelPlacement="outside" defaultValue={condition.slug}
+            isClearable
+            onValueChange={(value) => {
+              if (value.length > 2 || !value.length) setCondition(Object.assign({}, condition, { slug: value }))
+            }}
+          />
+          <div className="items-end flex min-h-full">
+            <Button onClick={getSubCate} color="primary"><Search /></Button>
+          </div>
+        </div>
         <div className="border-default-200">
           <Table
             aria-label="Tất cả sản phẩm"

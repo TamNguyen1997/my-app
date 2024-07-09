@@ -250,7 +250,7 @@ const ProductCms = () => {
   return (
     <>
       <div className="flex flex-col gap-2 border-r min-h-full p-2">
-        <div className="flex gap-3 w-1/2">
+        <div className="flex gap-3 w-1/2 flex-wrap">
           <Input label="Tên sản phẩm" aria-label="Tên sản phẩm" labelPlacement="outside" value={condition.name}
             onValueChange={(value) => {
               onConditionChange({ name: value })

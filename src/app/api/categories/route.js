@@ -4,7 +4,7 @@ import queryString from 'query-string';
 
 export async function GET(req) {
   let condition = {}
-  let include = {}
+  let include = { image: true }
   let size = 10
   let page = 1
   const { query } = queryString.parseUrl(req.url);
@@ -30,6 +30,18 @@ export async function GET(req) {
     include.sub_category = query.includeSubCate === 'true'
   }
 
+  if (query.includeImage) {
+    include.image = query.includeImage === 'true'
+  }
+
+  if (query.showOwnHeader) {
+    include.showOwnHeader = query.showOwnHeader === 'true'
+  }
+
+  if (query.highlight) {
+    condition.highlight = query.highlight === 'true'
+  }
+
   try {
     const result = await db.category.findMany({
       where: condition,
@@ -45,12 +57,14 @@ export async function GET(req) {
 
     return NextResponse.json({ result, total: await db.category.count({ where: condition }) })
   } catch (e) {
+    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }
 
 export async function POST(req) {
-  const body = await req.json()
+  let body = await req.json()
+  delete body.image
   return NextResponse.json(await db.category.create(
     {
       data: body

@@ -27,6 +27,8 @@ const Category = () => {
   const [condition, setCondition] = useState({})
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
+  const imageModal = useDisclosure()
+
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0)
   const [loadingState, setLoadingState] = useState("loading")
@@ -223,6 +225,7 @@ const Category = () => {
       <div>
         <Modal
           scrollBehavior="inside"
+          size="lg"
           isOpen={isOpen} onOpenChange={onOpenChange}>
           <form onSubmit={onSubmit}>
             <ModalContent>
@@ -255,6 +258,19 @@ const Category = () => {
                           selectedCate,
                           { showOnHeader: value }))}>Hiện trên header</Switch>
                     </div>
+                    <div>
+                      <Button color="primary" onClick={imageModal.onOpen}>Chọn hình</Button>
+                    </div>
+                    <div className="m-auto w-2/3">
+                      {
+                        selectedCate.imageId ?
+                          <img
+                            className="w-full h-full"
+                            src={`${process.env.NEXT_PUBLIC_FILE_PATH + selectedCate?.image.path}`}
+                          />
+                          : <></>
+                      }
+                    </div>
                   </ModalBody>
                   <ModalFooter>
                     <Button color="primary" type="submit" onPress={onClose}>
@@ -270,6 +286,29 @@ const Category = () => {
           </form>
         </Modal>
       </div>
+      <Modal
+        scrollBehavior="inside"
+        size="5xl"
+        isOpen={imageModal.isOpen} onOpenChange={imageModal.onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">Chọn hình</ModalHeader>
+              <ModalBody>
+                <ImagePicker disableDelete onImageClick={image => {
+                  setSelectedCate(Object.assign({}, selectedCate, { image: image }))
+                  onClose()
+                }} />
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Close
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
       <ToastContainer />
     </div>
   );

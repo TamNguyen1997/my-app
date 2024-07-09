@@ -6,15 +6,12 @@ export async function GET(req) {
   try {
     return NextResponse.json(await db.category.findMany({
       include: {
-        _count: {
-          select: { product: true },
-        },
+        image: true,
+        product: true
       },
-      orderBy: {
-        product: {
-          _count: 'desc'
-        }
-      },
+      orderBy: [
+        { updatedAt: 'desc' }
+      ],
       take: 3
     }))
   } catch (e) {

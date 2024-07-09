@@ -99,6 +99,7 @@ model image {
   slug        String
   banner      banner[]
   product     product[]
+  category    category[]
 
   @@unique([slug, type])
 }
@@ -179,17 +180,22 @@ enum image_type {
 }
 
 model category {
-  id           String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name         String         @unique
-  slug         String         @default(dbgenerated("gen_random_uuid()"))
-  highlight    Boolean        @default(false)
-  showOnHeader Boolean        @default(false) @map("show_on_header")
-  createdAt    DateTime       @default(now()) @map("created_at")
-  updatedAt    DateTime       @default(now()) @updatedAt @map("updated_at")
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name         String   @unique
+  slug         String   @default(dbgenerated("gen_random_uuid()"))
+  highlight    Boolean  @default(false)
+  showOnHeader Boolean  @default(false) @map("show_on_header")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
+
+  imageId String? @db.Uuid
+  image   image?  @relation(fields: [imageId], references: [id])
+
   sub_category sub_category[]
   product      product[]
 
   @@unique([slug])
+  @@index([imageId])
 }
 
 model sub_category {

@@ -70,8 +70,9 @@ export default function PopularItems() {
   const [brandProducts, setBrandProducts] = useState([])
 
   const [isLoading, setIsLoading] = useState(true)
+  const [highlightCates, setHighlightCates] = useState([])
 
-  const [popularProductsFromCates, setPopularProductsFromCates] = useState({})
+  const [highlightProductsFromCates, setHighlightProductsFromCates] = useState({})
 
   useEffect(() => {
     Promise.all([
@@ -83,15 +84,22 @@ export default function PopularItems() {
       fetch(`/api/brands/thuong-hieu-moerman/products/?active=true`).then(res => res.json()).then(json => setMoermanProducts(json.products)),
       fetch(`/api/brands/thuong-hieu-mapa/products/?active=true`).then(res => res.json()).then(json => setMapaProducts(json.products)),
       fetch(`/api/brands/thuong-hieu-ghibli/products/?active=true`).then(res => res.json()).then(json => setGhibliProducts(json.products)),
-      fetch(`/api/categories/popular`).then(res => res.json()),
-    ]).then(async (value) => {
+      fetch(`/api/categories/?highlight=true&size=3&page=1&includeImage=true`).then(res => res.json()).then(json => setHighlightCates(json.result)),
+    ]).then(() => {
       setIsLoading(false)
-      const ids = value[5].filter(item => item._count.product > 0).map(item => item.id)
-      const p = await fetch(`/api/products/?size=${30}&page=${1}&categoryId=${ids.join(',')}&active=true`).then(res => res.json())
-
-      setPopularProductsFromCates(Object.groupBy(p.result, item => item.category.slug))
     })
   }, [])
+
+  useEffect(() => {
+    Promise.all(
+      highlightCates
+        .map(cate => fetch(`/api/products/?size=${10}&page=${1}&categoryId=${cate.id}&active=true`)
+          .then(res => res.json())
+          .then(json => json.result))
+    ).then(value => {
+      setHighlightProductsFromCates(Object.groupBy(value.flat(), item => item.category.slug))
+    })
+  }, [highlightCates])
 
   if (isLoading) return <Spinner className="m-auto" />
 
@@ -148,21 +156,20 @@ export default function PopularItems() {
       </div>
 
       {
-        Object.keys(popularProductsFromCates).map((key, i) =>
+        Object.keys(highlightProductsFromCates).length ? highlightCates.map((cate, i) =>
           <div key={i}>
-            <ProductCard banner={randomElement} products={popularProductsFromCates[key]} />
+            <ProductCard banner={cate.image?.path} products={highlightProductsFromCates[cate.slug]} />
             <div className="w-full flex flex-row min-w-screen justify-center items-center">
-              <Link href={`/${popularProductsFromCates[key][0].category.slug}`} className="font-bold underline">Xem thêm</Link>
+              <Link href={`/${cate.slug}`} className="font-bold underline">Xem thêm</Link>
             </div>
           </div>
-        )
+        ) : <></>
       }
 
     </div>
   );
 }
 
-const randomElement = ["/banner-2.jpg", "/banner-3.jpg", "/banner-4.jpg", "/banner-1.jpg", "/Anh-gui-27.png"][Math.floor(Math.random() * 3)];
 
 const ProductCard = ({ category, products, redirect, banner }) => {
   const CategoryDisplay = () => (<>

@@ -153,9 +153,14 @@ const Category = ({ params }) => {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center w-full h-60 bg-cover bg-center bg-no-repeat">
-        <div className="flex flex-col items-center justify-center w-full h-full bg-no-repeat bg-cover bg-banner1">
-        </div>
+      <div
+        className="flex flex-col items-center 
+        bg-[image:var(--image-url)] bg-no-repeat bg-center bg-cover
+        justify-center min-w-screen h-72 md:h-52 sm:h-32"
+        style={{
+          '--image-url': `url(${category.image ? process.env.NEXT_PUBLIC_FILE_PATH + category.image.path : ""})`,
+          backgroundSize: "100% 100%"
+        }} >
       </div>
       <div className="w-9/12 mx-auto pt-5">
         <div className="flex gap-2">

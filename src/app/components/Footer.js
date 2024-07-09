@@ -4,9 +4,9 @@ import Link from "next/link";
 
 const Footer = () => {
   return (
-    <div className="w-full bg-[#212020] text-white">
-      <div className="grid grid-cols-9 gap-2 w-[95%] m-auto">
-        <div className="col-span-3 p-3">
+    <div className="bg-[#212020] text-white p-2">
+      <div className="grid gap-2 m-auto grid-cols-2 lg:grid-cols-9">
+        <div className="p-3 sm:grid-cols-1 lg:col-span-3">
           <div className="flex flex-col gap-3">
             <p className="font-bold">CÔNG TY TNHH TMDV VỆ SINH SAO VIỆT</p>
             <div className="flex gap-2">
@@ -33,7 +33,7 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        <div className="col-span-2 p-3 flex flex-col gap-3">
+        <div className="p-3 flex flex-col gap-3 sm:grid-cols-1 lg:col-span-2">
           <p className="font-bold">CHÍNH SÁCH & HỢP TÁC</p>
           <div>
             <Link href="/">
@@ -76,7 +76,7 @@ const Footer = () => {
             </Link>
           </div>
         </div>
-        <div className="col-span-2 p-3 flex flex-col gap-3">
+        <div className="p-3 flex flex-col gap-3 lg:col-span-2">
           <p className="font-bold ">THỜI GIAN LÀM VIỆC</p>
           <p>Thứ 2 – Thứ 6: 08h00 – 17h00</p>
           <p>Chủ nhật & Ngày lễ: Nghỉ</p>
@@ -98,7 +98,7 @@ const Footer = () => {
           </div>
 
         </div>
-        <div className="col-span-2 flex flex-col">
+        <div className="flex flex-col lg:col-span-2">
           <p className="font-bold p-3 w-full">FANPAGE CHÍNH THỨC</p>
           <iframe
             className="border-[#ffd300] border h-[130px] rounded-lg w-[300px]"

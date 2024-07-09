@@ -203,17 +203,18 @@ const ProductCarousel = ({ products, responsive }) => {
     <Carousel responsive={responsive} infinite>
       {
         products.map((product) => {
-          return <div key={product.id} className="p-2">
-            <div className="rounded-md border h-[400px] object-cover object-center group-hover:opacity-50 p-2 hover:-translate-y-2.5 hover:scale-[1.02] shadow-[0px_2px_10px_rgba(0,0,0,0.15)] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)]">
+          return <div key={product.id} className="p-2 hover:opacity-75">
+            <div className="rounded-md border h-[400px] object-cover object-center group-hover:opacity-50
+            hover:-translate-y-2.5 hover:scale-[1.02] shadow-[0px_2px_10px_rgba(0,0,0,0.15)] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)]">
               <Link href={`/san-pham/${product.slug}`}>
                 <div className="h-2/3">
-                  <div className="aspect-h-1 aspect-w-1 w-full h-full overflow-hidden rounded-lg  xl:aspect-h-8 xl:aspect-w-7">
+                  <div className="aspect-h-1 aspect-w-1 w-full h-full overflow-hidden rounded-lg xl:aspect-h-8 xl:aspect-w-7">
                     <img
                       width={500}
                       height={400}
                       src={`${process.env.NEXT_PUBLIC_FILE_PATH + product.image?.path}`}
                       alt={product.imageAlt}
-                      className="h-full w-full object-cover object-center group-hover:opacity-75"
+                      className="h-full w-full object-cover object-center group-hover:opacity-75 hover:scale-125"
                     />
                   </div>
                 </div>
@@ -241,11 +242,11 @@ const ProductCarousel = ({ products, responsive }) => {
 const PopularBrandCard = ({ products, selectedBrand }) => {
   const responsive = {
     desktop: {
-      breakpoint: { max: 3000, min: 1024 },
+      breakpoint: { max: 3000, min: 1281 },
       items: 3
     },
     tablet: {
-      breakpoint: { max: 1024, min: 464 },
+      breakpoint: { max: 1281, min: 464 },
       items: 2
     },
     mobile: {
@@ -255,29 +256,26 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
   }
 
   return (<>
-    <div className="grid grid-cols-6">
+    <div className="lg:grid lg:grid-cols-6">
       <div className="p-2 col-span-2">
-        <div className="bg-[#ffd300] shadow-lg rounded-md pt-9">
-          <div className="flex items-center w-2/3 m-auto">
-            <div className="font-bold text-xl">
-              {
-                brandDescription[selectedBrand] && brandDescription[selectedBrand].logo ?
-                  <img
-                    width={400}
-                    height={400}
-                    src={brandDescription[selectedBrand].logo}
-                  /> : null
-              }
-            </div>
+        <div className="bg-[#ffd300] shadow-lg rounded-md pt-9 min-h-[400px]">
+          <div className="mx-auto md:w-[340px] md:h-[120px] lg:w-2/3 lg:h-[120px]">
+            {
+              brandDescription[selectedBrand] && brandDescription[selectedBrand].logo ?
+                <img
+                  className="h-full w-full mx-auto"
+                  src={brandDescription[selectedBrand].logo}
+                /> : null
+            }
           </div>
 
-          <div className="p-10 font-bold text-justify h-full overflow-auto">
+          <div className="px-10 font-bold text-justify h-2/3 max-h-[200px] overflow-auto">
             {
               brandDescription[selectedBrand] && brandDescription[selectedBrand].description
             }
-            <div className="pt-5 underline flex flex-row justify-center items-center">
-              <Link href={`/${brandDescription[selectedBrand].slug}`}>Xem thêm</Link>
-            </div>
+          </div>
+          <div className="underline flex flex-row justify-center items-center font-bold">
+            <Link href={`/${brandDescription[selectedBrand].slug}`}>Xem thêm</Link>
           </div>
         </div>
       </div>

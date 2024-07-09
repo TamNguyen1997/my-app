@@ -38,13 +38,12 @@ const Category = () => {
   const [isLoading, setIsLoading] = useState(true)
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
-  const [reload, setReload] = useState(false)
   const [categoryType, setCategoryType] = useState(new Set(["CATEGORY"]))
 
   const getCategories = () => {
     setIsLoading(true)
     fetch('/api/categories/').then(async res => {
-      setCategories(await res.json())
+      setCategories((await res.json()).result)
       setIsLoading(false)
     })
   }

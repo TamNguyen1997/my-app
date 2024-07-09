@@ -37,7 +37,7 @@ const SaleDetail = ({ saleDetails, product }) => {
   return (<>
     <div className="">
       <p className="text-[30px] font-extrabold m-[10px_0_18px]">{product.name}</p>
-      <p className="text-[32px] font-medium text-[#b61a2d] mb-2.5">{selectedDetail?.price}</p>
+      <p className="text-[32px] font-medium text-[#b61a2d] mb-2.5">{selectedDetail?.price ? `${selectedDetail.price.toLocaleString()} đ` : ""}</p>
       <p className="text-sm mb-[30px]">Đã bao gồm VAT, chưa bao gồm phí giao hàng</p>
       <p className="text-sm mb-2.5">Giao hàng trong vòng 1-3 ngày</p>
 

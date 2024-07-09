@@ -5,15 +5,17 @@ import queryString from 'query-string';
 export async function GET(req) {
   let condition = {}
   let include = {}
+  let size = 10
+  let page = 1
   const { query } = queryString.parseUrl(req.url);
 
-  let take
-  if (query.type) {
-    condition.type = query.type
+  if (query) {
+    page = parseInt(query.page) || 1
+    size = parseInt(query.size) || 10
   }
 
-  if (query.size) {
-    take = parseInt(query.size)
+  if (query.type) {
+    condition.type = query.type
   }
 
 
@@ -22,16 +24,19 @@ export async function GET(req) {
   }
 
   try {
-    return NextResponse.json(await db.category.findMany({
+    const result = await db.category.findMany({
       where: condition,
       orderBy: [
         {
           updatedAt: "desc"
         }
       ],
-      take: take,
+      take: size,
+      skip: (page - 1) * size,
       include: include
-    }))
+    })
+
+    return NextResponse.json({ result, total: await db.category.count({ where: condition }) })
   } catch (e) {
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }

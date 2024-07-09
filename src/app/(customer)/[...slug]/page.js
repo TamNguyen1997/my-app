@@ -536,7 +536,7 @@ const Brand = ({ params }) => {
 
   const getProduct = () => {
     const hash = window.location.hash?.split('#')
-    fetch(`/api/categories/`).then(res => res.json()).then(setCategories)
+    fetch(`/api/categories/`).then(res => res.json()).then(json => setCategories(json.result))
     fetch(`/api/brands/${params}/products/?&active=true&${hash.length == 2 ? hash[1] : ""}`).then(async res => {
       if (res.ok) {
         const body = await res.json()

@@ -36,8 +36,6 @@ const Product = () => {
             <BreadcrumbItem href={`/${product.category?.slug}/${product.subCategory?.slug}`}>{product.subCategory?.name}</BreadcrumbItem>
             <BreadcrumbItem>{product.name}</BreadcrumbItem>
           </Breadcrumbs>
-          {/* 
-          <h1 className="text-[30px] font-extrabold m-[10px_0_18px]">{product.name}</h1> */}
         </div>
       </div>
 

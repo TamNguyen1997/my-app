@@ -162,7 +162,7 @@ const Category = () => {
   return (
     <div className="flex flex-col gap-10">
       <div className="flex gap-3 w-1/2">
-        <Input label="Tên sản phẩm" aria-label="Tên category" labelPlacement="outside" defaultValue={condition.name}
+        <Input label="Tên category" aria-label="Tên category" labelPlacement="outside" defaultValue={condition.name}
           onValueChange={(value) => {
             if (value.length > 2 || !value.length) setCondition(Object.assign({}, condition, { name: value }))
           }}
@@ -343,6 +343,7 @@ const SubCategory = ({ categories }) => {
       const data = await res.json()
       setSubCategories(data.result)
       setTotal(data.total)
+      setPage(1)
       setLoadingState("idle")
     })
   }
@@ -450,7 +451,7 @@ const SubCategory = ({ categories }) => {
     <div>
       <div className="flex flex-col gap-2">
         <div className="flex gap-3 w-1/2">
-          <Input label="Tên sản phẩm" aria-label="Tên category" labelPlacement="outside" defaultValue={condition.name}
+          <Input label="Tên sub-category" aria-label="Tên sub-category" labelPlacement="outside" defaultValue={condition.name}
             isClearable
             onValueChange={(value) => {
               if (value.length > 2 || !value.length) setCondition(Object.assign({}, condition, { name: value }))
@@ -582,7 +583,6 @@ const SubCategory = ({ categories }) => {
           </ModalContent>
         </Modal>
       </div>
-      <ToastContainer />
     </div>
   );
 };

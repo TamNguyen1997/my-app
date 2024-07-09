@@ -182,7 +182,8 @@ model category {
   id           String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name         String         @unique
   slug         String         @default(dbgenerated("gen_random_uuid()"))
-  type         category_type  @default(CATEGORY)
+  highlight    Boolean        @default(false)
+  showOnHeader Boolean        @default(false) @map("show_on_header")
   createdAt    DateTime       @default(now()) @map("created_at")
   updatedAt    DateTime       @default(now()) @updatedAt @map("updated_at")
   sub_category sub_category[]

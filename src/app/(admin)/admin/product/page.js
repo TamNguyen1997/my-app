@@ -46,6 +46,8 @@ import TiptapTable from '@tiptap/extension-table'
 import ListKeymap from "@tiptap/extension-list-keymap";
 import Gapcursor from '@tiptap/extension-gapcursor'
 import { EmojiReplacer } from "@/app/components/admin/ui/extensions/EmojiReplacer";
+import SaleDetails from "@/app/components/admin/ui/SaleDetails";
+import TechnicalDetails from "@/app/components/admin/ui/TechnicalDetails";
 
 const rowsPerPage = 10;
 
@@ -226,9 +228,18 @@ const ProductCms = () => {
       }).then(res => res.json())
     }
     if (saleDetails.length) {
+      let saleDetailToUpdate = [...saleDetails]
+      let secondarySaleDetails = []
+      saleDetailToUpdate.forEach(detail => {
+        if (secondarySaleDetails) {
+          secondarySaleDetails.push(...detail.secondarySaleDetails)
+        }
+        delete detail.secondarySaleDetails
+      })
+
       await fetch(`/api/products/${productToUpdate.id}/sale-details`, {
         method: "POST",
-        body: JSON.stringify(saleDetails)
+        body: JSON.stringify({ saleDetails: saleDetailToUpdate, secondarySaleDetails: secondarySaleDetails })
       })
     }
 
@@ -359,14 +370,14 @@ const ProductCms = () => {
                     <Tab title="Thông số kĩ thuật">
                       <Card>
                         <CardBody>
-                          <TechnicalDetailForm rows={technicalRows} setRows={setTechnicalRows} columns={technicalColumns} setColumns={setTechnicalColumns} />
+                          <TechnicalDetails rows={technicalRows} setRows={setTechnicalRows} columns={technicalColumns} setColumns={setTechnicalColumns} />
                         </CardBody>
                       </Card>
                     </Tab>
                     <Tab title="Thông số bán hàng">
                       <Card>
                         <CardBody>
-                          <SaleDetailForm saleDetails={saleDetails} setSaleDetails={setSaleDetails} productId={selectedProduct.id} />
+                          <SaleDetails saleDetails={saleDetails} setSaleDetails={setSaleDetails} productId={selectedProduct.id} />
                         </CardBody>
                       </Card>
                     </Tab>
@@ -399,7 +410,6 @@ const ProductDetailForm = ({
     onOpenChange()
   }
 
-  console.log(product)
   return (
     <>
       <div className="flex flex-col gap-3">
@@ -438,7 +448,7 @@ const ProductDetailForm = ({
           <Select
             label="Category"
             aria-label="Category"
-            selectedKeys={new Set([product.categoryId])}
+            selectedKeys={new Set([product.categoryId || ""])}
             onSelectionChange={(value) =>
               setProduct(Object.assign({}, product, { categoryId: value.values().next().value }))}
           >
@@ -447,7 +457,7 @@ const ProductDetailForm = ({
           <Select
             label="Thương hiệu"
             aria-label="Thương hiệu"
-            selectedKeys={new Set([product.brandId])}
+            selectedKeys={new Set([product.brandId || ""])}
             onSelectionChange={(value) =>
               setProduct(Object.assign({}, product, { brandId: value.values().next().value }))}
           >
@@ -456,7 +466,7 @@ const ProductDetailForm = ({
           <Select
             label="Sub category"
             aria-label="Sub category"
-            defaultSelectedKeys={new Set([product.subCategoryId])}
+            defaultSelectedKeys={new Set([product.subCategoryId || ""])}
             onSelectionChange={(value) =>
               setProduct(Object.assign({}, product, { subCategoryId: value.values().next().value }))}
           >
@@ -530,246 +540,6 @@ const ProductDetailForm = ({
           )}
         </ModalContent>
       </Modal>
-    </>
-  )
-}
-
-const TechnicalDetailForm = ({ rows, setRows, columns, setColumns }) => {
-  const addColumn = () => {
-    const column = {
-      id: v4(),
-      name: "Tên cột"
-    }
-    setColumns([...columns, column])
-
-    rows.forEach(row => { row[`${column.id}`] = "" })
-    setRows(rows)
-  }
-
-  const addRow = () => {
-    if (!columns.length) return
-    let row = {
-      id: v4()
-    }
-    columns.forEach(column => {
-      row[`${column.id}`] = ""
-    })
-    setRows([...rows, row])
-  }
-
-  const columnValueChange = (id, value) => {
-    columns.forEach(column => {
-      if (column.id === id) {
-        column.name = value
-      }
-    })
-    setColumns(columns)
-  }
-
-  const rowValueChange = (id, columnId, value) => {
-    rows.forEach(row => {
-      if (row.id === id) {
-        row[`${columnId}`] = value
-      }
-    })
-    setRows(rows)
-  }
-
-  const removeColumn = (id) => {
-    setColumns(columns.filter(column => column.id !== id))
-    rows.forEach(row => { delete row[`${id}`] })
-    setRows(rows)
-  }
-
-  const removeRow = (id) => {
-    setRows(rows.filter(row => row.id !== id))
-  }
-
-  return (
-    <>
-      <div>
-        <Button color="default" variant="ghost" size="sm" className="float-right" onPress={addColumn}> Thêm cột </Button>
-        <Button color="default" variant="ghost" size="sm" className="float-right" onPress={addRow}> Thêm hàng </Button>
-      </div>
-      <div>
-        <table className="table-auto w-full">
-          <thead>
-            <tr>
-              {
-                columns.map(column =>
-                  <th key={column.id} className="p-1">
-                    <Input
-                      aria-label={column.name}
-                      defaultValue={column.name}
-                      onValueChange={(value) => columnValueChange(column.id, value)}
-                      isClearable
-                      endContent={
-                        <div className="relative flex items-center gap-2">
-                          <span className="text-lg text-danger cursor-pointer active:opacity-50 pl-5">
-                            <Trash2 onClick={() => removeColumn(column.id)} />
-                          </span>
-                        </div>
-                      }
-                    />
-                  </th>
-                )
-              }
-            </tr>
-          </thead>
-          <tbody>
-            {
-              rows.map(row =>
-                <tr key={row.id} className="p-1 min-h-full">
-                  {
-                    Object.keys(row).filter(key => key !== "id").map(key =>
-                      <td key={key} className="p-1">
-                        <Input
-                          aria-label={row[key]}
-                          defaultValue={row[key]}
-                          isClearable
-                          onValueChange={(value) => rowValueChange(row.id, key, value)}
-                        />
-                      </td>
-                    )
-                  }
-                  <td>
-                    <div className="m-auto">
-                      <div className="text-lg text-danger cursor-pointer active:opacity-50">
-                        <Trash2 onClick={() => removeRow(row.id)} />
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-
-              )
-            }
-          </tbody>
-        </table>
-      </div>
-    </>
-  )
-}
-
-const SaleDetailForm = ({ saleDetails, setSaleDetails, productId }) => {
-  const addEmptySaleDetail = () => {
-    setSaleDetails([...saleDetails, { id: v4(), productId: productId, type: "TEXT" }])
-  }
-
-  const removeDetail = (id) => {
-    setSaleDetails(saleDetails.filter(detail => detail.id !== id))
-  }
-  const handleDetailChange = (value, id, key) => {
-    let updateDetails = saleDetails
-    updateDetails.forEach(detail => {
-      if (detail.id === id) {
-        detail[key] = value
-      }
-    })
-    setSaleDetails([...updateDetails])
-  }
-
-  const ColorSelect = ({ detail }) => {
-    return (<>
-      <Select
-        label="Màu"
-        placeholder="Chọn màu cho sản phẩm"
-        defaultSelectedKeys={new Set([detail.value])}
-        onSelectionChange={(value) => handleDetailChange(value.values().next().value, detail.id, "value")}
-      >
-        <SelectItem key="#ffffff" textValue="Trắng">
-          <div className="flex gap-2 items-center">
-            <div className="rounded-full bg-white w-8 h-8"></div>
-            <p>Trắng</p>
-          </div>
-        </SelectItem>
-        <SelectItem key="#4b5563" textValue="Xám">
-          <div className="flex gap-2 items-center">
-            <div className="rounded-full bg-gray-600 w-8 h-8"></div>
-            <p>Xám</p>
-          </div>
-        </SelectItem>
-        <SelectItem key="#1e3a8a" textValue="Xanh">
-          <div className="flex gap-2 items-center">
-            <div className="rounded-full bg-blue-900 w-8 h-8"></div>
-            <p>Xanh</p>
-          </div>
-        </SelectItem>
-        <SelectItem key="#facc15" textValue="Vàng">
-          <div className="flex gap-2 items-center">
-            <div className="rounded-full bg-yellow-400 w-8 h-8"></div>
-            <p>Vàng</p>
-          </div>
-        </SelectItem>
-        <SelectItem key="#dc2626" textValue="Đỏ">
-          <div className="flex gap-2 items-center">
-            <div className="rounded-full bg-red-600 w-8 h-8"></div>
-            <p>Đỏ</p>
-          </div>
-        </SelectItem>
-        <SelectItem key="#000000" textValue="Đen">
-          <div className="flex gap-2 items-center">
-            <div className="rounded-full bg-black w-8 h-8"></div>
-            <p>Đen</p>
-          </div>
-        </SelectItem>
-      </Select>
-    </>)
-  }
-
-  return (
-    <>
-      <div className="p-2">
-        <Button color="default" variant="ghost" size="sm" className="float-right" onPress={addEmptySaleDetail}>Thêm thông số</Button>
-      </div>
-      <div className="flex flex-col gap-2">
-        {
-          saleDetails.map(detail => {
-            return <div className="flex" key={detail.id}>
-              <div className="w-11/12">
-                <div className="flex gap-2">
-                  <Select
-                    label="Loại"
-                    defaultSelectedKeys={new Set([detail.type])}
-                    onSelectionChange={(value) => handleDetailChange(value.values().next().value, detail.id, "type")}
-                  >
-                    <SelectItem key="COLOR">
-                      Màu
-                    </SelectItem>
-                    <SelectItem key="TEXT">
-                      Text
-                    </SelectItem>
-                  </Select>
-                  {
-                    detail.type === "TEXT" ?
-                      <Input
-                        type="text"
-                        label="Option"
-                        defaultValue={detail.value}
-                        aria-label={detail.value}
-                        onValueChange={value => handleDetailChange(value, detail.id, "value")}
-                        isRequired
-                      />
-                      : <ColorSelect detail={detail} />
-                  }
-
-                  <Input type="number"
-                    label="Giá"
-                    defaultValue={detail.price}
-                    aria-label="Giá"
-                    onValueChange={(value) => { handleDetailChange(parseInt(value), detail.id, "price") }}
-                  />
-                </div>
-              </div>
-
-              <div className="pt-3 pl-3">
-                <div className="text-lg text-danger cursor-pointer active:opacity-50 pl-5 float-right">
-                  <Trash2 onClick={() => removeDetail(detail.id)} />
-                </div>
-              </div>
-            </div>
-          })
-        }
-      </div>
     </>
   )
 }

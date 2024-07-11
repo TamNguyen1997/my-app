@@ -65,7 +65,11 @@ export async function GET(req) {
     const result = await db.product.findMany({
       where: condition,
       include: {
-        saleDetails: true,
+        saleDetails: {
+          include: {
+            secondarySaleDetails: true
+          }
+        },
         image: true,
         category: true
       },

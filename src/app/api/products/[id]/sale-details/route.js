@@ -3,7 +3,8 @@ import { NextResponse } from 'next/server';
 
 export async function POST(req, { params }) {
   try {
-    let body = await req.json()
+    let body = (await req.json())
+
     await db.sale_detail.deleteMany({
       where: {
         productId: params.id,
@@ -15,7 +16,10 @@ export async function POST(req, { params }) {
       }
     })
     await db.sale_detail.createMany({
-      data: body
+      data: body.saleDetails
+    })
+    await db.secondary_sale_detail.createMany({
+      data: body.secondarySaleDetails
     })
     return NextResponse.json({ message: "Success" })
   } catch (e) {
@@ -29,7 +33,7 @@ export async function GET(req, { params }) {
   }
 
   try {
-    const result = await db.sale_detail.findMany({ where: { productId: params.id } })
+    const result = await db.sale_detail.findMany({ where: { productId: params.id }, include: { secondarySaleDetails: true } })
     return NextResponse.json(result)
   } catch (e) {
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })

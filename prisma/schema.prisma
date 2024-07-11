@@ -56,7 +56,7 @@ model technical_detail {
   id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   row       String
   column    String
-  product   product @relation(fields: [productId], references: [id])
+  product   product @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId String  @unique @db.Uuid
 
   @@index([productId])
@@ -68,14 +68,30 @@ enum sale_detail_type {
 }
 
 model sale_detail {
-  id        String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  product   product          @relation(fields: [productId], references: [id])
-  productId String           @map("product_id")
-  value     String
-  price     Int?
-  type      sale_detail_type @default(TEXT)
+  id                   String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  product              product                 @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId            String                  @map("product_id")
+  value                String
+  price                Int?
+  type                 sale_detail_type        @default(TEXT)
+  secondarySaleDetails secondary_sale_detail[]
 
   @@index([productId])
+}
+
+model secondary_sale_detail {
+  id    String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  value String
+  price Int?
+  type  sale_detail_type @default(TEXT)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  saleDetailId String      @db.Uuid
+  salleDetail  sale_detail @relation(fields: [saleDetailId], references: [id], onDelete: Cascade)
+
+  @@index([saleDetailId])
 }
 
 model order_history {
@@ -209,7 +225,7 @@ model sub_category {
   bannerUrl String?
 
   categoryId String    @db.Uuid
-  category   category  @relation(fields: [categoryId], references: [id])
+  category   category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   product    product[]
 
   @@unique([slug])

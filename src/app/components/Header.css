@@ -1,0 +1,44 @@
+.fixed-header {
+    position: fixed;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background: linear-gradient(180deg, #ffd300 0%, #FFAC0A 100%);
+    animation: fixed-header-animate 0.5s linear forwards;
+}
+
+.fixed-header a {
+    padding: 20px;
+    transition: 0.3s ease-in-out;
+    flex-grow: 1;
+}
+
+.fixed-header a:not(:first-of-type) {
+    border-left: 1px solid #FFAC0A;
+}
+
+.fixed-header a:hover {
+    background-color: #FFAC0A;
+}
+
+.subcate-menu {
+    transition: 0.3s ease-in-out;
+    top: 150px;
+    opacity: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.fixed-header, .subcate-menu {
+    z-index: 1001;
+}
+
+@keyframes fixed-header-animate {
+    0% {
+        top: -70px;
+    }
+    100% {
+        top: 0;
+    }
+}

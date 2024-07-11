@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button, Input } from "@nextui-org/react";
 import { useEffect, useState } from "react";
+import SearchBar from "@/components/SearchBar"
 
 const Header = () => {
   const [showSubHeader, setShowSubHeader] = useState(false)
@@ -32,15 +33,7 @@ const Header = () => {
             <div className="pl-[50px] h-full">
               <div className="h-1/2 p-3 flex gap-7">
                 <div className="w-[1/4] flex items-center gap-5">
-                  <Input
-                    isClearable
-                    radius="lg"
-                    placeholder="Tìm sản phẩm..."
-                    aria-label="Search"
-                    startContent={
-                      <Search className="hover:opacity-hover" strokeWidth={3}></Search>
-                    }
-                  />
+                  <SearchBar />
                   <div className="bg-[#FFAC0A] w-[150px] h-[40px] items-center text-center relative flex gap-2 rounded-md shadow-md">
                     <span className="pl-1">
                       <ShoppingCart size={24} strokeWidth={2}></ShoppingCart>

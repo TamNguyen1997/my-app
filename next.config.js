@@ -12,7 +12,8 @@ const nextConfig = {
       "cdn.tgdd.vn",
       "hc.com.vn",
       "bizweb.dktcdn.net",
-      "dungcuvesinhsaoviet.com"
+      "dungcuvesinhsaoviet.com",
+      "dcvs.shop"
     ],
   },
   matcher: "/",

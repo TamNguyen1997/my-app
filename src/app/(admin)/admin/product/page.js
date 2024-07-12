@@ -15,7 +15,6 @@ import {
   Select,
   SelectItem
 } from "@nextui-org/react"
-import { v4 } from "uuid";
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { EditIcon, Search, Trash2 } from "lucide-react"
 import { redirect } from "next/navigation";

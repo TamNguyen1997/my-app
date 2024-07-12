@@ -1,11 +1,12 @@
 "use client"
 
-import { Menu, Phone, Search, ShoppingCart } from "lucide-react";
+import { Phone, Search, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { Button, Input } from "@nextui-org/react";
+import { Input } from "@nextui-org/react";
 import "./Header.css";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
+import { CartContext } from "@/context/CartProvider";
 
 const Header = () => {
   const [showSubHeader, setShowSubHeader] = useState(false)
@@ -13,6 +14,8 @@ const Header = () => {
   const [subCate, setSubCate] = useState()
   const [hoveredCate, setHoveredCate] = useState({})
   const subCateMenuRef = useRef();
+
+  const { cartdetails } = useContext(CartContext)
 
   return (
     <nav className="bg-black border-gray-200 dark:bg-gray-900 h-[140px]">
@@ -43,13 +46,22 @@ const Header = () => {
                       <Search className="hover:opacity-hover" strokeWidth={3}></Search>
                     }
                   />
-                  <div className="bg-[#FFAC0A] w-[150px] h-[40px] items-center text-center relative flex gap-2 rounded-md shadow-md">
-                    <span className="pl-1">
+                  <div className="bg-[#FFAC0A] w-[180px] h-[40px] items-center text-center relative flex gap-2 rounded-md shadow-md">
+                    <span className="pl-1 relative">
                       <ShoppingCart size={24} strokeWidth={2}></ShoppingCart>
                     </span>
                     <span className="text-sm">
                       Giỏ hàng
                     </span>
+                    {
+                      cartdetails?.length ? <div className="rounded-full w-3 h-3 bg-red-600 text-white text-center  text-[10px]">
+                        <span className="animate-ping absolute inline-flex w-3 h-3 rounded-full bg-red-600 opacity-75"></span>
+                        {
+                          cartdetails.length
+                        }
+                      </div> : ""
+                    }
+
                   </div>
                 </div>
                 <div className="flex items-center text-sm">
@@ -92,39 +104,39 @@ const Header = () => {
         </div>
         {
           showSubHeader && subCate?.length ?
-          <div
-            onMouseOver={() => setShowSubHeader(true)}
-            onMouseOut={() => setShowSubHeader(false)}
-            className="z-10 fixed w-full bg-white shadow-lg p-4 subcate-menu" ref={subCateMenuRef}
-          >
-            <div className="container">
-              <h2 className="text-lg font-bold text-black text-left border-b pb-1">{hoveredCate.name || "Thương hiệu"}</h2>
-              <div
-                className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-3"
-              >
-                {
-                  subCate.map((subcate, i) =>
-                    <Link
-                      key={i}
-                      href={
-                        hoveredCate.slug ?
-                          `/${hoveredCate.slug}/${subcate.slug}` :
-                          `/${subcate.slug}`
-                      }>
-                      <span className="flex flex-col justify-center items-center hover:opacity-35 hover:shadow-lg py-4" key={subcate.name}>
-                        <div className="flex items-center w-2/3 m-auto h-[80px]">
-                          {
-                            subcate.imageUrl ? <img src={`${process.env.NEXT_PUBLIC_FILE_PATH + subcate.imageUrl}`} width="150" height="150" alt={i} /> : ""
-                          }
-                        </div>
-                        {subcate.name}
-                      </span>
-                    </Link>
-                  )
-                }
+            <div
+              onMouseOver={() => setShowSubHeader(true)}
+              onMouseOut={() => setShowSubHeader(false)}
+              className="z-10 fixed w-full bg-white shadow-lg p-4 subcate-menu" ref={subCateMenuRef}
+            >
+              <div className="container">
+                <h2 className="text-lg font-bold text-black text-left border-b pb-1">{hoveredCate.name || "Thương hiệu"}</h2>
+                <div
+                  className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-3"
+                >
+                  {
+                    subCate.map((subcate, i) =>
+                      <Link
+                        key={i}
+                        href={
+                          hoveredCate.slug ?
+                            `/${hoveredCate.slug}/${subcate.slug}` :
+                            `/${subcate.slug}`
+                        }>
+                        <span className="flex flex-col justify-center items-center hover:opacity-35 hover:shadow-lg py-4" key={subcate.name}>
+                          <div className="flex items-center w-2/3 m-auto h-[80px]">
+                            {
+                              subcate.imageUrl ? <img src={`${process.env.NEXT_PUBLIC_FILE_PATH + subcate.imageUrl}`} width="150" height="150" alt={i} /> : ""
+                            }
+                          </div>
+                          {subcate.name}
+                        </span>
+                      </Link>
+                    )
+                  }
+                </div>
               </div>
-            </div>
-          </div> : ""
+            </div> : ""
         }
       </div>
     </nav>
@@ -186,12 +198,12 @@ const HeaderItems = ({ onHover, onMouseOut, setSubCate, setHoveredCate, subCateM
 
   useEffect(() => {
     const handleScroll = (evt) => {
-      if(!headerItemsRef?.current) return;
+      if (!headerItemsRef?.current) return;
       const parentNode = headerItemsRef.current.parentNode;
       const nav = headerItemsRef.current.closest("nav");
       let menuHeight = 0;
-      
-      if(parentNode.getBoundingClientRect().bottom <= 0) {
+
+      if (parentNode.getBoundingClientRect().bottom <= 0) {
         headerItemsRef.current.classList.add("fixed-header");
         parentNode.classList.add("container");
         menuHeight = headerItemsRef.current.getBoundingClientRect().height || 0;
@@ -201,7 +213,7 @@ const HeaderItems = ({ onHover, onMouseOut, setSubCate, setHoveredCate, subCateM
         parentNode.classList.remove("container");
       }
 
-      if(subCateMenuRef.current) {
+      if (subCateMenuRef.current) {
         subCateMenuRef.current.style.top = menuHeight + "px";
         subCateMenuRef.current.style.opacity = 1;
       }

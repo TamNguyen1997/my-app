@@ -12,13 +12,13 @@ const Header = () => {
   const [showSubHeader, setShowSubHeader] = useState(false)
 
   const [subCate, setSubCate] = useState()
-  const [hoveredCate, setHoveredCate] = useState({})
+  const [hoveredCate, setHoveredCate] = useState(null)
   const subCateMenuRef = useRef();
 
   const { cartdetails } = useContext(CartContext)
 
   return (
-    <nav className="bg-black border-gray-200 dark:bg-gray-900 h-[140px]">
+    <nav className="bg-black border-gray-200 dark:bg-gray-900 h-[140px] header">
       <div className="w-full h-full">
         <div className="flex w-full h-full">
           <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -33,7 +33,11 @@ const Header = () => {
             </Link>
           </div>
 
-          <div className="bg-[#ffd300] w-[75%] rounded-tl-[50px] rounded-bl-[50px] font-raleway">
+          {/* <div className="bg-[#ffd300] w-[75%] rounded-tl-[50px] rounded-bl-[50px] font-raleway"> */}
+          <div className={`
+            w-[75%] rounded-tl-[50px] rounded-bl-[50px] font-raleway
+            bg-gradient-to-b from-[#ffd300] from-0% via-[#ffd300] via-50% to-[#FFAC0A] to-100%
+          `}>
             <div className="pl-[50px] h-full">
               <div className="h-1/2 p-3 flex gap-7">
                 <div className="w-[1/4] flex items-center gap-5">
@@ -97,6 +101,8 @@ const Header = () => {
                   setSubCate={setSubCate}
                   setHoveredCate={setHoveredCate}
                   subCateMenuRef={subCateMenuRef}
+                  hoveredCate={hoveredCate}
+                  showSubHeader={showSubHeader}
                 />
               </div>
             </div>
@@ -110,7 +116,7 @@ const Header = () => {
               className="z-10 fixed w-full bg-white shadow-lg p-4 subcate-menu" ref={subCateMenuRef}
             >
               <div className="container">
-                <h2 className="text-lg font-bold text-black text-left border-b pb-1">{hoveredCate.name || "Thương hiệu"}</h2>
+                <h2 className="text-lg font-bold text-black text-left border-b pb-1 mb-2">{hoveredCate?.name || "Thương hiệu"}</h2>
                 <div
                   className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-3"
                 >
@@ -119,11 +125,11 @@ const Header = () => {
                       <Link
                         key={i}
                         href={
-                          hoveredCate.slug ?
+                          hoveredCate?.slug ?
                             `/${hoveredCate.slug}/${subcate.slug}` :
                             `/${subcate.slug}`
                         }>
-                        <span className="flex flex-col justify-center items-center hover:opacity-35 hover:shadow-lg py-4" key={subcate.name}>
+                        <span className="flex flex-col justify-center items-center hover:scale-[1.05] hover:shadow-lg hover:text-[#FFAC0A] transition py-4" key={subcate.name}>
                           <div className="flex items-center w-2/3 m-auto h-[80px]">
                             {
                               subcate.imageUrl ? <img src={`${process.env.NEXT_PUBLIC_FILE_PATH + subcate.imageUrl}`} width="150" height="150" alt={i} /> : ""
@@ -166,7 +172,7 @@ const BRANDS = [
   }
 ]
 
-const HeaderItems = ({ onHover, onMouseOut, setSubCate, setHoveredCate, subCateMenuRef }) => {
+const HeaderItems = ({ onHover, onMouseOut, setSubCate, setHoveredCate, subCateMenuRef, hoveredCate, showSubHeader }) => {
   // const [windowSize, setWindowSize] = useState({
   //   width: undefined,
   //   height: undefined,
@@ -233,9 +239,11 @@ const HeaderItems = ({ onHover, onMouseOut, setSubCate, setHoveredCate, subCateM
             setSubCate(BRANDS)
             setHoveredCate({})
           }}
-          onMouseOut={() => {
-          }}
-          className="p-3"
+          onMouseOut={onMouseOut}
+          className={`
+            ${hoveredCate && !Object.keys(hoveredCate)?.length && showSubHeader ? 'bg-[#FFAC0A]' : ''}
+            hover:bg-[#FFAC0A] transition p-3
+          `}
         >
           Thương hiệu
         </Link>
@@ -249,7 +257,11 @@ const HeaderItems = ({ onHover, onMouseOut, setSubCate, setHoveredCate, subCateM
                 setHoveredCate(category)
               }}
               onMouseOut={onMouseOut}
-              className="p-3"
+              className={`
+                ${hoveredCate?.id === category.id && showSubHeader ? 'bg-[#FFAC0A]' : ''}
+                hover:bg-[#FFAC0A] transition p-3
+                border-l border-[#FFAC0A]
+              `}
             >
               {category.name}
             </Link>)

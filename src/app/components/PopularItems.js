@@ -156,7 +156,7 @@ export default function PopularItems() {
       </div>
 
       {
-        Object.keys(highlightProductsFromCates).length ? highlightCates.map((cate, i) =>
+        Object.keys(highlightProductsFromCates).length ? highlightCates.filter(cate => highlightProductsFromCates[cate.slug]).map((cate, i) =>
           <div key={i}>
             <ProductCard banner={cate.image?.path} products={highlightProductsFromCates[cate.slug]} />
             <div className="w-full flex flex-row min-w-screen justify-center items-center">

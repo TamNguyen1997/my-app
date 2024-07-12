@@ -18,6 +18,7 @@ export async function PUT(req, { params }) {
     return NextResponse.json({ message: `Resource not found ${params.slug}` }, { status: 400 })
   }
   const body = await req.json()
+  delete body.image
   try {
 
     return NextResponse.json(await db.category.update({

@@ -6,6 +6,7 @@ export async function GET(req, { params }) {
   if (!params.id) {
     return NextResponse.json({ message: `Resource not found ${params.id}` }, { status: 400 })
   }
+  let condition = {}
   try {
     const { query } = queryString.parseUrl(req.url);
     if (query.active) {
@@ -28,6 +29,7 @@ export async function GET(req, { params }) {
       }
     ))
   } catch (e) {
+    console.log(e)
     return NextResponse.json([])
   }
 }

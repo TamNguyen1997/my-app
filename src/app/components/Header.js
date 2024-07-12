@@ -1,6 +1,6 @@
 "use client"
 
-import { Menu, Phone, Search, ShoppingCart } from "lucide-react";
+import { Phone, Search, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button, Input } from "@nextui-org/react";
@@ -10,8 +10,11 @@ import SearchBar from "@/components/SearchBar"
 const Header = () => {
   const [showSubHeader, setShowSubHeader] = useState(false)
 
-  const [subCate, setSubCate] = useState([])
+  const [subCate, setSubCate] = useState()
   const [hoveredCate, setHoveredCate] = useState({})
+  const subCateMenuRef = useRef();
+
+  const { cartdetails } = useContext(CartContext)
 
   return (
     <nav className="bg-black border-gray-200 dark:bg-gray-900 h-[140px]">
@@ -41,6 +44,15 @@ const Header = () => {
                     <span className="text-sm">
                       Giỏ hàng
                     </span>
+                    {
+                      cartdetails?.length ? <div className="rounded-full w-3 h-3 bg-red-600 text-white text-center  text-[10px]">
+                        <span className="animate-ping absolute inline-flex w-3 h-3 rounded-full bg-red-600 opacity-75"></span>
+                        {
+                          cartdetails.length
+                        }
+                      </div> : ""
+                    }
+
                   </div>
                 </div>
                 <div className="flex items-center text-sm">
@@ -65,49 +77,56 @@ const Header = () => {
                   </div>
                 </div>
               </div>
-              <div className="h-1/2 flex items-center gap-5 pt-6"
+              <div className="h-1/2 flex gap-5 pt-6"
                 onMouseOver={() => setShowSubHeader(true)}
                 onMouseOut={() => { setShowSubHeader(false) }}>
-                <div className="h-1/2 flex items-center gap-5">
-                  <HeaderItems
-                    onHover={() => setShowSubHeader(true)}
-                    onMouseOut={() => {
-                      setShowSubHeader(false)
-                    }}
-                    setSubCate={setSubCate}
-                    setHoveredCate={setHoveredCate}
-                  />
-                </div>
+                <HeaderItems
+                  onHover={() => setShowSubHeader(true)}
+                  onMouseOut={() => {
+                    setShowSubHeader(false)
+                  }}
+                  setSubCate={setSubCate}
+                  setHoveredCate={setHoveredCate}
+                  subCateMenuRef={subCateMenuRef}
+                />
               </div>
             </div>
           </div>
         </div>
         {
-          showSubHeader && subCate.length ?
+          showSubHeader && subCate?.length ?
             <div
               onMouseOver={() => setShowSubHeader(true)}
               onMouseOut={() => setShowSubHeader(false)}
-              className="z-10 bg-white fixed w-screen shadow-lg flex flex-row min-w-screen justify-center items-center py-4 gap-3">
-              {
-                subCate.map((subcate, i) =>
-                  <Link
-                    key={i}
-                    href={
-                      hoveredCate.slug ?
-                        `/${hoveredCate.slug}/${subcate.slug}` :
-                        `/${subcate.slug}`
-                    }>
-                    <span className="flex flex-col justify-center items-center hover:opacity-35 hover:shadow-lg" key={subcate.name}>
-                      <div className="flex items-center w-2/3 m-auto h-[80px]">
-                        {
-                          subcate.imageUrl ? <img src={`${process.env.NEXT_PUBLIC_FILE_PATH + subcate.imageUrl}`} width="150" height="150" alt={i} /> : ""
-                        }
-                      </div>
-                      {subcate.name}
-                    </span>
-                  </Link>
-                )
-              }
+              className="z-10 fixed w-full bg-white shadow-lg p-4 subcate-menu" ref={subCateMenuRef}
+            >
+              <div className="container">
+                <h2 className="text-lg font-bold text-black text-left border-b pb-1">{hoveredCate.name || "Thương hiệu"}</h2>
+                <div
+                  className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-3"
+                >
+                  {
+                    subCate.map((subcate, i) =>
+                      <Link
+                        key={i}
+                        href={
+                          hoveredCate.slug ?
+                            `/${hoveredCate.slug}/${subcate.slug}` :
+                            `/${subcate.slug}`
+                        }>
+                        <span className="flex flex-col justify-center items-center hover:opacity-35 hover:shadow-lg py-4" key={subcate.name}>
+                          <div className="flex items-center w-2/3 m-auto h-[80px]">
+                            {
+                              subcate.imageUrl ? <img src={`${process.env.NEXT_PUBLIC_FILE_PATH + subcate.imageUrl}`} width="150" height="150" alt={i} /> : ""
+                            }
+                          </div>
+                          {subcate.name}
+                        </span>
+                      </Link>
+                    )
+                  }
+                </div>
+              </div>
             </div> : ""
         }
       </div>
@@ -138,7 +157,7 @@ const BRANDS = [
   }
 ]
 
-const HeaderItems = ({ onHover, onMouseOut, setSubCate, setHoveredCate }) => {
+const HeaderItems = ({ onHover, onMouseOut, setSubCate, setHoveredCate, subCateMenuRef }) => {
   // const [windowSize, setWindowSize] = useState({
   //   width: undefined,
   //   height: undefined,
@@ -166,30 +185,67 @@ const HeaderItems = ({ onHover, onMouseOut, setSubCate, setHoveredCate }) => {
 
   // }
 
-  return (<>
-    <div className="flex gap-6 text-sm items-center">
-      <Link href=""
-        onMouseOver={() => {
-          setSubCate(BRANDS)
-          setHoveredCate({})
-        }}
-        onMouseOut={() => {
-        }}>
-        Thương hiệu
-      </Link>
-      {
-        categories.map((category) =>
-          <Link href={`/${category.slug}`}
-            key={category.id}
-            onMouseOver={() => {
-              setSubCate(category.sub_category)
-              onHover()
-              setHoveredCate(category)
-            }}
-            onMouseOut={onMouseOut}>
-            {category.name}
-          </Link>)
+  const headerItemsRef = useRef();
+
+  useEffect(() => {
+    const handleScroll = (evt) => {
+      if (!headerItemsRef?.current) return;
+      const parentNode = headerItemsRef.current.parentNode;
+      const nav = headerItemsRef.current.closest("nav");
+      let menuHeight = 0;
+
+      if (parentNode.getBoundingClientRect().bottom <= 0) {
+        headerItemsRef.current.classList.add("fixed-header");
+        parentNode.classList.add("container");
+        menuHeight = headerItemsRef.current.getBoundingClientRect().height || 0;
+      } else {
+        menuHeight = nav?.getBoundingClientRect().height || 0;
+        headerItemsRef.current.classList.remove("fixed-header");
+        parentNode.classList.remove("container");
       }
+
+      if (subCateMenuRef.current) {
+        subCateMenuRef.current.style.top = menuHeight + "px";
+        subCateMenuRef.current.style.opacity = 1;
+      }
+    }
+
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  });
+
+  return (<>
+    <div className="w-full" ref={headerItemsRef}>
+      <div className="container flex text-sm items-center text-center">
+        <Link href=""
+          onMouseOver={() => {
+            setSubCate(BRANDS)
+            setHoveredCate({})
+          }}
+          onMouseOut={() => {
+          }}
+          className="p-3"
+        >
+          Thương hiệu
+        </Link>
+        {
+          categories.map((category) =>
+            <Link href={`/${category.slug}`}
+              key={category.id}
+              onMouseOver={() => {
+                setSubCate(category.sub_category)
+                onHover()
+                setHoveredCate(category)
+              }}
+              onMouseOut={onMouseOut}
+              className="p-3"
+            >
+              {category.name}
+            </Link>)
+        }
+      </div>
     </div>
   </>)
 }

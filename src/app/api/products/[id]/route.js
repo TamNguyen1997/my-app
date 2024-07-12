@@ -1,16 +1,34 @@
 import { db } from '@/app/db';
 import { NextResponse } from 'next/server';
+import queryString from 'query-string';
 import { parse } from 'uuid';
+
 
 export async function GET(req, { params }) {
   if (!params.id) {
     return NextResponse.json({ message: `Resource not found ${params.id}` }, { status: 400 })
   }
   try {
-
+    const { query } = queryString.parseUrl(req.url);
     const { searchParams } = new URL(req.url);
 
     let condition = {}
+    let include = {
+      technical_detail: query.includeTechnical === "true",
+      saleDetails: searchParams && searchParams.get("includeSale") !== "undefined" && searchParams.get("includeSale") !== null,
+      image: true,
+      category: true,
+      subCategory: true,
+      brand: true
+    }
+
+    if (query.includeSale === "true") {
+      include.saleDetails = {
+        include: {
+          secondarySaleDetails: true
+        }
+      }
+    }
 
     try {
       parse(params.id)
@@ -22,14 +40,7 @@ export async function GET(req, { params }) {
     return NextResponse.json(await db.product.findFirst(
       {
         where: condition,
-        include: {
-          technical_detail: searchParams && searchParams.get("includeTechnical") !== "undefined" && searchParams.get("includeTechnical") !== null,
-          saleDetails: searchParams && searchParams.get("includeSale") !== "undefined" && searchParams.get("includeSale") !== null,
-          image: true,
-          category: true,
-          subCategory: true,
-          brand: true
-        }
+        include: include
       }
     ))
   } catch (e) {

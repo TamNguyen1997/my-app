@@ -296,7 +296,7 @@ const Category = () => {
               <ModalHeader className="flex flex-col gap-1">Chọn hình</ModalHeader>
               <ModalBody>
                 <ImagePicker disableDelete onImageClick={image => {
-                  setSelectedCate(Object.assign({}, selectedCate, { image: image }))
+                  setSelectedCate(Object.assign({}, selectedCate, { imageId: image.id, image: image }))
                   onClose()
                 }} />
               </ModalBody>

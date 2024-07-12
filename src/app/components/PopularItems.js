@@ -89,7 +89,6 @@ export default function PopularItems() {
       setIsLoading(false)
     })
   }, [])
-
   useEffect(() => {
     Promise.all(
       highlightCates
@@ -156,13 +155,14 @@ export default function PopularItems() {
       </div>
 
       {
-        Object.keys(highlightProductsFromCates).length ? highlightCates.map((cate, i) =>
-          <div key={i}>
+        Object.keys(highlightProductsFromCates).length ? highlightCates.filter(cate => highlightProductsFromCates[cate.slug]).map((cate, i) => {
+          return <div key={i}>
             <ProductCard banner={cate.image?.path} products={highlightProductsFromCates[cate.slug]} />
             <div className="w-full flex flex-row min-w-screen justify-center items-center">
               <Link href={`/${cate.slug}`} className="font-bold underline">Xem thêm</Link>
             </div>
           </div>
+        }
         ) : <></>
       }
 
@@ -175,7 +175,7 @@ const ProductCard = ({ category, products, redirect, banner }) => {
   const CategoryDisplay = () => (<>
     <div className="bg-[#ffd300] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-1/3 h-[50px] m-auto shadow-md">
       <div className="m-auto text-black font-bold text-xl">
-        {category}
+        {category || products[0].category?.name}
       </div>
       {
         redirect ?
@@ -187,7 +187,7 @@ const ProductCard = ({ category, products, redirect, banner }) => {
   </>)
 
   const BannerDisplay = () => (<div className="w-full">
-    <img style={{ maxWidth: "100%", width: "100%" }} src={banner} alt="Banner" />
+    <img style={{ maxWidth: "100%", width: "100%" }} src={`${process.env.NEXT_PUBLIC_FILE_PATH + banner}`} alt="Banner" />
   </div>)
   return (
     <div>

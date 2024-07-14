@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { Input } from '@nextui-org/react';
-import { LoaderIcon, Search } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
-import React, { useEffect, useRef, useState } from 'react';
-import { useOutsideAlerter } from '@/app/hooks';
+import { Input } from "@nextui-org/react";
+import { LoaderIcon, Search } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import React, { useEffect, useRef, useState } from "react";
+import { useOutsideAlerter } from "@/app/hooks";
 
 const SearchBar = () => {
   const wrapperRef = useRef(null);
@@ -16,9 +16,9 @@ const SearchBar = () => {
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
 
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
 
-  useOutsideAlerter(wrapperRef, () => setSearchText(''));
+  useOutsideAlerter(wrapperRef, () => setSearchText(""));
 
   useEffect(() => {
     Promise.all([
@@ -67,7 +67,7 @@ const SearchBar = () => {
         }
         value={searchText}
         onChange={(event) => setSearchText(event.target.value)}
-        onClear={() => setSearchText('')}
+        onClear={() => setSearchText("")}
       />
       {searchText && (
         <div className="w-[400px] bg-white shadow-lg rounded-lg absolute top-full left-0 mt-2 overflow-hidden z-50">
@@ -81,7 +81,7 @@ const SearchBar = () => {
                   <Link
                     key={category.id}
                     href={`/${category.slug}`}
-                    onClick={() => setSearchText('')}
+                    onClick={() => setSearchText("")}
                   >
                     <div className="px-4 py-2 hover:bg-slate-50 cursor-pointer">
                       {category.name}
@@ -108,8 +108,8 @@ const SearchBar = () => {
                 {filteredProducts.map((product) => (
                   <div key={product.id}>
                     <Link
-                      href={`/san-pham/${product.id}`}
-                      onClick={() => setSearchText('')}
+                      href={`/san-pham/${product.slug}`}
+                      onClick={() => setSearchText("")}
                     >
                       <div className="px-4 py-2 flex items-center gap-5 hover:bg-slate-50 cursor-pointer">
                         <Image

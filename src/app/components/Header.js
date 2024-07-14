@@ -193,7 +193,7 @@ const HeaderItems = ({ onHover, onMouseOut, setSubCate, setHoveredCate, subCateM
   const [categories, setCategories] = useState([])
 
   useEffect(() => {
-    fetch('/api/categories/?includeSubCate=true&size=7').then(res => res.json()).then(json => setCategories(json.result))
+    fetch('/api/categories/?includeSubCate=true&size=7&showOnHeader=true').then(res => res.json()).then(json => setCategories(json.result))
   }, [])
 
   // if (windowSize.width <= 1024) {

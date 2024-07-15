@@ -11,14 +11,14 @@ import { CartContext } from "@/context/CartProvider";
 const Header = () => {
   const [showSubHeader, setShowSubHeader] = useState(false);
 
-  const [subCate, setSubCate] = useState();
-  const [hoveredCate, setHoveredCate] = useState({});
+  const [subCate, setSubCate] = useState()
+  const [hoveredCate, setHoveredCate] = useState(null)
   const subCateMenuRef = useRef();
 
   const { cartdetails } = useContext(CartContext);
 
   return (
-    <nav className="bg-black border-gray-200 dark:bg-gray-900 h-[140px]">
+    <nav className="bg-black border-gray-200 dark:bg-gray-900 h-[140px] header">
       <div className="w-full h-full">
         <div className="flex w-full h-full">
           <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -33,7 +33,11 @@ const Header = () => {
             </Link>
           </div>
 
-          <div className="bg-[#ffd300] w-[75%] rounded-tl-[50px] rounded-bl-[50px] font-raleway">
+          {/* <div className="bg-[#ffd300] w-[75%] rounded-tl-[50px] rounded-bl-[50px] font-raleway"> */}
+          <div className={`
+            w-[75%] rounded-tl-[50px] rounded-bl-[50px] font-raleway
+            bg-gradient-to-b from-[#ffd300] from-0% via-[#ffd300] via-50% to-[#FFAC0A] to-100%
+          `}>
             <div className="pl-[50px] h-full">
               <div className="h-1/2 p-3 flex gap-7">
                 <div className="w-[1/4] flex items-center gap-5">
@@ -88,6 +92,8 @@ const Header = () => {
                   setSubCate={setSubCate}
                   setHoveredCate={setHoveredCate}
                   subCateMenuRef={subCateMenuRef}
+                  hoveredCate={hoveredCate}
+                  showSubHeader={showSubHeader}
                 />
               </div>
             </div>
@@ -171,13 +177,7 @@ const BRANDS = [
   },
 ];
 
-const HeaderItems = ({
-  onHover,
-  onMouseOut,
-  setSubCate,
-  setHoveredCate,
-  subCateMenuRef,
-}) => {
+const HeaderItems = ({ onHover, onMouseOut, setSubCate, setHoveredCate, subCateMenuRef, hoveredCate, showSubHeader }) => {
   // const [windowSize, setWindowSize] = useState({
   //   width: undefined,
   //   height: undefined,
@@ -198,10 +198,8 @@ const HeaderItems = ({
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    fetch("/api/categories/?includeSubCate=true&size=7")
-      .then((res) => res.json())
-      .then((json) => setCategories(json.result));
-  }, []);
+    fetch('/api/categories/?includeSubCate=true&size=7&showOnHeader=true').then(res => res.json()).then(json => setCategories(json.result))
+  }, [])
 
   // if (windowSize.width <= 1024) {
 
@@ -238,24 +236,25 @@ const HeaderItems = ({
     return () => window.removeEventListener("scroll", handleScroll);
   });
 
-  return (
-    <>
-      <div className="w-full" ref={headerItemsRef}>
-        <div className="container flex text-sm items-center text-center">
-          <Link
-            href=""
-            onMouseOver={() => {
-              setSubCate(BRANDS);
-              setHoveredCate({});
-            }}
-            onMouseOut={() => {}}
-            className="p-3"
-          >
-            Thương hiệu
-          </Link>
-          {categories.map((category) => (
-            <Link
-              href={`/${category.slug}`}
+  return (<>
+    <div className="w-full" ref={headerItemsRef}>
+      <div className="container flex text-sm items-center text-center">
+        <Link href=""
+          onMouseOver={() => {
+            setSubCate(BRANDS)
+            setHoveredCate({})
+          }}
+          onMouseOut={onMouseOut}
+          className={`
+            ${hoveredCate && !Object.keys(hoveredCate)?.length && showSubHeader ? 'bg-[#FFAC0A]' : ''}
+            hover:bg-[#FFAC0A] transition p-3
+          `}
+        >
+          Thương hiệu
+        </Link>
+        {
+          categories.map((category) =>
+            <Link href={`/${category.slug}`}
               key={category.id}
               onMouseOver={() => {
                 setSubCate(category.sub_category);
@@ -263,11 +262,15 @@ const HeaderItems = ({
                 setHoveredCate(category);
               }}
               onMouseOut={onMouseOut}
-              className="p-3"
+              className={`
+                ${hoveredCate?.id === category.id && showSubHeader ? 'bg-[#FFAC0A]' : ''}
+                hover:bg-[#FFAC0A] transition p-3
+                border-l border-[#FFAC0A]
+              `}
             >
               {category.name}
             </Link>
-          ))}
+          )}
         </div>
       </div>
     </>

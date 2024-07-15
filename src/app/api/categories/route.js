@@ -34,8 +34,8 @@ export async function GET(req) {
     include.image = query.includeImage === 'true'
   }
 
-  if (query.showOwnHeader) {
-    include.showOwnHeader = query.showOwnHeader === 'true'
+  if (query.showOnHeader) {
+    condition.showOnHeader = query.showOnHeader === 'true'
   }
 
   if (query.highlight) {

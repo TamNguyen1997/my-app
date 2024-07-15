@@ -17,7 +17,7 @@ const Product = () => {
       setProduct(json)
     })
   }, [_id])
-  if (!product.id) {
+  if (!product?.id) {
     return <Skeleton />
   }
 

@@ -7,6 +7,7 @@ import { Button, Input } from "@nextui-org/react";
 import { useEffect, useState, useContext, useRef } from "react";
 import SearchBar from "@/components/SearchBar";
 import { CartContext } from "@/context/CartProvider";
+import "./Header.css";
 
 const Header = () => {
   const [showSubHeader, setShowSubHeader] = useState(false);
@@ -18,7 +19,7 @@ const Header = () => {
   const { cartdetails } = useContext(CartContext);
 
   return (
-    <nav className="bg-black border-gray-200 dark:bg-gray-900 h-[140px] header">
+    <nav className="bg-black border-gray-200 dark:bg-gray-900 header">
       <div className="w-full h-full">
         <div className="flex w-full h-full">
           <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -39,7 +40,7 @@ const Header = () => {
             bg-gradient-to-b from-[#ffd300] from-0% via-[#ffd300] via-50% to-[#FFAC0A] to-100%
           `}>
             <div className="pl-[50px] h-full">
-              <div className="h-1/2 p-3 flex gap-7">
+              <div className="p-3 flex gap-7">
                 <div className="w-[1/4] flex items-center gap-5">
                   <SearchBar />
                   <div className="bg-[#FFAC0A] w-[150px] h-[40px] items-center text-center relative flex gap-2 rounded-md shadow-md">
@@ -78,7 +79,7 @@ const Header = () => {
                 </div>
               </div>
               <div
-                className="h-1/2 flex gap-5 pt-6"
+                className="flex gap-5 pt-6"
                 onMouseOver={() => setShowSubHeader(true)}
                 onMouseOut={() => {
                   setShowSubHeader(false);

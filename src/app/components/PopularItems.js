@@ -119,7 +119,7 @@ export default function PopularItems() {
               setSelectedBrand("RUBBERMAID")
               setBrandProducts(rubberMaidProducts)
             }}
-            className={`${getSelectedColor("RUBBERMAID")} text-white text-medium font-bold hover:bg-slate-800`}>
+            className={`${getSelectedColor("RUBBERMAID")} text-white text-medium font-bold hover:bg-slate-800 border-r border-white`}>
             RUBBERMAID
           </Button>
           <Button radius="none"
@@ -127,7 +127,7 @@ export default function PopularItems() {
               setSelectedBrand("MOERMAN")
               setBrandProducts(moermanProducts)
             }}
-            className={`${getSelectedColor("MOERMAN")} text-white text-medium font-bold hover:bg-slate-800`}>
+            className={`${getSelectedColor("MOERMAN")} text-white text-medium font-bold hover:bg-slate-800 border-r border-white`}>
             MOERMAN
           </Button>
           <Button radius="none"
@@ -135,7 +135,7 @@ export default function PopularItems() {
               setSelectedBrand("MAPA")
               setBrandProducts(mapaProducts)
             }}
-            className={`${getSelectedColor("MAPA")} text-white text-medium font-bold hover:bg-slate-800`}>
+            className={`${getSelectedColor("MAPA")} text-white text-medium font-bold hover:bg-slate-800 border-r border-white`}>
             MAPA
           </Button>
           <Button radius="none"
@@ -207,36 +207,36 @@ const ProductCard = ({ category, products, redirect, banner }) => {
 
 const ProductCarousel = ({ products, responsive }) => {
   return (<>
-    <Carousel responsive={responsive} infinite>
+    <Carousel responsive={responsive} infinite
+      className="[&_.react-multi-carousel-track]:pt-2"
+    >
       {
         products.map((product) => {
-          return <div key={product.id} className="p-2 hover:opacity-75">
+          return <div key={product.id} className="h-full p-2 hover:opacity-75">
             <div className="rounded-md border h-[400px] object-cover object-center group-hover:opacity-50
-            hover:-translate-y-2.5 hover:scale-[1.02] shadow-[0px_2px_10px_rgba(0,0,0,0.15)] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)]">
-              <Link href={`/san-pham/${product.slug}`}>
+            hover:-translate-y-2.5 hover:scale-[1.02] shadow-[0px_2px_10px_rgba(0,0,0,0.15)] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)] overflow-hidden transition">
+              <Link href={`/san-pham/${product.slug}`} className="flex flex-col h-full">
                 <div className="h-2/3">
-                  <div className="aspect-h-1 aspect-w-1 w-full h-full overflow-hidden rounded-lg xl:aspect-h-8 xl:aspect-w-7">
+                  <div className="aspect-h-1 aspect-w-1 w-full h-full overflow-hidden xl:aspect-h-8 xl:aspect-w-7">
                     <img
                       width={500}
                       height={400}
                       src={`${process.env.NEXT_PUBLIC_FILE_PATH + product.image?.path}`}
                       alt={product.imageAlt}
-                      className="h-full w-full object-cover object-center group-hover:opacity-75 hover:scale-125"
+                      className="h-full w-full object-cover object-center group-hover:opacity-75 hover:scale-110 transition"
                     />
                   </div>
                 </div>
-                <div className="pt-2">
-                  <p className="text-sm text-gray-700 font-semibold text-center">
+                <div className="grow p-2">
+                  <p className="text-sm text-gray-700 font-semibold text-center line-clamp-2">
                     {product.name}
                   </p>
                 </div>
-                <div className="inset-x-0 bottom-3">
-                  <p className="text-center text-red-500 font-bold text-xl pt-3">
-                    {
-                      getPrice(product)
-                    }
-                  </p>
-                </div>
+                <p className="text-center text-red-500 font-bold text-xl pb-12">
+                  {
+                    getPrice(product)
+                  }
+                </p>
               </Link>
             </div>
           </div>
@@ -266,11 +266,11 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
     <div className="lg:grid lg:grid-cols-6">
       <div className="p-2 col-span-2">
         <div className="bg-[#ffd300] shadow-lg rounded-md pt-9 min-h-[400px]">
-          <div className="mx-auto md:w-[340px] md:h-[120px] lg:w-2/3 lg:h-[120px]">
+          <div className="flex items-center mx-auto md:max-w-[340px] md:h-[120px] lg:max-w-2/3 lg:h-[120px] p-5 pt-0">
             {
               brandDescription[selectedBrand] && brandDescription[selectedBrand].logo ?
                 <img
-                  className="h-full w-full mx-auto"
+                  className="mx-auto max-h-full"
                   src={brandDescription[selectedBrand].logo}
                 /> : null
             }
@@ -281,8 +281,13 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
               brandDescription[selectedBrand] && brandDescription[selectedBrand].description
             }
           </div>
-          <div className="underline flex flex-row justify-center items-center font-bold">
-            <Link href={`/${brandDescription[selectedBrand].slug}`}>Xem thêm</Link>
+          <div className="flex justify-center items-center">
+            <Link
+              href={`/${brandDescription[selectedBrand].slug}`}
+              className="border border-black font-bold hover:bg-[#FFAC0A] hover:text-white hover:border-transparent transition rounded-full px-3 py-1 my-2.5"
+            >
+              Xem thêm
+            </Link>
           </div>
         </div>
       </div>

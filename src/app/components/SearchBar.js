@@ -1,47 +1,57 @@
-"use client";
+'use client';
 
-import { Input } from "@nextui-org/react";
-import { LoaderIcon, Search } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import React, { useEffect, useRef, useState } from "react";
-import { useOutsideAlerter } from "@/app/hooks";
+import { Input } from '@nextui-org/react';
+import { LoaderIcon, Search } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import React, { useEffect, useRef, useState } from 'react';
+import { useOutsideAlerter } from '@/app/hooks';
+import { throttle, debounce } from 'lodash';
 
 const SearchBar = () => {
   const wrapperRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isCategoriesLoading, setIsCategoriesLoading] = useState(false);
 
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
 
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState('');
 
-  useOutsideAlerter(wrapperRef, () => setSearchText(""));
+  useOutsideAlerter(wrapperRef, () => setSearchText(''));
 
+  // useEffect(() => {
+  //   Promise.all([
+  //     fetch(`/api/products?size=10&page=1`)
+  //       .then((res) => res.json())
+  //       .then((value) => setProducts(value.result)),
+  //     fetch(`/api/categories`)
+  //       .then((res) => res.json())
+  //       .then((json) => setCategories(json.result)),
+  //   ]).then(() => {
+  //     setIsLoading(false);
+  //   });
+  // }, []);
   useEffect(() => {
-    Promise.all([
-      fetch(`/api/products?size=10&page=1`)
-        .then((res) => res.json())
-        .then((value) => setProducts(value.result)),
-      fetch(`/api/categories`)
-        .then((res) => res.json())
-        .then((json) => setCategories(json.result)),
-    ]).then(() => {
-      setIsLoading(false);
-    });
-  }, []);
-  useEffect(() => {
-    if (searchText) {
-      setFilteredCategories(
-        categories.filter((category) =>
-          category.name.toLowerCase().includes(searchText.toLowerCase())
-        )
-      );
-    } else {
-      setFilteredCategories([]);
-    }
+    setIsCategoriesLoading(true);
+    const searchCategories = debounce(async () => {
+      if (searchText) {
+        const response = await fetch(
+          `/api/categories/search?searchText=${searchText}`
+        );
+        const result = await response.json();
+        console.log(result);
+        setFilteredCategories(result.result);
+        setIsCategoriesLoading(false);
+      } else {
+        setFilteredCategories([]);
+        setIsCategoriesLoading(false);
+      }
+    }, 300);
+
+    Promise.searchCategories();
   }, [categories, searchText]);
   useEffect(() => {
     if (filteredCategories.length > 0) {
@@ -67,21 +77,21 @@ const SearchBar = () => {
         }
         value={searchText}
         onChange={(event) => setSearchText(event.target.value)}
-        onClear={() => setSearchText("")}
+        onClear={() => setSearchText('')}
       />
       {searchText && (
         <div className="w-[400px] bg-white shadow-lg rounded-lg absolute top-full left-0 mt-2 overflow-hidden z-50">
           <div className="px-4 py-2 bg-slate-200 border-b-1 border-slate-300">
             <p className="text-slate-600">Có phải bạn đang muốn tìm</p>
           </div>
-          {!isLoading ? (
+          {!isCategoriesLoading ? (
             filteredCategories.length > 0 ? (
               <div className="divide-y-small divide-slate-300">
                 {filteredCategories.map((category) => (
                   <Link
                     key={category.id}
                     href={`/${category.slug}`}
-                    onClick={() => setSearchText("")}
+                    onClick={() => setSearchText('')}
                   >
                     <div className="px-4 py-2 hover:bg-slate-50 cursor-pointer">
                       {category.name}
@@ -109,7 +119,7 @@ const SearchBar = () => {
                   <div key={product.id}>
                     <Link
                       href={`/san-pham/${product.slug}`}
-                      onClick={() => setSearchText("")}
+                      onClick={() => setSearchText('')}
                     >
                       <div className="px-4 py-2 flex items-center gap-5 hover:bg-slate-50 cursor-pointer">
                         <Image

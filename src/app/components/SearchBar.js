@@ -4,66 +4,57 @@ import { Input } from '@nextui-org/react';
 import { LoaderIcon, Search } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useOutsideAlerter } from '@/app/hooks';
-import { throttle, debounce } from 'lodash';
 
 const SearchBar = () => {
   const wrapperRef = useRef(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [isCategoriesLoading, setIsCategoriesLoading] = useState(false);
-
-  const [products, setProducts] = useState([]);
+  const [isProductsLoading, setIsProductsLoading] = useState(false);
   const [categories, setCategories] = useState([]);
-  const [filteredCategories, setFilteredCategories] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [condition, setCondition] = useState({});
 
-  const [searchText, setSearchText] = useState('');
+  useOutsideAlerter(wrapperRef, () => onConditionChange({ name: '' }));
 
-  useOutsideAlerter(wrapperRef, () => setSearchText(''));
-
-  // useEffect(() => {
-  //   Promise.all([
-  //     fetch(`/api/products?size=10&page=1`)
-  //       .then((res) => res.json())
-  //       .then((value) => setProducts(value.result)),
-  //     fetch(`/api/categories`)
-  //       .then((res) => res.json())
-  //       .then((json) => setCategories(json.result)),
-  //   ]).then(() => {
-  //     setIsLoading(false);
-  //   });
-  // }, []);
-  useEffect(() => {
+  const getCategoriesAndRelatedProducts = async () => {
     setIsCategoriesLoading(true);
-    const searchCategories = debounce(async () => {
-      if (searchText) {
-        const response = await fetch(
-          `/api/categories/search?searchText=${searchText}`
-        );
-        const result = await response.json();
-        console.log(result);
-        setFilteredCategories(result.result);
-        setIsCategoriesLoading(false);
-      } else {
-        setFilteredCategories([]);
-        setIsCategoriesLoading(false);
-      }
-    }, 300);
+    setIsProductsLoading(true);
 
-    Promise.searchCategories();
-  }, [categories, searchText]);
-  useEffect(() => {
-    if (filteredCategories.length > 0) {
-      setFilteredProducts(
-        products.filter((product) =>
-          filteredCategories.find((c) => product?.categoryId === c.id)
-        )
-      );
-    } else {
-      setFilteredProducts([]);
-    }
-  }, [filteredCategories, products]);
+    let filteredCondition = { ...condition };
+    Object.keys(filteredCondition).forEach(
+      (key) =>
+        filteredCondition[key] === undefined && delete filteredCondition[key]
+    );
+    const queryString = new URLSearchParams(filteredCondition).toString();
+
+    const returnedCategories = await fetch(
+      `/api/categories/?size=${10}&page=${1}&${queryString}`
+    ).then(async (res) => {
+      const data = await res.json();
+      setCategories(data.result);
+      setIsCategoriesLoading(false);
+      return data.result;
+    });
+
+    let products = [];
+    Promise.all([
+      ...returnedCategories.map((category) =>
+        fetch(
+          `/api/products/?size=${10}&page=${1}&categoryId=${category.id}`
+        ).then(async (value) => {
+          const response = await value.json();
+          products = [...products, ...response.result];
+        })
+      ),
+    ]).then(() => {
+      setProducts(products);
+      setIsProductsLoading(false);
+    });
+  };
+  const onConditionChange = (value) => {
+    setCondition(Object.assign({}, condition, value));
+  };
 
   return (
     <div ref={wrapperRef} className="relative">
@@ -75,23 +66,26 @@ const SearchBar = () => {
         startContent={
           <Search className="hover:opacity-hover" strokeWidth={3}></Search>
         }
-        value={searchText}
-        onChange={(event) => setSearchText(event.target.value)}
-        onClear={() => setSearchText('')}
+        value={condition.name}
+        onValueChange={(value) => {
+          onConditionChange({ name: value });
+          if (value.length > 2) getCategoriesAndRelatedProducts();
+        }}
+        onClear={() => onConditionChange({ name: '' })}
       />
-      {searchText && (
+      {condition.name && condition.name.length > 2 && (
         <div className="w-[400px] bg-white shadow-lg rounded-lg absolute top-full left-0 mt-2 overflow-hidden z-50">
           <div className="px-4 py-2 bg-slate-200 border-b-1 border-slate-300">
             <p className="text-slate-600">Có phải bạn đang muốn tìm</p>
           </div>
           {!isCategoriesLoading ? (
-            filteredCategories.length > 0 ? (
+            categories.length > 0 ? (
               <div className="divide-y-small divide-slate-300">
-                {filteredCategories.map((category) => (
+                {categories.map((category) => (
                   <Link
                     key={category.id}
                     href={`/${category.slug}`}
-                    onClick={() => setSearchText('')}
+                    onClick={() => onConditionChange({ name: '' })}
                   >
                     <div className="px-4 py-2 hover:bg-slate-50 cursor-pointer">
                       {category.name}
@@ -112,38 +106,40 @@ const SearchBar = () => {
           <div className="px-4 py-2 bg-slate-200 border-b-1 border-t-1 border-slate-300">
             <p className="text-slate-600">Sản phẩm gợi ý</p>
           </div>
-          {!isLoading ? (
-            filteredProducts.length > 0 ? (
+          {!isProductsLoading ? (
+            products.length > 0 ? (
               <div className="divide-y-small divide-slate-300 py-2">
-                {filteredProducts.map((product) => (
-                  <div key={product.id}>
-                    <Link
-                      href={`/san-pham/${product.slug}`}
-                      onClick={() => setSearchText('')}
-                    >
-                      <div className="px-4 py-2 flex items-center gap-5 hover:bg-slate-50 cursor-pointer">
-                        <Image
-                          width={60}
-                          height={60}
-                          priority
-                          src={`${
-                            process.env.NEXT_PUBLIC_FILE_PATH +
-                            product.image?.path
-                          }`}
-                          alt={product.image?.name}
-                        />
-                        <div className="">
-                          <h3 className="font-semibold text-slate-600">
-                            {product?.name}
-                          </h3>
-                          <p className="text-slate-400">
-                            {product.category?.name}
-                          </p>
+                {products.map((product) => {
+                  return (
+                    <div key={product.id}>
+                      <Link
+                        href={`/san-pham/${product.slug}`}
+                        onClick={() => onConditionChange({ name: '' })}
+                      >
+                        <div className="px-4 py-2 flex items-center gap-5 hover:bg-slate-50 cursor-pointer">
+                          <Image
+                            width={60}
+                            height={60}
+                            priority
+                            src={`${
+                              process.env.NEXT_PUBLIC_FILE_PATH +
+                              product.image?.path
+                            }`}
+                            alt={'Something'}
+                          />
+                          <div className="">
+                            <h3 className="font-semibold text-slate-600">
+                              {product?.name}
+                            </h3>
+                            <p className="text-slate-400">
+                              {product.category?.name}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    </Link>
-                  </div>
-                ))}
+                      </Link>
+                    </div>
+                  );
+                })}
               </div>
             ) : (
               <div className="py-2 flex justify-center">

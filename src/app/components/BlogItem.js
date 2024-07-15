@@ -41,7 +41,7 @@ export default ({ noBorder = false, item, containerClass = "lg:grid-cols-[160px_
             <div className="w-0.5 h-0.5 min-w-0.5 bg-[currentColor] rounded-full mx-2"></div>
             <span className="flex items-center">
               <Calendar size="12" color="currentColor" className="mr-1" />
-              {new Date(item.updatedAt).toLocaleDateString()}
+              {new Date(item.updatedAt).toLocaleDateString("en-GB")}
             </span>
           </div>
         </div>

@@ -55,9 +55,7 @@ export default function PopularBlogs() {
                   <Card>
                     <CardHeader className="flex flex-col items-center justify-center h-64">
                       <img
-                        width={400}
-                        height={200}
-                        className="h-[250px] w-[300px]"
+                        className="h-full w-full"
                         src={`${process.env.NEXT_PUBLIC_FILE_PATH + blog.thumbnail}`}
                         alt="Thumbnail image"
                       />
@@ -69,9 +67,12 @@ export default function PopularBlogs() {
                           {blog.title}
                         </p>
                       </div>
-                      <div>
+                      <div className="w-full flex">
                         <div className="italic">
-                          {new Date(blog.updatedAt).toLocaleDateString()}
+                          {new Date(blog.updatedAt).toLocaleDateString("en-GB")}
+                        </div>
+                        <div className="text-sm text-[#6d6d6d] absolute right-2">
+                          {blog.author}
                         </div>
                       </div>
                     </CardBody>

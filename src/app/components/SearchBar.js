@@ -5,7 +5,6 @@ import { LoaderIcon, Search } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useRef, useState } from 'react';
-import { useOutsideAlerter } from '@/app/hooks';
 
 const SearchBar = () => {
   const wrapperRef = useRef(null);
@@ -15,9 +14,7 @@ const SearchBar = () => {
   const [products, setProducts] = useState([]);
   const [condition, setCondition] = useState({});
 
-  useOutsideAlerter(wrapperRef, () => onConditionChange({ name: '' }));
-
-  const getCategoriesAndRelatedProducts = async () => {
+  const onSearch = async () => {
     setIsCategoriesLoading(true);
     setIsProductsLoading(true);
 
@@ -69,7 +66,7 @@ const SearchBar = () => {
         value={condition.name}
         onValueChange={(value) => {
           onConditionChange({ name: value });
-          if (value.length > 2) getCategoriesAndRelatedProducts();
+          if (value.length > 2) onSearch();
         }}
         onClear={() => onConditionChange({ name: '' })}
       />

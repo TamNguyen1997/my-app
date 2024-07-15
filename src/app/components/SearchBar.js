@@ -25,29 +25,21 @@ const SearchBar = () => {
     );
     const queryString = new URLSearchParams(filteredCondition).toString();
 
-    const returnedCategories = await fetch(
-      `/api/categories/?size=${10}&page=${1}&${queryString}`
-    ).then(async (res) => {
-      const data = await res.json();
-      setCategories(data.result);
-      setIsCategoriesLoading(false);
-      return data.result;
-    });
+    fetch(`/api/categories/?size=${5}&page=${1}&${queryString}`).then(
+      async (res) => {
+        const data = await res.json();
+        setCategories(data.result);
+        setIsCategoriesLoading(false);
+      }
+    );
 
-    let products = [];
-    Promise.all([
-      ...returnedCategories.map((category) =>
-        fetch(
-          `/api/products/?size=${10}&page=${1}&categoryId=${category.id}`
-        ).then(async (value) => {
-          const response = await value.json();
-          products = [...products, ...response.result];
-        })
-      ),
-    ]).then(() => {
-      setProducts(products);
-      setIsProductsLoading(false);
-    });
+    fetch(`/api/products/?size=${5}&page=${1}&${queryString}`).then(
+      async (value) => {
+        const response = await value.json();
+        setProducts(response.result);
+        setIsProductsLoading(false);
+      }
+    );
   };
   const onConditionChange = (value) => {
     setCondition(Object.assign({}, condition, value));
@@ -110,7 +102,7 @@ const SearchBar = () => {
                   return (
                     <div key={product.id}>
                       <Link
-                        href={`/san-pham/${product.slug}`}
+                        href={`/san-pham/${product.id}`}
                         onClick={() => onConditionChange({ name: '' })}
                       >
                         <div className="px-4 py-2 flex items-center gap-5 hover:bg-slate-50 cursor-pointer">
@@ -122,7 +114,7 @@ const SearchBar = () => {
                               process.env.NEXT_PUBLIC_FILE_PATH +
                               product.image?.path
                             }`}
-                            alt={'Something'}
+                            alt={product?.name}
                           />
                           <div className="">
                             <h3 className="font-semibold text-slate-600">

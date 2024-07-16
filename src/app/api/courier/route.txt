@@ -1,0 +1,43 @@
+
+POST getShippingPrice(order : RequestBody) => {
+  fetch("https://partner.viettelpost.vn/v2/order/getPriceNlp").body({
+    "PRODUCT_WEIGHT": 7500,
+    "ORDER_SERVICE": "VCN",
+    "SENDER_ADDRESS": "666/62 Ba Tháng Hai, Phường 14, Quận 10, TP Hồ Chí Minh",
+    "RECEIVER_ADDRESS": "114 An Dương Vương, phường 16, quận 8",
+    "PRODUCT_TYPE": "HH",
+    "NATIONAL_TYPE": 1
+  })
+}
+
+POST createViettelPostOrder(order : RequestBody) => {
+
+  fetch("https://partner.viettelpost.vn/v2/order/getPriceNlp").body({
+    "SENDER_FULLNAME": "Yanme Shop",
+    "SENDER_ADDRESS": "Số 5A ngách 22 ngõ 282 Kim Giang, Đại Kim (0967.363.789), Quận Hoàng Mai, Hà Nội",
+    "SENDER_PHONE": "0967.363.789",
+    "SENDER_EMAIL": "vanchinh.libra@gmail.com",
+    "RECEIVER_FULLNAME": "Sao Việt",
+    "RECEIVER_ADDRESS": "1 NKKN P.Nguyễn Thái Bình, Quận 1, TP Hồ Chí Minh",
+    "RECEIVER_PHONE": "0907882792",
+    "RECEIVER_EMAIL": "hoangnh50@fpt.com.vn",
+    "PRODUCT_NAME": "Máy xay sinh tố Philips HR2118 2.0L ",
+    "PRODUCT_DESCRIPTION": "Máy xay sinh tố Philips HR2118 2.0L ",
+    "PRODUCT_QUANTITY": 1,
+    "PRODUCT_WEIGHT": 40000,
+    "PRODUCT_LENGTH": 38,
+    "PRODUCT_WIDTH": 24,
+    "PRODUCT_HEIGHT": 25,
+    "PRODUCT_TYPE": "HH",
+    "ORDER_PAYMENT": 3,
+    "ORDER_SERVICE": "VCN",
+    "ORDER_NOTE": "cho xem hàng, không cho thử",
+    "LIST_ITEM": [
+      {
+        "PRODUCT_NAME": "Máy xay sinh tố Philips HR2118 2.0L ",
+        "PRODUCT_WEIGHT": 2500,
+        "PRODUCT_QUANTITY": 1
+      }
+    ]
+  })
+}

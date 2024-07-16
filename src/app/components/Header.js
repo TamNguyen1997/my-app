@@ -1,9 +1,8 @@
 "use client";
 
-import { Phone, Search, ShoppingCart } from "lucide-react";
+import { Phone, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { Button, Input } from "@nextui-org/react";
 import { useEffect, useState, useContext, useRef } from "react";
 import SearchBar from "@/components/SearchBar";
 import { CartContext } from "@/context/CartProvider";
@@ -33,10 +32,8 @@ const Header = () => {
               />
             </Link>
           </div>
-
-          {/* <div className="bg-[#ffd300] w-[75%] rounded-tl-[50px] rounded-bl-[50px] font-raleway"> */}
           <div className={`
-            w-[75%] rounded-tl-[50px] rounded-bl-[50px] font-raleway
+            w-[75%] rounded-tl-[50px] rounded-bl-[50px]
             bg-gradient-to-b from-[#ffd300] from-0% via-[#ffd300] via-50% to-[#FFAC0A] to-100%
           `}>
             <div className="pl-[50px] h-full">
@@ -128,10 +125,9 @@ const Header = () => {
                       <div className="flex items-center w-2/3 m-auto h-[80px]">
                         {subcate.imageUrl ? (
                           <img
-                            src={`${
-                              process.env.NEXT_PUBLIC_FILE_PATH +
+                            src={`${process.env.NEXT_PUBLIC_FILE_PATH +
                               subcate.imageUrl
-                            }`}
+                              }`}
                             width="150"
                             height="150"
                             alt={i}
@@ -179,37 +175,16 @@ const BRANDS = [
 ];
 
 const HeaderItems = ({ onHover, onMouseOut, setSubCate, setHoveredCate, subCateMenuRef, hoveredCate, showSubHeader }) => {
-  // const [windowSize, setWindowSize] = useState({
-  //   width: undefined,
-  //   height: undefined,
-  // })
-
-  // useEffect(() => {
-  //   function handleResize() {
-  //     setWindowSize({
-  //       width: window.innerWidth,
-  //       height: window.innerHeight,
-  //     })
-  //   }
-  //   window.addEventListener("resize", handleResize)
-  //   handleResize()
-  //   return () => window.removeEventListener("resize", handleResize)
-  // }, [])
-
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     fetch('/api/categories/?includeSubCate=true&size=7&showOnHeader=true').then(res => res.json()).then(json => setCategories(json.result))
   }, [])
 
-  // if (windowSize.width <= 1024) {
-
-  // }
-
   const headerItemsRef = useRef();
 
   useEffect(() => {
-    const handleScroll = (evt) => {
+    const handleScroll = () => {
       if (!headerItemsRef?.current) return;
       const parentNode = headerItemsRef.current.parentNode;
       const nav = headerItemsRef.current.closest("nav");
@@ -272,9 +247,9 @@ const HeaderItems = ({ onHover, onMouseOut, setSubCate, setHoveredCate, subCateM
               {category.name}
             </Link>
           )}
-        </div>
       </div>
-    </>
+    </div>
+  </>
   );
 };
 

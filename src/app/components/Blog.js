@@ -31,7 +31,7 @@ const BlogDetail = ({ slug }) => {
 
   useState(() => {
     fetch(`/api/blogs/${slug}`).then(res => res.json()).then(json => setBlog(json))
-    fetch(`/api/blogs?blogCategory=INFORMATION`).then(res => res.json()).then(setRelatedBlogs)
+    fetch(`/api/blogs?blogCategory=INFORMATION&size=3&page=1`).then(res => res.json()).then(setRelatedBlogs)
   }, [slug])
 
   if (!blog.id) return <></>

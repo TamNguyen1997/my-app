@@ -15,10 +15,17 @@ export async function POST(req) {
 
 export async function GET(req) {
   try {
+    let page = 1
+    let size = 10
+
     const { query } = queryString.parseUrl(req.url);
 
     let condition = {}
 
+    if (query) {
+      page = parseInt(query.page) || 1
+      size = parseInt(query.size) || 10
+    }
     if (query.blogCategory) {
       condition.blogCategory = query.blogCategory
     }
@@ -28,7 +35,9 @@ export async function GET(req) {
     }
 
     return NextResponse.json(await db.blog.findMany({
-      where: condition
+      where: condition,
+      take: size,
+      skip: (page - 1) * size
     }))
   } catch (e) {
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })

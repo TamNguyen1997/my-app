@@ -36,8 +36,6 @@ export default function PopularBlogs() {
 
   if (isLoading) return <Spinner className="m-auto" />
 
-  if (blogs.length === 0) return <></>
-
   return (
     <>
       <div className="pb-2">
@@ -48,7 +46,7 @@ export default function PopularBlogs() {
 
       <Carousel responsive={responsive} className="flex items-center pb-1" infinite>
         {
-          blogs.map((blog) => {
+          blogs?.map((blog) => {
             return <div className="p-1" key={blog.id}>
               <Link href={`/blog/${blog.slug}`}>
                 <div className="hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)] transition">

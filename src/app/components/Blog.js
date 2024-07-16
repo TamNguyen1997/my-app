@@ -12,26 +12,72 @@ import BlogCarousel from "@/components/BlogCarousel";
 import TopBlogs from "@/components/TopBlogs";
 import BlogItem from "@/components/BlogItem";
 
+const blogCategories = [
+  {
+    title: "Kiến thức hay",
+    id: "INFORMATION",
+    slug: "blog",
+    tags: [
+      {
+        title: "Tất cả",
+        slug: "",
+        id: ""
+      },
+      {
+        title: "Từ điển thuật ngữ",
+        slug: "tu-dien-thuat-ngu",
+        id: "TERMINOLOGY",
+      },
+      {
+        title: "Tư vấn chọn mua",
+        slug: "tu-van-chon-mua",
+        id: "ADVISORY",
+      },
+      {
+        title: "Hướng dẫn sử dụng",
+        slug: "huong-dan-su-dung",
+        id: "MANUAL",
+      }
+    ]
+  },
+  {
+    title: "Tin tức",
+    id: "NEWS",
+    slug: "tin-tuc",
+    tags: []
+  }
+];
+
+const TAG_SLUGS = ["tu-van-chon-mua", "huong-dan-su-dung", "tu-dien-thuat-ngu"]
+
 const Blog = () => {
   const { slug } = useParams();
 
-  switch (slug[0]) {
-    case "tin-tuc":
-      return <BlogOverview defaultCategory="NEWS" />
-    case "blog":
-      return <BlogOverview defaultCategory="INFORMATION" />
-    default:
-      return <BlogDetail slug={slug[1]} />
+  const category = slug[0] === "tin-tuc" ? "NEWS" : "INFORMATION"
+  if (slug.length === 1) {
+    switch (slug[0]) {
+      case "tin-tuc":
+        return <BlogOverview activeCategory="NEWS" />
+      case "blog":
+        return <BlogOverview activeCategory="INFORMATION" activeTag="" />
+    }
   }
+
+  if (slug.length === 2 && TAG_SLUGS.includes(slug[1])) {
+    const activeTag = blogCategories.find(item => item.id === "INFORMATION").tags.find(item => item.slug === slug[1]).id
+    return <BlogOverview activeCategory="INFORMATION" activeTag={activeTag} />
+  }
+
+  return <BlogDetail slug={slug[1].toString()} category={category.toString()} />
 }
 
-const BlogDetail = ({ slug }) => {
+const BlogDetail = ({ slug, category }) => {
   const [blog, setBlog] = useState({})
   const [relatedBlogs, setRelatedBlogs] = useState([])
 
   useState(() => {
     fetch(`/api/blogs/${slug}`).then(res => res.json()).then(json => setBlog(json))
-    fetch(`/api/blogs?blogCategory=INFORMATION&size=3&page=1`).then(res => res.json()).then(setRelatedBlogs)
+    fetch(`/api/blogs?blogCategory=${category}&size=3&page=1`).then(res => res.json()).then(setRelatedBlogs)
   }, [slug])
 
   if (!blog.id) return <></>
@@ -150,48 +196,9 @@ const BlogDetail = ({ slug }) => {
   );
 };
 
-const blogCategories = [
-  {
-    title: "Kiến thức hay",
-    id: "INFORMATION",
-    slug: "blog",
-    tags: [
-      {
-        title: "Tất cả",
-        slug: "",
-        id: ""
-      },
-      {
-        title: "Từ điển thuật ngữ",
-        slug: "tu-dien-thuat-ngu",
-        id: "TERMINOLOGY",
-      },
-      {
-        title: "Tư vấn chọn mua",
-        slug: "tu-van-chon-mua",
-        id: "ADVISORY",
-      },
-      {
-        title: "Hướng dẫn sử dụng",
-        slug: "huong-dan-su-dung",
-        id: "MANUAL",
-      }
-    ]
-  },
-  {
-    title: "Tin tức",
-    id: "NEWS",
-    slug: "tin-tuc",
-    tags: []
-  }
-];
-
-const BlogOverview = ({ defaultCategory }) => {
+const BlogOverview = ({ activeCategory, activeTag }) => {
   const [blogs, setBlogs] = useState([]);
-  const [activeCategory, setActiveCategory] = useState(defaultCategory);
   const [category, setCategory] = useState({});
-
-  const [activeTag, setActiveTag] = useState("");
 
   useEffect(() => {
     fetch(`/api/blogs?blogCategory=${activeCategory}&blogSubCategory=${activeTag}`).then(res => res.json()).then(json => {
@@ -223,7 +230,6 @@ const BlogOverview = ({ defaultCategory }) => {
                         ${category.id === activeCategory && 'after:!w-[100%]'}
                       `}
                       key={category.id}
-                      onClick={() => setActiveCategory(category.id)}
                       href={`/${category.slug}`}
                     >
                       {category.title}
@@ -250,17 +256,17 @@ const BlogOverview = ({ defaultCategory }) => {
                 {
                   category.tags?.map(tag => {
                     return (
-                      <div
+                      <Link
                         className={`
                                 text-[13px] rounded bg-[#f2f4f9] cursor-pointer transition
                                 flex items-center justify-center text-center px-2 pt-1 pb-0.5 mr-2 mb-4
                                 ${tag.id === activeTag && 'bg-black text-white'}
                               `}
                         key={tag.id}
-                        onClick={() => setActiveTag(tag.id)}
+                        href={`/blog/${tag.slug}`}
                       >
                         {tag.title}
-                      </div>
+                      </Link>
                     )
                   })
                 }

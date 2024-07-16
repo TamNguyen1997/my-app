@@ -60,13 +60,11 @@ const Introduction = () => {
       backgroundSize: "100% 100%"
     }}>
       <div className="flex gap-5 max-w-[1200px] px-4 mx-auto w-full flex-col pt-[120px]">
-        <div className="text-3xl font-medium pb-[76px]">
-          <p className=" pb-8">
-            Một trong những công ty dẫn đầu cung cấp các giải pháp <br /> làm vệ sinh chuyên nghiệp là đối tác tin cậy của các nhà đầu tư.
-          </p>
-          <p>
-            Các sản phẩm được Sao Việt chứng nhận chất lượng theo <br /> tiêu chuẩn quốc tế mang lại sự hài lòng cho người tiêu dùng.
-          </p>
+        <div className="text-xl font-medium pb-[76px] text-justify w-1/3">
+          Một trong những công ty dẫn đầu cung cấp các giải pháp làm vệ sinh chuyên nghiệp là đối tác tin cậy của các nhà đầu tư.
+          <br />
+          <br />
+          Các sản phẩm được Sao Việt chứng nhận chất lượng theo tiêu chuẩn quốc tế mang lại sự hài lòng cho người tiêu dùng.
         </div>
 
         <div className="flex gap-5">

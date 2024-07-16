@@ -84,7 +84,7 @@ const BlogDetail = ({ slug, category }) => {
 
   return (
     <div className="bg-[#f6f6f6] blog-detail">
-      <div className="bg-[#d4ff96] bg-opacity-40 py-6">
+      <div className="bg-[#ffd300] bg-opacity-40 py-6">
         <div className="container">
           <Breadcrumbs
             variant="light"

@@ -8,7 +8,7 @@ const blogCategories = {
 export default ({ relatedBlogs }) => {
   return (
     <>
-      <div className="text-lg text-[#FFD300] leading-none font-semibold border-l-4 border-[#83e214] pl-3 mb-4">BÀI VIẾT LIÊN QUAN</div>
+      <div className="text-lg text-[#FFD300] leading-none font-semibold border-l-4 border-[#FFD300] pl-3 mb-4">BÀI VIẾT LIÊN QUAN</div>
 
       <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4">
         {
@@ -24,7 +24,7 @@ export default ({ relatedBlogs }) => {
                   className="rounded"
                 />
                 <div className="pl-4">
-                  <p className="text-sm font-semibold truncate line-clamp-2 whitespace-normal text-[#83e214] mb-2">TIN TỨC</p>
+                  <p className="text-sm font-semibold truncate line-clamp-2 whitespace-normal text-[#FFD300] mb-2">TIN TỨC</p>
                   <p className="font-semibold truncate line-clamp-2 whitespace-normal mb-2">{item.title}</p>
                   <div className="text-xs text-[#a5a5a5] flex items-center flex-wrap">
                     <span>{item.title}</span>

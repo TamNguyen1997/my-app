@@ -8,7 +8,13 @@ const CartProvider = ({ children }) => {
   const [cartdetails, setCartDetails] = useState([]);
 
   const addItemToCart = (e) => {
-    updateCartDetails([...cartdetails, e])
+    const item = cartdetails.find(item => item.product.id === e.product.id)
+    if (item) {
+      updateItemQuantityInCart(e, parseInt(item.quantity) + 1)
+    } else {
+      const details = JSON.parse(localStorage.getItem('cartdetails'));
+      updateCartDetails([...details, e])
+    }
   };
 
   const removeItemFromCart = (item) => {
@@ -31,6 +37,7 @@ const CartProvider = ({ children }) => {
   }
 
   const getPrice = (saleDetail, secondarySaleDetail) => {
+    if (!secondarySaleDetail && !saleDetail) return 0
     if (secondarySaleDetail.price) return secondarySaleDetail.price
     if (!secondarySaleDetail.price && saleDetail.price) return saleDetail.price
 

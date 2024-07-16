@@ -40,7 +40,9 @@ const Header = () => {
               <div className="p-3 flex gap-7">
                 <div className="w-[1/4] flex items-center gap-5">
                   <SearchBar />
-                  <div className="bg-[#FFAC0A] w-[150px] h-[40px] items-center text-center relative flex gap-2 rounded-md shadow-md">
+                  <Link
+                    href="/gio-hang"
+                    className="bg-[#FFAC0A] w-[150px] h-[40px] items-center text-center relative flex gap-2 rounded-md shadow-md">
                     <span className="pl-1">
                       <ShoppingCart size={24} strokeWidth={2}></ShoppingCart>
                     </span>
@@ -53,7 +55,7 @@ const Header = () => {
                     ) : (
                       ""
                     )}
-                  </div>
+                  </Link>
                 </div>
                 <div className="flex items-center text-sm">
                   <div className="flex gap-10">

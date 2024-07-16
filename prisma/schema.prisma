@@ -31,7 +31,6 @@ model product {
   description String?
 
   saleDetails       sale_detail[]
-  order_history     order_history[]
   technicalDetailId String?           @map("technical_detail_id") @db.Uuid
   technical_detail  technical_detail?
 
@@ -43,8 +42,9 @@ model product {
 
   quantity Int @default(0)
 
-  brand   brand?  @relation(fields: [brandId], references: [id])
-  brandId String? @db.Uuid
+  brand            brand?             @relation(fields: [brandId], references: [id])
+  brandId          String?            @db.Uuid
+  product_on_order product_on_order[]
 
   @@index([imageId])
   @@index([subCategoryId])
@@ -94,12 +94,39 @@ model secondary_sale_detail {
   @@index([saleDetailId])
 }
 
-model order_history {
-  id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  productId String  @map("product_id")
-  product   product @relation(fields: [productId], references: [id])
+model order {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
 
-  @@index([productId])
+  address String
+  phone   String
+  email   String
+  name    String
+  total   Int    @default(0)
+
+  status           ORDER_STATUS       @default(PENDING)
+  paymentMethod    PAYMENT_METHOD     @default(OCD) @map("payment_method")
+  product_on_order product_on_order[]
+}
+
+enum ORDER_STATUS {
+  PENDING
+  DELIVERED
+}
+
+enum PAYMENT_METHOD {
+  OCD
+  VIETQR
+}
+
+model product_on_order {
+  product   product @relation(fields: [productId], references: [id])
+  productId String  @map("product_id")
+  order     order   @relation(fields: [orderId], references: [id])
+  orderId   String  @map("order_id")
+  quantity  Int     @default(0)
+
+  @@id([productId, orderId])
+  @@index([orderId])
 }
 
 model image {

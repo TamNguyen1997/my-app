@@ -61,7 +61,7 @@ const Header = () => {
                   <div className="flex gap-10">
                     <div className="flex items-center gap-10">
                       <Link href="/tin-tuc">Tin tức</Link>
-                      <Link href="/blog">Kiến thức hay</Link>
+                      <Link href="/kien-thuc-hay">Kiến thức hay</Link>
                     </div>
                     <div className="flex items-center gap-10">
                       <Link href="/lien-he">Liên hệ</Link>

@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/breadcrumbs";
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Slider } from "@nextui-org/react";
 import Image from "next/image";
-import Blog from "@/components/Blog"
 
 const BRANDS = {
   "Kimberly": {
@@ -85,10 +84,6 @@ const FILTER = {
 
 const Cate = () => {
   const params = useParams();
-  if (params.slug[0] === 'tin-tuc' || params.slug[0] === 'blog') {
-    return <Blog />
-  }
-
   if (params.slug.length === 1) {
 
     if (params.slug[0].startsWith('thuong-hieu')) {

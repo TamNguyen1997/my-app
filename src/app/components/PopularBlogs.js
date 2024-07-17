@@ -1,6 +1,6 @@
 "use client"
 
-import { Card, CardBody, CardHeader, Divider, Image, Spinner } from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Divider, Spinner } from "@nextui-org/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Carousel from "react-multi-carousel"
@@ -48,7 +48,7 @@ export default function PopularBlogs() {
         {
           blogs?.map((blog) => {
             return <div className="p-1" key={blog.id}>
-              <Link href={`/blog/${blog.slug}`}>
+              <Link href={`/kien-thuc-hay/${blog.slug}`}>
                 <div className="hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)] transition">
                   <Card>
                     <CardHeader className="flex flex-col items-center justify-center h-64">
@@ -83,7 +83,7 @@ export default function PopularBlogs() {
       </Carousel>
 
       <Link
-        href="/blog"
+        href="/kien-thuc-hay"
         className="flex items-center w-1/3 h-[50px] m-auto rounded-large border-medium border-slate-950 hover:opacity-30">
         <span className="m-auto text-black">
           Xem tất cả tin tức

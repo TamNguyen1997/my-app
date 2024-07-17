@@ -86,7 +86,7 @@ const Footer = () => {
           </div>
           <p className="font-bold">MẠNG XÃ HỘI</p>
           <div className="flex gap-3">
-            <Link href="/">
+            <Link href="https://www.facebook.com/vesinhsaoviet/?ref=embed_page">
               <Facebook className="w-[30px] h-[30px] text-white" />
             </Link>
             <Link href="/">

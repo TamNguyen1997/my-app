@@ -46,7 +46,7 @@ const SearchBar = () => {
   };
 
   return (
-    <div ref={wrapperRef} className="relative">
+    <div ref={wrapperRef} className="relative lg:w-72 md:w-60 xl:w-96 sm:w-44">
       <Input
         isClearable
         radius="lg"
@@ -110,10 +110,9 @@ const SearchBar = () => {
                             width={60}
                             height={60}
                             priority
-                            src={`${
-                              process.env.NEXT_PUBLIC_FILE_PATH +
+                            src={`${process.env.NEXT_PUBLIC_FILE_PATH +
                               product.image?.path
-                            }`}
+                              }`}
                             alt={product?.name}
                           />
                           <div className="">

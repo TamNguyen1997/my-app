@@ -13,7 +13,6 @@
 .container {
   display: flex;
   flex-direction: column;
-  font-family: sans-serif;
 }
 
 .dropzone {
@@ -48,7 +47,3 @@
 .image:hover span {
   display: block;
 }
-
-/* span:hover {
-  display: block;
-} */

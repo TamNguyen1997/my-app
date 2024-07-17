@@ -33,12 +33,12 @@ const Header = () => {
             </Link>
           </div>
           <div className={`
-            w-[75%] rounded-tl-[50px] rounded-bl-[50px]
+            w-[80%] rounded-tl-[50px] rounded-bl-[50px]
             bg-gradient-to-b from-[#ffd300] from-0% via-[#ffd300] via-50% to-[#FFAC0A] to-100%
           `}>
-            <div className="pl-[50px] h-full">
+            <div className="pl-9">
               <div className="p-3 flex gap-7">
-                <div className="w-[1/4] flex items-center gap-5">
+                <div className="flex items-center gap-5">
                   <SearchBar />
                   <Link
                     href="/gio-hang"
@@ -78,7 +78,6 @@ const Header = () => {
                 </div>
               </div>
               <div
-                className="flex gap-5 pt-6"
                 onMouseOver={() => setShowSubHeader(true)}
                 onMouseOut={() => {
                   setShowSubHeader(false);
@@ -216,7 +215,7 @@ const HeaderItems = ({ onHover, onMouseOut, setSubCate, setHoveredCate, subCateM
 
   return (<>
     <div className="w-full" ref={headerItemsRef}>
-      <div className="container flex text-sm items-center text-center">
+      <div className="pl-2 flex text-sm items-center text-center">
         <Link href=""
           onMouseOver={() => {
             setSubCate(BRANDS)

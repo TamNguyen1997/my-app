@@ -64,7 +64,7 @@ const Header = () => {
                       <Link href="/blog">Kiến thức hay</Link>
                     </div>
                     <div className="flex items-center gap-10">
-                      <Link href="/">Liên hệ</Link>
+                      <Link href="/lien-he">Liên hệ</Link>
                       <Link href="/">
                         <div className="flex gap-3 items-center">
                           <div>
@@ -215,7 +215,7 @@ const HeaderItems = ({ onHover, onMouseOut, setSubCate, setHoveredCate, subCateM
 
   return (<>
     <div className="w-full" ref={headerItemsRef}>
-      <div className="pl-2 flex text-sm items-center text-center">
+      <div className="pl-2 flex text-sm">
         <Link href=""
           onMouseOver={() => {
             setSubCate(BRANDS)

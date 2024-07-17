@@ -12,13 +12,19 @@ export async function GET(req) {
     size = parseInt(query.size) || 10
 
     if (query.phone) {
-      condition.highlight = query.phone
+      condition.phone = {
+        search: `${query.phone.trim().replaceAll(" ", " & ")}:*`
+      }
     }
     if (query.email) {
-      condition.email = query.email
+      condition.email = {
+        search: `${query.email.trim().replaceAll(" ", " & ")}:*`
+      }
     }
     if (query.name) {
-      condition.name = query.name
+      condition.name = {
+        search: `${query.name.trim().replaceAll(" ", " & ")}:*`
+      }
     }
   }
   try {

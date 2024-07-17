@@ -167,10 +167,9 @@ const Cart = () => {
               />
               <Textarea
                 label="Ghi chú"
-                aria-label="Địa chỉ"
+                aria-label="Ghi chú"
                 {...register("note")}
               />
-              {errors.address && <span className="text-red-600 text-small">Bạn phải điền địa chỉ</span>}
             </div>
             <Button className=" w-full items-center justify-center" color="primary" type="submit">
               Checkout

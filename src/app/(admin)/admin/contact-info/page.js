@@ -7,7 +7,14 @@ import {
   TableBody,
   Button,
   Pagination,
-  Input
+  Input,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  useDisclosure,
+  Textarea,
+  ModalFooter
 } from "@nextui-org/react"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { EditIcon, Search } from "lucide-react"
@@ -18,12 +25,13 @@ const ContactInfoCms = () => {
   const [loadingState, setLoadingState] = useState("loading")
 
   const [condition, setCondition] = useState({})
+  const [selectedInfo, setSelectedInfo] = useState({})
 
   const [total, setTotal] = useState(0)
 
   const [page, setPage] = useState(1);
   const [contactInfo, setContactInfo] = useState([])
-
+  const disclosure = useDisclosure()
 
   useEffect(() => {
     getContactInfo()
@@ -55,7 +63,10 @@ const ContactInfoCms = () => {
         return (
           <div className="relative flex items-center gap-2">
             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-              <EditIcon onClick={() => { }} />
+              <EditIcon onClick={() => {
+                setSelectedInfo(contactInfo)
+                disclosure.onOpen()
+              }} />
             </span>
           </div>
         )
@@ -131,6 +142,51 @@ const ContactInfoCms = () => {
             </TableBody>
           </Table>
         </div>
+        <Modal
+          size="5xl" scrollBehavior="inside"
+          isOpen={disclosure.isOpen} onOpenChange={disclosure.onOpenChange}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">Chọn hình ảnh</ModalHeader>
+                <ModalBody>
+                  <div className="space-y-4 shadow-sm sm:p-6">
+                    <Input
+                      label="Tên"
+                      aria-label="Tên"
+                      value={selectedInfo.name}
+                    />
+                    <Input
+                      label="Số điện thoại"
+                      aria-label="Số điện thoại"
+                      value={selectedInfo.phone}
+                    />
+                    <Input
+                      label="Email"
+                      aria-label="Email"
+                      value={selectedInfo.email}
+                    />
+                    <Textarea
+                      label="Ghi chú"
+                      aria-label="Ghi chú"
+                      value={selectedInfo.note}
+                      rows={10}
+                      disableAutosize
+                    />
+                    <Button className=" w-full items-center justify-center" color="primary" type="submit">
+                      Gửi
+                    </Button>
+                  </div>
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="danger" variant="light" onPress={onClose}>
+                    Close
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
       </div>
     </>
   )

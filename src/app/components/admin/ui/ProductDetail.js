@@ -1,4 +1,4 @@
-import { Button, Input, Modal, ModalContent, ModalHeader, Select, SelectItem, useDisclosure } from "@nextui-org/react"
+import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, useDisclosure } from "@nextui-org/react"
 import slugify from "slugify"
 import ImagePicker from "./ImagePicker"
 import RichTextEditor from "./RichTextArea"
@@ -94,8 +94,8 @@ const ProductDetail = ({
               onValueChange={(value) => setProduct(Object.assign({}, product, { sku: value }))}
             />
             <Input type="text"
-              aria-label="Hình ảnh"
-              label="Hình ảnh"
+              aria-label="Hình ảnh thumbnail"
+              label="Hình ảnh thumbnail"
               value={product.image?.name} isDisabled />
             <Input type="text"
               aria-label="Alt"

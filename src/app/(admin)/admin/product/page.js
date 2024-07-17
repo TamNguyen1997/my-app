@@ -370,7 +370,7 @@ const ProductCms = () => {
                     <Tab title="Hình ảnh">
                       <Card>
                         <CardBody>
-                          <ProductImage images={productImages} setImages={setProductImages} />
+                          <ProductImage product={selectedProduct} />
                         </CardBody>
                       </Card>
                     </Tab>

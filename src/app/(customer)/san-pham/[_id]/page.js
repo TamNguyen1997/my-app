@@ -11,11 +11,18 @@ import { motion } from "framer-motion";
 
 const Product = () => {
   const [product, setProduct] = useState({});
+  const [images, setImages] = useState([]);
   const { _id } = useParams();
   useEffect(() => {
-    fetch(`/api/products/${_id}?includeTechnical=true&includeSale=true`).then((res) => res.json()).then((json) => {
-      setProduct(json)
+    fetch(`/api/products/${_id}?includeTechnical=true&includeSale=true`).then((res) => res.json()).then(product => {
+      setProduct(product)
+      if (product.id) {
+        fetch(`/api/products/${product.id}/images`).then((res) => res.json()).then((json) => {
+          setImages(json.map(item => process.env.NEXT_PUBLIC_FILE_PATH + item.image.path))
+        })
+      }
     })
+
   }, [_id])
   if (!product?.id) {
     return <Skeleton />
@@ -50,7 +57,7 @@ const Product = () => {
           className="flex flex-wrap items-start bg-[#f8f8f8] mb-5"
         >
           <div className="relative sm:w-7/12 md:w-8/12 w-full bg-white border-[3px] border-[#f8f8f8]">
-            <ProductImageCarousel items={[process.env.NEXT_PUBLIC_FILE_PATH + product?.image?.path]} />
+            <ProductImageCarousel items={images} />
           </div>
 
           <div className="sm:w-5/12 md:w-4/12 w-full">

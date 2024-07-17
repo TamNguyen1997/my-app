@@ -94,13 +94,13 @@ export default ({ items }) => {
 				showDots
 				sliderClass=""
 				slidesToSlide={1}
-				customDot={<CustomDot />}
+				customDot={<CustomDot items={items} />}
 			>
 				{
 					items.map((img, index) => {
 						return (
 							<div className="relative flex items-center h-full" key={index}>
-								<img src={img} alt="" className="w-full" />
+								<img src={img} alt="" className="w-2/3 m-auto" />
 							</div>
 						)
 					})

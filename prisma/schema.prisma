@@ -55,10 +55,10 @@ model product {
 
 model product_on_image {
   productId String  @db.Uuid
-  product   product @relation(fields: [productId], references: [id])
+  product   product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   imageId String @db.Uuid
-  image   image  @relation(fields: [imageId], references: [id])
+  image   image  @relation(fields: [imageId], references: [id], onDelete: Cascade)
 
   @@id([imageId, productId])
   @@index([productId])

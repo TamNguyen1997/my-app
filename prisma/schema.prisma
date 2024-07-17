@@ -45,11 +45,24 @@ model product {
   brand            brand?             @relation(fields: [brandId], references: [id])
   brandId          String?            @db.Uuid
   product_on_order product_on_order[]
+  product_on_image product_on_image[]
 
   @@index([imageId])
   @@index([subCategoryId])
   @@index([categoryId])
   @@index([brandId])
+}
+
+model product_on_image {
+  productId String  @db.Uuid
+  product   product @relation(fields: [productId], references: [id])
+
+  imageId String @db.Uuid
+  image   image  @relation(fields: [imageId], references: [id])
+
+  @@id([imageId, productId])
+  @@index([productId])
+  @@index([imageId])
 }
 
 model technical_detail {
@@ -130,19 +143,20 @@ model product_on_order {
 }
 
 model image {
-  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  path        String
-  name        String
-  alt         String?
-  description String?
-  createdAt   DateTime   @default(now()) @map("created_at")
-  updatedAt   DateTime   @default(now()) @updatedAt @map("updated_at")
-  type        image_type @default(PRODUCT)
-  active      Boolean    @default(true)
-  slug        String
-  banner      banner[]
-  product     product[]
-  category    category[]
+  id               String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  path             String
+  name             String
+  alt              String?
+  description      String?
+  createdAt        DateTime           @default(now()) @map("created_at")
+  updatedAt        DateTime           @default(now()) @updatedAt @map("updated_at")
+  type             image_type         @default(PRODUCT)
+  active           Boolean            @default(true)
+  slug             String
+  banner           banner[]
+  product          product[]
+  category         category[]
+  product_on_image product_on_image[]
 
   @@unique([slug, type])
 }

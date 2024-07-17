@@ -4,7 +4,7 @@ import { User, Calendar } from "lucide-react";
 const blogCategories = {
   "INFORMATION": {
     title: "Kiến thức hay",
-    slug: "blog"
+    slug: "kien-thuc-hay"
   },
   "NEWS": {
     title: "Tin tức",

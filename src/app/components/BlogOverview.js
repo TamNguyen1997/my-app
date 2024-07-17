@@ -9,7 +9,7 @@ const blogCategories = [
   {
     title: "Kiến thức hay",
     id: "INFORMATION",
-    slug: "blog",
+    slug: "kien-thuc-hay",
     tags: [
       {
         title: "Tất cả",

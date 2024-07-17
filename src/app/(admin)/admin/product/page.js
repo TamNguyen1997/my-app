@@ -45,6 +45,7 @@ import { EmojiReplacer } from "@/app/components/admin/ui/extensions/EmojiReplace
 import SaleDetails from "@/app/components/admin/ui/SaleDetails";
 import TechnicalDetails from "@/app/components/admin/ui/TechnicalDetails";
 import ProductDetail from "@/app/components/admin/ui/ProductDetail";
+import ProductImage from "@/app/components/admin/ui/ProductImage";
 
 const rowsPerPage = 10;
 
@@ -62,6 +63,8 @@ const ProductCms = () => {
   const [loadingState, setLoadingState] = useState("loading")
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [selectedProduct, setSelectedProduct] = useState({})
+
+  const [productImages, setProductImages] = useState([])
 
   const [condition, setCondition] = useState({})
 
@@ -361,6 +364,13 @@ const ProductCms = () => {
                             editor={editor}
                             subCategories={subCategories}
                           />
+                        </CardBody>
+                      </Card>
+                    </Tab>
+                    <Tab title="Hình ảnh">
+                      <Card>
+                        <CardBody>
+                          <ProductImage images={productImages} setImages={setProductImages} />
                         </CardBody>
                       </Card>
                     </Tab>

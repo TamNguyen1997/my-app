@@ -39,10 +39,10 @@ const Customer = () => {
       <Link href="/" className="m-auto text-black font-bold text-xl">KHÁCH HÀNG SAO VIỆT</Link>
     </div>
 
-    <Carousel infinite responsive={responsive} className="w-full items-center" autoPlaySpeed={5000} autoPlay>
+    <Carousel infinite responsive={responsive} className="w-full items-center" autoPlaySpeed={5000} autoPlay arrows={false} showDots centerMode>
       {
         logo.map((l, i) => <div className="p-3 w-full h-full m-auto items-center text-center content-center" key={i}>
-          <Image
+          <img
             width={200}
             height={100}
             src={l}

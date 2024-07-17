@@ -84,6 +84,7 @@ const BlogDetail = ({ slug, category }) => {
 
   return (
     <div className="bg-[#f6f6f6]">
+      <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/blog/${slug}`} />
       <div className="bg-opacity-40 py-6">
         <div className="container">
           <Breadcrumbs
@@ -209,6 +210,7 @@ const BlogOverview = ({ activeCategory, activeTag }) => {
 
   return (
     <>
+      <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${activeCategory === "INFORMATION" ? "blog" : "tin-tuc"}`} />
       <div className="bg-[#f6f6f6]">
         <div className="container py-5">
           <motion.div

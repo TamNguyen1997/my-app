@@ -7,7 +7,7 @@ export async function GET(req, { params }) {
     return NextResponse.json({ message: `Resource not found ${params.slug}` }, { status: 400 })
   }
   try {
-    const subCategory = await db.sub_category.findFirst({ where: { slug: params.slug } })
+    const subCategory = await db.sub_category.findFirst({ where: { slug: params.slug }, include: { category: true } })
 
     if (!subCategory) {
       return NextResponse.json({ message: "No sub_category found" }, { status: 404 })

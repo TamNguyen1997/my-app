@@ -158,6 +158,7 @@ const Category = ({ params }) => {
 
   return (
     <>
+      <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${params}`} />
       <div
         className="flex flex-col items-center 
         bg-[image:var(--image-url)] bg-no-repeat bg-center bg-cover
@@ -595,6 +596,7 @@ const Brand = ({ params }) => {
 
   return (
     <>
+      <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${brand.slug}`} />
       <div className="flex flex-col items-center justify-center w-full h-60 bg-cover bg-center bg-no-repeat">
         <div className="flex flex-col items-center justify-center w-full h-full bg-no-repeat bg-cover bg-banner1">
         </div>

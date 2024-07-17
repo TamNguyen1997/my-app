@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 export default function Home() {
   return (
     <div className="font-open_san">
+      <link rel="canonical" href={process.env.NEXT_PUBLIC_DOMAIN} />
       <motion.div
         initial={{ x: -200, opacity: 0 }}
         whileInView={{ x: 0, opacity: 1 }}

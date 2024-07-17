@@ -1,6 +1,6 @@
 "use client";
 
-import BlogDetail from "@/components/BlogDetail"
+import BlogDetail from "@/components/blog/BlogDetail"
 import { useParams } from "next/navigation";
 
 const Information = () => {

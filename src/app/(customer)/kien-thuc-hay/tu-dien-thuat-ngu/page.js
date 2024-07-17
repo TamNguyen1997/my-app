@@ -1,6 +1,6 @@
 "use client";
 
-import BlogOverview from "@/components/BlogOverview"
+import BlogOverview from "@/components/blog/BlogOverview"
 
 export default () => {
   return (

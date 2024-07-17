@@ -1,4 +1,4 @@
-import BlogItem from "@/components/BlogItem";
+import BlogItem from "@/components/blog/BlogItem";
 
 export default ({ items }) => {
 	return (

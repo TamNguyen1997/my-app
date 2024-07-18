@@ -259,11 +259,21 @@ model category {
   imageId String? @db.Uuid
   image   image?  @relation(fields: [imageId], references: [id])
 
-  sub_category sub_category[]
-  product      product[]
+  type        cate_type      @default(CATE)
+  cateId      String?        @db.Uuid
+  cate        category?      @relation("sub_cate", fields: [cateId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  subcates    category[]     @relation("sub_cate")
+  product     product[]
+  subCategory sub_category[]
 
   @@unique([slug])
   @@index([imageId])
+  @@index([cateId])
+}
+
+enum cate_type {
+  SUB_CATE
+  CATE
 }
 
 model sub_category {

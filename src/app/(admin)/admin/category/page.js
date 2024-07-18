@@ -42,7 +42,7 @@ const Category = () => {
     let filteredCondition = { ...condition }
     Object.keys(filteredCondition).forEach(key => filteredCondition[key] === undefined && delete filteredCondition[key])
     const queryString = new URLSearchParams(filteredCondition).toString()
-    fetch(`/api/categories/?size=${10}&page=${page}&${queryString}`).then(async res => {
+    fetch(`/api/categories/?size=${10}&page=${page}&${queryString}&type=CATE&includeImage=true`).then(async res => {
       const data = await res.json()
       setCategories(data.result)
       setTotal(data.total)
@@ -316,7 +316,7 @@ const Category = () => {
 
 const SubCategory = ({ categories }) => {
   const [subCategories, setSubCategories] = useState([])
-  const [selectedSubCate, setSelectedSubCate] = useState({})
+  const [selectedSubCate, setSelectedSubCate] = useState({ type: "SUB_CATE" })
   const [condition, setCondition] = useState({})
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
@@ -339,7 +339,7 @@ const SubCategory = ({ categories }) => {
     let filteredCondition = { ...condition }
     Object.keys(filteredCondition).forEach(key => filteredCondition[key] === undefined && delete filteredCondition[key])
     const queryString = new URLSearchParams(filteredCondition).toString()
-    fetch(`/api/sub-categories/?size=${10}&page=${page}&${queryString}`).then(async res => {
+    fetch(`/api/categories/?size=${10}&page=${page}&${queryString}&type=SUB_CATE&includeImage=true`).then(async res => {
       const data = await res.json()
       setSubCategories(data.result)
       setTotal(data.total)
@@ -353,7 +353,7 @@ const SubCategory = ({ categories }) => {
 
     if (selectedSubCate.id) {
       toast.promise(
-        fetch(`/api/sub-categories/${selectedSubCate.id}`, { method: "PUT", body: JSON.stringify(selectedSubCate) }).then(async (res) => {
+        fetch(`/api/categories/${selectedSubCate.id}`, { method: "PUT", body: JSON.stringify(selectedSubCate) }).then(async (res) => {
           getSubCate()
           if (!res.ok) {
             throw new Error((await res.json()).message)
@@ -371,7 +371,7 @@ const SubCategory = ({ categories }) => {
       )
     } else {
       toast.promise(
-        fetch('/api/sub-categories/', { method: "POST", body: JSON.stringify(selectedSubCate) }).then(async (res) => {
+        fetch('/api/categories/', { method: "POST", body: JSON.stringify(Object.assign(selectedSubCate, { type: "SUB_CATE" })) }).then(async (res) => {
           getSubCate()
           if (!res.ok) {
             throw new Error((await res.json()).message)
@@ -397,7 +397,7 @@ const SubCategory = ({ categories }) => {
 
   const deleteSubCate = (id) => {
     toast.promise(
-      fetch(`/api/sub-categories/${id}`, { method: "DELETE" }).then(async (res) => {
+      fetch(`/api/categories/${id}`, { method: "DELETE" }).then(async (res) => {
         getSubCate()
         if (!res.ok) {
           throw new Error((await res.json()).message)
@@ -526,18 +526,12 @@ const SubCategory = ({ categories }) => {
                       label="Slug"
                       value={selectedSubCate.slug}
                       labelPlacement="outside" isRequired disabled />
-                    <div className='flex gap-3'>
-                      <Input label="Hình ảnh" aria-label="Hình ảnh" value={selectedSubCate?.imageUrl} disabled></Input>
-                      <div className='pt-2'>
-                        <Button onClick={imageModal.onOpen} className=''>Chọn ảnh</Button>
-                      </div>
-                    </div>
                     <Select
-                      label="Phân loại"
+                      label="Category"
                       labelPlacement="outside"
-                      defaultSelectedKeys={new Set([selectedSubCate.categoryId])}
+                      defaultSelectedKeys={new Set([selectedSubCate.cateId])}
                       onSelectionChange={(value) =>
-                        setSelectedSubCate(Object.assign({}, selectedSubCate, { categoryId: value.values().next().value }))}
+                        setSelectedSubCate(Object.assign({}, selectedSubCate, { cateId: value.values().next().value }))}
                     >
                       {
                         categories.map((category) => (
@@ -547,6 +541,19 @@ const SubCategory = ({ categories }) => {
                         ))
                       }
                     </Select>
+                    <div className='pt-2'>
+                      <Button onClick={imageModal.onOpen} color="primary">Chọn ảnh</Button>
+                    </div>
+                    <div className="m-auto w-2/3">
+                      {
+                        selectedSubCate.imageId ?
+                          <img
+                            className="w-full h-full"
+                            src={`${process.env.NEXT_PUBLIC_FILE_PATH + selectedSubCate?.image.path}`}
+                          />
+                          : <></>
+                      }
+                    </div>
                   </ModalBody>
                   <ModalFooter>
                     <Button color="primary" type="submit" onPress={onClose}>
@@ -569,7 +576,7 @@ const SubCategory = ({ categories }) => {
                 <ModalHeader className="flex flex-col gap-1">Chèn hình</ModalHeader>
                 <ModalBody>
                   <ImagePicker disableAdd onImageClick={(image) => {
-                    setSelectedSubCate(Object.assign({}, selectedSubCate, { imageUrl: image.path }))
+                    setSelectedSubCate(Object.assign({}, selectedSubCate, { image: image, imageId: image.id }))
                     onClose()
                   }} disableDelete></ImagePicker>
                 </ModalBody>

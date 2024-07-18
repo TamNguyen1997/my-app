@@ -26,6 +26,10 @@ export async function GET(req) {
     }
   }
 
+  if (query.type) {
+    condition.type = query.type
+  }
+
   if (query.includeSubCate) {
     include.sub_category = query.includeSubCate === 'true'
   }
@@ -65,6 +69,7 @@ export async function GET(req) {
 export async function POST(req) {
   let body = await req.json()
   delete body.image
+  delete body.subCategory
   return NextResponse.json(await db.category.create(
     {
       data: body

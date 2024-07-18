@@ -122,8 +122,12 @@ const Category = () => {
   }
 
   const quickUpdate = async (category, value) => {
-    const categoryToUpdate = Object.assign({}, category, value)
-    await fetch(`/api/categories/${categoryToUpdate.id}`, { method: "PUT", body: JSON.stringify(categoryToUpdate) })
+    const res = await fetch(`/api/categories/${category.id}`, { method: "PUT", body: JSON.stringify(value) })
+    if (res.ok) {
+      toast.success("Đã cập nhật")
+    } else {
+      toast.error("Không thể cập nhật")
+    }
   }
 
   const renderCell = useCallback((category, columnKey) => {

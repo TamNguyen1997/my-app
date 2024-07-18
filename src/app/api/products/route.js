@@ -41,6 +41,11 @@ export async function GET(req) {
         in: query.categoryId.split(',')
       }
     }
+    if (query.subCateId) {
+      condition.subCateId = {
+        in: query.subCateId.split(',')
+      }
+    }
     if (query.active) {
       condition.active = query.active === 'true'
     }

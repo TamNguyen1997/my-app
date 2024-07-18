@@ -39,6 +39,7 @@ model product {
 
   category   category? @relation(fields: [categoryId], references: [id])
   categoryId String?   @map("category_id") @db.Uuid
+  subCateId  String?   @map("sub_cate_id") @db.Uuid
 
   quantity Int @default(0)
 

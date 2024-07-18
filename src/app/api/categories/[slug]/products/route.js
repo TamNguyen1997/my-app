@@ -12,6 +12,8 @@ export async function GET(req, { params }) {
       include: { image: true }
     })
 
+    console.log(category)
+
     if (!category) {
       return NextResponse.json({ message: "No category found" }, { status: 404 })
     }
@@ -19,8 +21,17 @@ export async function GET(req, { params }) {
 
     const { query } = queryString.parseUrl(req.url);
     let condition = {
-      categoryId: category.id
+      OR: [
+        {
+          categoryId: category.id
+        },
+        {
+          subCateId: category.id
+        }
+      ]
     }
+
+    console.log(condition)
     if (query.brand) {
       const brandIds = (await db.brand.findMany({ where: { slug: { in: query.brand.split(',') } } })).map(brand => brand.id)
 
@@ -53,7 +64,6 @@ export async function GET(req, { params }) {
       products: products
     })
   } catch (e) {
-    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }

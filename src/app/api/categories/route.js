@@ -31,7 +31,7 @@ export async function GET(req) {
   }
 
   if (query.includeSubCate) {
-    include.sub_category = query.includeSubCate === 'true'
+    include.subcates = query.includeSubCate === 'true'
   }
 
   if (query.includeImage) {

@@ -2,6 +2,7 @@ import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader
 import slugify from "slugify"
 import ImagePicker from "./ImagePicker"
 import RichTextEditor from "./RichTextArea"
+import { useCallback } from "react"
 
 const ProductDetail = ({
   categories, product, setProduct,
@@ -12,6 +13,10 @@ const ProductDetail = ({
     setProduct(Object.assign({}, product, { imageId: value.id, image: value }))
     onOpenChange()
   }
+
+  const getSubCate = useCallback(() => {
+    return product.categoryId ? subCategories.filter(item => item.cateId === product.categoryId) : subCategories
+  }, [product])
 
   return (
     <>
@@ -53,35 +58,37 @@ const ProductDetail = ({
             aria-label="Category"
             selectedKeys={new Set([product.categoryId || ""])}
             onSelectionChange={(value) =>
-              setProduct(Object.assign({}, product, { categoryId: value.values().next().value }))}
+              setProduct(Object.assign({}, product, { categoryId: value.size ? value.values().next().value : null, subCateId: null }))}
           >
             {categories.map(category => <SelectItem key={category.id}>{category.name}</SelectItem>)}
+          </Select>
+          <Select
+            label="Sub category"
+            aria-label="Sub category"
+            isDisabled={getSubCate().length === 0}
+            selectedKeys={new Set([product.subCateId || ""])}
+            onSelectionChange={(value) =>
+              setProduct(Object.assign({}, product, { subCateId: value.size ? value.values().next().value : null }))
+            }
+          >
+            {
+              getSubCate().map((subCategory) => (
+                <SelectItem key={subCategory.id}>
+                  {subCategory.name}
+                </SelectItem>
+              ))
+            }
           </Select>
           <Select
             label="Thương hiệu"
             aria-label="Thương hiệu"
             selectedKeys={new Set([product.brandId || ""])}
             onSelectionChange={(value) =>
-              setProduct(Object.assign({}, product, { brandId: value.values().next().value }))}
+              setProduct(Object.assign({}, product, { brandId: value.size ? value.values().next().value : null }))}
           >
             {brands.map(brand => <SelectItem key={brand.id}>{brand.name}</SelectItem>)}
           </Select>
-          <Select
-            label="Sub category"
-            aria-label="Sub category"
-            defaultSelectedKeys={new Set([product.subCategoryId || ""])}
-            onSelectionChange={(value) =>
-              setProduct(Object.assign({}, product, { subCategoryId: value.values().next().value }))}
-          >
-            {
-              subCategories.map((subCategory) => (
-                <SelectItem key={subCategory.id}>
-                  {subCategory.name}
-                </SelectItem>
-              ))
 
-            }
-          </Select>
         </div>
         <div className='grid grid-cols-2 gap-3'>
           <div className="flex flex-col gap-3">

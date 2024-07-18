@@ -85,13 +85,13 @@ const FILTER = {
 const Cate = () => {
   const params = useParams();
   if (params.slug.length === 1) {
-
+    console.log(params)
     if (params.slug[0].startsWith('thuong-hieu')) {
       return <Brand params={params.slug[0]} />
     }
     return <Category params={params.slug[0]} />
   }
-  return <SubCategory categorySlug={params.slug[0]} subCategorySlug={params.slug[1]} />
+  return <Category params={params.slug[0]} />
 };
 
 const Category = ({ params }) => {
@@ -107,6 +107,7 @@ const Category = ({ params }) => {
 
   const getProduct = () => {
     const hash = window.location.hash?.split('#')
+    console.log(params)
     fetch(`/api/categories/${params}/products/?active=true&${hash.length == 2 ? hash[1] : ""}`).then(async res => {
       if (res.ok) {
         const body = await res.json()
@@ -280,226 +281,6 @@ const Category = ({ params }) => {
         </div>
         <div className="w-full my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
           {data.map((product) => (
-            <Link
-              href={`/san-pham/${product.slug}`}
-              key={product.id}
-              className="group border rounded overflow-clip">
-              <img
-                src={`${process.env.NEXT_PUBLIC_FILE_PATH + product?.image?.path}`}
-                alt={product?.imageAlt}
-                className="object-cover object-center group-hover:opacity-50 p-2 hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)]" />
-              <p className="mt-4 text-sm text-gray-700 font-semibold text-center">
-                {product.name}
-              </p>
-
-              <p className="text-center text-red-500 font-bold text-xl pt-3 border-t-medium">
-                {
-                  getPrice(product)
-                }
-              </p>
-            </Link>
-          ))}
-        </div>
-      </div>
-    </>
-  );
-};
-
-const SubCategory = ({ subCategorySlug, categorySlug }) => {
-  const [products, setProducts] = useState([])
-  const [subCategory, setSubCategory] = useState({ name: "" })
-
-  const [value, setValue] = useState([0, 100000000])
-  const [brands, setBrands] = useState([])
-
-  const [selectedFilters, setSelectedFilters] = useState(new Set([]))
-
-  useEffect(() => {
-    getProduct()
-  }, [subCategorySlug, categorySlug]);
-
-  const getProduct = () => {
-    const hash = window.location.hash?.split('#')
-    fetch(`/api/sub-categories/${subCategorySlug}/products/?active=true&category=${categorySlug}&${hash.length == 2 ? hash[1] : ""}`).then(async res => {
-      if (res.ok) {
-        const body = await res.json()
-        setSubCategory(body.subCategory)
-        setProducts(body.products)
-      }
-    })
-  }
-
-  const addBrand = (brand) => {
-    if (brands.includes(brand.id)) {
-      setBrands([...brands].filter(item => item != brand.id))
-    } else {
-      setBrands([...brands, brand.id])
-    }
-  }
-
-  const filter = () => {
-    let range = `range=${value.join('-')}`
-    window.location.replace(`/${subCategory.slug}#brand=${brands.join(',')}&${range}`)
-    getProduct()
-  }
-
-  const getVariant = (id) => {
-    return brands.includes(id) ? 'solid' : 'ghost'
-  }
-
-  const getColor = (id) => {
-    return brands.includes(id) ? 'default' : ''
-  }
-
-  const onFilterSelect = (value) => {
-    setSelectedFilters(value)
-    if (!value.size) {
-      filter()
-      return
-    }
-
-    const productFilter = FILTER[value.values().next().value]
-    if (!filter) return
-
-    setData(productFilter.filter(data))
-  }
-
-  return (
-    <>
-      <div className="flex flex-col items-center justify-center w-full h-60 bg-cover bg-center bg-no-repeat">
-        <div className="flex flex-col items-center justify-center w-full h-full bg-no-repeat bg-cover bg-banner1">
-        </div>
-      </div>
-      <div className="w-9/12 mx-auto pt-5">
-        <div className="sm:py-8 text-gray-500 text-sm">
-          <Breadcrumbs size="lg" color="foreground">
-            <BreadcrumbItem>
-              <Link href="/">Trang chủ</Link>
-            </BreadcrumbItem>
-            <BreadcrumbItem>
-              <Link href="/">{subCategory.category?.name}</Link>
-            </BreadcrumbItem>
-            <BreadcrumbItem>
-              <Link href={`/${subCategory.slug}`}>{subCategory.name}</Link>
-            </BreadcrumbItem>
-          </Breadcrumbs>
-        </div>
-        <div className="flex gap-2 pt-5">
-          <Dropdown >
-            <DropdownTrigger>
-              <Button
-                variant="bordered">
-                Nhãn hàng
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu aria-label="Example with disabled actions" variant="light" closeOnSelect={false}>
-              <DropdownItem textValue="item">
-                <div>
-                  <div className="p-4 flex flex-col gap-2 items-center">
-                    <div className="flex flex-wrap gap-2">
-                      {
-                        Object.keys(BRANDS).map(key =>
-                          <Button
-                            variant={getVariant(BRANDS[key].id)}
-                            color={getColor(BRANDS[key].id)}
-                            key={BRANDS[key].id}
-                            onClick={() => addBrand(BRANDS[key])}>
-                            <Image src={BRANDS[key].image} width="100" height="100" alt={BRANDS[key].name} />
-                          </Button>
-                        )
-                      }
-                    </div>
-                    <div className="flex gap-1">
-                      <Button color="primary" onClick={filter}>Tìm</Button>
-                      <Button variant="ghost" color="danger" onClick={() => setBrands([])}>Bỏ chọn</Button>
-                    </div>
-                  </div>
-                </div>
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-
-          <Dropdown >
-            <DropdownTrigger>
-              <Button variant="bordered">
-                Giá
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu aria-label="Example with disabled actions" variant="light" closeOnSelect={false}>
-              <DropdownItem textValue="item">
-                <>
-                  <div className="p-4 flex flex-col gap-2 items-center">
-                    <div>
-                      <div className="flex flex-wrap gap-2">
-                        <Button variant="ghost" onClick={() => setValue([0, 2000000])}>
-                          Dưới 2 triệu
-                        </Button>
-                        <Button variant="ghost" onClick={() => setValue([2000000, 3000000])}>
-                          Từ 2 - 3 triệu
-                        </Button>
-                        <Button variant="ghost" onClick={() => setValue([3000000, 4000000])}>
-                          Từ 3 - 4 triệu
-                        </Button>
-                        <Button variant="ghost" onClick={() => setValue([4000000, 100000000])}>
-                          Trên 4 triệu
-                        </Button>
-                      </div>
-                      <div>
-                        <Slider
-                          label="Mức giá"
-                          step={50}
-                          minValue={0}
-                          maxValue={100000000}
-                          value={value}
-                          onChange={setValue}
-                          formatOptions={{ style: "currency", currency: "VND" }}
-                          className="max-w-md m-auto p-3"
-                        />
-                      </div>
-                    </div>
-                    <div className="flex gap-1">
-                      <Button color="primary" onClick={filter}>Tìm</Button>
-                      <Button variant="ghost" color="danger" onClick={() => setValue([0, 100000000])}>Bỏ chọn</Button>
-                    </div>
-                  </div>
-                </>
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-
-          <Button color="primary" onClick={filter}>Tìm</Button>
-        </div>
-
-        <div className="float-right">
-          <Dropdown className="float-right">
-            <DropdownTrigger>
-              <Button
-                variant="bordered">
-                {
-                  selectedFilters.size ? FILTER[selectedFilters.values().next().value].name : "Sắp xếp"
-                }
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu
-              aria-label="Example with disabled actions"
-              variant="light"
-              selectionMode="single"
-              selectedKeys={selectedFilters}
-              onSelectionChange={onFilterSelect}>
-              {
-                Object.keys(FILTER).map(key =>
-                  <DropdownItem textValue="item" key={key}>
-                    {
-                      FILTER[key].name
-                    }
-                  </DropdownItem>
-                )
-              }
-            </DropdownMenu>
-          </Dropdown>
-        </div>
-        <div className="w-full my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
-          {products.map((product) => (
             <Link
               href={`/san-pham/${product.slug}`}
               key={product.id}

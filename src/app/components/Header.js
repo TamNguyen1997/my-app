@@ -113,11 +113,7 @@ const Header = () => {
                 {subCate.map((subcate, i) => (
                   <Link
                     key={i}
-                    href={
-                      hoveredCate.slug
-                        ? `/${hoveredCate.slug}/${subcate.slug}`
-                        : `/${subcate.slug}`
-                    }
+                    href={`/${subcate.slug}`}
                   >
                     <span
                       className="flex flex-col justify-center items-center hover:opacity-35 hover:shadow-lg py-4"
@@ -234,7 +230,7 @@ const HeaderItems = ({ onHover, onMouseOut, setSubCate, setHoveredCate, subCateM
             <Link href={`/${category.slug}`}
               key={category.id}
               onMouseOver={() => {
-                setSubCate(category.sub_category);
+                setSubCate(category.subcates);
                 onHover();
                 setHoveredCate(category);
               }}

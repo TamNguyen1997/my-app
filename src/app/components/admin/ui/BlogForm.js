@@ -28,10 +28,11 @@ import { useState } from 'react';
 import RichTextEditor from './RichTextArea';
 import { EmojiReplacer } from './extensions/EmojiReplacer'
 
-import slugify from "slugify"
 import { parseDate } from "@internationalized/date";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import slugify from 'slugify';
+import crypto from "crypto";
 
 const BLOG_CATEGORIES = [
   {
@@ -103,6 +104,10 @@ const BlogForm = ({ blog, setBlog }) => {
   })
 
   const onSubmit = async (data) => {
+    console.log(data)
+    if (!blog.id) {
+      blog.slug = `${slugify(blog.title, { locale: 'vi' }).toLowerCase()}-${crypto.randomBytes(5).toString("hex")}`
+    }
     const body = Object.assign(blog, data, { thumbnail: thumbnail, content: editor.getHTML(), active: isSelected })
     const res = await fetch('/api/blogs', {
       method: "POST",
@@ -135,7 +140,7 @@ const BlogForm = ({ blog, setBlog }) => {
               onValueChange={(value) => setBlog(Object.assign(
                 {},
                 blog,
-                { title: value, slug: slugify(value, { locale: 'vi' }).toLowerCase() }))}
+                { title: value }))}
             ></Input>
             <Input label="Slug" aria-label="Slug" value={blog?.slug} disabled></Input>
           </div>

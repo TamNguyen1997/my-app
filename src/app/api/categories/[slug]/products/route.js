@@ -11,14 +11,9 @@ export async function GET(req, { params }) {
       where: { slug: params.slug },
       include: { image: true }
     })
-
-    console.log(category)
-
     if (!category) {
       return NextResponse.json({ message: "No category found" }, { status: 404 })
     }
-
-
     const { query } = queryString.parseUrl(req.url);
     let condition = {
       OR: [
@@ -28,10 +23,18 @@ export async function GET(req, { params }) {
         {
           subCateId: category.id
         }
+      ],
+      AND: [
+        {
+          NOT: {
+            categoryId: null
+          },
+          NOT: {
+            subCateId: null
+          }
+        }
       ]
     }
-
-    console.log(condition)
     if (query.brand) {
       const brandIds = (await db.brand.findMany({ where: { slug: { in: query.brand.split(',') } } })).map(brand => brand.id)
 
@@ -44,7 +47,7 @@ export async function GET(req, { params }) {
       condition.active = query.active === 'true'
     }
 
-    let products = await db.product.findMany({ where: condition, include: { image: true } })
+    let products = await db.product.findMany({ where: condition, include: { image: true, subCate: true } })
 
     if (query.range) {
       const minMax = query.range.split('-')

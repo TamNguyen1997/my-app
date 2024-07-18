@@ -3,9 +3,9 @@
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/breadcrumbs";
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Slider } from "@nextui-org/react";
 import Image from "next/image";
+import ProductDetail from "@/app/components/product/ProductDetail";
 
 const BRANDS = {
   "Kimberly": {
@@ -85,13 +85,12 @@ const FILTER = {
 const Cate = () => {
   const params = useParams();
   if (params.slug.length === 1) {
-    console.log(params)
     if (params.slug[0].startsWith('thuong-hieu')) {
       return <Brand params={params.slug[0]} />
     }
     return <Category params={params.slug[0]} />
   }
-  return <Category params={params.slug[0]} />
+  return <ProductDetail id={params.slug[1]} />
 };
 
 const Category = ({ params }) => {
@@ -107,7 +106,6 @@ const Category = ({ params }) => {
 
   const getProduct = () => {
     const hash = window.location.hash?.split('#')
-    console.log(params)
     fetch(`/api/categories/${params}/products/?active=true&${hash.length == 2 ? hash[1] : ""}`).then(async res => {
       if (res.ok) {
         const body = await res.json()
@@ -282,7 +280,7 @@ const Category = ({ params }) => {
         <div className="w-full my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
           {data.map((product) => (
             <Link
-              href={`/san-pham/${product.slug}`}
+              href={`/${product.subCate.slug}/${product.slug}`}
               key={product.id}
               className="group border rounded overflow-clip">
               <img
@@ -515,7 +513,7 @@ const BrandSection = ({ products }) => {
       <div className="w-full my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
         {products.map((product) => (
           <Link
-            href={`/san-pham/${product.slug}`}
+            href={`/${product.subCate.slug}/${product.slug}`}
             key={product.id}
             className="group border rounded overflow-clip hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)]">
             <img

@@ -40,6 +40,7 @@ model product {
   category   category? @relation(fields: [categoryId], references: [id])
   categoryId String?   @map("category_id") @db.Uuid
   subCateId  String?   @map("sub_cate_id") @db.Uuid
+  subCate    category? @relation("subCate", fields: [subCateId], references: [id])
 
   quantity Int @default(0)
 
@@ -52,6 +53,7 @@ model product {
   @@index([subCategoryId])
   @@index([categoryId])
   @@index([brandId])
+  @@index([subCateId])
 }
 
 model product_on_image {
@@ -266,6 +268,7 @@ model category {
   subcates    category[]     @relation("sub_cate")
   product     product[]
   subCategory sub_category[]
+  sProduct    product[]      @relation("subCate")
 
   @@unique([slug])
   @@index([imageId])

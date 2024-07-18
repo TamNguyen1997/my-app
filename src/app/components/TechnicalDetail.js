@@ -20,7 +20,7 @@ const TechnicalDetail = ({ data }) => {
             rows.map((value, i) => {
               return <TableRow key={i}>
                 {
-                  Object.keys(value).filter(item => item !== "id").map(item => <TableCell key={item.id}>{value[item]}</TableCell>)
+                  Object.keys(value).filter(item => item !== "id").map((item, i) => <TableCell key={i}>{value[item]}</TableCell>)
                 }
               </TableRow>
             })

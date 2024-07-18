@@ -1,4 +1,4 @@
-import { Contact, HomeIcon, Image, Layers, NotebookPen, ShoppingBasket } from 'lucide-react';
+import { Contact, HomeIcon, Image, Info, Layers, NotebookPen, ShoppingBasket } from 'lucide-react';
 
 const items = [
   {
@@ -24,6 +24,12 @@ const items = [
     name: 'Blog',
     icon: <NotebookPen />,
     link: '/admin/blog'
+  },
+  {
+    id: "support",
+    name: 'Hỗ trợ',
+    icon: <Info />,
+    link: '/admin/ho-tro'
   },
   {
     id: "contact-infor",

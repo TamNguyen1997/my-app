@@ -1,10 +1,12 @@
 "use client"
 
-import { Card, CardBody, Tab, Tabs } from "@nextui-org/react"
+import { Button, Card, CardBody, Input, Tab, Tabs } from "@nextui-org/react"
 import RichTextEditor from "@/components/admin/ui/RichTextArea"
 import { useEditor } from "@tiptap/react"
 import { editorConfig } from "@/lib/editor"
 import { useEffect, useState } from "react"
+import { toast, ToastContainer } from "react-toastify"
+import 'react-toastify/dist/ReactToastify.css';
 
 export default () => {
   return (
@@ -14,13 +16,6 @@ export default () => {
           <Card>
             <CardBody>
               <SupportPage slug="ho-tro" />
-            </CardBody>
-          </Card>
-        </Tab>
-        <Tab title="Chính sách bảo hành">
-          <Card>
-            <CardBody>
-              <SupportPage slug="chinh-sach-bao-hanh" />
             </CardBody>
           </Card>
         </Tab>
@@ -38,13 +33,6 @@ export default () => {
             </CardBody>
           </Card>
         </Tab>
-        <Tab title="Điều khoản dịch vụ">
-          <Card>
-            <CardBody>
-              <SupportPage slug="dieu-khoan-dich-vu" />
-            </CardBody>
-          </Card>
-        </Tab>
         <Tab title="Hướng dẫn mua hàng">
           <Card>
             <CardBody>
@@ -59,7 +47,7 @@ export default () => {
             </CardBody>
           </Card>
         </Tab>
-        <Tab title="Phương thức vẫn chuyển">
+        <Tab title="Phương thức vận chuyển">
           <Card>
             <CardBody>
               <SupportPage slug="phuong-thuc-van-chuyen" />
@@ -76,13 +64,38 @@ const SupportPage = ({ slug }) => {
   const editor = useEditor(editorConfig())
 
   useEffect(() => {
-    fetch(`/api/blogs/${slug}`).then(res => res.json()).then(json => {
-      setBlog(json)
-    })
+    fetch(`/api/blogs/${slug}`).then(res => res.json()).then(setBlog)
   }, [slug])
 
+  const onSubmit = async (e) => {
+    e.preventDefault()
+    const res = await fetch(`/api/blogs`, {
+      method: "POST",
+      body: JSON.stringify(Object.assign(blog, { content: editor.getHTML() }))
+    })
+
+    if (res.ok) {
+      toast.success("Đã cập nhật")
+    } else {
+      toast.error("Không thể cập nhật")
+    }
+  }
 
   return (<>
+    <ToastContainer />
     <RichTextEditor editor={editor} content={blog?.content} />
+    <form className="flex flex-col gap-3 pt-3" onSubmit={onSubmit}>
+      <div className="flex gap-3">
+        <Input label="Tiêu đề" aria-label="Tiêu đề" value={blog.title} onValueChange={(value) => setBlog(Object.assign({}, blog, { title: value }))} />
+        <Input label="Slug" aria-label="Slug" value={blog.slug} disabled />
+      </div>
+      <div className='flex gap-3'>
+        <Input label="Meta title" aria-label="Meta title" value={blog.metaTitle} onValueChange={(value) => setBlog(Object.assign({}, blog, { metaTitle: value }))} />
+        <Input label="Meta description" aria-label="Meta description" value={blog.metaDescription} onValueChange={(value) => setBlog(Object.assign({}, blog, { metaDescription: value }))} />
+      </div>
+      <div className="text-right items-end">
+        <Button color="primary" type="submit">Lưu</Button>
+      </div>
+    </form>
   </>)
 }

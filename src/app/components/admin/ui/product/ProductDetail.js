@@ -1,7 +1,6 @@
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, useDisclosure } from "@nextui-org/react"
 import slugify from "slugify"
-import ImagePicker from "./ImagePicker"
-import RichTextEditor from "./RichTextArea"
+import ImagePicker from "../ImagePicker"
 import { useCallback } from "react"
 
 const ProductDetail = ({
@@ -128,7 +127,6 @@ const ProductDetail = ({
           </div>
 
         </div>
-        <RichTextEditor editor={editor} />
       </div>
 
       <Modal

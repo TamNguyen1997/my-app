@@ -1,5 +1,5 @@
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react"
-import ImagePicker from "./ImagePicker"
+import ImagePicker from "../ImagePicker"
 import ProductImageCarousel from "@/components/ProductImageCarousel"
 import { useEffect, useState } from "react"
 import { ToastContainer, toast } from 'react-toastify';

@@ -19,33 +19,12 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { EditIcon, Search, Trash2 } from "lucide-react"
 import { redirect } from "next/navigation";
 import { useEditor } from "@tiptap/react";
-import StarterKit from '@tiptap/starter-kit';
-import TipTapImage from '@tiptap/extension-image'
-import OrderedList from '@tiptap/extension-ordered-list'
-import BulletList from '@tiptap/extension-bullet-list'
-import Placeholder from '@tiptap/extension-placeholder'
-import TipTapBold from '@tiptap/extension-bold';
-import TipTapItalic from '@tiptap/extension-italic';
-import HardBreak from '@tiptap/extension-hard-break'
-import TextAlign from '@tiptap/extension-text-align'
-import Highlight from '@tiptap/extension-highlight'
-import Underline from '@tiptap/extension-underline'
-import Subscript from '@tiptap/extension-subscript'
-import Superscript from '@tiptap/extension-superscript'
-import Link from '@tiptap/extension-link'
-import TiptapTableRow from '@tiptap/extension-table-row'
-import TiptapTableHeader from '@tiptap/extension-table-header'
-import TiptapTableCell from '@tiptap/extension-table-cell'
-import TextStyle from "@tiptap/extension-text-style";
-import Color from "@tiptap/extension-color";
-import TiptapTable from '@tiptap/extension-table'
-import ListKeymap from "@tiptap/extension-list-keymap";
-import Gapcursor from '@tiptap/extension-gapcursor'
-import { EmojiReplacer } from "@/app/components/admin/ui/extensions/EmojiReplacer";
-import SaleDetails from "@/app/components/admin/ui/SaleDetails";
-import TechnicalDetails from "@/app/components/admin/ui/TechnicalDetails";
-import ProductDetail from "@/app/components/admin/ui/ProductDetail";
-import ProductImage from "@/app/components/admin/ui/ProductImage";
+import SaleDetails from "@/app/components/admin/ui/product/SaleDetails";
+import TechnicalDetails from "@/app/components/admin/ui/product/TechnicalDetails";
+import ProductDetail from "@/app/components/admin/ui/product/ProductDetail";
+import ProductImage from "@/app/components/admin/ui/product/ProductImage";
+import ProductDescription from "@/app/components/admin/ui/product/ProductDescription";
+import { editorConfig } from "@/lib/editor"
 
 const rowsPerPage = 10;
 
@@ -63,9 +42,6 @@ const ProductCms = () => {
   const [loadingState, setLoadingState] = useState("loading")
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [selectedProduct, setSelectedProduct] = useState({})
-
-  const [productImages, setProductImages] = useState([])
-
   const [condition, setCondition] = useState({})
 
   const [reload, setReload] = useState(false)
@@ -82,41 +58,7 @@ const ProductCms = () => {
 
   const [saleDetails, setSaleDetails] = useState([])
 
-
-  const editor = useEditor({
-    extensions: [
-      StarterKit, TipTapImage, TipTapBold, TipTapItalic, Underline, HardBreak, Subscript, Superscript, TextStyle, Color,
-      TiptapTable.configure({
-        resizable: true,
-      }),
-      ListKeymap,
-      TiptapTableRow, Gapcursor,
-      EmojiReplacer,
-      TiptapTableHeader,
-      TiptapTableCell,
-      Highlight.configure({ multicolor: true }),
-      TextAlign.configure({
-        types: ['heading', 'paragraph'],
-      }),
-      OrderedList.configure({
-        HTMLAttributes: {
-          class: 'list-decimal'
-        }
-      }),
-      BulletList.configure({
-        HTMLAttributes: {
-          class: 'list-disc'
-        }
-      }),
-      Link.configure({
-        protocols: ["http", "https"]
-      }),
-      Placeholder.configure({
-        placeholder: "Nhập văn bản"
-      })
-    ],
-    content: "<br><br><br><br><br><br><br>"
-  })
+  const editor = useEditor(editorConfig(selectedProduct.description))
 
   useEffect(() => {
     getProduct()
@@ -208,7 +150,7 @@ const ProductCms = () => {
   const onSubmit = async (e) => {
     e.preventDefault()
 
-    let productToUpdate = selectedProduct
+    let productToUpdate = Object.assign({}, selectedProduct, { description: editor.getHTML() })
 
     delete productToUpdate.image
     delete productToUpdate.subCategory
@@ -367,6 +309,15 @@ const ProductCms = () => {
                         </CardBody>
                       </Card>
                     </Tab>
+                    <Tab title="Mô tả">
+                      <Card>
+                        <CardBody>
+                          <ProductDescription
+                            editor={editor}
+                          />
+                        </CardBody>
+                      </Card>
+                    </Tab>
                     <Tab title="Hình ảnh">
                       <Card>
                         <CardBody>
@@ -406,7 +357,5 @@ const ProductCms = () => {
     </>
   )
 }
-
-
 
 export default ProductCms

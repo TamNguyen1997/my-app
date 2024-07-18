@@ -41,37 +41,37 @@ const Footer = () => {
             </Link>
           </div>
           <div>
-            <Link href="/">
+            <Link href="/dieu-khoan-dich-vu">
               Điều khoản giao dịch
             </Link>
           </div>
           <div>
-            <Link href="/">
+            <Link href="/chinh-sach-bao-mat">
               Bảo mật thông tin
             </Link>
           </div>
           <div>
-            <Link href="/">
+            <Link href="/phuong-thuc-van-chuyen">
               Giao hàng
             </Link>
           </div>
           <div>
-            <Link href="/">
+            <Link href="/chinh-sach-doi-tra">
               Bảo hành – Đổi trả
             </Link>
           </div>
           <div>
-            <Link href="/">
+            <Link href="/phuong-thuc-thanh-toan">
               Phương thức thanh toán
             </Link>
           </div>
           <div>
-            <Link href="/">
+            <Link href="/phuong-thuc-van-chuyen">
               Phương thức vận chuyển
             </Link>
           </div>
           <div>
-            <Link href="/">
+            <Link href="/huong-dan-mua-hang">
               Hướng dẫn mua hàng
             </Link>
           </div>

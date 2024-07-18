@@ -6,7 +6,39 @@ import parse from 'html-react-parser';
 import TableOfContent from "./TableOfContent"
 import RelatedBlogs from "./RelatedBlogs"
 
-export default ({ slug, category }) => {
+const BlogContent = ({ blog }) => {
+  return (<>
+    <motion.div
+      initial={{ x: -100, opacity: 0 }}
+      whileInView={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.7 }}
+      viewport={{ once: true }}
+      className="my-4"
+    >
+      <TableOfContent selector=".blog-content" />
+    </motion.div>
+
+    <motion.div
+      initial={{ y: -200, opacity: 0 }}
+      whileInView={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.7, delay: 0.3 }}
+      viewport={{ once: true }}
+      className={`
+                [&_img]:max-w-[75%]
+                [&_img]:mx-auto
+                [&_a]:text-primary
+                [&_h2]:mt-[1.25em]
+                [&_p]:my-[1.125em]
+                max-w-full prose blog-content
+              `}
+      style={{ "--tw-prose-bullets": "currentColor" }}
+    >
+      {parse(blog.content)}
+    </motion.div>
+  </>)
+}
+
+const BlogDetail = ({ slug, category }) => {
   const [blog, setBlog] = useState({})
   const [relatedBlogs, setRelatedBlogs] = useState([])
 
@@ -68,33 +100,7 @@ export default ({ slug, category }) => {
               {blog.summary}
             </motion.p>
 
-            <motion.div
-              initial={{ x: -100, opacity: 0 }}
-              whileInView={{ x: 0, opacity: 1 }}
-              transition={{ duration: 0.7 }}
-              viewport={{ once: true }}
-              className="my-4"
-            >
-              <TableOfContent selector=".blog-content" />
-            </motion.div>
-
-            <motion.div
-              initial={{ y: -200, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.7, delay: 0.3 }}
-              viewport={{ once: true }}
-              className={`
-                [&_img]:max-w-[75%]
-                [&_img]:mx-auto
-                [&_a]:text-primary
-                [&_h2]:mt-[1.25em]
-                [&_p]:my-[1.125em]
-                max-w-full prose blog-content
-              `}
-              style={{ "--tw-prose-bullets": "currentColor" }}
-            >
-              {parse(blog.content)}
-            </motion.div>
+            <BlogContent blog={blog} />
 
             <motion.div
               initial={{ opacity: 0 }}
@@ -131,3 +137,5 @@ export default ({ slug, category }) => {
     </div>
   );
 };
+
+export { BlogContent, BlogDetail }

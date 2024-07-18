@@ -50,9 +50,8 @@ const BlogForm = ({ blog, setBlog }) => {
   const editor = useEditor(editorConfig(blog.content))
 
   const onSubmit = async (data) => {
-    console.log(data)
     if (!blog.id) {
-      blog.slug = `${slugify(blog.title, { locale: 'vi' }).toLowerCase()}-${crypto.randomBytes().toString("hex")}`
+      blog.slug = `${slugify(blog.title, { locale: 'vi' }).toLowerCase()}-${crypto.randomBytes(6).toString("hex")}`
     }
     const body = Object.assign(blog, data, { thumbnail: thumbnail, content: editor.getHTML(), active: isSelected })
     const res = await fetch('/api/blogs', {

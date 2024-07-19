@@ -123,7 +123,7 @@ const Header = () => {
                         {subcate.imageUrl ? (
                           <img
                             src={`${process.env.NEXT_PUBLIC_FILE_PATH +
-                              subcate.imageUrl
+                              subcate.image?.path
                               }`}
                             width="150"
                             height="150"
@@ -152,22 +152,30 @@ const BRANDS = [
   {
     slug: "thuong-hieu-mapa",
     name: "Mapa",
-    imageUrl: "/brand/Logo-Mapa.png",
+    image: {
+      path: "/brand/Logo-Mapa.png"
+    },
   },
   {
     slug: "thuong-hieu-rubbermaid",
     name: "Rubbermaid",
-    imageUrl: "/brand/Rubbermaid.png",
+    image: {
+      path: "/brand/Rubbermaid.png"
+    },
   },
   {
     slug: "thuong-hieu-moerman",
     name: "Moerman",
-    imageUrl: "/brand/Logo-Moerman.png",
+    image: {
+      path: "/brand/Logo-Moerman.png"
+    },
   },
   {
     slug: "thuong-hieu-ghibli",
     name: "Ghibli",
-    imageUrl: "/brand/Logo-Ghibli.png",
+    image: {
+      path: "/brand/Logo-Ghibli.png"
+    },
   },
 ];
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { Phone, ShoppingCart } from "lucide-react";
+import { Phone, ShoppingCart, Menu, ChevronRight, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState, useContext, useRef } from "react";
@@ -9,11 +9,14 @@ import { CartContext } from "@/context/CartProvider";
 import "./Header.css";
 
 const Header = () => {
-  const [showSubHeader, setShowSubHeader] = useState(false);
-
-  const [subCate, setSubCate] = useState()
   const [hoveredCate, setHoveredCate] = useState(null)
-  const subCateMenuRef = useRef();
+  const [menuVisible, setMenuVisible] = useState(false);
+  const menuRef = useRef();
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    fetch('/api/categories/?includeSubCate=true&size=7&showOnHeader=true').then(res => res.json()).then(json => setCategories(json.result))
+  }, []);
 
   const { cartdetails } = useContext(CartContext);
 
@@ -84,60 +87,67 @@ const Header = () => {
                 }}
               >
                 <HeaderItems
-                  onHover={() => setShowSubHeader(true)}
-                  onMouseOut={() => {
-                    setShowSubHeader(false);
-                  }}
-                  setSubCate={setSubCate}
                   setHoveredCate={setHoveredCate}
-                  subCateMenuRef={subCateMenuRef}
-                  hoveredCate={hoveredCate}
-                  showSubHeader={showSubHeader}
+                  menuRef={menuRef}
+                  setMenuVisible={setMenuVisible}
+                  categories={categories}
+                  menuVisible={menuVisible}
                 />
               </div>
             </div>
           </div>
         </div>
-        {showSubHeader && subCate?.length ? (
+        {menuVisible ? (
           <div
-            onMouseOver={() => setShowSubHeader(true)}
-            onMouseOut={() => setShowSubHeader(false)}
-            className="z-10 fixed w-full bg-white shadow-lg p-4 subcate-menu"
-            ref={subCateMenuRef}
+            onMouseOver={() => setMenuVisible(true)}
+            onMouseOut={() => setMenuVisible(false)}
+            className="z-10 fixed w-full container subcate-menu"
+            ref={menuRef}
           >
-            <div className="container">
-              <h2 className="text-lg font-bold text-black text-left border-b pb-1">
-                {hoveredCate.name || "Thương hiệu"}
-              </h2>
-              <div className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-3">
-                {subCate.map((subcate, i) => (
-                  <Link
-                    key={i}
-                    href={`/${subcate.slug}`}
-                  >
-                    <span
-                      className="flex flex-col justify-center items-center hover:opacity-35 hover:shadow-lg py-4"
-                      key={subcate.name}
+            <div className="text-sm flex">
+              <div className="bg-white shadow-lg w-[200px]">
+                {
+                  categories?.map(category => (
+                    <Link
+                      key={category.id}
+                      href={`/${category.slug}`}
+                      onMouseOver={() => setHoveredCate(category)}
+                      className={`
+                        flex items-center border-b hover:font-bold transition p-1.5
+                        ${hoveredCate?.id === category.id && 'font-bold'}
+                      `}
                     >
-                      <div className="flex items-center w-2/3 m-auto h-[80px]">
-                        {subcate.imageUrl ? (
-                          <img
-                            src={`${process.env.NEXT_PUBLIC_FILE_PATH +
-                              subcate.imageUrl
-                              }`}
-                            width="150"
-                            height="150"
-                            alt={i}
-                          />
-                        ) : (
-                          ""
-                        )}
-                      </div>
-                      {subcate.name}
-                    </span>
-                  </Link>
-                ))}
+                      <img src="https://cdn.tgdd.vn/content/Hot-73x72-1.png" alt="" title="" className="max-w-6 mr-2" />
+                      <span className="mr-2">{category.name}</span>
+                      <ChevronRight size="15" className="ml-auto" />
+                    </Link>
+                  ))
+                }
               </div>
+              {
+                hoveredCate && (
+                  <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] bg-white shadow-lg grow">
+                    {
+                      hoveredCate.subcates?.map((subcate, i) => (
+                        <div className="px-2.5 py-1">
+                          <h2 className="flex items-center font-bold text-black text-left border-b p-1">
+                            {subcate.name}
+                            <Link href="" className="flex items-center text-xs text-primary ml-3">
+                              Xem tất cả
+                              <div className="w-0 h-0 border-t-[4px] border-t-transparent border-l-[5px] border-l-primary border-b-[4px] border-b-transparent ml-1"></div>
+                            </Link>
+                          </h2>
+                          <div className="p-1">
+                            <p className="mb-1.5">Product 1</p>
+                            <p className="mb-1.5">Product 2</p>
+                            <p className="mb-1.5">Product 3</p>
+                          </div>
+                        </div>
+                      ))
+                    }
+                  </div>
+                )
+              }
             </div>
           </div>
         ) : (
@@ -150,33 +160,45 @@ const Header = () => {
 
 const BRANDS = [
   {
+    id: 1,
     slug: "thuong-hieu-mapa",
     name: "Mapa",
     imageUrl: "/brand/Logo-Mapa.png",
   },
   {
+    id: 2,
     slug: "thuong-hieu-rubbermaid",
     name: "Rubbermaid",
     imageUrl: "/brand/Rubbermaid.png",
   },
   {
+    id: 3,
     slug: "thuong-hieu-moerman",
     name: "Moerman",
     imageUrl: "/brand/Logo-Moerman.png",
   },
   {
+    id: 4,
     slug: "thuong-hieu-ghibli",
     name: "Ghibli",
     imageUrl: "/brand/Logo-Ghibli.png",
   },
 ];
 
-const HeaderItems = ({ onHover, onMouseOut, setSubCate, setHoveredCate, subCateMenuRef, hoveredCate, showSubHeader }) => {
-  const [categories, setCategories] = useState([]);
+const HeaderItems = ({ categories, setHoveredCate, menuRef, setMenuVisible, menuVisible }) => {
+  // const [categories, setCategories] = useState([]);
+
+  // useEffect(() => {
+  //   fetch('/api/categories/?includeSubCate=true&size=7&showOnHeader=true').then(res => res.json()).then(json => setCategories(json.result))
+  // }, [])
+
+  const [subCategories, setSubCategories] = useState([]);
 
   useEffect(() => {
-    fetch('/api/categories/?includeSubCate=true&size=7&showOnHeader=true').then(res => res.json()).then(json => setCategories(json.result))
-  }, [])
+    setSubCategories(
+      (categories || []).reduce((acc, category) => [...acc, ...(category?.subcates || [])], [])?.filter((item, index, arr) => arr.findIndex(_i => _i.id === item.id) === index)
+    )
+  }, [categories]);
 
   const headerItemsRef = useRef();
 
@@ -185,6 +207,7 @@ const HeaderItems = ({ onHover, onMouseOut, setSubCate, setHoveredCate, subCateM
       if (!headerItemsRef?.current) return;
       const parentNode = headerItemsRef.current.parentNode;
       const nav = headerItemsRef.current.closest("nav");
+      const menuButton = headerItemsRef.current.querySelector(".menu-button");
       let menuHeight = 0;
 
       if (parentNode.getBoundingClientRect().bottom <= 0) {
@@ -197,9 +220,12 @@ const HeaderItems = ({ onHover, onMouseOut, setSubCate, setHoveredCate, subCateM
         parentNode.classList.remove("container");
       }
 
-      if (subCateMenuRef.current) {
-        subCateMenuRef.current.style.top = menuHeight + "px";
-        subCateMenuRef.current.style.opacity = 1;
+      if (menuRef.current) {
+        menuRef.current.style.top = menuHeight + "px";
+        menuRef.current.style.opacity = 1;
+        let menuLeft = Math.max(menuButton?.getBoundingClientRect().left - 8, 0);
+        menuRef.current.style.left = menuLeft + "px";
+        menuRef.current.style.width = `calc(100% - ${menuLeft}px)`;
       }
     };
 
@@ -211,37 +237,44 @@ const HeaderItems = ({ onHover, onMouseOut, setSubCate, setHoveredCate, subCateM
 
   return (<>
     <div className="w-full" ref={headerItemsRef}>
-      <div className="pl-2 flex text-sm">
-        <Link href=""
+      <div className="flex text-sm container">
+        {/* <Link href=""
           onMouseOver={() => {
             setSubCate(BRANDS)
             setHoveredCate({})
           }}
           onMouseOut={onMouseOut}
           className={`
-            ${hoveredCate && !Object.keys(hoveredCate)?.length && showSubHeader ? 'bg-[#FFAC0A]' : ''}
             hover:bg-[#FFAC0A] transition p-3
           `}
         >
           Thương hiệu
+        </Link> */}
+        <Link href=""
+          className={`
+            hover:bg-[#FFAC0A] transition p-3 menu-button
+            ${menuVisible && 'bg-[#FFAC0A]'}
+          `}
+          onMouseOver={() => {
+            setMenuVisible(true)
+            setHoveredCate(null)
+          }}
+          onMouseOut={() => setMenuVisible(false)}
+        >
+          <Menu size="20" className="inline-block mr-2" />
+          Tất cả danh mục
         </Link>
         {
-          categories.map((category) =>
-            <Link href={`/${category.slug}`}
-              key={category.id}
-              onMouseOver={() => {
-                setSubCate(category.subcates);
-                onHover();
-                setHoveredCate(category);
-              }}
-              onMouseOut={onMouseOut}
+          subCategories.map((subcate) =>
+            <Link href={`/${subcate.slug}`}
+              key={subcate.id}
               className={`
-                ${hoveredCate?.id === category.id && showSubHeader ? 'bg-[#FFAC0A]' : ''}
                 hover:bg-[#FFAC0A] transition p-3
                 border-l border-[#FFAC0A]
+                text-center
               `}
             >
-              {category.name}
+              {subcate.name}
             </Link>
           )}
       </div>

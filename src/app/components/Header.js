@@ -124,6 +124,21 @@ const Header = () => {
                   ))
                 }
               </div>
+              {/* <div className="flex items-center w-2/3 m-auto h-[80px]">
+                {subcate.image ? (
+                  <img
+                    src={`${process.env.NEXT_PUBLIC_FILE_PATH +
+                      subcate.image?.path
+                      }`}
+                    width="150"
+                    height="150"
+                    alt={i}
+                  />
+                ) : (
+                  ""
+                )}
+              </div>
+              {subcate.name} */}
               {
                 hoveredCate && (
                   <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] bg-white shadow-lg grow">
@@ -163,25 +178,33 @@ const BRANDS = [
     id: 1,
     slug: "thuong-hieu-mapa",
     name: "Mapa",
-    imageUrl: "/brand/Logo-Mapa.png",
+    image: {
+      path: "/brand/Logo-Mapa.png"
+    },
   },
   {
     id: 2,
     slug: "thuong-hieu-rubbermaid",
     name: "Rubbermaid",
-    imageUrl: "/brand/Rubbermaid.png",
+    image: {
+      path: "/brand/Rubbermaid.png"
+    },
   },
   {
     id: 3,
     slug: "thuong-hieu-moerman",
     name: "Moerman",
-    imageUrl: "/brand/Logo-Moerman.png",
+    image: {
+      path: "/brand/Logo-Moerman.png"
+    },
   },
   {
     id: 4,
     slug: "thuong-hieu-ghibli",
     name: "Ghibli",
-    imageUrl: "/brand/Logo-Ghibli.png",
+    image: {
+      path: "/brand/Logo-Ghibli.png"
+    },
   },
 ];
 

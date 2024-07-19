@@ -347,7 +347,6 @@ const SubCategory = ({ categories }) => {
       const data = await res.json()
       setSubCategories(data.result)
       setTotal(data.total)
-      setPage(1)
       setLoadingState("idle")
     })
   }

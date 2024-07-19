@@ -31,7 +31,11 @@ export async function GET(req) {
   }
 
   if (query.includeSubCate) {
-    include.subcates = query.includeSubCate === 'true'
+    include.subcates = {
+      include: {
+        image: true
+      }
+    }
   }
 
   if (query.includeImage) {

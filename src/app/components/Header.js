@@ -120,7 +120,7 @@ const Header = () => {
                       key={subcate.name}
                     >
                       <div className="flex items-center w-2/3 m-auto h-[80px]">
-                        {subcate.imageUrl ? (
+                        {subcate.image ? (
                           <img
                             src={`${process.env.NEXT_PUBLIC_FILE_PATH +
                               subcate.image?.path

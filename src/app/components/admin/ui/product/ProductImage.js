@@ -22,8 +22,12 @@ const ProductImage = ({ product }) => {
     if (images.length >= 6) {
       toast.error("Không thể thêm hình, đã đạt tối đa 6 hình")
     } else {
-      setImages([...images, value])
-      onOpenChange()
+      if (images.find(item => item.id === value.id)) {
+        toast.error("Đã chọn ảnh này")
+      } else {
+        setImages([...images, value])
+        onOpenChange()
+      }
     }
   }
 

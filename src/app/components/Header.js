@@ -80,12 +80,7 @@ const Header = () => {
                   </div>
                 </div>
               </div>
-              <div
-                onMouseOver={() => setShowSubHeader(true)}
-                onMouseOut={() => {
-                  setShowSubHeader(false);
-                }}
-              >
+              <div>
                 <HeaderItems
                   setHoveredCate={setHoveredCate}
                   menuRef={menuRef}

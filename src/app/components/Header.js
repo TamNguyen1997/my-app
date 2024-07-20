@@ -114,7 +114,7 @@ const Header = () => {
             ref={menuRef}
           >
             <div className="text-sm flex">
-              <div className="bg-white shadow-lg w-[200px]">
+              <div className="bg-white shadow-lg w-[200px] border rounded-bl-lg">
                 {
                   categories?.map(category => (
                     <Link
@@ -135,25 +135,14 @@ const Header = () => {
               </div>
               {
                 hoveredCate && (
-                  <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] bg-white shadow-lg grow">
-                    {
-                      hoveredCate.subcates?.map((subcate, i) => (
-                        <div className="px-2.5 py-1" key={subcate.id}>
-                          <h2 className="flex items-center font-bold text-black text-left border-b p-1">
-                            {subcate.name}
-                            <Link href="" className="flex items-center text-xs text-primary ml-3">
-                              Xem tất cả
-                              <div className="w-0 h-0 border-t-[4px] border-t-transparent border-l-[5px] border-l-primary border-b-[4px] border-b-transparent ml-1"></div>
-                            </Link>
-                          </h2>
-                          <div className="p-1">
-                            <p className="mb-1.5">Product 1</p>
-                            <p className="mb-1.5">Product 2</p>
-                            <p className="mb-1.5">Product 3</p>
-                          </div>
-                        </div>
-                      ))
-                    }
+                  <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] bg-white shadow-lg grow border rounded-br-lg">
+                    <div className="p-2 grid grid-rows-7 grid-flow-col">
+                      {
+                        hoveredCate.subcates?.map((subcate, i) => (
+                          <Link key={i} className="p-1 hover:text-blue-500" href={`/${subcate.slug}`}>{subcate.name}</Link>
+                        ))
+                      }
+                    </div>
                   </div>
                 )
               }
@@ -277,7 +266,7 @@ const HeaderItems = ({ categories, setHoveredCate, menuRef, setMenuVisible, menu
             <Link href={`/${subcate.slug}`}
               key={subcate.id}
               className={`
-                hover:bg-[#FFAC0A] transition p-3
+                hover:bg-[#FFAC0A] transition p-3 sm:hidden md:block
                 border-l border-[#FFAC0A]
                 text-center
               `}

@@ -13,7 +13,21 @@ export async function GET(req, { params }) {
       return NextResponse.json({ message: "No brand found" }, { status: 404 })
     }
 
-    let condition = { brandId: brand.id }
+    let condition = {
+      brandId: brand.id,
+      AND: [
+        {
+          NOT: {
+            categoryId: null
+          }
+        },
+        {
+          NOT: {
+            subCateId: null
+          }
+        }
+      ]
+    }
 
     const { query } = queryString.parseUrl(req.url);
 
@@ -34,10 +48,10 @@ export async function GET(req, { params }) {
     }
 
     if (query.subCategory) {
-      const subCategoryIds = (await db.sub_category.findMany({ where: { slug: { in: query.subCategory.split(',') } } })).map(subcate => subcate.id)
+      const subCateIds = (await db.category.findMany({ where: { slug: { in: query.subCategory.split(',') } } })).map(subcate => subcate.id)
 
-      condition.subCategoryId = {
-        in: subCategoryIds
+      condition.subCateId = {
+        in: subCateIds
       }
     }
 
@@ -49,7 +63,7 @@ export async function GET(req, { params }) {
       where: condition,
       include: {
         image: true,
-        subCategory: true,
+        subCate: true,
         saleDetails: true
       }
     })

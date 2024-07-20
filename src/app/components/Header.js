@@ -55,11 +55,11 @@ const Header = () => {
           `}>
             <div className="pl-9">
               <div className="p-3 flex gap-7">
-                <div className="flex items-center gap-5">
+                <div className="flex items-center gap-3">
                   <SearchBar />
                   <Link
                     href="/gio-hang"
-                    className="bg-[#FFAC0A] w-[150px] h-[40px] items-center text-center relative flex gap-2 rounded-md shadow-md">
+                    className="bg-[#FFAC0A] w-[120px] h-[35px] items-center text-center relative flex gap-2 rounded-md shadow-md">
                     <span className="pl-1">
                       <ShoppingCart size={24} strokeWidth={2}></ShoppingCart>
                     </span>

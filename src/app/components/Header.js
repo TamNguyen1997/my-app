@@ -13,7 +13,7 @@ const Header = () => {
   const [menuVisible, setMenuVisible] = useState(false);
   const menuRef = useRef();
   const brandCategory = {
-    id: -1,
+    id: "-1",
     slug: "thuong-hieu",
     name: "Thương hiệu",
     subcates: BRANDS
@@ -133,21 +133,6 @@ const Header = () => {
                   ))
                 }
               </div>
-              {/* <div className="flex items-center w-2/3 m-auto h-[80px]">
-                {subcate.image ? (
-                  <img
-                    src={`${process.env.NEXT_PUBLIC_FILE_PATH +
-                      subcate.image?.path
-                      }`}
-                    width="150"
-                    height="150"
-                    alt={i}
-                  />
-                ) : (
-                  ""
-                )}
-              </div>
-              {subcate.name} */}
               {
                 hoveredCate && (
                   <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] bg-white shadow-lg grow">
@@ -228,7 +213,7 @@ const HeaderItems = ({ categories, setHoveredCate, menuRef, setMenuVisible, menu
 
   useEffect(() => {
     setSubCategories(
-      (categories || []).reduce((acc, category) => [...acc, ...(category?.subcates || [])], [])?.filter((item, index, arr) => arr.findIndex(_i => _i.id === item.id) === index)
+      (categories || []).filter(category => category.id !== "-1").reduce((acc, category) => [...acc, ...(category?.subcates || [])], [])?.filter((item, index, arr) => arr.findIndex(_i => _i.id === item.id) === index)
     )
   }, [categories]);
 
@@ -285,7 +270,7 @@ const HeaderItems = ({ categories, setHoveredCate, menuRef, setMenuVisible, menu
           onMouseOut={() => setMenuVisible(false)}
         >
           <Menu size="20" className="inline-block mr-2" />
-          Tất cả danh mục
+          Danh mục
         </Link>
         {
           subCategories.map((subcate) =>

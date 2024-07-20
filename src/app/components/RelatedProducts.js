@@ -13,7 +13,7 @@ const RelatedProducts = ({ productId }) => {
 
   useEffect(() => {
     fetch(`/api/products/${productId}/related?active=true`).then(res => res.json()).then(json => setProducts(json))
-  }, [])
+  }, [productId])
 
   return (<>
     <div className="relative">

@@ -511,7 +511,7 @@ const BrandSection = ({ products }) => {
       </div>
 
       <div className="w-full my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
-        {products.map((product) => (
+        {products.filter(product => product.subCateId && product.categoryId).map((product) => (
           <Link
             href={`/${product.subCate.slug}/${product.slug}`}
             key={product.id}

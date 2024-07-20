@@ -59,13 +59,13 @@ const Header = () => {
                   <SearchBar />
                   <Link
                     href="/gio-hang"
-                    className="bg-[#FFAC0A] w-[120px] h-[35px] items-center text-center relative flex gap-2 rounded-md shadow-md">
-                    <span className="pl-1">
+                    className="bg-[#FFAC0A] h-[35px] items-center text-center relative flex rounded-md shadow-md">
+                    <span className="px-1">
                       <ShoppingCart size={24} strokeWidth={2}></ShoppingCart>
                     </span>
-                    <span className="text-sm">Giỏ hàng</span>
+                    <span className="text-sm px-1">Giỏ hàng</span>
                     {cartdetails?.length ? (
-                      <div className="rounded-full w-3 h-3 bg-red-600 text-white text-center  text-[10px]">
+                      <div className="rounded-full w-3 h-3 bg-red-600 text-white text-center text-[10px]">
                         <span className="animate-ping absolute inline-flex w-3 h-3 rounded-full bg-red-600 opacity-75"></span>
                         {cartdetails.length}
                       </div>

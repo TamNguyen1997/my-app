@@ -12,10 +12,24 @@ const Header = () => {
   const [hoveredCate, setHoveredCate] = useState(null)
   const [menuVisible, setMenuVisible] = useState(false);
   const menuRef = useRef();
-  const [categories, setCategories] = useState([]);
+  const brandCategory = {
+    id: -1,
+    slug: "thuong-hieu",
+    name: "Thương hiệu",
+    subcates: BRANDS
+  };
+  const [categories, setCategories] = useState([
+    // brandCategory,
+    // ...[...Array(6)].map((_, index) => ({
+    //   id: index,
+    //   slug: `category-${index}`,
+    //   name: `Category ${index}`,
+    //   subcates: BRANDS
+    // }))
+  ]);
 
   useEffect(() => {
-    fetch('/api/categories/?includeSubCate=true&size=7&showOnHeader=true').then(res => res.json()).then(json => setCategories(json.result))
+    fetch('/api/categories/?includeSubCate=true&size=7&showOnHeader=true').then(res => res.json()).then(json => setCategories([brandCategory, ...json.result]));
   }, []);
 
   const { cartdetails } = useContext(CartContext);
@@ -96,7 +110,7 @@ const Header = () => {
           <div
             onMouseOver={() => setMenuVisible(true)}
             onMouseOut={() => setMenuVisible(false)}
-            className="z-10 fixed w-full container subcate-menu"
+            className="z-10 fixed w-full subcate-menu"
             ref={menuRef}
           >
             <div className="text-sm flex">
@@ -139,7 +153,7 @@ const Header = () => {
                   <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] bg-white shadow-lg grow">
                     {
                       hoveredCate.subcates?.map((subcate, i) => (
-                        <div className="px-2.5 py-1">
+                        <div className="px-2.5 py-1" key={subcate.id}>
                           <h2 className="flex items-center font-bold text-black text-left border-b p-1">
                             {subcate.name}
                             <Link href="" className="flex items-center text-xs text-primary ml-3">
@@ -224,18 +238,21 @@ const HeaderItems = ({ categories, setHoveredCate, menuRef, setMenuVisible, menu
     const handleScroll = () => {
       if (!headerItemsRef?.current) return;
       const parentNode = headerItemsRef.current.parentNode;
-      const nav = headerItemsRef.current.closest("nav");
+      // const nav = headerItemsRef.current.closest("nav");
       const menuButton = headerItemsRef.current.querySelector(".menu-button");
       let menuHeight = 0;
 
       if (parentNode.getBoundingClientRect().bottom <= 0) {
         headerItemsRef.current.classList.add("fixed-header");
-        parentNode.classList.add("container");
+        headerItemsRef.current.childNodes?.[0]?.classList.remove("container");
+        menuRef.current?.classList.remove("container");
         menuHeight = headerItemsRef.current.getBoundingClientRect().height || 0;
       } else {
-        menuHeight = nav?.getBoundingClientRect().height || 0;
+        // menuHeight = nav?.getBoundingClientRect().height || 0;
+        menuHeight = menuButton?.getBoundingClientRect().bottom || 0;
         headerItemsRef.current.classList.remove("fixed-header");
-        parentNode.classList.remove("container");
+        menuRef.current?.classList.add("container");
+        headerItemsRef.current.childNodes?.[0]?.classList.add("container");
       }
 
       if (menuRef.current) {
@@ -255,19 +272,7 @@ const HeaderItems = ({ categories, setHoveredCate, menuRef, setMenuVisible, menu
 
   return (<>
     <div className="w-full" ref={headerItemsRef}>
-      <div className="flex text-sm container">
-        {/* <Link href=""
-          onMouseOver={() => {
-            setSubCate(BRANDS)
-            setHoveredCate({})
-          }}
-          onMouseOut={onMouseOut}
-          className={`
-            hover:bg-[#FFAC0A] transition p-3
-          `}
-        >
-          Thương hiệu
-        </Link> */}
+      <div className="ml-0 w-full flex text-sm">
         <Link href=""
           className={`
             hover:bg-[#FFAC0A] transition p-3 menu-button

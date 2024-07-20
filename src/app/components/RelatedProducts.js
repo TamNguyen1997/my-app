@@ -6,14 +6,12 @@ import { Button } from "@nextui-org/react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 
-const RelatedProducts = ({ productId }) => {
-  if (!productId) return <></>
-
+const RelatedProducts = ({ productId, query }) => {
   const [products, setProducts] = useState([])
 
   useEffect(() => {
-    fetch(`/api/products/${productId}/related?active=true`).then(res => res.json()).then(json => setProducts(json))
-  }, [productId])
+    fetch(`/api/products/${query}`).then(res => res.json()).then(json => setProducts(json.result))
+  }, [query])
 
   return (<>
     <div className="relative">

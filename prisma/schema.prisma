@@ -49,11 +49,23 @@ model product {
   product_on_order product_on_order[]
   product_on_image product_on_image[]
 
+  productType product_type @default(PRODUCT) @map("product_type")
+
+  componentParts product[] @relation("componentParts")
+  product        product?  @relation("componentParts", fields: [productId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  productId      String?   @db.Uuid
+
   @@index([imageId])
   @@index([subCategoryId])
   @@index([categoryId])
   @@index([brandId])
   @@index([subCateId])
+  @@index([productId])
+}
+
+enum product_type {
+  PRODUCT
+  COMPONENT_PART
 }
 
 model product_on_image {

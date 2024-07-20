@@ -64,6 +64,13 @@ export async function GET(req) {
         search: `${query.slug.trim().replaceAll(" ", " & ")}:*`
       }
     }
+
+    if (query.productType) {
+      condition.productType = query.productType
+    }
+    if (query.productId) {
+      condition.productId = query.productId
+    }
   }
 
   try {

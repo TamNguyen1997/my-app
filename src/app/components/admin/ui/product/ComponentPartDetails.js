@@ -22,7 +22,6 @@ import { useEditor } from "@tiptap/react";
 import SaleDetails from "@/app/components/admin/ui/product/SaleDetails";
 import TechnicalDetails from "@/app/components/admin/ui/product/TechnicalDetails";
 import ProductDetail from "@/app/components/admin/ui/product/ProductDetail";
-import ComponentPartDetails from "@/app/components/admin/ui/product/ComponentPartDetails";
 import ProductImage from "@/app/components/admin/ui/product/ProductImage";
 import ProductDescription from "@/app/components/admin/ui/product/ProductDescription";
 import { editorConfig } from "@/lib/editor"
@@ -39,7 +38,7 @@ const updateProductHighlight = async (product, active) => {
   await fetch(`/api/products/${product.id}`, { method: "PUT", body: JSON.stringify(product) })
 }
 
-const ProductCms = () => {
+const ComponentPartDetails = ({ productId }) => {
   const [loadingState, setLoadingState] = useState("loading")
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [selectedProduct, setSelectedProduct] = useState({})
@@ -63,7 +62,7 @@ const ProductCms = () => {
 
   useEffect(() => {
     getProduct()
-  }, [page])
+  }, [page, productId])
 
   const getProduct = async () => {
     setLoadingState("loading")
@@ -71,12 +70,13 @@ const ProductCms = () => {
     Object.keys(filteredCondition).forEach(key => filteredCondition[key] === undefined && delete filteredCondition[key])
     const queryString = new URLSearchParams(filteredCondition).toString()
 
-    await fetch(`/api/products/?size=${rowsPerPage}&page=${page}&${queryString}&productType=PRODUCT`).then(async (res) => {
-      const data = await res.json()
-      setProducts(data.result)
-      setTotal(data.total)
-      setLoadingState("idle")
-    })
+    await fetch(`/api/products/?size=${rowsPerPage}&page=${page}&${queryString}&productType=COMPONENT_PART&productId=${productId}`)
+      .then(async (res) => {
+        const data = await res.json()
+        setProducts(data.result)
+        setTotal(data.total)
+        setLoadingState("idle")
+      })
   }
 
   useEffect(() => {
@@ -107,8 +107,8 @@ const ProductCms = () => {
     ]).then(() => onOpen())
   }
 
-  const newProduct = () => {
-    setSelectedProduct({})
+  const newComponentPart = () => {
+    setSelectedProduct({ productId: productId, productType: "COMPONENT_PART" })
     editor.commands.setContent()
     onOpen()
   }
@@ -204,8 +204,8 @@ const ProductCms = () => {
   return (
     <>
       <div className="flex flex-col gap-2 border-r min-h-full p-2">
-        <div className="flex gap-3 w-1/2">
-          <Input label="Tên sản phẩm" aria-label="Tên sản phẩm" labelPlacement="outside" value={condition.name}
+        <div className="flex gap-3 w-2/3">
+          <Input label="Tên phụ kiện" aria-label="Tên phụ kiện" labelPlacement="outside" value={condition.name}
             onValueChange={(value) => {
               onConditionChange({ name: value })
               if (value.length > 2) getProduct()
@@ -218,17 +218,6 @@ const ProductCms = () => {
             }}
           />
 
-          <Select
-            label="Nổi bật"
-            labelPlacement="outside"
-            onSelectionChange={(value) => onConditionChange({ highlight: value.values().next().value })}>
-            <SelectItem key="true">
-              Nổi bật
-            </SelectItem>
-            <SelectItem key="false">
-              Không nổi bật
-            </SelectItem>
-          </Select>
           <Select
             label="Active"
             labelPlacement="outside"
@@ -246,7 +235,7 @@ const ProductCms = () => {
         </div>
         <div className="px-1 py-2 border-default-200">
           <Table
-            aria-label="Tất cả sản phẩm"
+            aria-label="Tất cả phụ kiện"
             loadingState={loadingState}
             bottomContent={
               loadingState === "loading" ? null :
@@ -262,7 +251,7 @@ const ProductCms = () => {
                 </div>
             }>
             <TableHeader>
-              <TableColumn key="name" textValue="Tên sản phẩm" aria-label="Tên sản phẩm">Tên sản phẩm</TableColumn>
+              <TableColumn key="name" textValue="Tên phụ kiện" aria-label="Tên phụ kiện">Tên phụ kiện</TableColumn>
               <TableColumn key="slug" textValue="slug" aria-label="slug">Slug</TableColumn>
               <TableColumn key="highlight" textValue="highlight" aria-label="active">Nổi bật</TableColumn>
               <TableColumn key="active" textValue="active" aria-label="active">Active</TableColumn>
@@ -270,7 +259,7 @@ const ProductCms = () => {
             </TableHeader>
             <TableBody
               items={products}
-              emptyContent={"Không có sản phẩm nào"}
+              emptyContent={"Không có phụ kiện nào"}
               isLoading={loadingState === "loading"}
               loadingContent={<Spinner label="Loading..." />}>
               {(item) => (
@@ -283,7 +272,7 @@ const ProductCms = () => {
         </div>
       </div>
       <div className="p-3">
-        <Button color="primary" onClick={newProduct}>Thêm sản phẩm</Button>
+        <Button color="primary" onClick={newComponentPart}>Thêm phụ kiện</Button>
       </div>
 
       <Modal
@@ -293,7 +282,7 @@ const ProductCms = () => {
           <ModalContent>
             {(onClose) => (
               <>
-                <ModalHeader className="flex flex-col gap-1">Chi tiết sản phẩm</ModalHeader>
+                <ModalHeader className="flex flex-col gap-1">Chi tiết phụ kiện</ModalHeader>
                 <ModalBody>
                   <Tabs>
                     <Tab title="Thông tin chung">
@@ -333,13 +322,6 @@ const ProductCms = () => {
                         </CardBody>
                       </Card>
                     </Tab>
-                    <Tab title="Phụ kiện">
-                      <Card>
-                        <CardBody>
-                          <ComponentPartDetails productId={selectedProduct.id} />
-                        </CardBody>
-                      </Card>
-                    </Tab>
                     <Tab title="Thông số bán hàng">
                       <Card>
                         <CardBody>
@@ -366,4 +348,4 @@ const ProductCms = () => {
   )
 }
 
-export default ProductCms
+export default ComponentPartDetails

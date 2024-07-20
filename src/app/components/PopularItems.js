@@ -76,7 +76,7 @@ export default function PopularItems() {
 
   useEffect(() => {
     Promise.all([
-      fetch(`/api/products/?size=${10}&page=${1}&highlight=true&active=true`).then(res => res.json()).then((value) => setProducts(value.result)),
+      fetch(`/api/products/?size=${10}&page=${1}&highlight=true&active=true&productType=PRODUCT`).then(res => res.json()).then((value) => setProducts(value.result)),
       fetch(`/api/brands/thuong-hieu-rubbermaid/products/?active=true`).then(res => res.json()).then(json => {
         setRubberMaidProducts(json.products)
         setBrandProducts(json.products)
@@ -92,7 +92,7 @@ export default function PopularItems() {
   useEffect(() => {
     Promise.all(
       highlightCates
-        .map(cate => fetch(`/api/products/?size=${10}&page=${1}&categoryId=${cate.id}&active=true`)
+        .map(cate => fetch(`/api/products/?size=${10}&page=${1}&categoryId=${cate.id}&active=true&productType=PRODUCT`)
           .then(res => res.json())
           .then(json => json.result))
     ).then(value => {

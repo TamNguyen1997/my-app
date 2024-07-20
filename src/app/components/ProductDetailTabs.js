@@ -11,6 +11,7 @@ const ID = {
   FEATURES: "FEATURES",
   SPECIFICATIONS: "SPECIFICATIONS",
   VIDEOS: "VIDEOS",
+  COMPONENT_PARTS: "COMPONENT_PARTS",
   RELATED_ITEMS: "RELATED_ITEMS"
 };
 
@@ -61,7 +62,13 @@ const TabContent = ({ id, product }) => {
     case ID.RELATED_ITEMS:
       return (
         <div className="mb-9">
-          <RelatedProducts productId={product?.id} />
+          <RelatedProducts query={`?size=10&page=1&productType=PRODUCT&categoryId=${product.categoryId}`} />
+        </div>
+      )
+    case ID.COMPONENT_PARTS:
+      return (
+        <div className="mb-9">
+          <RelatedProducts query={`/?size=10&page=1&productType=COMPONENT_PART&productId=${product.id}`} />
         </div>
       )
     default:
@@ -74,7 +81,7 @@ export default ({ product }) => {
     { id: ID.DESCRIPTION, title: "Mô tả" },
     // { id: ID.FEATURES, title: "Tính năng và ưu điểm" },
     { id: ID.SPECIFICATIONS, title: "Thông số kỹ thuật" },
-    // { id: ID.VIDEOS, title: "Videos" },
+    { id: ID.COMPONENT_PARTS, title: "Phụ kiện" },
     { id: ID.RELATED_ITEMS, title: "Sản phẩm liên quan" },
   ];
 

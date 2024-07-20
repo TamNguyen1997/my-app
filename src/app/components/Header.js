@@ -135,7 +135,7 @@ const Header = () => {
               </div>
               {
                 hoveredCate && (
-                  <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] bg-white shadow-lg grow border rounded-br-lg">
+                  <div className="bg-white shadow-lg grow border rounded-br-lg">
                     <div className="p-2 grid grid-rows-7 grid-flow-col">
                       {
                         hoveredCate.subcates?.map((subcate, i) => (

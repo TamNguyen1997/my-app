@@ -8,6 +8,7 @@ export async function POST(req, { params }) {
     await db.sale_detail.deleteMany({
       where: {
         productId: params.id,
+        saleDetailId: null
       }
     })
     await db.sale_detail.deleteMany({
@@ -18,11 +19,9 @@ export async function POST(req, { params }) {
     await db.sale_detail.createMany({
       data: body.saleDetails
     })
-    await db.secondary_sale_detail.createMany({
-      data: body.secondarySaleDetails
-    })
     return NextResponse.json({ message: "Success" })
   } catch (e) {
+    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }

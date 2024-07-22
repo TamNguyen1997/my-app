@@ -27,14 +27,8 @@ import ProductDescription from "@/app/components/admin/ui/product/ProductDescrip
 
 const rowsPerPage = 10;
 
-const updateProductActive = async (product, active) => {
-  product.active = active
-  await fetch(`/api/products/${product.id}`, { method: "PUT", body: JSON.stringify(product) })
-}
-
-const updateProductHighlight = async (product, active) => {
-  product.highlight = active
-  await fetch(`/api/products/${product.id}`, { method: "PUT", body: JSON.stringify(product) })
+const quickUpdateProduct = async (product, value) => {
+  await fetch(`/api/products/${product.id}`, { method: "PUT", body: JSON.stringify(value) })
 }
 
 const ProductCms = () => {
@@ -43,7 +37,6 @@ const ProductCms = () => {
   const [selectedProduct, setSelectedProduct] = useState({})
   const [condition, setCondition] = useState({})
 
-  const [reload, setReload] = useState(false)
   const [total, setTotal] = useState(0)
   const [categories, setCategories] = useState([])
   const [subCategories, setSubCategories] = useState([])
@@ -51,11 +44,6 @@ const ProductCms = () => {
 
   const [page, setPage] = useState(1);
   const [products, setProducts] = useState([]);
-
-  const [technicalRows, setTechnicalRows] = useState([])
-  const [technicalColumns, setTechnicalColumns] = useState([])
-
-  const [saleDetails, setSaleDetails] = useState([])
 
   useEffect(() => {
     getProduct()
@@ -86,20 +74,12 @@ const ProductCms = () => {
   }, [total, rowsPerPage]);
 
   const deleteProduct = (id) => {
-    fetch(`/api/products/${id}`, { method: "DELETE" }).then(() => setReload(true))
+    fetch(`/api/products/${id}`, { method: "DELETE" }).then(() => getProduct())
   }
 
   const openModal = async (product) => {
-    Promise.all([
-      fetch(`/api/products/${product.id}`).then(res => res.json()).then((json) => {
-        setSelectedProduct(json)
-      }),
-      fetch(`/api/products/${product.id}/technical-details`).then(res => res.json()).then(technical => {
-        setTechnicalColumns(technical ? JSON.parse(technical.column) : [])
-        setTechnicalRows(technical ? JSON.parse(technical.row) : [])
-      }),
-      fetch(`/api/products/${product.id}/sale-details`).then(res => res.json()).then(setSaleDetails),
-    ]).then(() => onOpen())
+    setSelectedProduct(product)
+    onOpen()
   }
 
   const newProduct = () => {
@@ -124,69 +104,19 @@ const ProductCms = () => {
       case "active":
         return (
           <div className="relative flex items-center gap-2">
-            <Switch defaultSelected={product.active} onValueChange={(value) => updateProductActive(product, value)}></Switch>
+            <Switch defaultSelected={product.active} onValueChange={(value) => quickUpdateProduct(product, { active: value })}></Switch>
           </div>
         )
       case "highlight":
         return (
           <div className="relative flex items-center gap-2">
-            <Switch defaultSelected={product.highlight} onValueChange={(value) => updateProductHighlight(product, value)}></Switch>
+            <Switch defaultSelected={product.highlight} onValueChange={(value) => quickUpdateProduct(product, { highlight: value })}></Switch>
           </div>
         )
       default:
         return cellValue
     }
   }, [])
-
-  if (reload) {
-    redirect("/admin/product")
-  }
-
-  const onSubmit = async (e) => {
-    e.preventDefault()
-
-    delete productToUpdate.image
-    delete productToUpdate.subCategory
-    delete productToUpdate.brand
-    delete productToUpdate.category
-
-    if (productToUpdate.id) {
-      await fetch(`/api/products/${productToUpdate.id}`, {
-        method: "PUT",
-        body: JSON.stringify(productToUpdate)
-      })
-    } else {
-      productToUpdate = await fetch(`/api/products/`, {
-        method: "POST",
-        body: JSON.stringify(productToUpdate)
-      }).then(res => res.json())
-    }
-    if (saleDetails.length) {
-      let saleDetailToUpdate = [...saleDetails]
-      let secondarySaleDetails = []
-      saleDetailToUpdate.forEach(detail => {
-        if (secondarySaleDetails) {
-          secondarySaleDetails.push(...detail.secondarySaleDetails)
-        }
-        delete detail.secondarySaleDetails
-      })
-
-      await fetch(`/api/products/${productToUpdate.id}/sale-details`, {
-        method: "POST",
-        body: JSON.stringify({ saleDetails: saleDetailToUpdate, secondarySaleDetails: secondarySaleDetails })
-      })
-    }
-
-    await fetch(`/api/products/${productToUpdate.id}/technical-details`, {
-      method: "POST",
-      body: JSON.stringify({
-        row: JSON.stringify(technicalRows),
-        column: JSON.stringify(technicalColumns),
-        productId: productToUpdate.id
-      })
-    })
-    setReload(true)
-  }
 
   const onConditionChange = (value) => {
     setCondition(Object.assign({}, condition, value))
@@ -280,75 +210,73 @@ const ProductCms = () => {
       <Modal
         size="5xl" scrollBehavior="inside"
         isOpen={isOpen} onOpenChange={onOpenChange}>
-        <form onSubmit={onSubmit}>
-          <ModalContent>
-            {(onClose) => (
-              <>
-                <ModalHeader className="flex flex-col gap-1">Chi tiết sản phẩm</ModalHeader>
-                <ModalBody>
-                  <Tabs disabledKeys={selectedProduct.id ? [] : ["description", "image", "technical", "component", "sale"]}>
-                    <Tab title="Thông tin chung">
-                      <Card>
-                        <CardBody>
-                          <ProductDetail
-                            categories={categories}
-                            product={selectedProduct}
-                            setProduct={setSelectedProduct}
-                            brands={brands}
-                            subCategories={subCategories}
-                          />
-                        </CardBody>
-                      </Card>
-                    </Tab>
-                    <Tab title="Mô tả" key="description">
-                      <Card>
-                        <CardBody>
-                          <ProductDescription product={selectedProduct} />
-                        </CardBody>
-                      </Card>
-                    </Tab>
-                    <Tab title="Hình ảnh" key="image">
-                      <Card>
-                        <CardBody>
-                          <ProductImage product={selectedProduct} />
-                        </CardBody>
-                      </Card>
-                    </Tab>
-                    <Tab title="Phụ kiện" key="component">
-                      <Card>
-                        <CardBody>
-                          <ComponentPartDetails productId={selectedProduct.id} categories={categories} subCategories={subCategories} />
-                        </CardBody>
-                      </Card>
-                    </Tab>
-                    <Tab title="Thông số kĩ thuật" key="technical">
-                      <Card>
-                        <CardBody>
-                          <TechnicalDetails product={selectedProduct} />
-                        </CardBody>
-                      </Card>
-                    </Tab>
-                    <Tab title="Thông số bán hàng" key="sale">
-                      <Card>
-                        <CardBody>
-                          <SaleDetails saleDetails={saleDetails} setSaleDetails={setSaleDetails} productId={selectedProduct.id} />
-                        </CardBody>
-                      </Card>
-                    </Tab>
-                  </Tabs>
-                </ModalBody>
-                <ModalFooter>
-                  <Button color="primary" type="submit">
-                    Lưu
-                  </Button>
-                  <Button color="danger" variant="light" onPress={onClose}>
-                    Close
-                  </Button>
-                </ModalFooter>
-              </>
-            )}
-          </ModalContent>
-        </form>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">Chi tiết sản phẩm</ModalHeader>
+              <ModalBody>
+                <Tabs disabledKeys={selectedProduct.id ? [] : ["description", "image", "technical", "component", "sale"]}>
+                  <Tab title="Thông tin chung">
+                    <Card>
+                      <CardBody>
+                        <ProductDetail
+                          categories={categories}
+                          product={selectedProduct}
+                          setProduct={setSelectedProduct}
+                          brands={brands}
+                          subCategories={subCategories}
+                        />
+                      </CardBody>
+                    </Card>
+                  </Tab>
+                  <Tab title="Mô tả" key="description">
+                    <Card>
+                      <CardBody>
+                        <ProductDescription product={selectedProduct} />
+                      </CardBody>
+                    </Card>
+                  </Tab>
+                  <Tab title="Hình ảnh" key="image">
+                    <Card>
+                      <CardBody>
+                        <ProductImage product={selectedProduct} />
+                      </CardBody>
+                    </Card>
+                  </Tab>
+                  <Tab title="Phụ kiện" key="component">
+                    <Card>
+                      <CardBody>
+                        <ComponentPartDetails productId={selectedProduct.id} categories={categories} subCategories={subCategories} />
+                      </CardBody>
+                    </Card>
+                  </Tab>
+                  <Tab title="Thông số kĩ thuật" key="technical">
+                    <Card>
+                      <CardBody>
+                        <TechnicalDetails product={selectedProduct} />
+                      </CardBody>
+                    </Card>
+                  </Tab>
+                  <Tab title="Thông số bán hàng" key="sale">
+                    <Card>
+                      <CardBody>
+                        <SaleDetails product={selectedProduct} />
+                      </CardBody>
+                    </Card>
+                  </Tab>
+                </Tabs>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="primary" type="submit">
+                  Lưu
+                </Button>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Close
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
       </Modal>
     </>
   )

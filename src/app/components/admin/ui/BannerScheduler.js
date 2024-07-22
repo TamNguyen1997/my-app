@@ -7,7 +7,6 @@ import { ImageDraggable } from "./ImageDraggable";
 import { Button } from "@nextui-org/react";
 import { v4 } from "uuid";
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
 
 const imageUrl = "/api/images/banner"
 

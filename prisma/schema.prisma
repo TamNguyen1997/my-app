@@ -104,7 +104,12 @@ model sale_detail {
   type                 sale_detail_type        @default(TEXT)
   secondarySaleDetails secondary_sale_detail[]
 
+  childSaleDetails sale_detail[] @relation("secondary_sale_detail")
+  saleDetail       sale_detail?  @relation("secondary_sale_detail", fields: [saleDetailId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  saleDetailId     String?       @map("sale_detail_id") @db.Uuid
+
   @@index([productId])
+  @@index([saleDetailId])
 }
 
 model secondary_sale_detail {

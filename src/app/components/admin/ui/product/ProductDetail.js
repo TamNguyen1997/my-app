@@ -2,10 +2,11 @@ import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader
 import slugify from "slugify"
 import ImagePicker from "../ImagePicker"
 import { useCallback } from "react"
+import { ToastContainer, toast } from 'react-toastify';
 
 const ProductDetail = ({
   categories, product, setProduct,
-  brands, editor, subCategories }) => {
+  brands, subCategories }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   const selectImage = (value) => {
@@ -17,8 +18,28 @@ const ProductDetail = ({
     return product.categoryId ? subCategories.filter(item => item.cateId === product.categoryId) : subCategories
   }, [product])
 
+  const onSave = async () => {
+    let productToUpdate = { ...product }
+    delete productToUpdate.image
+    delete productToUpdate.subCategory
+    delete productToUpdate.brand
+    delete productToUpdate.category
+
+    const res = product.id ?
+      await fetch(`/api/products/${product.id}`, { method: "PUT", body: JSON.stringify(productToUpdate) }) :
+      await fetch(`/api/products/`, { method: "POST", body: JSON.stringify(productToUpdate) })
+
+    if (res.ok) {
+      toast.success("Đã lưu")
+    } else {
+      toast.error("Không thể lưu")
+    }
+    setProduct(await res.json())
+  }
+
   return (
     <>
+      <ToastContainer />
       <div className="flex flex-col gap-3">
         <div className="flex gap-2">
           <Input
@@ -125,7 +146,9 @@ const ProductDetail = ({
                 /> : null
             }
           </div>
-
+          <div>
+            <Button color="primary" onClick={onSave} className="w-24 float-right">Lưu</Button>
+          </div>
         </div>
       </div>
 

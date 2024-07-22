@@ -18,14 +18,12 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { EditIcon, Search, Trash2 } from "lucide-react"
 import { redirect } from "next/navigation";
-import { useEditor } from "@tiptap/react";
 import SaleDetails from "@/app/components/admin/ui/product/SaleDetails";
 import TechnicalDetails from "@/app/components/admin/ui/product/TechnicalDetails";
 import ProductDetail from "@/app/components/admin/ui/product/ProductDetail";
 import ComponentPartDetails from "@/app/components/admin/ui/product/ComponentPartDetails";
 import ProductImage from "@/app/components/admin/ui/product/ProductImage";
 import ProductDescription from "@/app/components/admin/ui/product/ProductDescription";
-import { editorConfig } from "@/lib/editor"
 
 const rowsPerPage = 10;
 
@@ -59,8 +57,6 @@ const ProductCms = () => {
 
   const [saleDetails, setSaleDetails] = useState([])
 
-  const editor = useEditor(editorConfig(selectedProduct.description))
-
   useEffect(() => {
     getProduct()
   }, [page])
@@ -93,11 +89,10 @@ const ProductCms = () => {
     fetch(`/api/products/${id}`, { method: "DELETE" }).then(() => setReload(true))
   }
 
-  const openModal = async (product, editor) => {
+  const openModal = async (product) => {
     Promise.all([
       fetch(`/api/products/${product.id}`).then(res => res.json()).then((json) => {
         setSelectedProduct(json)
-        editor.commands.setContent(json.description)
       }),
       fetch(`/api/products/${product.id}/technical-details`).then(res => res.json()).then(technical => {
         setTechnicalColumns(technical ? JSON.parse(technical.column) : [])
@@ -109,18 +104,17 @@ const ProductCms = () => {
 
   const newProduct = () => {
     setSelectedProduct({})
-    editor.commands.setContent()
     onOpen()
   }
 
-  const renderCell = useCallback((product, columnKey, editor) => {
+  const renderCell = useCallback((product, columnKey) => {
     const cellValue = product[columnKey]
     switch (columnKey) {
       case "actions":
         return (
           <div className="relative flex items-center gap-2">
             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-              <EditIcon onClick={() => openModal(product, editor)} />
+              <EditIcon onClick={() => openModal(product)} />
             </span>
             <span className="text-lg text-danger cursor-pointer active:opacity-50 pl-5">
               <Trash2 onClick={() => deleteProduct(product.id)} />
@@ -151,14 +145,11 @@ const ProductCms = () => {
   const onSubmit = async (e) => {
     e.preventDefault()
 
-    let productToUpdate = Object.assign({}, selectedProduct, { description: editor.getHTML() })
-
     delete productToUpdate.image
     delete productToUpdate.subCategory
     delete productToUpdate.brand
     delete productToUpdate.category
 
-    productToUpdate.description = editor.getHTML()
     if (productToUpdate.id) {
       await fetch(`/api/products/${productToUpdate.id}`, {
         method: "PUT",
@@ -275,7 +266,7 @@ const ProductCms = () => {
               loadingContent={<Spinner label="Loading..." />}>
               {(item) => (
                 <TableRow key={item.id}>
-                  {(columnKey) => <TableCell>{renderCell(item, columnKey, editor)}</TableCell>}
+                  {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
                 </TableRow>
               )}
             </TableBody>
@@ -295,7 +286,7 @@ const ProductCms = () => {
               <>
                 <ModalHeader className="flex flex-col gap-1">Chi tiết sản phẩm</ModalHeader>
                 <ModalBody>
-                  <Tabs>
+                  <Tabs disabledKeys={selectedProduct.id ? [] : ["description", "image", "technical", "component", "sale"]}>
                     <Tab title="Thông tin chung">
                       <Card>
                         <CardBody>
@@ -304,43 +295,40 @@ const ProductCms = () => {
                             product={selectedProduct}
                             setProduct={setSelectedProduct}
                             brands={brands}
-                            editor={editor}
                             subCategories={subCategories}
                           />
                         </CardBody>
                       </Card>
                     </Tab>
-                    <Tab title="Mô tả">
+                    <Tab title="Mô tả" key="description">
                       <Card>
                         <CardBody>
-                          <ProductDescription
-                            editor={editor}
-                          />
+                          <ProductDescription product={selectedProduct} />
                         </CardBody>
                       </Card>
                     </Tab>
-                    <Tab title="Hình ảnh">
+                    <Tab title="Hình ảnh" key="image">
                       <Card>
                         <CardBody>
                           <ProductImage product={selectedProduct} />
                         </CardBody>
                       </Card>
                     </Tab>
-                    <Tab title="Thông số kĩ thuật">
+                    <Tab title="Phụ kiện" key="component">
                       <Card>
                         <CardBody>
-                          <TechnicalDetails rows={technicalRows} setRows={setTechnicalRows} columns={technicalColumns} setColumns={setTechnicalColumns} />
+                          <ComponentPartDetails productId={selectedProduct.id} categories={categories} subCategories={subCategories} />
                         </CardBody>
                       </Card>
                     </Tab>
-                    <Tab title="Phụ kiện">
+                    <Tab title="Thông số kĩ thuật" key="technical">
                       <Card>
                         <CardBody>
-                          <ComponentPartDetails productId={selectedProduct.id} />
+                          <TechnicalDetails product={selectedProduct} />
                         </CardBody>
                       </Card>
                     </Tab>
-                    <Tab title="Thông số bán hàng">
+                    <Tab title="Thông số bán hàng" key="sale">
                       <Card>
                         <CardBody>
                           <SaleDetails saleDetails={saleDetails} setSaleDetails={setSaleDetails} productId={selectedProduct.id} />

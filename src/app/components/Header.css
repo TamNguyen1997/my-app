@@ -4,7 +4,7 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    background: linear-gradient(180deg, #ffd300 0%, #FFAC0A 100%);
+    background: #ffd300;
     animation: fixed-header-animate 0.5s linear forwards;
 }
 
@@ -26,7 +26,8 @@
     transform: translateX(-50%); */
 }
 
-.fixed-header, .subcate-menu {
+.fixed-header,
+.subcate-menu {
     z-index: 1001;
 }
 
@@ -34,6 +35,7 @@
     0% {
         top: -70px;
     }
+
     100% {
         top: 0;
     }

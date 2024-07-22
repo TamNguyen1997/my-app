@@ -51,7 +51,7 @@ const Header = () => {
           </div>
           <div className={`
             w-[80%] rounded-tl-[50px] rounded-bl-[50px]
-            bg-gradient-to-b from-[#ffd300] from-0% via-[#ffd300] via-50% to-[#FFAC0A] to-100%
+            bg-[#ffd300]
           `}>
             <div className="pl-9">
               <div className="p-3 flex gap-7">
@@ -245,7 +245,7 @@ const HeaderItems = ({ categories, setHoveredCate, menuRef, setMenuVisible, menu
   });
 
   return (<>
-    <div className="w-full" ref={headerItemsRef}>
+    <div className="w-full font-bold" ref={headerItemsRef}>
       <div className="ml-0 w-full flex text-sm">
         <Link href=""
           className={`
@@ -267,7 +267,6 @@ const HeaderItems = ({ categories, setHoveredCate, menuRef, setMenuVisible, menu
               key={subcate.id}
               className={`
                 hover:bg-[#FFAC0A] transition p-3 sm:hidden md:block
-                border-l border-[#FFAC0A]
                 text-center
               `}
             >

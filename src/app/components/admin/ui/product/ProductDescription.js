@@ -26,7 +26,7 @@ const ProductDescription = ({ product }) => {
     <>
       <ToastContainer />
       <RichTextEditor editor={editor} />
-      <div>
+      <div className="pt-3">
         <Button color="primary" onClick={onSave} className="w-24 float-right">Lưu</Button>
       </div>
     </>

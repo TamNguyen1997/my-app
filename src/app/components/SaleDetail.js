@@ -55,7 +55,7 @@ const SaleDetail = ({ saleDetails, product }) => {
       <div className="flex flex-col gap-3">
         <div className="flex gap-2 flex-wrap">
           {
-            saleDetails.map(detail => {
+            saleDetails.filter(item => !item.saleDetailId).map(detail => {
               return <div key={detail.id} className="flex flex-col gap-1">
                 {
                   detail.type === "COLOR" ?
@@ -67,7 +67,7 @@ const SaleDetail = ({ saleDetails, product }) => {
                 }
                 <div>
                   {
-                    detail.secondarySaleDetails.map(sDetail => {
+                    saleDetails.filter(item => item.saleDetailId && item.saleDetailId === selectedDetail.id).map(sDetail => {
                       if (sDetail.type === "COLOR") {
                         return <div className={getColor(sDetail, selectedSecondaryDetail.id)} onClick={() => onSecondarySelect(sDetail.id)} key={sDetail.id}></div>
                       }
@@ -95,7 +95,7 @@ const SaleDetail = ({ saleDetails, product }) => {
           </div>
           <div className="pb-3">
             <Button color="primary" fullWidth
-              // isDisabled={!getPrice()} 
+              isDisabled={!getPrice()}
               onClick={() => {
                 addItemToCart({
                   quantity: quantity,

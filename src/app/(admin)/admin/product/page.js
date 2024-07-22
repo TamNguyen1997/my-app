@@ -266,14 +266,6 @@ const ProductCms = () => {
                   </Tab>
                 </Tabs>
               </ModalBody>
-              <ModalFooter>
-                <Button color="primary" type="submit">
-                  Lưu
-                </Button>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Close
-                </Button>
-              </ModalFooter>
             </>
           )}
         </ModalContent>

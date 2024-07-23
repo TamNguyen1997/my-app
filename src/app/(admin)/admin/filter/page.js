@@ -1,9 +1,8 @@
 "use client"
 
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Pagination, Select, SelectItem, Spinner, Switch, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from "@nextui-org/react";
+import { Button, Input, Link, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Pagination, Select, SelectItem, Spinner, Switch, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from "@nextui-org/react";
 import { EditIcon, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
 
 const rowsPerPage = 10;
 
@@ -45,13 +44,9 @@ const Filter = ({ query }) => {
     setLoadingState("idle")
   }
 
-  const deleteProduct = async (id) => {
-    const res = await fetch(`/api/filters/${id}`, { method: "DELETE" }).then(() => getFilter())
-    if (res.ok) {
-      toast.success("Đã xóa filter")
-    } else {
-      toast.error("Không thể xóa filter")
-    }
+  const deleteFilter = async (id) => {
+    await fetch(`/api/filters/${id}`, { method: "DELETE" })
+    getFilter()
   }
 
   const renderCell = useCallback((filter, columnKey) => {
@@ -61,27 +56,19 @@ const Filter = ({ query }) => {
         return (
           <div className="relative flex items-center gap-2">
             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-              <EditIcon onClick={() => openModal(filter)} />
+              <Link href={`/admin/filter/edit/${filter.id}`}>
+                <EditIcon />
+              </Link>
             </span>
             <span className="text-lg text-danger cursor-pointer active:opacity-50 pl-5">
-              <Trash2 onClick={() => deleteProduct(filter.id)} />
+              <Trash2 onClick={() => deleteFilter(filter.id)} />
             </span>
-          </div>
-        )
-      case "active":
-        return (
-          <div className="relative flex items-center gap-2">
-            <Switch defaultSelected={product.active} onValueChange={(value) => { }}></Switch>
           </div>
         )
       default:
         return cellValue
     }
   }, [])
-
-  const onSave = () => {
-
-  }
 
   const getTargetSelect = useCallback(() => {
     switch (selectedFilter.targetType) {
@@ -140,7 +127,6 @@ const Filter = ({ query }) => {
 
   return (
     <>
-      <ToastContainer />
       <div>
         <Table
           aria-label="Tất cả filter"
@@ -178,7 +164,7 @@ const Filter = ({ query }) => {
         </Table>
       </div>
       <div className="pt-3">
-        <Button color="primary" onClick={newFilter} className="w-24 float-right">Thêm filter</Button>
+        <Link href="/admin/filter/edit/new" className="float-right">Thêm filter</Link>
       </div>
       <Modal scrollBehavior="inside" size="5xl"
         isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -217,13 +203,6 @@ const Filter = ({ query }) => {
                     </SelectItem>
                   </Select>
                   {getTargetSelect()}
-                </div>
-                <div>
-                  {
-                    (selectedFilter.filterValues || []).map(filterValue => {
-
-                    })
-                  }
                 </div>
               </ModalBody>
               <ModalFooter>

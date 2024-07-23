@@ -3,17 +3,16 @@
 import { useCallback, useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import {
-
   Button,
   Input,
   Select,
   SelectItem
 } from "@nextui-org/react"
 import FilterProduct from "@/app/components/admin/ui/filter/FilterProduct";
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 
 const Filter = () => {
-  const [filter, setFilter] = useState({ filterOnProduct: [] })
+  const [filter, setFilter] = useState({})
 
   const [categories, setCategories] = useState([])
   const [subCategories, setSubCategories] = useState([])
@@ -25,16 +24,18 @@ const Filter = () => {
     fetch('/api/brands').then(res => res.json()).then(setBrands)
     fetch('/api/categories?type=SUB_CATE').then(res => res.json()).then(json => setSubCategories(json.result))
 
-    if (id) {
+    if (id && id !== 'new') {
       fetch(`/api/filters/${id}`).then(res => res.json()).then(setFilter)
     }
   }, [])
 
   const onSave = async () => {
-    const res = await fetch('/api/filters', { method: "POST", body: JSON.stringify(filter) })
+    const res = filter.id ?
+      await fetch(`/api/filters/${filter.id}`, { method: "PUT", body: JSON.stringify(filter) }) :
+      await fetch('/api/filters', { method: "POST", body: JSON.stringify(filter) })
     if (res.ok) {
       toast.success("Đã lưu filter")
-      setFilter({})
+      window.location.replace(`/admin/filter/edit/${(await res.json()).id}`)
     } else {
       toast.error("Không thể lưu filter")
     }
@@ -133,12 +134,15 @@ const Filter = () => {
             <Button onClick={onSave} color="primary">Lưu</Button>
           </div>
         </div>
-        <div>
-          {
-            filter.id ?
-              <FilterProduct filterId={filter.id} categories={categories} subCategories={subCategories} brands={brands} /> : ""
-          }
-        </div>
+        {
+          filter.id ?
+            <div className="border rounded-lg shadow-lg p-3">
+              <p className="font-bold pt-3">
+                Sản phẩm có trong filter
+              </p>
+              <FilterProduct filterId={filter.id} categories={categories} subCategories={subCategories} brands={brands} />
+            </div> : ""
+        }
       </div>
     </>
   )

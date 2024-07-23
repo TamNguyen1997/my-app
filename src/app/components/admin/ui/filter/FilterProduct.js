@@ -13,6 +13,7 @@ import {
   Card, CardBody, Tab, Tabs,
   Input,
   ModalFooter,
+  Link,
 } from "@nextui-org/react"
 import { EditIcon, Search, Trash2 } from "lucide-react"
 import SaleDetails from "@/app/components/admin/ui/product/SaleDetails";
@@ -171,10 +172,10 @@ const FilterProduct = ({ filterId, categories, brands, subCategories }) => {
         </div>
 
         <div>
-          <Button color="primary" onClick={addProduct.onOpen} className="w-24 float-right">Lưu</Button>
+          <Button color="primary" onClick={addProduct.onOpen} className="float-right">Thêm sản phẩm vào filter</Button>
+          <Link href="/admin/filter">Quay về</Link>
         </div>
       </div>
-
       <Modal
         size="5xl" scrollBehavior="inside"
         isOpen={isOpen} onOpenChange={onOpenChange}>

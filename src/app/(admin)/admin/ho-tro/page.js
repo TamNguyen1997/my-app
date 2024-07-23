@@ -6,7 +6,6 @@ import { useEditor } from "@tiptap/react"
 import { editorConfig } from "@/lib/editor"
 import { useEffect, useState } from "react"
 import { toast, ToastContainer } from "react-toastify"
-import 'react-toastify/dist/ReactToastify.css';
 
 export default () => {
   return (

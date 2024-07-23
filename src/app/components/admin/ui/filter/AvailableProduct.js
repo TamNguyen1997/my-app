@@ -1,5 +1,6 @@
 "use client"
 
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Spinner, Table,
   TableCell, TableColumn,
@@ -8,16 +9,11 @@ import {
   Modal, ModalHeader,
   ModalBody,
   Button, ModalContent,
-  Switch,
   Pagination,
   Card, CardBody, Tab, Tabs,
   Input,
-  Select,
-  SelectItem
 } from "@nextui-org/react"
-import { useCallback, useEffect, useMemo, useState } from "react"
-import { EditIcon, Search, Trash2 } from "lucide-react"
-import { redirect } from "next/navigation";
+import { EditIcon, Search } from "lucide-react"
 import SaleDetails from "@/app/components/admin/ui/product/SaleDetails";
 import TechnicalDetails from "@/app/components/admin/ui/product/TechnicalDetails";
 import ProductDetail from "@/app/components/admin/ui/product/ProductDetail";
@@ -27,63 +23,34 @@ import ProductDescription from "@/app/components/admin/ui/product/ProductDescrip
 
 const rowsPerPage = 10;
 
-const quickUpdateProduct = async (product, value) => {
-  await fetch(`/api/products/${product.id}`, { method: "PUT", body: JSON.stringify(value) })
-}
-
-const ProductCms = () => {
-  const [loadingState, setLoadingState] = useState("loading")
+const AvailableProduct = ({ filterId, categories, brands, subCategories, selectedKeys, setSelectedKeys }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [selectedProduct, setSelectedProduct] = useState({})
   const [condition, setCondition] = useState({})
 
   const [total, setTotal] = useState(0)
-  const [categories, setCategories] = useState([])
-  const [subCategories, setSubCategories] = useState([])
-  const [brands, setBrands] = useState([])
 
-  const [page, setPage] = useState(1);
-  const [products, setProducts] = useState([]);
+  const [page, setPage] = useState(1)
+
+  const [products, setProduct] = useState([])
 
   useEffect(() => {
     getProduct()
-  }, [page])
+  }, [filterId])
 
-  const getProduct = async () => {
-    setLoadingState("loading")
-    let filteredCondition = { ...condition }
-    Object.keys(filteredCondition).forEach(key => filteredCondition[key] === undefined && delete filteredCondition[key])
-    const queryString = new URLSearchParams(filteredCondition).toString()
-
-    await fetch(`/api/products/?size=${rowsPerPage}&page=${page}&${queryString}&productType=PRODUCT`).then(async (res) => {
-      const data = await res.json()
-      setProducts(data.result)
-      setTotal(data.total)
-      setLoadingState("idle")
+  const getProduct = useCallback(() => {
+    fetch(`/api/filters/${filterId}/available-products?page=${page}&size=${rowsPerPage}`).then(res => res.json()).then(json => {
+      setProduct(json.result)
+      setTotal(json.total)
     })
-  }
-
-  useEffect(() => {
-    fetch('/api/categories?type=CATE').then(res => res.json()).then(json => setCategories(json.result))
-    fetch('/api/brands').then(res => res.json()).then(setBrands)
-    fetch('/api/categories?type=SUB_CATE').then(res => res.json()).then(json => setSubCategories(json.result))
-  }, [])
+  }, [filterId])
 
   const pages = useMemo(() => {
     return total ? Math.ceil(total / rowsPerPage) : 0;
   }, [total, rowsPerPage]);
 
-  const deleteProduct = (id) => {
-    fetch(`/api/products/${id}`, { method: "DELETE" }).then(() => getProduct())
-  }
-
   const openModal = async (product) => {
     setSelectedProduct(product)
-    onOpen()
-  }
-
-  const newProduct = () => {
-    setSelectedProduct({})
     onOpen()
   }
 
@@ -96,23 +63,14 @@ const ProductCms = () => {
             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
               <EditIcon onClick={() => openModal(product)} />
             </span>
-            <span className="text-lg text-danger cursor-pointer active:opacity-50 pl-5">
-              <Trash2 onClick={() => deleteProduct(product.id)} />
-            </span>
           </div>
         )
-      case "active":
-        return (
-          <div className="relative flex items-center gap-2">
-            <Switch defaultSelected={product.active} onValueChange={(value) => quickUpdateProduct(product, { active: value })}></Switch>
-          </div>
-        )
-      case "highlight":
-        return (
-          <div className="relative flex items-center gap-2">
-            <Switch defaultSelected={product.highlight} onValueChange={(value) => quickUpdateProduct(product, { highlight: value })}></Switch>
-          </div>
-        )
+      case "category":
+        return product.category?.name
+      case "subcate":
+        return product.subCate?.name
+      case "brand":
+        return product.brand?.name
       default:
         return cellValue
     }
@@ -122,9 +80,11 @@ const ProductCms = () => {
     setCondition(Object.assign({}, condition, value))
   }
 
+  console.log(selectedKeys)
+
   return (
     <>
-      <div className="flex flex-col gap-2 border-r min-h-full p-2">
+      <div className="flex flex-col gap-2 min-h-full">
         <div className="flex gap-3 w-1/2">
           <Input label="Tên sản phẩm" aria-label="Tên sản phẩm" labelPlacement="outside" value={condition.name}
             onValueChange={(value) => {
@@ -138,61 +98,45 @@ const ProductCms = () => {
               if (value.length > 2) getProduct()
             }}
           />
-
-          <Select
-            label="Nổi bật"
-            labelPlacement="outside"
-            onSelectionChange={(value) => onConditionChange({ highlight: value.values().next().value })}>
-            <SelectItem key="true">
-              Nổi bật
-            </SelectItem>
-            <SelectItem key="false">
-              Không nổi bật
-            </SelectItem>
-          </Select>
-          <Select
-            label="Active"
-            labelPlacement="outside"
-            onSelectionChange={(value) => onConditionChange({ active: value.values().next().value })}>
-            <SelectItem key="true">
-              Active
-            </SelectItem>
-            <SelectItem key="false">
-              Inactive
-            </SelectItem>
-          </Select>
           <div className="items-end flex min-h-full">
             <Button onClick={getProduct} color="primary"><Search /></Button>
           </div>
         </div>
         <div className="px-1 py-2 border-default-200">
           <Table
+            selectionMode="multiple"
+            selectedKeys={selectedKeys}
+            onSelectionChange={(value) => {
+              if (value === 'all') {
+                setSelectedKeys(new Set([...products.map(item => item.id)]))
+              } else {
+                setSelectedKeys(value)
+              }
+            }}
             aria-label="Tất cả sản phẩm"
-            loadingState={loadingState}
             bottomContent={
-              loadingState === "loading" ? null :
-                <div className="flex w-full justify-center">
-                  <Pagination
-                    isCompact
-                    showControls
-                    showShadow
-                    page={page}
-                    total={pages}
-                    onChange={(page) => setPage(page)}
-                  />
-                </div>
+              <div className="flex w-full justify-center">
+                <Pagination
+                  isCompact
+                  showControls
+                  showShadow
+                  page={page}
+                  total={pages}
+                  onChange={(page) => setPage(page)}
+                />
+              </div>
             }>
             <TableHeader>
               <TableColumn key="name" textValue="Tên sản phẩm" aria-label="Tên sản phẩm">Tên sản phẩm</TableColumn>
               <TableColumn key="slug" textValue="slug" aria-label="slug">Slug</TableColumn>
-              <TableColumn key="highlight" textValue="highlight" aria-label="active">Nổi bật</TableColumn>
-              <TableColumn key="active" textValue="active" aria-label="active">Active</TableColumn>
+              <TableColumn key="category" textValue="category" aria-label="slug">Category</TableColumn>
+              <TableColumn key="subcate" textValue="subcate" aria-label="slug">Sub category</TableColumn>
+              <TableColumn key="brand" textValue="brand" aria-label="slug">Nhãn hiệu</TableColumn>
               <TableColumn key="actions" textValue="actions" width="100"></TableColumn>
             </TableHeader>
             <TableBody
               items={products}
               emptyContent={"Không có sản phẩm nào"}
-              isLoading={loadingState === "loading"}
               loadingContent={<Spinner label="Loading..." />}>
               {(item) => (
                 <TableRow key={item.id}>
@@ -202,9 +146,6 @@ const ProductCms = () => {
             </TableBody>
           </Table>
         </div>
-      </div>
-      <div className="p-3">
-        <Button color="primary" onClick={newProduct}>Thêm sản phẩm</Button>
       </div>
 
       <Modal
@@ -274,4 +215,4 @@ const ProductCms = () => {
   )
 }
 
-export default ProductCms
+export default AvailableProduct

@@ -1,60 +1,90 @@
 import { Button, Input } from "@nextui-org/react"
 import { Trash2 } from "lucide-react"
+import { useEffect, useState } from "react"
+import { toast, ToastContainer } from "react-toastify"
 import { v4 } from "uuid"
 
-const TechnicalDetails = ({ rows, setRows, columns, setColumns }) => {
+const TechnicalDetails = ({ product }) => {
+  const [technicalRows, setTechnicalRows] = useState([])
+  const [technicalColumns, setTechnicalColumns] = useState([])
+
+  useEffect(() => {
+    fetch(`/api/products/${product.id}/technical-details`).then(res => res.json()).then(technical => {
+      setTechnicalColumns(technical ? JSON.parse(technical.column) : [])
+      setTechnicalRows(technical ? JSON.parse(technical.row) : [])
+    })
+  }, [product])
+
   const addColumn = () => {
     const column = {
       id: v4(),
       name: "Tên cột"
     }
-    setColumns([...columns, column])
+    setTechnicalColumns([...technicalColumns, column])
 
-    rows.forEach(row => { row[`${column.id}`] = "" })
-    setRows(rows)
+    technicalRows.forEach(row => { row[`${column.id}`] = "" })
+    setTechnicalRows(technicalRows)
   }
 
   const addRow = () => {
-    if (!columns.length) return
+    if (!technicalColumns.length) return
     let row = {
       id: v4()
     }
-    columns.forEach(column => {
+    technicalColumns.forEach(column => {
       row[`${column.id}`] = ""
     })
-    setRows([...rows, row])
+    setTechnicalRows([...technicalRows, row])
   }
 
   const columnValueChange = (id, value) => {
-    columns.forEach(column => {
+    technicalColumns.forEach(column => {
       if (column.id === id) {
         column.name = value
       }
     })
-    setColumns(columns)
+    setTechnicalColumns(technicalColumns)
   }
 
   const rowValueChange = (id, columnId, value) => {
-    rows.forEach(row => {
+    technicalRows.forEach(row => {
       if (row.id === id) {
         row[`${columnId}`] = value
       }
     })
-    setRows(rows)
+    setTechnicalRows(technicalRows)
   }
 
   const removeColumn = (id) => {
-    setColumns(columns.filter(column => column.id !== id))
-    rows.forEach(row => { delete row[`${id}`] })
-    setRows(rows)
+    setTechnicalColumns(technicalColumns.filter(column => column.id !== id))
+    technicalRows.forEach(row => { delete row[`${id}`] })
+    setTechnicalRows(technicalRows)
   }
 
   const removeRow = (id) => {
-    setRows(rows.filter(row => row.id !== id))
+    setTechnicalRows(technicalRows.filter(row => row.id !== id))
+  }
+
+  const onSave = async () => {
+    const res = await fetch(`/api/products/${product.id}/technical-details`, {
+      method: "POST",
+      body: JSON.stringify({
+        row: JSON.stringify(technicalRows),
+        column: JSON.stringify(technicalColumns),
+        productId: product.id
+      })
+    })
+
+    if (res.ok) {
+      toast.success("Đã lưu thông số kĩ thuật")
+    } else {
+      toast.error("Không thể lưu thông số kĩ thuật")
+    }
   }
 
   return (
     <>
+      <ToastContainer />
       <div>
         <Button color="default" variant="ghost" size="sm" className="float-right" onPress={addColumn}> Thêm cột </Button>
         <Button color="default" variant="ghost" size="sm" className="float-right" onPress={addRow}> Thêm hàng </Button>
@@ -64,7 +94,7 @@ const TechnicalDetails = ({ rows, setRows, columns, setColumns }) => {
           <thead>
             <tr>
               {
-                columns.map(column =>
+                technicalColumns.map(column =>
                   <th key={column.id} className="p-1">
                     <Input
                       aria-label={column.name}
@@ -86,7 +116,7 @@ const TechnicalDetails = ({ rows, setRows, columns, setColumns }) => {
           </thead>
           <tbody>
             {
-              rows.map(row =>
+              technicalRows.map(row =>
                 <tr key={row.id} className="p-1 min-h-full">
                   {
                     Object.keys(row).filter(key => key !== "id").map(key =>
@@ -113,6 +143,9 @@ const TechnicalDetails = ({ rows, setRows, columns, setColumns }) => {
             }
           </tbody>
         </table>
+        <div className="pt-3">
+          <Button color="primary" onClick={onSave} className="w-24 float-right">Lưu</Button>
+        </div>
       </div>
     </>
   )

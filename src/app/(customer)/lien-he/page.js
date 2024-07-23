@@ -3,7 +3,6 @@ import { Button, Input, Link, Textarea } from "@nextui-org/react";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 export default function Home() {
   const {

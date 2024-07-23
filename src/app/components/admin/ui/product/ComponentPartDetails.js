@@ -38,7 +38,7 @@ const updateProductHighlight = async (product, active) => {
   await fetch(`/api/products/${product.id}`, { method: "PUT", body: JSON.stringify(product) })
 }
 
-const ComponentPartDetails = ({ productId }) => {
+const ComponentPartDetails = ({ productId, categories, subCategories }) => {
   const [loadingState, setLoadingState] = useState("loading")
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [selectedProduct, setSelectedProduct] = useState({})
@@ -46,8 +46,6 @@ const ComponentPartDetails = ({ productId }) => {
 
   const [reload, setReload] = useState(false)
   const [total, setTotal] = useState(0)
-  const [categories, setCategories] = useState([])
-  const [subCategories, setSubCategories] = useState([])
   const [brands, setBrands] = useState([])
 
   const [page, setPage] = useState(1);
@@ -80,9 +78,7 @@ const ComponentPartDetails = ({ productId }) => {
   }
 
   useEffect(() => {
-    fetch('/api/categories?type=CATE').then(res => res.json()).then(json => setCategories(json.result))
     fetch('/api/brands').then(res => res.json()).then(setBrands)
-    fetch('/api/categories?type=SUB_CATE').then(res => res.json()).then(json => setSubCategories(json.result))
   }, [])
 
   const pages = useMemo(() => {
@@ -318,7 +314,7 @@ const ComponentPartDetails = ({ productId }) => {
                     <Tab title="Thông số kĩ thuật">
                       <Card>
                         <CardBody>
-                          <TechnicalDetails rows={technicalRows} setRows={setTechnicalRows} columns={technicalColumns} setColumns={setTechnicalColumns} />
+                          <TechnicalDetails product={selectedProduct} />
                         </CardBody>
                       </Card>
                     </Tab>

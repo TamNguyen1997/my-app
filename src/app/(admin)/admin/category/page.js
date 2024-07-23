@@ -17,7 +17,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import slugify from "slugify"
 
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 const rowsPerPage = 10;
 

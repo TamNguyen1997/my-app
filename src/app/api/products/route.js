@@ -83,7 +83,9 @@ export async function GET(req) {
           }
         },
         image: true,
-        category: true
+        category: true,
+        subCate: true,
+        brand: true
       },
       orderBy: [
         {

@@ -3,7 +3,6 @@ import ImagePicker from "../ImagePicker"
 import ProductImageCarousel from "@/components/ProductImageCarousel"
 import { useEffect, useState } from "react"
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 const ProductImage = ({ product }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()

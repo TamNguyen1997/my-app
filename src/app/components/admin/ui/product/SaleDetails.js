@@ -1,14 +1,17 @@
 import { Button, Input, Select, SelectItem } from "@nextui-org/react"
 import { Trash2 } from "lucide-react"
+import { useEffect, useState } from "react"
+import { toast, ToastContainer } from "react-toastify"
 import { v4 } from "uuid"
 
-const ColorSelect = ({ detail, handleDetailChange }) => {
+const ColorSelect = ({ detail, setDetails, details }) => {
   return (<>
     <Select
       label="Màu"
+      isRequired
       placeholder="Chọn màu cho sản phẩm"
       defaultSelectedKeys={new Set([detail.value])}
-      onSelectionChange={(value) => handleDetailChange(detail.id, { value: value.values().next().value })}
+      onSelectionChange={(value) => setDetails(handleDetailChange(details, detail.id, { value: value.values().next().value }))}
     >
       <SelectItem key="#ffffff" textValue="Trắng">
         <div className="flex gap-2 items-center">
@@ -50,45 +53,33 @@ const ColorSelect = ({ detail, handleDetailChange }) => {
   </>)
 }
 
+const removeItem = (id, details) => {
+  return details.filter(item => item.id != id)
+}
+
+const handleDetailChange = (saleDetails, id, value) => {
+  let updateDetails = saleDetails
+  updateDetails.forEach(detail => {
+    if (detail.id === id) {
+      detail = Object.assign(detail, value)
+    }
+  })
+  return [...updateDetails]
+}
+
 const SecondarySaleDetails = ({ saleDetails, setSaleDetails, saleDetail }) => {
-  const removeDetail = (id) => {
-
-    saleDetails.forEach(detail => {
-      if (detail.id === saleDetail.id) {
-        detail.secondarySaleDetails = detail.secondarySaleDetails.filter(detail => detail.id !== id)
-      }
-    })
-
-    setSaleDetails([...saleDetails])
-  }
-
-  const handleDetailChange = (id, value) => {
-    saleDetails.forEach(detail => {
-      if (detail.id === saleDetail.id) {
-
-        detail.secondarySaleDetails.forEach(sDetail => {
-          if (sDetail.id === id) {
-            sDetail = Object.assign(sDetail, value)
-          }
-        })
-      }
-    })
-
-    setSaleDetails([...saleDetails])
-  }
-
   return (
     <>
       <div className="flex flex-col gap-2">
         {
-          saleDetail.secondarySaleDetails.map(detail => {
+          saleDetails.filter(item => item.saleDetailId === saleDetail.id).map(detail => {
             return <div className="flex" key={detail.id}>
               <div className="w-11/12">
                 <div className="flex gap-2">
                   <Select
                     label="Loại"
                     defaultSelectedKeys={new Set([detail.type])}
-                    onSelectionChange={(value) => handleDetailChange(detail.id, { type: value.values().next().value })}
+                    onSelectionChange={(value) => setSaleDetails(handleDetailChange(saleDetails, detail.id, { type: value.values().next().value }))}
                   >
                     <SelectItem key="COLOR">
                       Màu
@@ -104,10 +95,10 @@ const SecondarySaleDetails = ({ saleDetails, setSaleDetails, saleDetail }) => {
                         label="Option"
                         defaultValue={detail.value}
                         aria-label={detail.value}
-                        onValueChange={value => handleDetailChange(detail.id, { value: value })}
+                        onValueChange={value => setSaleDetails(handleDetailChange(saleDetails, detail.id, { value: value }))}
                         isRequired
                       />
-                      : <ColorSelect detail={detail} handleDetailChange={handleDetailChange} />
+                      : <ColorSelect detail={detail} setDetails={setSaleDetails} details={saleDetails} />
                   }
 
                   <Input type="number"
@@ -116,14 +107,14 @@ const SecondarySaleDetails = ({ saleDetails, setSaleDetails, saleDetail }) => {
                     aria-label="Giá"
                     min={0}
                     max={999999999}
-                    onValueChange={(value) => { handleDetailChange(detail.id, { price: parseInt(value) }) }}
+                    onValueChange={(value) => setSaleDetails(handleDetailChange(saleDetails, detail.id, { price: parseInt(value) }))}
                   />
                 </div>
               </div>
 
               <div className="pt-3 pl-3">
                 <div className="text-lg text-danger cursor-pointer active:opacity-50 pl-5 float-right">
-                  <Trash2 onClick={() => removeDetail(detail.id)} />
+                  <Trash2 onClick={() => setSaleDetails(removeItem(detail.id, saleDetails))} />
                 </div>
               </div>
             </div>
@@ -135,33 +126,39 @@ const SecondarySaleDetails = ({ saleDetails, setSaleDetails, saleDetail }) => {
 
 }
 
-const SaleDetails = ({ saleDetails, setSaleDetails, productId }) => {
+const SaleDetails = ({ product }) => {
+  const [saleDetails, setSaleDetails] = useState([])
+
+  useEffect(() => {
+    fetch(`/api/products/${product.id}/sale-details`).then(res => res.json()).then(setSaleDetails)
+  }, [product])
+
   const addEmptySaleDetail = () => {
-    setSaleDetails([...saleDetails, { id: v4(), productId: productId, type: "TEXT", secondarySaleDetails: [] }])
+    setSaleDetails([...saleDetails, { id: v4(), productId: product.id, type: "TEXT" }])
   }
 
-  const removeDetail = (id) => {
-    setSaleDetails(saleDetails.filter(detail => detail.id !== id))
-  }
-
-  const handleDetailChange = (id, value) => {
-    let updateDetails = saleDetails
-    updateDetails.forEach(detail => {
-      if (detail.id === id) {
-        detail = Object.assign(detail, value)
-      }
+  const onSave = async () => {
+    const res = await fetch(`/api/products/${product.id}/sale-details`, {
+      method: "POST",
+      body: JSON.stringify({ saleDetails: saleDetails })
     })
-    setSaleDetails([...updateDetails])
+
+    if (res.ok) {
+      toast.success("Đã lưu thông số kĩ thuật")
+    } else {
+      toast.error("Không thể lưu thông số kĩ thuật")
+    }
   }
 
   return (
     <>
+      <ToastContainer />
       <div className="p-2">
         <Button color="default" variant="ghost" size="sm" className="float-right" onPress={addEmptySaleDetail}>Thêm thông số</Button>
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 p-2">
         {
-          saleDetails.map(detail => {
+          saleDetails.filter(item => !item.saleDetailId).map(detail => {
             return <div key={detail.id}>
               <div className="flex" >
                 <div className="w-11/12">
@@ -169,7 +166,7 @@ const SaleDetails = ({ saleDetails, setSaleDetails, productId }) => {
                     <Select
                       label="Loại"
                       defaultSelectedKeys={new Set([detail.type])}
-                      onSelectionChange={(value) => handleDetailChange(detail.id, { type: value.values().next().value })}
+                      onSelectionChange={(value) => setSaleDetails(handleDetailChange(saleDetails, detail.id, { type: value.values().next().value }))}
                     >
                       <SelectItem key="COLOR">
                         Màu
@@ -185,10 +182,10 @@ const SaleDetails = ({ saleDetails, setSaleDetails, productId }) => {
                           label="Option"
                           defaultValue={detail.value}
                           aria-label={detail.value}
-                          onValueChange={value => handleDetailChange(detail.id, { value: value })}
+                          onValueChange={value => setSaleDetails(handleDetailChange(saleDetails, detail.id, { value: value }))}
                           isRequired
                         />
-                        : <ColorSelect detail={detail} handleDetailChange={handleDetailChange} />
+                        : <ColorSelect detail={detail} setDetails={setSaleDetails} details={saleDetails} />
                     }
 
                     <Input type="number"
@@ -197,17 +194,11 @@ const SaleDetails = ({ saleDetails, setSaleDetails, productId }) => {
                       aria-label="Giá"
                       min={0}
                       max={999999999}
-                      onValueChange={(value) => { handleDetailChange(detail.id, { price: parseInt(value) }) }}
+                      onValueChange={(value) => setSaleDetails(handleDetailChange(saleDetails, detail.id, { price: parseInt(value) }))}
                     />
                     <div className="flex text-center items-center">
                       <Button onClick={() => {
-                        saleDetails.forEach(d => {
-                          if (d.id === detail.id) {
-                            d.secondarySaleDetails = [...d.secondarySaleDetails, { id: v4(), type: "TEXT", saleDetailId: detail.id }]
-                          }
-                        })
-
-                        setSaleDetails([...saleDetails])
+                        setSaleDetails([...saleDetails, { id: v4(), type: "TEXT", saleDetailId: detail.id, productId: product.id }])
                       }}>
                         Thêm chi tiết
                       </Button>
@@ -230,6 +221,9 @@ const SaleDetails = ({ saleDetails, setSaleDetails, productId }) => {
             </div>
           })
         }
+        <div className="pl-3 pt-1">
+          <Button color="primary" onClick={onSave} className="w-24 float-right">Lưu</Button>
+        </div>
       </div>
     </>
   )

@@ -51,9 +51,10 @@ model product {
 
   productType product_type @default(PRODUCT) @map("product_type")
 
-  componentParts product[] @relation("componentParts")
-  product        product?  @relation("componentParts", fields: [productId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  productId      String?   @db.Uuid
+  componentParts  product[]           @relation("componentParts")
+  product         product?            @relation("componentParts", fields: [productId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  productId       String?             @db.Uuid
+  filterOnProduct filter_on_product[]
 
   @@index([imageId])
   @@index([subCategoryId])
@@ -104,6 +105,49 @@ model sale_detail {
   type                 sale_detail_type        @default(TEXT)
   secondarySaleDetails secondary_sale_detail[]
 
+  childSaleDetails sale_detail[] @relation("secondary_sale_detail")
+  saleDetail       sale_detail?  @relation("secondary_sale_detail", fields: [saleDetailId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  saleDetailId     String?       @map("sale_detail_id") @db.Uuid
+
+  @@index([productId])
+  @@index([saleDetailId])
+}
+
+model filter {
+  id         String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug       String      @unique @default(dbgenerated("gen_random_uuid()"))
+  name       String      @default("")
+  imageUrl   String?
+  active     Boolean     @default(true)
+  categoryId String?
+  category   category?   @relation(references: [id], fields: [categoryId])
+  brandId    String?
+  brand      brand?      @relation(references: [id], fields: [brandId])
+  fitlerType filter_type @default(CATEGORY)
+
+  createdAt       DateTime            @default(now()) @map("created_at")
+  updatedAt       DateTime            @default(now()) @updatedAt @map("updated_at")
+  filterOnProduct filter_on_product[]
+
+  @@index([categoryId])
+  @@index([brandId])
+}
+
+enum filter_type {
+  CATEGORY
+  BRAND
+  SUB_CATEGORY
+}
+
+model filter_on_product {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  product   product? @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productId String?  @db.Uuid
+  filter    filter?  @relation(fields: [filterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  filterId  String?  @db.Uuid
+
+  @@unique([filterId, productId])
+  @@index([filterId])
   @@index([productId])
 }
 
@@ -286,6 +330,7 @@ model category {
   product     product[]
   subCategory sub_category[]
   sProduct    product[]      @relation("subCate")
+  filter      filter[]
 
   @@unique([slug])
   @@index([imageId])
@@ -323,6 +368,7 @@ model brand {
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   product product[]
+  filter  filter[]
 
   @@unique([slug])
 }

@@ -63,8 +63,7 @@ export async function PUT(req, { params }) {
 
   if (!body) return NextResponse.json({ message: "Invalid request body" }, { status: 400 })
   try {
-    await db.product.update({ where: { id: params.id }, data: body })
-    return NextResponse.json({ message: "Success" })
+    return NextResponse.json(await db.product.update({ where: { id: params.id }, data: body }))
   } catch (e) {
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }

@@ -7,7 +7,6 @@ import RichTextEditor from './RichTextArea';
 
 import { parseDate } from "@internationalized/date";
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import slugify from 'slugify';
 import crypto from "crypto";
 

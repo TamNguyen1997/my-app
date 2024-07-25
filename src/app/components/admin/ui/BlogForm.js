@@ -1,6 +1,6 @@
 import { useEditor } from '@tiptap/react';
 import ImagePicker from "@/components/admin/ui/ImagePicker";
-import { Button, DatePicker, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Switch, Textarea, useDisclosure } from '@nextui-org/react';
+import { Button, DatePicker, Input, Link, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Switch, Textarea, useDisclosure } from '@nextui-org/react';
 import { useForm } from "react-hook-form"
 import { useState } from 'react';
 import RichTextEditor from './RichTextArea';
@@ -145,6 +145,9 @@ const BlogForm = ({ blog, setBlog }) => {
               </div>
               <div>
                 <div className="float-right flex gap-3">
+                  <Link href={`/admin/blog/preview/${blog.slug}`} isExternal>
+                    Preview
+                  </Link>
                   <Button color="primary" type="submit">Lưu</Button>
                 </div>
               </div>

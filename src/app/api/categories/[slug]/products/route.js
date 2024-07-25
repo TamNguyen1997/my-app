@@ -7,6 +7,8 @@ export async function GET(req, { params }) {
     return NextResponse.json({ message: `Resource not found ${params.slug}` }, { status: 400 })
   }
   try {
+    let page = 1
+    let size = 20
     const category = await db.category.findFirst({
       where: { slug: params.slug },
       include: { image: true }
@@ -15,6 +17,7 @@ export async function GET(req, { params }) {
       return NextResponse.json({ message: "No category found" }, { status: 404 })
     }
     const { query } = queryString.parseUrl(req.url);
+    let filterId = []
     let condition = {
       OR: [
         {
@@ -35,6 +38,10 @@ export async function GET(req, { params }) {
         }
       ]
     }
+    if (query) {
+      page = parseInt(query.page) || 1
+      size = parseInt(query.page) || 20
+    }
     if (query.brand) {
       const brandIds = (await db.brand.findMany({ where: { slug: { in: query.brand.split(',') } } })).map(brand => brand.id)
 
@@ -42,12 +49,35 @@ export async function GET(req, { params }) {
         in: brandIds
       }
     }
-
     if (query.active) {
       condition.active = query.active === 'true'
     }
 
-    let products = await db.product.findMany({ where: condition, include: { image: true, subCate: true } })
+    if (query.filterId) {
+      filterId = (await db.filter.findMany({
+        where: {
+          slug: {
+            in: Array.isArray(query.filterId) ? query.filterId : [query.filterId]
+          }
+        }
+      })).map(item => item.id)
+
+      condition.filterOnProduct = {
+        some: {
+          filterId: {
+            in: filterId
+          }
+        }
+      }
+    }
+
+    let products = await db.product.findMany({
+      where: condition,
+      include: { image: true, subCate: true, filterOnProduct: true }
+    })
+    if (query.filterId) {
+      products = products.filter(item => item.filterOnProduct.length >= filterId.length)
+    }
 
     if (query.range) {
       const minMax = query.range.split('-')
@@ -62,11 +92,16 @@ export async function GET(req, { params }) {
         return hasSaleDetails && max && min
       })
     }
+
+    const total = products.length
+
     return NextResponse.json({
       category: category,
-      products: products
+      products: products.splice(page - 1, size),
+      total: total
     })
   } catch (e) {
+    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }

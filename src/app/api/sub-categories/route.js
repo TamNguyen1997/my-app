@@ -43,7 +43,6 @@ export async function GET(req) {
     })
     return NextResponse.json({ result, total: await db.sub_category.count({ where: condition }) })
   } catch (e) {
-    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }

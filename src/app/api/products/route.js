@@ -79,7 +79,7 @@ export async function GET(req) {
       include: {
         saleDetails: {
           include: {
-            secondarySaleDetails: true
+            childSaleDetails: true
           }
         },
         image: true,

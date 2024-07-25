@@ -173,7 +173,10 @@ const FilterProduct = ({ filterId, categories, brands, subCategories }) => {
 
         <div>
           <Button color="primary" onClick={addProduct.onOpen} className="float-right">Thêm sản phẩm vào filter</Button>
-          <Link href="/admin/filter">Quay về</Link>
+          <div className="flex gap-5">
+            <Link href="/admin/filter">Quay về</Link>
+            <Link href="/admin/filter/edit/new">Thêm filter</Link>
+          </div>
         </div>
       </div>
       <Modal

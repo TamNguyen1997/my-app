@@ -5,7 +5,6 @@ export async function DELETE(req, { params }) {
   try {
     return NextResponse.json(await db.filter.delete({ where: { id: params.id } }))
   } catch (e) {
-    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }

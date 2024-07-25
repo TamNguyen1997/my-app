@@ -80,8 +80,6 @@ const AvailableProduct = ({ filterId, categories, brands, subCategories, selecte
     setCondition(Object.assign({}, condition, value))
   }
 
-  console.log(selectedKeys)
-
   return (
     <>
       <div className="flex flex-col gap-2 min-h-full">

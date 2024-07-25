@@ -25,7 +25,7 @@ export async function GET(req, { params }) {
     if (query.includeSale === "true") {
       include.saleDetails = {
         include: {
-          secondarySaleDetails: true
+          childSaleDetails: true
         }
       }
     }

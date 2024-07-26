@@ -8,6 +8,7 @@ export default () => {
   useEffect(() => {
     fetch(`/api/blogs/huong-dan-mua-hang`).then(res => res.json()).then(setBlog)
   }, [])
+  if (!blog.id) return <></>
   return (<>
     <div className="container pt-5 pb-20">
       <BlogContent blog={blog} />

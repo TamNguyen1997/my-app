@@ -16,7 +16,7 @@ const BlogCms = () => {
   }, [])
 
   const getBlogs = () => {
-    fetch("/api/blogs").then(res => res.json()).then(setBlogs).then(() => setIsLoading(false))
+    fetch("/api/blogs?excludeSupport=true").then(res => res.json()).then(setBlogs).then(() => setIsLoading(false))
   }
   const deleteBlog = (id) => {
     setIsLoading(true)

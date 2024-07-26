@@ -8,3 +8,11 @@
     width: 50%;
   }
 }
+
+.tab-header>.tab-header-content::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-header>.tab-header-content {
+  scroll-behavior: smooth;
+}

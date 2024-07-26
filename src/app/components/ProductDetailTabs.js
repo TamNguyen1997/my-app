@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Button } from '@nextui-org/react';
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import RelatedProducts from "@/components/RelatedProducts";
 import TechnicalDetail from './TechnicalDetail';
 import parse from 'html-react-parser'
@@ -87,12 +88,22 @@ export default ({ product }) => {
 
   const [currentTab, setCurrentTab] = useState("");
   const [titles, setTitles] = useState([]);
+  const [headerHeight, setHeaderHeight] = useState(0);
+  const [leftChevron, setLeftChevron] = useState(false);
+  const [rightChevron, setRightChevron] = useState(false);
 
   useEffect(() => {
     const titleList = document.querySelectorAll(".tab-title");
     const titleArray = Array.from(titleList);
     setTitles(titleArray);
   }, []);
+
+  useEffect(() => {
+    const headerItems = document.querySelector(".header-items");
+    if(headerItems) {
+      setHeaderHeight(headerItems.getBoundingClientRect()?.height);
+    }
+  });
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -119,31 +130,73 @@ export default ({ product }) => {
     }
   }, [titles.length]);
 
+  useEffect(() => {
+    const tabHeader = document.querySelector(".tab-header");
+    const tabHeaderContent = document.querySelector(".tab-header-content");
+    const handleScroll = () => {
+      const tabHeaderLeft = tabHeader?.getBoundingClientRect()?.left || 0;
+      const tabHeaderRight = tabHeader?.getBoundingClientRect()?.right || 0;
+      const tabHeaderContentLeft = tabHeaderContent?.firstChild?.getBoundingClientRect()?.left || 0;
+      const tabHeaderContentRight = tabHeaderContent?.lastChild?.getBoundingClientRect()?.right || 0;
+  
+      setLeftChevron(Math.trunc(tabHeaderContentLeft) - Math.trunc(tabHeaderLeft) < 0);
+      setRightChevron(Math.trunc(tabHeaderRight) - Math.trunc(tabHeaderContentRight) < 0);
+    }
+
+    tabHeaderContent?.addEventListener("scroll", handleScroll);
+    return () => tabHeaderContent?.removeEventListener("scroll", handleScroll);
+  });
+
+  const scrollToLeft = () => {
+    const tabHeaderContent = document.querySelector(".tab-header-content");
+    if(!tabHeaderContent) return;
+    tabHeaderContent.scrollLeft -= 70;
+  }
+  
+  const scrollToRight = () => {
+    const tabHeaderContent = document.querySelector(".tab-header-content");
+    if(!tabHeaderContent) return;
+    tabHeaderContent.scrollLeft += 70;
+  }
+
   return (
     <div>
-      <div className="sticky top-0 flex items-center w-full bg-white z-10">
-        {
-          tabs.map((tab, index) => {
-            return (
-              <Button
-                className={`
-                              uppercase font-bold  h-[39px] rounded-none px-5 py-3 mr-0.5 last:mr-0 transition tab
-                              ${currentTab == tab.id ? 'text-[#ffed00] bg-[#333]' : 'text-[#2b2b2b] bg-[#f8f8f8]'}
-                          `}
-                key={index}
-                data-id={tab.id}
-                onClick={() => {
-                  window.scrollTo({
-                    top: titles[index].getBoundingClientRect().top + window.scrollY - 60,
-                    behavior: "smooth"
-                  });
-                }}
-              >
-                {tab.title}
-              </Button>
-            )
-          })
-        }
+      <div
+        className="sticky top-0 z-10"
+        style={{ top: `${headerHeight}px` }}
+      >
+        <div className="relative bg-white tab-header">
+          <div className="flex items-center w-full overflow-auto tab-header-content">
+          {
+            tabs.map((tab, index) => {
+              return (
+                <Button
+                  className={`
+                                uppercase font-bold  h-[39px] rounded-none shrink-0 px-5 py-3 mr-0.5 last:mr-0 transition tab
+                                ${currentTab == tab.id ? 'text-[#ffed00] bg-[#333]' : 'text-[#2b2b2b] bg-[#f8f8f8]'}
+                            `}
+                  key={index}
+                  data-id={tab.id}
+                  onClick={() => {
+                    window.scrollTo({
+                      top: titles[index].getBoundingClientRect().top + window.scrollY - 60,
+                      behavior: "smooth"
+                    });
+                  }}
+                >
+                  {tab.title}
+                </Button>
+              )
+            })
+          }
+          </div>
+          {
+            leftChevron && <ChevronLeft size="20" className="absolute top-1/2 -translate-y-1/2 w-7 h-7 bg-[rgba(255,255,255,0.4)] z-1000 cursor-pointer" onClick={scrollToLeft} />
+          }
+          {
+            rightChevron && <ChevronRight size="20" className="absolute top-1/2 -translate-y-1/2 right-0 w-7 h-7 bg-[rgba(255,255,255,0.4)] z-1000 cursor-pointer" onClick={scrollToRight} />
+          }
+        </div>
       </div>
       <div>
         {

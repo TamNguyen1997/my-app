@@ -12,16 +12,16 @@ const responsive = {
     items: 4
   },
   desktop: {
-    breakpoint: { max: 3000, min: 1260 },
+    breakpoint: { max: 3000, min: 1024 },
     items: 3
   },
   tablet: {
-    breakpoint: { max: 1260, min: 900 },
-    items: 3
+    breakpoint: { max: 1024, min: 464 },
+    items: 2
   },
   mobile: {
-    breakpoint: { max: 900, min: 0 },
-    items: 2
+    breakpoint: { max: 464, min: 0 },
+    items: 1
   }
 }
 
@@ -49,7 +49,7 @@ export default function PopularBlogs() {
           blogs?.map((blog) => {
             return <div className="p-1" key={blog.id}>
               <Link href={`/kien-thuc-hay/${blog.slug}`}>
-                <div className="hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)] transition">
+                <div className="hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)] rounded-[20px] transition">
                   <Card>
                     <CardHeader className="flex flex-col items-center justify-center h-64">
                       <img

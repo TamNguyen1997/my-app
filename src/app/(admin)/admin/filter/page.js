@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 const rowsPerPage = 10;
 
-const Filter = ({ query }) => {
+const Filter = () => {
   const [filters, setFilters] = useState([])
   const [loadingState, setLoadingState] = useState("loading")
   const [selectedFilter, setSelectedFilter] = useState({})

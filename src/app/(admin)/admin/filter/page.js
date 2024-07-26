@@ -19,11 +19,6 @@ const Filter = () => {
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
-  const newFilter = () => {
-    setSelectedFilter({})
-    onOpen()
-  }
-
   const pages = useMemo(() => {
     return total ? Math.ceil(total / rowsPerPage) : 0;
   }, [total, rowsPerPage]);
@@ -33,7 +28,7 @@ const Filter = () => {
     fetch('/api/brands').then(res => res.json()).then(setBrands)
     fetch('/api/categories?type=SUB_CATE').then(res => res.json()).then(json => setSubCategories(json.result))
     getFilter()
-  }, [query])
+  }, [])
 
   const getFilter = async () => {
     setLoadingState("loading")

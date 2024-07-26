@@ -16,6 +16,9 @@ const nextConfig = {
       "dcvs.shop"
     ],
   },
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  },
   matcher: "/",
 };
 

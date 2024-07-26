@@ -19,6 +19,8 @@ import TableRow from '@tiptap/extension-table-row'
 import Gapcursor from '@tiptap/extension-gapcursor'
 import ListKeymap from '@tiptap/extension-list-keymap'
 import { Color } from '@tiptap/extension-color'
+import TaskItem from '@tiptap/extension-task-item'
+import TaskList from '@tiptap/extension-task-list'
 import Link from '@tiptap/extension-link'
 import { EmojiReplacer } from '@/components/admin/ui/extensions/EmojiReplacer'
 
@@ -28,6 +30,10 @@ const editorConfig = (content) => {
       StarterKit, TipTapImage, TipTapBold, TipTapItalic, Underline, HardBreak, Subscript, Superscript, TextStyle, Color,
       Table.configure({
         resizable: true,
+      }),
+      TaskList,
+      TaskItem.configure({
+        nested: true,
       }),
       ListKeymap,
       TableRow, Gapcursor,

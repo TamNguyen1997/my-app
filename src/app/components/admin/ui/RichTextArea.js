@@ -28,7 +28,9 @@ import {
   RiTextWrap,
   RiSubscript2,
   RiSuperscript2,
-  RiTable3
+  RiTable3,
+  RiCheckboxLine,
+  RiCheckboxMultipleFill
 } from 'react-icons/ri'
 import { LucideHighlighter, Pipette, TableCellsMerge, TableCellsSplit } from 'lucide-react';
 
@@ -36,9 +38,9 @@ import { TbColumnRemove, TbColumnInsertLeft, TbRowRemove, TbRowInsertBottom } fr
 
 const RichTextEditor = ({ editor }) => {
   return (
-    <div >
+    <div className='border rounded-lg bg-gray-100'>
       <BlogToolBar editor={editor} />
-      <div className="h-full w-full shadow-md min-h-44 p-3 border">
+      <div className="h-full w-full shadow-md min-h-44 p-3 border bg-white">
         <EditorContent editor={editor} />
       </div>
     </div>
@@ -59,7 +61,7 @@ const TEXT_COLOR = {
 }
 
 const BlogToolBar = ({ editor }) => {
-  const iconClassName = "border w-6 h-6 justify-items-center items-center"
+  const iconClassName = "border w-6 h-6 justify-items-center items-center bg-white border"
   const imageModal = useDisclosure();
   const colorModal = useDisclosure();
   const linkModal = useDisclosure();
@@ -89,8 +91,8 @@ const BlogToolBar = ({ editor }) => {
   }
 
   return (
-    <div className="p-3 flex flex-col gap-1">
-      <div className="flex w-1/2 flex-wrap">
+    <div className="p-3 flex gap-1 flex-wrap">
+      <div className="flex flex-wrap">
         <div className={`${iconClassName} ${editor.isActive('bold') ? "opacity-25" : ""}`}
           onClick={(e) => {
             e.preventDefault();
@@ -183,6 +185,17 @@ const BlogToolBar = ({ editor }) => {
           onClick={() => editor.chain().focus().toggleSuperscript().run()}>
           <RiSuperscript2 className="w-full h-full" />
         </div>
+
+        <div className='pr-5'></div>
+        <div className={`${iconClassName} ${editor.isActive('taskList') ? "opacity-25" : ""}`}
+          onClick={() => editor.chain().focus().toggleTaskList().run()}>
+          <RiCheckboxLine className="w-full h-full" />
+        </div>
+        <div className={`${iconClassName} ${!editor.can().splitListItem('taskItem') ? "opacity-10" : ""}`}
+          onClick={() => editor.can().splitListItem('taskItem') ? editor.chain().focus().splitListItem('taskItem').run() : ""}>
+          <RiCheckboxMultipleFill className="w-full h-full" />
+        </div>
+
       </div>
       <div className='flex'>
         <div className={`border w-10 rounded-large h-6`} style={{

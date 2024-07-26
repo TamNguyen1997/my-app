@@ -8,48 +8,56 @@ import { useEffect, useState } from "react"
 import { toast, ToastContainer } from "react-toastify"
 
 export default () => {
+  const editor = useEditor(editorConfig())
   return (
     <div>
       <Tabs>
         <Tab title="Hỗ trợ">
           <Card>
             <CardBody>
-              <SupportPage slug="ho-tro" />
+              <SupportPage slug="ho-tro" editor={editor} />
             </CardBody>
           </Card>
         </Tab>
         <Tab title="Chính sách bảo mật">
           <Card>
             <CardBody>
-              <SupportPage slug="chinh-sach-bao-mat" />
+              <SupportPage slug="chinh-sach-bao-mat" editor={editor} />
+            </CardBody>
+          </Card>
+        </Tab>
+        <Tab title="Chính sách bảo mật">
+          <Card>
+            <CardBody>
+              <SupportPage slug="hop-tac-ban-hang" editor={editor} />
             </CardBody>
           </Card>
         </Tab>
         <Tab title="Chính sách đổi trả">
           <Card>
             <CardBody>
-              <SupportPage slug="chinh-sach-doi-tra" />
+              <SupportPage slug="chinh-sach-doi-tra" editor={editor} />
             </CardBody>
           </Card>
         </Tab>
         <Tab title="Hướng dẫn mua hàng">
           <Card>
             <CardBody>
-              <SupportPage slug="huong-dan-mua-hang" />
+              <SupportPage slug="huong-dan-mua-hang" editor={editor} />
             </CardBody>
           </Card>
         </Tab>
-        <Tab title="Phương thức thanh toán">
+        <Tab title="Hình thức thanh toán">
           <Card>
             <CardBody>
-              <SupportPage slug="phuong-thuc-thanh-toan" />
+              <SupportPage slug="hinh-thuc-thanh-toan" editor={editor} />
             </CardBody>
           </Card>
         </Tab>
-        <Tab title="Phương thức vận chuyển">
+        <Tab title="Hình thức vận chuyển">
           <Card>
             <CardBody>
-              <SupportPage slug="phuong-thuc-van-chuyen" />
+              <SupportPage slug="hinh-thuc-van-chuyen" editor={editor} />
             </CardBody>
           </Card>
         </Tab>
@@ -58,17 +66,19 @@ export default () => {
   )
 }
 
-const SupportPage = ({ slug }) => {
+const SupportPage = ({ slug, editor }) => {
   const [blog, setBlog] = useState({ content: "" })
-  const editor = useEditor(editorConfig())
 
   useEffect(() => {
-    fetch(`/api/blogs/${slug}`).then(res => res.json()).then(setBlog)
+    fetch(`/api/blogs/${slug}`).then(res => res.json()).then(json => {
+      setBlog(json)
+      editor.commands.setContent(json.content)
+    })
   }, [slug])
 
   const onSubmit = async (e) => {
     e.preventDefault()
-    const res = await fetch(`/api/blogs`, {
+    const res = await fetch(`/api/blogs/`, {
       method: "POST",
       body: JSON.stringify(Object.assign(blog, { content: editor.getHTML() }))
     })
@@ -80,9 +90,10 @@ const SupportPage = ({ slug }) => {
     }
   }
 
+  console.log(editor?.getHTML())
   return (<>
     <ToastContainer />
-    <RichTextEditor editor={editor} content={blog?.content} />
+    <RichTextEditor editor={editor} />
     <form className="flex flex-col gap-3 pt-3" onSubmit={onSubmit}>
       <div className="flex gap-3">
         <Input label="Tiêu đề" aria-label="Tiêu đề" value={blog.title} onValueChange={(value) => setBlog(Object.assign({}, blog, { title: value }))} />

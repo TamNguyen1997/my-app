@@ -34,10 +34,7 @@ import { LucideHighlighter, Pipette, TableCellsMerge, TableCellsSplit } from 'lu
 
 import { TbColumnRemove, TbColumnInsertLeft, TbRowRemove, TbRowInsertBottom } from "react-icons/tb";
 
-const RichTextEditor = ({ editor, content }) => {
-  if (content) {
-    editor.commands.setContent(content)
-  }
+const RichTextEditor = ({ editor }) => {
   return (
     <div >
       <BlogToolBar editor={editor} />

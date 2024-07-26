@@ -40,6 +40,13 @@ export default () => {
             </CardBody>
           </Card>
         </Tab>
+        <Tab title="Chính sách bảo hành">
+          <Card>
+            <CardBody>
+              <SupportPage slug="chinh-sach-bao-hanh" editor={editor} />
+            </CardBody>
+          </Card>
+        </Tab>
         <Tab title="Hướng dẫn mua hàng">
           <Card>
             <CardBody>

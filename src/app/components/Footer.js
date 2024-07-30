@@ -1,6 +1,7 @@
+import { Link } from "@nextui-org/react";
 import { Facebook, Linkedin, Mail, MapPin, NotebookText, Phone, PhoneCall, Youtube } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+
 
 const Footer = () => {
   return (
@@ -36,32 +37,37 @@ const Footer = () => {
         <div className="p-3 flex flex-col gap-3 sm:grid-cols-1 lg:col-span-2">
           <p className="font-bold">CHÍNH SÁCH & HỢP TÁC</p>
           <div>
-            <Link href="/ho-tro/huong-dan-mua-hang">
+            <Link href="/ho-tro/huong-dan-mua-hang" className="text-white">
               Hướng dẫn mua hàng
             </Link>
           </div>
           <div>
-            <Link href="/ho-tro/hinh-thuc-thanh-toan">
+            <Link href="/ho-tro/hinh-thuc-thanh-toan" className="text-white">
               Hình thức thanh toán
             </Link>
           </div>
           <div>
-            <Link href="/ho-tro/hinh-thuc-van-chuyen">
+            <Link href="/ho-tro/hinh-thuc-van-chuyen" className="text-white">
               Hình thức vận chuyển
             </Link>
           </div>
           <div className="flex gap-1">
-            <Link href="/ho-tro/chinh-sach-bao-hanh">
+            <Link href="/ho-tro/chinh-sach-bao-hanh" className="text-white">
               Bảo hành
             </Link>
             <span>-</span>
-            <Link href="/ho-tro/chinh-sach-doi-tra">
+            <Link href="/ho-tro/chinh-sach-doi-tra" className="text-white">
               Đổi trả
             </Link>
           </div>
           <div>
-            <Link href="/ho-tro/chinh-sach-bao-mat">
+            <Link href="/ho-tro/chinh-sach-bao-mat" className="text-white">
               Bảo mật thông tin
+            </Link>
+          </div>
+          <div>
+            <Link isExternal href="https://docs.google.com/forms/d/e/1FAIpQLSeFq-zgAusY-WWdqsVWp6Cys7ZFRx0KVYgAKFQ37KAvwXtOig/viewform" className="text-white">
+              Hợp tác bán hàng
             </Link>
           </div>
 

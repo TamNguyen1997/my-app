@@ -26,6 +26,14 @@ export async function GET(req) {
       page = parseInt(query.page) || 1
       size = parseInt(query.size) || 10
     }
+    if (query.excludeSupport) {
+      condition.NOT = [{
+        slug: {
+          in: ["ho-tro", "chinh-sach-bao-mat", "hop-tac-ban-hang", "chinh-sach-doi-tra", "chinh-sach-bao-hanh", "huong-dan-mua-hang", "hinh-thuc-thanh-toan", "hinh-thuc-van-chuyen"]
+        }
+      }
+      ]
+    }
     if (query.blogCategory) {
       condition.blogCategory = query.blogCategory
     }
@@ -40,6 +48,7 @@ export async function GET(req) {
       skip: (page - 1) * size
     }))
   } catch (e) {
+    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }

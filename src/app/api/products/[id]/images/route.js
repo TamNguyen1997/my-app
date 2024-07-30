@@ -8,7 +8,6 @@ export async function GET(req, { params }) {
   try {
     return NextResponse.json(await db.product_on_image.findMany({ where: { productId: params.id }, include: { image: true } }))
   } catch (e) {
-    console.log(e)
     return NextResponse.json([])
   }
 }
@@ -33,7 +32,6 @@ export async function POST(req, { params }) {
     await db.product_on_image.createMany({ data: data })
     return NextResponse.json({ message: "Success" })
   } catch (e) {
-    console.log(e)
     return NextResponse.json([])
   }
 }

@@ -21,7 +21,6 @@ export async function POST(req, { params }) {
     })
     return NextResponse.json({ message: "Success" })
   } catch (e) {
-    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }
@@ -32,7 +31,7 @@ export async function GET(req, { params }) {
   }
 
   try {
-    const result = await db.sale_detail.findMany({ where: { productId: params.id }, include: { secondarySaleDetails: true } })
+    const result = await db.sale_detail.findMany({ where: { productId: params.id }, include: { childSaleDetails: true } })
     return NextResponse.json(result)
   } catch (e) {
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })

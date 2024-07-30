@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 const rowsPerPage = 10;
 
-const Filter = ({ query }) => {
+const Filter = () => {
   const [filters, setFilters] = useState([])
   const [loadingState, setLoadingState] = useState("loading")
   const [selectedFilter, setSelectedFilter] = useState({})
@@ -19,11 +19,6 @@ const Filter = ({ query }) => {
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
-  const newFilter = () => {
-    setSelectedFilter({})
-    onOpen()
-  }
-
   const pages = useMemo(() => {
     return total ? Math.ceil(total / rowsPerPage) : 0;
   }, [total, rowsPerPage]);
@@ -33,7 +28,7 @@ const Filter = ({ query }) => {
     fetch('/api/brands').then(res => res.json()).then(setBrands)
     fetch('/api/categories?type=SUB_CATE').then(res => res.json()).then(json => setSubCategories(json.result))
     getFilter()
-  }, [query])
+  }, [])
 
   const getFilter = async () => {
     setLoadingState("loading")

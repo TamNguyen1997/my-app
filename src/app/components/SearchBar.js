@@ -5,6 +5,7 @@ import { LoaderIcon, Search } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useRef, useState } from 'react';
+import slugify from 'slugify';
 
 const SearchBar = () => {
   const wrapperRef = useRef(null);
@@ -60,6 +61,11 @@ const SearchBar = () => {
           onConditionChange({ name: value });
           if (value.length > 2) onSearch();
         }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            window.location.replace(`/tim-kiem?key=${slugify(condition.name)}`)
+          }
+        }}
         onClear={() => onConditionChange({ name: '' })}
       />
       {condition.name && condition.name.length > 2 && (
@@ -106,15 +112,18 @@ const SearchBar = () => {
                         onClick={() => onConditionChange({ name: '' })}
                       >
                         <div className="px-4 py-2 flex items-center gap-5 hover:bg-slate-50 cursor-pointer">
-                          <Image
-                            width={60}
-                            height={60}
-                            priority
-                            src={`${process.env.NEXT_PUBLIC_FILE_PATH +
-                              product.image?.path
-                              }`}
-                            alt={product?.name}
-                          />
+                          {
+                            product.image ?
+                              <Image
+                                width={60}
+                                height={60}
+                                priority
+                                src={`${process.env.NEXT_PUBLIC_FILE_PATH +
+                                  product.image?.path
+                                  }`}
+                                alt={product?.name}
+                              /> : ""
+                          }
                           <div className="">
                             <h3 className="font-semibold text-slate-600">
                               {product?.name}

@@ -36,13 +36,27 @@ const Footer = () => {
         <div className="p-3 flex flex-col gap-3 sm:grid-cols-1 lg:col-span-2">
           <p className="font-bold">CHÍNH SÁCH & HỢP TÁC</p>
           <div>
-            <Link href="/">
-              Đôi nét về chúng tôi
+            <Link href="/huong-dan-mua-hang">
+              Hướng dẫn mua hàng
             </Link>
           </div>
           <div>
-            <Link href="/dieu-khoan-dich-vu">
-              Điều khoản giao dịch
+            <Link href="/hinh-thuc-thanh-toan">
+              Hình thức thanh toán
+            </Link>
+          </div>
+          <div>
+            <Link href="/hinh-thuc-van-chuyen">
+              Hình thức vận chuyển
+            </Link>
+          </div>
+          <div className="flex gap-1">
+            <Link href="/chinh-sach-bao-hanh">
+              Bảo hành
+            </Link>
+            <span>-</span>
+            <Link href="/chinh-sach-doi-tra">
+              Đổi trả
             </Link>
           </div>
           <div>
@@ -50,31 +64,7 @@ const Footer = () => {
               Bảo mật thông tin
             </Link>
           </div>
-          <div>
-            <Link href="/phuong-thuc-van-chuyen">
-              Giao hàng
-            </Link>
-          </div>
-          <div>
-            <Link href="/chinh-sach-doi-tra">
-              Bảo hành – Đổi trả
-            </Link>
-          </div>
-          <div>
-            <Link href="/phuong-thuc-thanh-toan">
-              Phương thức thanh toán
-            </Link>
-          </div>
-          <div>
-            <Link href="/phuong-thuc-van-chuyen">
-              Phương thức vận chuyển
-            </Link>
-          </div>
-          <div>
-            <Link href="/huong-dan-mua-hang">
-              Hướng dẫn mua hàng
-            </Link>
-          </div>
+
         </div>
         <div className="p-3 flex flex-col gap-3 lg:col-span-2">
           <p className="font-bold ">THỜI GIAN LÀM VIỆC</p>

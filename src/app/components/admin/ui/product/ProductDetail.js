@@ -24,6 +24,7 @@ const ProductDetail = ({
     delete productToUpdate.subCategory
     delete productToUpdate.brand
     delete productToUpdate.category
+    delete productToUpdate.subCate
 
     const res = product.id ?
       await fetch(`/api/products/${product.id}`, { method: "PUT", body: JSON.stringify(productToUpdate) }) :

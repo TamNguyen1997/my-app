@@ -24,7 +24,7 @@ export default ({ noBorder = false, item, containerClass = "lg:grid-cols-[160px_
                     ${!noBorder && '[&:not(:last-child)]:border-b border-[#ebebeb] pb-4'}
                 `}
       >
-        <img src={`${process.env.NEXT_PUBLIC_FILE_PATH + item.thumbnail}`} alt="" title="" className="aspect-[16/10] object-cover rounded-lg" />
+        <img src={`${process.env.NEXT_PUBLIC_FILE_PATH + item.thumbnail}`} alt="" title="" className="w-full aspect-[16/10] object-cover rounded-lg" />
         <div
           className={`${textClass}`}
         >

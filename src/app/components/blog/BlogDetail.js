@@ -33,7 +33,7 @@ const BlogContent = ({ blog }) => {
               `}
       style={{ "--tw-prose-bullets": "currentColor" }}
     >
-      {parse(blog.content)}
+      {blog.content ? parse(blog.content) : ""}
     </motion.div>
   </>)
 }
@@ -43,8 +43,10 @@ const BlogDetail = ({ slug, category }) => {
   const [relatedBlogs, setRelatedBlogs] = useState([])
 
   useEffect(() => {
-    fetch(`/api/blogs/${slug}`).then(res => res.json()).then(json => setBlog(json))
-    fetch(`/api/blogs?blogCategory=${category}&size=4&page=1`).then(res => res.json()).then(setRelatedBlogs)
+    fetch(`/api/blogs/${slug}`).then(res => res.json()).then(json => {
+      setBlog(json)
+      fetch(`/api/blogs?blogCategory=${json.blogCategory}&size=4&page=1`).then(res => res.json()).then(setRelatedBlogs)
+    })
   }, [slug])
 
   if (!blog.id) return <></>

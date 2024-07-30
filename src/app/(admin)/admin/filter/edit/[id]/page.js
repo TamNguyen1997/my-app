@@ -9,7 +9,38 @@ import {
   SelectItem
 } from "@nextui-org/react"
 import FilterProduct from "@/app/components/admin/ui/filter/FilterProduct";
-import { redirect, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
+
+const FILTER_TYPE = [
+  {
+    id: "BRAND",
+    name: "Thương hiệu",
+  },
+  {
+    id: "TYPE",
+    name: "Loại",
+  },
+  {
+    id: "DIMENSION",
+    name: "Kích thước",
+  },
+  {
+    id: "EFFIENCY",
+    name: "Hiệu suất",
+  },
+  {
+    id: "WATTAGE",
+    name: "Công suất tiêu thụ",
+  },
+  {
+    id: "COLOR",
+    name: "Màu sắc",
+  },
+  {
+    id: "BATTERY",
+    name: "Thời lượng pin",
+  },
+]
 
 const Filter = () => {
   const [filter, setFilter] = useState({})
@@ -113,7 +144,7 @@ const Filter = () => {
             value={filter.slug}
             labelPlacement="outside" isDisabled />
           <Select
-            label="Loại"
+            label="Đối tượng filter"
             labelPlacement="outside"
             selectedKeys={new Set([filter.targetType || "CATEGORY"])}
             onSelectionChange={(value) =>
@@ -130,6 +161,18 @@ const Filter = () => {
             </SelectItem>
           </Select>
           {getTargetSelect()}
+          <Select
+            label="Loại filter"
+            labelPlacement="outside"
+            selectedKeys={new Set([filter.filterType || "BRAND"])}
+            onSelectionChange={(value) =>
+              setFilter(Object.assign({}, filter, { filterType: value.values().next().value }))}>
+            {
+              FILTER_TYPE.map(item => <SelectItem key={item.id}>
+                {item.name}
+              </SelectItem>)
+            }
+          </Select>
           <div className="items-end flex min-h-full">
             <Button onClick={onSave} color="primary">Lưu</Button>
           </div>

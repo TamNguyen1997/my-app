@@ -245,7 +245,7 @@ const HeaderItems = ({ categories, setHoveredCate, menuRef, setMenuVisible, menu
   });
 
   return (<>
-    <div className="w-full font-bold" ref={headerItemsRef}>
+    <div className="w-full font-bold header-items" ref={headerItemsRef}>
       <div className="ml-0 w-full flex text-sm">
         <Link href=""
           className={`

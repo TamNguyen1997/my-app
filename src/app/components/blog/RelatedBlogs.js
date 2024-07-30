@@ -14,16 +14,16 @@ export default ({ relatedBlogs }) => {
         {
           relatedBlogs.map((item, index) => {
             return (
-              <Link href={`/${blogCategories[item.blogCategory]}/${item.slug}`} className="flex items-center" key={index}>
+              <Link href={`/${blogCategories[item.blogCategory]}/${item.slug}`} className="sm:flex items-center" key={index}>
                 <img
                   src={`${process.env.NEXT_PUBLIC_FILE_PATH + item.thumbnail}`}
                   width="192"
                   height="120"
                   alt=""
                   title=""
-                  className="rounded"
+                  className="w-full sm:w-[192px] rounded"
                 />
-                <div className="pl-4">
+                <div className="sm:pl-4 pt-4 sm:pt-0">
                   <p className="text-sm font-semibold truncate line-clamp-2 whitespace-normal text-[#FFD300] mb-2">TIN TỨC</p>
                   <p className="font-semibold truncate line-clamp-2 whitespace-normal mb-2">{item.title}</p>
                   <div className="text-xs text-[#a5a5a5] flex items-center flex-wrap">

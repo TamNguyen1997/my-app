@@ -13,7 +13,6 @@ export async function POST(req) {
       )
     )
   } catch (e) {
-    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }
@@ -24,11 +23,17 @@ export async function GET(req) {
 
   if (query) {
     if (query.categoryId) {
-      condition.categoryId = query.categoryId
+      const category = await db.category.findFirst({ where: { slug: query.categoryId } })
+      if (category) {
+        condition.categoryId = category.id
+      }
     }
 
     if (query.brandId) {
-      condition.brandId = query.brandId
+      const brand = await db.brand.findFirst({ where: { slug: query.brandId } })
+      if (brand) {
+        condition.brandId = brand.id
+      }
     }
   }
 

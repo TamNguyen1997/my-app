@@ -6,7 +6,7 @@ export default () => {
   const [blog, setBlog] = useState({ content: "" })
 
   useEffect(() => {
-    fetch(`/api/blogs/chinh-sach-bao-mat`).then(res => res.json()).then(setBlog)
+    fetch(`/api/blogs/hop-tac-ban-hang`).then(res => res.json()).then(setBlog)
   }, [])
   if (!blog.id) return <></>
   return (<>

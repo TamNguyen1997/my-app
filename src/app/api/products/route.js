@@ -64,6 +64,19 @@ export async function GET(req) {
         search: `${query.slug.trim().replaceAll(" ", " & ")}:*`
       }
     }
+    if (query.includeCate) {
+      condition.AND =
+        [
+          {
+            NOT: {
+              categoryId: null
+            },
+            NOT: {
+              subCateId: null
+            }
+          }
+        ]
+    }
 
     if (query.productType) {
       condition.productType = query.productType
@@ -79,7 +92,7 @@ export async function GET(req) {
       include: {
         saleDetails: {
           include: {
-            secondarySaleDetails: true
+            childSaleDetails: true
           }
         },
         image: true,

@@ -47,6 +47,10 @@ model product {
   product_on_image product_on_image[]
 
   productType product_type @default(PRODUCT) @map("product_type")
+  width       Int          @default(0)
+  breadth     Int          @default(0)
+  depth       Int          @default(0)
+  weight      Int          @default(0)
 
   componentParts  product[]           @relation("componentParts")
   product         product?            @relation("componentParts", fields: [productId], references: [id], onDelete: Restrict, onUpdate: Restrict)
@@ -160,17 +164,20 @@ model filter_on_product {
 model order {
   id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
 
-  address String
-  phone   String
-  email   String
-  name    String
-  total   Int    @default(0)
+  address    String
+  provinceId String @default("") @map("province_id")
+  wardId     String @default("") @map("ward_id")
+  districtId String @default("") @map("district_id")
+  phone      String
+  email      String
+  name       String
+  total      Int    @default(0)
 
   status           ORDER_STATUS       @default(PENDING)
   paymentMethod    PAYMENT_METHOD     @default(OCD) @map("payment_method")
   product_on_order product_on_order[]
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  createdAt        DateTime           @default(now()) @map("created_at")
+  updatedAt        DateTime           @default(now()) @updatedAt @map("updated_at")
 }
 
 enum ORDER_STATUS {
@@ -184,15 +191,15 @@ enum PAYMENT_METHOD {
 }
 
 model product_on_order {
-  product   product @relation(fields: [productId], references: [id])
-  productId String  @map("product_id") @db.Uuid
-  order     order   @relation(fields: [orderId], references: [id])
-  orderId   String  @map("order_id") @db.Uuid
-  quantity  Int     @default(0)
-  saleDetailId String @map("sale_detail_id")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
-  
+  product      product  @relation(fields: [productId], references: [id])
+  productId    String   @map("product_id") @db.Uuid
+  order        order    @relation(fields: [orderId], references: [id])
+  orderId      String   @map("order_id") @db.Uuid
+  quantity     Int      @default(0)
+  saleDetailId String   @map("sale_detail_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
+
   @@id([productId, orderId])
   @@index([orderId])
 }

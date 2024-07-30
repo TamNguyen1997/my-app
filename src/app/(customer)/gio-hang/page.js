@@ -1,8 +1,10 @@
 "use client"
 import { CartContext } from "@/context/CartProvider";
-import { Button, Input, Textarea } from "@nextui-org/react";
+import { Button, Checkbox, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Textarea, useDisclosure } from "@nextui-org/react";
 import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const COLOR_VARIANT = {
   "#ffffff": "bg-[#ffffff]",
@@ -15,13 +17,21 @@ const COLOR_VARIANT = {
 
 const Cart = () => {
   const { cartdetails, addItemToCart, removeItemFromCart, updateItemQuantityInCart, getTotal } = useContext(CartContext)
-
+  const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [relatedProducts, setRelatedProducts] = useState([])
+  const [selected, setSelected] = useState("COD");
+
+  const [cities, setCities] = useState([])
+  const [wards, setWards] = useState([])
+  const [districts, setDistricts] = useState([])
+  const [qr, setQr] = useState({})
+  const [shippingCost, setShippingCost] = useState(0)
 
   useEffect(() => {
     if (cartdetails.length) {
       fetch(`/api/products/${cartdetails[0].product.id}/related?active=true`).then(res => res.json()).then(setRelatedProducts)
     }
+    fetch(`/api/courier/get-cities`).then(res => res.json()).then(data => setCities(data.data))
   }, [cartdetails.length])
 
   const getPrice = (saleDetail, secondarySaleDetail) => {
@@ -35,27 +45,86 @@ const Cart = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
+    getValues
   } = useForm()
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
+    if (selected === "COD") {
+      createOrder(data)
+    } else {
+      const res = await fetch("/api/pay", {
+        method: "POST", body: JSON.stringify({
+          price_list: [getTotal()],
+          shipping_costs: [shippingCost],
+          order_code: "ASD"
+        })
+      })
+      if (res.ok) {
+        setQr(await res.json())
+        onOpen()
+      } else {
+        console.log(res)
+      }
+    }
+  }
 
-    const body = {
-      order: { ...data, total: getTotal() },
+  console.log(qr)
+
+  const createOrder = async (data) => {
+    const body = getBody(data)
+
+    const res = await fetch("/api/courier/create-order", {
+      method: "POST", body: JSON.stringify(body)
+    })
+    if (res.ok) {
+      toast.success("Đã đặt hàng")
+    } else {
+      toast.error("Không thể đặt hàng")
+    }
+  }
+
+  const getBody = (data) => {
+    return {
+      order: { ...data, total: getTotal(), paymentMethod: selected },
       products: cartdetails.map(detail => {
         return {
           productId: detail.product.id,
-          quantity: detail.quantity
+          quantity: detail.quantity,
+          saleDetailId: detail.secondarySaleDetail?.id || detail.saleDetail?.id
         }
       })
     }
-
-    fetch("/api/order", {
-      method: "POST", body: JSON.stringify(body)
-    }).then(value => console.log(value))
   }
 
   return (<>
+    <ToastContainer />
+    <div>
+      <Modal
+        scrollBehavior="inside"
+        isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">Mã QR</ModalHeader>
+              <ModalBody>
+                <img src={qr.qr}>
+                </img>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="primary" type="submit" onPress={onClose}>
+                  Xác nhận chuyển khoản thành công
+                </Button>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Close
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+
+      </Modal>
+    </div>
     <section className="bg-white py-8 antialiased dark:bg-gray-900 md:py-16 flex mx-auto lg:max-w-2xl xl:max-w-4xl flex-col sm:p-2">
       <h2 className="text-xl font-semibold text-gray-900 sm:text-2xl">Giỏ hàng</h2>
       <div className="mt-6 sm:mt-8 md:gap-6 lg:items-start xl:gap-8">
@@ -129,7 +198,7 @@ const Cart = () => {
           <div className="space-y-4 mt-8 px-2">
             <div className="space-y-2">
               <dl className="flex items-center justify-between gap-4">
-                <dt className="text-base font-normal text-gray-500 dark:text-gray-400">Giá tiền</dt>
+                <dt className="text-base font-normal text-gray-500 dark:text-gray-400">Tạm tính</dt>
                 <dd className="text-base font-medium text-gray-900 dark:text-white">{getTotal().toLocaleString()} đ</dd>
               </dl>
             </div>
@@ -165,12 +234,60 @@ const Cart = () => {
                 {...register("address", { required: true })}
                 isRequired
               />
+              <div className="flex gap-2">
+                <Select label="Tỉnh/thành" placeholder="Chọn tỉnh/thành" isRequired onSelectionChange={(value) => {
+                  const provinceId = value.values().next().value
+                  register('provinceId', { value: provinceId })
+                  fetch(`/api/courier/get-districts?provinceId=${provinceId}`).then(res => res.json()).then(data => setDistricts(data.data))
+                }}>
+                  {
+                    cities.map(item => <SelectItem key={item.PROVINCE_ID}>
+                      {item.PROVINCE_NAME}
+                    </SelectItem>
+                    )
+                  }
+                </Select>
+
+                <Select label="Quận/huyện" placeholder="Chọn quận/huyện" className="capitalize" isRequired onSelectionChange={value => {
+                  const districtId = value.values().next().value
+                  register('districtId', { value: districtId })
+                  fetch(`/api/courier/get-wards?districtId=${districtId}`).then(res => res.json()).then(data => setWards(data.data))
+                }}>
+                  {
+                    districts.map(item => <SelectItem key={item.DISTRICT_ID} className="capitalize">
+                      {item.DISTRICT_NAME.toLowerCase()}
+                    </SelectItem>
+                    )
+                  }
+                </Select>
+                <Select label="Phường/xã" placeholder="Chọn phường/xã" className="capitalize" isRequired onSelectionChange={async value => {
+                  const wardId = value.values().next().value
+                  register('wardId', { value: wardId })
+                  fetch(`/api/courier/shipping-price`, { method: "POST", body: JSON.stringify(getBody(getValues())) })
+                    .then(res => res.json())
+                    .then(json => setShippingCost(json.MONEY_TOTAL))
+                }}>
+                  {
+                    wards.map(item => <SelectItem key={item.WARDS_ID} className="capitalize">
+                      {item.WARDS_NAME.toLowerCase()}
+                    </SelectItem>
+                    )
+                  }
+                </Select>
+              </div>
               <Textarea
                 label="Ghi chú"
                 aria-label="Ghi chú"
                 {...register("note")}
               />
+
+              <div className="flex flex-wrap gap-5">
+                <Checkbox radius="full" value="COD" isSelected={selected === "COD"} onValueChange={() => setSelected("COD")}>Thanh toán khi giao hàng (COD)</Checkbox>
+                <Checkbox radius="full" value="VIETQR" isSelected={selected === "VIETQR"} onValueChange={() => setSelected("VIETQR")}>Chuyển khoản VietQR</Checkbox>
+              </div>
             </div>
+            <p className="text-small opacity-65">Phí vận chuyển: {shippingCost.toLocaleString()} đ</p>
+            <p>Tổng: {(shippingCost + getTotal()).toLocaleString()} đ</p>
             <Button className=" w-full items-center justify-center" color="primary" type="submit">
               Checkout
             </Button>

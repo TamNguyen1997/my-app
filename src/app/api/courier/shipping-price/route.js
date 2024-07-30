@@ -5,41 +5,57 @@ export async function POST(req) {
     try {
         const raw = await req.json()
         const order = raw.order
-        const products = raw.products;
-        let total = 0
+        const products = raw.products
+        let weight = 0
 
-        for (let i = 0; i < products.length; i++) {
-            const product = await db.product.findUnique({
-                where: { id: products[i].id }, include: {
-                    saleDetails: { where: { id: products[i].sale_detail_id } }
-                }
+        let listItem = [];
+
+        const saleDetails = await db.sale_detail.findMany({ where: { id: { in: products.map(item => item.saleDetailId) } }, include: { product: true } })
+
+        saleDetails.forEach(item => {
+            weight += item.product.weight
+            listItem.push({
+                "PRODUCT_NAME": item.product.name,
+                "PRODUCT_PRICE": item.price,
+                "PRODUCT_WEIGHT": item.product.weight,
+                "PRODUCT_LENGTH": 38,
+                "PRODUCT_WIDTH": 40,
+                "PRODUCT_HEIGHT": 25,
+                "PRODUCT_QUANTITY": products.find(product => product.saleDetailId === item.id).quantity
             })
-            if (product != null) {
-                total += product.saleDetails[0].price * products[i].quantity
-            }
+        })
+        const data = {
+            "PRODUCT_WEIGHT": weight,
+            "ORDER_SERVICE": process.env.VIETTEL_POST_ORDER_SERVICE,
+            "SENDER_PROVINCE": "1",
+            "SENDER_DISTRICT": "14",
+            "RECEIVER_FULLNAME": order.name,
+            "RECEIVER_ADDRESS": order.address,
+            "RECEIVER_PHONE": order.phone,
+            "RECEIVER_EMAIL": order.email,
+            "RECEIVER_WARD": order.wardId,
+            "RECEIVER_DISTRICT": order.districtId,
+            "RECEIVER_PROVINCE": order.provinceId,
+            "PRODUCT_TYPE": "HH",
+            "NATIONAL_TYPE": 1,
+            "LIST_ITEM": listItem
         }
 
-        let data = {
-            "PRODUCT_WEIGHT": order.weight ?? 0,
-            "PRODUCT_PRICE": total,
-            "ORDER_SERVICE_ADD": "",
-            "ORDER_SERVICE": process.env.VIETTEL_POST_ORDER_SERVICE,
-            "SENDER_ADDRESS": process.env.SAO_VIET_ADDRESS,
-            "RECEIVER_ADDRESS": order.address,
-            "PRODUCT_TYPE": "HH",
-            "NATIONAL_TYPE": 1
-        }
+        const myHeaders = new Headers();
+        myHeaders.append("Token", "eyJhbGciOiJFUzI1NiJ9.eyJVc2VySWQiOjE0NzQ1MDU1LCJGcm9tU291cmNlIjo1LCJUb2tlbiI6IkUzS0xWM0FKT1NXTSIsImV4cCI6MTcyMjM5NzgxOCwiUGFydG5lciI6MTQ3NDUwNTV9.DJNHlxVCg7r1M4tNDk8ee7bt1UTWxZI83vVVHgUk-gMDOK_5Ieiz-eXCpME586A8gU4-zc8amMTD5gv3fLL94A");
+        myHeaders.append("Content-Type", "application/json");
 
         const result = await callApi(data);
+
         if (result.status == 200) {
-            return NextResponse.json({ total: total, shopping_price: result.data.MONEY_TOTAL, order_service: process.env.VIETTEL_POST_ORDER_SERVICE }, { status: 200 })
+            return NextResponse.json(result.data, { status: 200 })
         }
 
         data["ORDER_SERVICE"] = process.env.VIETTEL_POST_ORDER_SERVICE_RETRY;
         const resultRetry = await callApi(data)
 
         if (resultRetry.status == 200) {
-            return NextResponse.json({ total: total, shopping_price: resultRetry.data.MONEY_TOTAL, order_service: process.env.VIETTEL_POST_ORDER_SERVICE_RETRY }, { status: 200 })
+            return NextResponse.json(result.data, { status: 200 })
         }
 
         return NextResponse.json({ message: result.message }, { status: 400 })
@@ -59,16 +75,8 @@ async function callApi(data) {
         body: JSON.stringify(data),
     };
 
-    const res = await fetch("https://partner.viettelpost.vn/v2/order/getPriceNlp", requestOptions);
+    const res = await fetch("https://partner.viettelpost.vn/v2/order/getPrice", requestOptions);
     const result = JSON.parse(await res.text());
     return result;
-}
-
-const getPrice = (saleDetail, secondarySaleDetail) => {
-    if (!secondarySaleDetail && !saleDetail) return 0
-    if (!secondarySaleDetail.price && saleDetail.price) return saleDetail.price
-    if (secondarySaleDetail.price) return secondarySaleDetail.price
-
-    return 0
 }
 

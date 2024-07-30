@@ -7,28 +7,20 @@ export async function POST(req) {
     const raw = await req.json()
     const order = raw.order
     const products = raw.products
+    const saleDetails = await db.sale_detail.findMany({ where: { id: { in: products.map(item => item.saleDetailId) } }, include: { product: true } })
 
-    let listItem = [];
-    let productSelect;
-    for (let i = 0; i < products.length; i++) {
-      const product = await db.product.findUnique({
-        where: { id: products[i].id }, include: {
-          saleDetails: { where: { id: products[i].sale_detail_id } }
-        }
-      })
-      if (product != null) {
-        if (productSelect == null) {
-          productSelect = product;
-        }
-        listItem[i] = {
-          "PRODUCT_NAME": product.name,
-          "PRODUCT_PRICE": product.saleDetails[0].price,
-          "PRODUCT_WEIGHT": 1000,
-          "PRODUCT_QUANTITY": products[i].quantity
-        }
-        // total += product.saleDetails[0].price * products[i].quantity
+    const listItem = saleDetails.map(item => {
+      return {
+        "PRODUCT_NAME": item.product.name,
+        "PRODUCT_PRICE": item.price,
+        "PRODUCT_WEIGHT": item.product.weight,
+        "PRODUCT_LENGTH": 38,
+        "PRODUCT_WIDTH": 40,
+        "PRODUCT_HEIGHT": 25,
+        "PRODUCT_QUANTITY": products.find(product => product.saleDetailId === item.id).quantity
       }
-    }
+    })
+
     const orderCreate = await db.order.create({
       data: {
         address: order.address,
@@ -41,17 +33,16 @@ export async function POST(req) {
       }
     })
 
-    for (let i = 0; i < products.length; i++) {
-      await db.product_on_order.create({
-        data: {
-          productId: products[i].id,
-          orderId: orderCreate.id,
-          quantity: products[i].quantity,
-          saleDetailId: products[i].sale_detail_id
-        }
-      })
-    }
+    const productToOrder = products.map(item => {
+      return {
+        productId: item.productId,
+        orderId: orderCreate.id,
+        quantity: parseInt(item.quantity),
+        saleDetailId: item.saleDetailId
+      }
+    })
 
+    await db.product_on_order.createMany({ data: productToOrder })
     if (listItem.length != 0) {
       const data = {
         "ORDER_NUMBER": orderCreate.id,
@@ -63,23 +54,20 @@ export async function POST(req) {
         "RECEIVER_ADDRESS": order.address,
         "RECEIVER_PHONE": order.phone,
         "RECEIVER_EMAIL": order.email,
-        "PRODUCT_NAME": productSelect.name,
-        "PRODUCT_DESCRIPTION": productSelect.description,
-        "PRODUCT_QUANTITY": listItem[0].PRODUCT_QUANTITY,
-        "PRODUCT_WEIGHT": listItem[0].PRODUCT_WEIGHT,
-        "PRODUCT_LENGTH": 38,
-        "PRODUCT_WIDTH": 40,
-        "PRODUCT_HEIGHT": 25,
+        "RECEIVER_WARD": order.wardId,
+        "RECEIVER_DISTRICT": order.districtId,
+        "RECEIVER_PROVINCE": order.provinceId,
+        "PRODUCT_NAME": "Giao hàng Sao Việt",
+        "PRODUCT_DESCRIPTION": "Giao hàng Sao Việt",
         "PRODUCT_TYPE": "HH",
         "ORDER_PAYMENT": 3,
-        "ORDER_SERVICE": "VCN",
+        "ORDER_SERVICE": process.env.VIETTEL_POST_ORDER_SERVICE,
         "ORDER_NOTE": "cho xem hàng, không cho thử",
-        "MONEY_TOTAL": order.total + order.shipping_price,
         "LIST_ITEM": listItem
       }
 
       const myHeaders = new Headers();
-      myHeaders.append("Token", "eyJhbGciOiJFUzI1NiJ9.eyJzdWIiOiIiLCJTU09JZCI6IjU4NWFmOWE0LThhYjMtNDE1Zi1hMzhmLTdjMjMwYWY1NmQ1ZCIsImludGVybmFsIjpmYWxzZSwiVXNlcklkIjoxNDc0NTA1NSwiRnJvbVNvdXJjZSI6MywiVG9rZW4iOiIxQzYwRjMxNERGQUZCRjM5NENFMTg5RTQwQjQ3MUNCMSIsInNlc3Npb25JZCI6IkNFQkFEQjYzREEzODU2N0Q5Qzg2OTFEMjBEOUU3NkFDIiwiZXhwIjoxNzIxNzIzNTE3LCJsc3RDaGlsZHJlbiI6IiIsIlBhcnRuZXIiOjAsImRldmljZUlkIjoiYzJ5eGJlYmFncnJxeDdxZTZ5ZWNscyIsInZlcnNpb24iOjF9.F5q6DJFiS8D5h2iESmZW1hNENMRdfCK0rT49VZSM8dtlkHb4_secvZPegef3TxLy596KlBw7RSZLdxxi_dy9Qg");
+      myHeaders.append("Token", "eyJhbGciOiJFUzI1NiJ9.eyJVc2VySWQiOjE0NzQ1MDU1LCJGcm9tU291cmNlIjo1LCJUb2tlbiI6IkUzS0xWM0FKT1NXTSIsImV4cCI6MTcyMjM5NzgxOCwiUGFydG5lciI6MTQ3NDUwNTV9.DJNHlxVCg7r1M4tNDk8ee7bt1UTWxZI83vVVHgUk-gMDOK_5Ieiz-eXCpME586A8gU4-zc8amMTD5gv3fLL94A");
       myHeaders.append("Content-Type", "application/json");
 
       const requestOptions = {
@@ -100,6 +88,7 @@ export async function POST(req) {
 
     return NextResponse.json({ message: "Product is empty" }, { status: 400 })
   } catch (e) {
+    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }

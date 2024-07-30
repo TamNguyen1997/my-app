@@ -34,6 +34,10 @@ export async function GET(req) {
       }
       ]
     }
+
+    if (query.active) {
+      condition.active = query.active
+    }
     if (query.blogCategory) {
       condition.blogCategory = query.blogCategory
     }
@@ -48,7 +52,6 @@ export async function GET(req) {
       skip: (page - 1) * size
     }))
   } catch (e) {
-    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }

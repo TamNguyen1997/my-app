@@ -36,31 +36,31 @@ const Footer = () => {
         <div className="p-3 flex flex-col gap-3 sm:grid-cols-1 lg:col-span-2">
           <p className="font-bold">CHÍNH SÁCH & HỢP TÁC</p>
           <div>
-            <Link href="/huong-dan-mua-hang">
+            <Link href="/ho-tro/huong-dan-mua-hang">
               Hướng dẫn mua hàng
             </Link>
           </div>
           <div>
-            <Link href="/hinh-thuc-thanh-toan">
+            <Link href="/ho-tro/hinh-thuc-thanh-toan">
               Hình thức thanh toán
             </Link>
           </div>
           <div>
-            <Link href="/hinh-thuc-van-chuyen">
+            <Link href="/ho-tro/hinh-thuc-van-chuyen">
               Hình thức vận chuyển
             </Link>
           </div>
           <div className="flex gap-1">
-            <Link href="/chinh-sach-bao-hanh">
+            <Link href="/ho-tro/chinh-sach-bao-hanh">
               Bảo hành
             </Link>
             <span>-</span>
-            <Link href="/chinh-sach-doi-tra">
+            <Link href="/ho-tro/chinh-sach-doi-tra">
               Đổi trả
             </Link>
           </div>
           <div>
-            <Link href="/chinh-sach-bao-mat">
+            <Link href="/ho-tro/chinh-sach-bao-mat">
               Bảo mật thông tin
             </Link>
           </div>

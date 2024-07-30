@@ -258,8 +258,12 @@ const HeaderItems = ({ categories, setHoveredCate, menuRef, setMenuVisible, menu
           }}
           onMouseOut={() => setMenuVisible(false)}
         >
-          <Menu size="20" className="inline-block mr-2" />
-          Danh mục
+          <div className="flex">
+            <Menu size="20" className="inline-block mr-2" />
+            <p>
+              Danh mục
+            </p>
+          </div>
         </Link>
         {
           subCategories.map((subcate) =>

@@ -69,6 +69,7 @@ const Footer = () => {
         <div className="p-3 flex flex-col gap-3 lg:col-span-2">
           <p className="font-bold ">THỜI GIAN LÀM VIỆC</p>
           <p>Thứ 2 – Thứ 6: 08h00 – 17h00</p>
+          <p>thứ 7: 8:00 - 12:00</p>
           <p>Chủ nhật & Ngày lễ: Nghỉ</p>
           <div className="flex gap-4">
             <Image height="200" width="200" src="/brand/Icon-dmca_protected.png" className="w-[90px] h-[30px]" alt="" />
@@ -89,6 +90,9 @@ const Footer = () => {
 
         </div>
         <div className="flex flex-col lg:col-span-2">
+          <Link href="/ve-chung-toi">
+            <p className="font-bold p-3 w-full">Về chúng tôi</p>
+          </Link>
           <p className="font-bold p-3 w-full">FANPAGE CHÍNH THỨC</p>
           <iframe
             className="border-[#ffd300] border h-[130px] rounded-lg w-[300px]"

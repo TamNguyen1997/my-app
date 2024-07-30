@@ -30,22 +30,29 @@ const brandDescription = {
   "RUBBERMAID": {
     logo: "/brand/Rubbermaid.png",
     slug: "thuong-hieu-rubbermaid",
-    description: "Rubbermaid - Với đội ngũ nhân viên tư vấn nhiệt tình, nhanh nhẹn, được đào tạo bài bản; sản phẩm nhập khẩu chất lượng cao, chế độ hậu mãi, bảo hành uy tín cùng với bề dày kinh nghiệm hoạt động lâu năm trong lĩnh vực vệ sinh công nghiệp."
+    description: `Rubbermaid (Newell Brands) thành lập năm 1920 tại Hoa Kỳ, đi đầu trong các sản phẩm gia dụng và công nghiệp làm từ nhựa, dụng cụ vệ sinh gia đình và công nghiệp chất lượng cao.`
   },
   "MAPA": {
     logo: "/brand/Logo-Mapa.png",
     slug: "thuong-hieu-mapa",
-    description: "Mapa - Với đội ngũ nhân viên tư vấn nhiệt tình, nhanh nhẹn, được đào tạo bài bản; sản phẩm nhập khẩu chất lượng cao, chế độ hậu mãi, bảo hành uy tín cùng với bề dày kinh nghiệm hoạt động lâu năm trong lĩnh vực vệ sinh công nghiệp."
+    description: "MAPA là nhà sản xuất găng tay bảo hộ. Định hướng tầm nhìn & sứ mệnh của nhà sản xuất là đảm bảo chất lượng, luôn đổi mới thay công nghệ để sản phẩm đạt hiệu quả sử dụng tốt nhất."
   },
   "MOERMAN": {
     logo: "/brand/Logo-Moerman.png",
     slug: "thuong-hieu-moerman",
-    description: "Moerman - Với đội ngũ nhân viên tư vấn nhiệt tình, nhanh nhẹn, được đào tạo bài bản; sản phẩm nhập khẩu chất lượng cao, chế độ hậu mãi, bảo hành uy tín cùng với bề dày kinh nghiệm hoạt động lâu năm trong lĩnh vực vệ sinh công nghiệp."
+    description: `Moerman thành lập từ năm 1885 tại Bỉ - 
+    một trong bốn hãng sản xuất lưỡi gạt cao su chất lượng nhất thế giới.
+    Chuyên cung cấp các dụng cụ vệ sinh kính chuyên dụng, được đánh giá cao về chất lượng, hiệu quả và tính an toàn, 
+    được tin tưởng sử dụng rộng rãi tại nhiều quốc gia.`
   },
   "GHIBLI & WIRBEL": {
     logo: "/brand/Logo-Ghibli.png",
     slug: "thuong-hieu-ghibli",
-    description: "Ghibli - Với đội ngũ nhân viên tư vấn nhiệt tình, nhanh nhẹn, được đào tạo bài bản; sản phẩm nhập khẩu chất lượng cao, chế độ hậu mãi, bảo hành uy tín cùng với bề dày kinh nghiệm hoạt động lâu năm trong lĩnh vực vệ sinh công nghiệp."
+    description: `Ghibli & Wirbel - thành lập năm 1968, chuyên cung cấp máy móc, thiết bị làm sạch tiên tiến từ Italy. 
+    Đa dạng các dòng máy hiện đại, đáp ứng mọi không gian, từ gia đình đến nhà máy, xưởng sản xuất. 
+    Sở hữu các công nghệ và tính năng độc quyền, nâng cấp không gian tại doanh nghiệp.
+    Gồm các loại máy: hút bụi, chà sàn, đánh bóng, quét rác, giặt thảm.`
+
   }
 }
 
@@ -242,7 +249,7 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
             }
           </div>
 
-          <div className="px-10 font-bold text-justify h-2/3 max-h-[200px] overflow-auto">
+          <div className="px-10 font-bold text-justify h-[100px] overflow-auto">
             {
               brandDescription[selectedBrand] && brandDescription[selectedBrand].description
             }

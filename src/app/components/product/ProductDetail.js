@@ -28,7 +28,7 @@ export default ({ id }) => {
 
   return (
     <div>
-      <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/san-pham/${id}`} />
+      <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${product.subCate?.slug}/${id}`} />
       <div className="bg-[#ffed00] py-2.5">
         <div className="container">
           <Breadcrumbs
@@ -44,7 +44,7 @@ export default ({ id }) => {
             }
             {
               product.subCate ?
-                <BreadcrumbItem href={`/${product.subCate.slug}/${product.subCate.slug}`}>{product.subCate.name}</BreadcrumbItem> : ""
+                <BreadcrumbItem href={`/${product.subCate.slug}`}>{product.subCate.name}</BreadcrumbItem> : ""
             }
             <BreadcrumbItem>{product.name}</BreadcrumbItem>
           </Breadcrumbs>

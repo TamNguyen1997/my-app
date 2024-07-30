@@ -68,7 +68,7 @@ const ComponentPartDetails = ({ productId, categories, subCategories }) => {
     Object.keys(filteredCondition).forEach(key => filteredCondition[key] === undefined && delete filteredCondition[key])
     const queryString = new URLSearchParams(filteredCondition).toString()
 
-    await fetch(`/api/products/?size=${rowsPerPage}&page=${page}&${queryString}&productType=COMPONENT_PART&productId=${productId}`)
+    await fetch(`/api/products/?size=${rowsPerPage}&page=${page}&${queryString}&productType=COMPONENT_PART&productId=${productId}&includeCate=true`)
       .then(async (res) => {
         const data = await res.json()
         setProducts(data.result)

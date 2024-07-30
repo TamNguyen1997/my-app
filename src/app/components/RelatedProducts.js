@@ -98,8 +98,9 @@ const RelatedProducts = ({ productId, query }) => {
               </h3>
               {/* <p className="text-xs font-medium text-[#b61a2d] mb-4">160.000 ₫</p> */}
               <Button className="text-sm font-bold uppercase bg-gradient-to-b from-[#ffed00] to-[#fff466] rounded-none w-full h-[45px] border border-[#e3e3e3] mb-2.5">
-                <ShoppingCart size="20" className="shrink-0 mr-1" />
-                Thêm vào giỏ hàng
+                <Link href={`/${product.subCate.slug}/${product.slug}`} className="text-black">
+                  Chi tiết
+                </Link>
               </Button>
             </Link>
           })

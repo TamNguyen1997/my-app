@@ -26,7 +26,8 @@ export async function GET(req, { params }) {
           image: true,
           category: true,
           subCate: true,
-          brand: true
+          brand: true,
+          saleDetails: true
         },
         take: 4
       }

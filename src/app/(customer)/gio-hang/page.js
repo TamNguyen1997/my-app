@@ -1,8 +1,9 @@
 "use client"
 import { CartContext } from "@/context/CartProvider";
-import { Button, Input, Link, Textarea } from "@nextui-org/react";
+import { Button, Input, Textarea } from "@nextui-org/react";
 import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form"
+import ProductCard from "@/components/product/ProductCard";
 
 const COLOR_VARIANT = {
   "#ffffff": "bg-[#ffffff]",
@@ -14,7 +15,7 @@ const COLOR_VARIANT = {
 }
 
 const Cart = () => {
-  const { cartdetails, addItemToCart, removeItemFromCart, updateItemQuantityInCart, getTotal } = useContext(CartContext)
+  const { cartdetails, removeItemFromCart, updateItemQuantityInCart, getTotal } = useContext(CartContext)
 
   const [relatedProducts, setRelatedProducts] = useState([])
 
@@ -195,16 +196,7 @@ const Cart = () => {
                 return <div
                   key={i}
                   className="space-y-6 overflow-hidden rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-                  <a href={`/${product.subCate.slug}/${product.slug}`} className="overflow-hidden rounded">
-                    <img className="mx-auto h-44 w-44 dark:hidden" src={`${process.env.NEXT_PUBLIC_FILE_PATH + product.image?.path}`} alt="imac image" />
-                  </a>
-                  <div className="mt-6 flex items-center">
-                    <Button className="text-sm font-bold uppercase bg-gradient-to-b from-[#ffed00] to-[#fff466] rounded-none w-full h-[45px] border border-[#e3e3e3] mb-2.5">
-                      <Link href={`/${product.subCate.slug}/${product.slug}`} className="text-black">
-                        Chi tiết
-                      </Link>
-                    </Button>
-                  </div>
+                  <ProductCard product={product} />
                 </div>
               })
             }

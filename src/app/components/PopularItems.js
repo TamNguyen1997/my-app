@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react"
 import Carousel from "react-multi-carousel"
 import "react-multi-carousel/lib/styles.css"
+import ProductCard from "@/components/product/ProductCard";
 
 const responsive = {
   superLargeDesktop: {
@@ -46,16 +47,6 @@ const brandDescription = {
     slug: "thuong-hieu-ghibli",
     description: "Ghibli - Với đội ngũ nhân viên tư vấn nhiệt tình, nhanh nhẹn, được đào tạo bài bản; sản phẩm nhập khẩu chất lượng cao, chế độ hậu mãi, bảo hành uy tín cùng với bề dày kinh nghiệm hoạt động lâu năm trong lĩnh vực vệ sinh công nghiệp."
   }
-}
-
-const getPrice = (product) => {
-  if (!product.saleDetails?.length) return <></>
-
-  if (product.saleDetails.length === 1) return <>{product.saleDetails[0].price?.toLocaleString()}</>
-
-  if (!product.saleDetails[0].price) return <>{product.saleDetails[product.saleDetails.length - 1].price?.toLocaleString()}</>
-
-  return <>{product.saleDetails[0].price?.toLocaleString()} - {product.saleDetails[product.saleDetails.length - 1].price?.toLocaleString()} </>
 }
 
 export default function PopularItems() {
@@ -109,7 +100,7 @@ export default function PopularItems() {
   return (
     <div className="flex flex-col gap-11">
       <div>
-        <ProductCard category="SẢN PHẨM NỔI BẬT" products={products} />
+        <ProductCards category="SẢN PHẨM NỔI BẬT" products={products} />
       </div>
 
       <div>
@@ -157,7 +148,7 @@ export default function PopularItems() {
       {
         Object.keys(highlightProductsFromCates).length ? highlightCates.filter(cate => highlightProductsFromCates[cate.slug]).map((cate, i) => {
           return <div key={i}>
-            <ProductCard banner={cate.image?.path} products={highlightProductsFromCates[cate.slug]} />
+            <ProductCards banner={cate.image?.path} products={highlightProductsFromCates[cate.slug]} />
             <div className="w-full flex flex-row min-w-screen justify-center items-center">
               <Link href={`/${cate.slug}`} className="font-bold underline">Xem thêm</Link>
             </div>
@@ -171,7 +162,7 @@ export default function PopularItems() {
 }
 
 
-const ProductCard = ({ category, products, redirect, banner }) => {
+const ProductCards = ({ category, products, redirect, banner }) => {
   const CategoryDisplay = () => (<>
     <div className="bg-[#ffd300] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-1/3 h-[50px] m-auto shadow-md">
       <div className="m-auto text-black font-bold text-xl">
@@ -213,32 +204,7 @@ const ProductCarousel = ({ products, responsive }) => {
       {
         products.map((product) => {
           return <div key={product.id} className="h-full p-2 hover:opacity-75">
-            <div className="rounded-md border h-[400px] object-cover object-center group-hover:opacity-50
-            hover:-translate-y-2.5 hover:scale-[1.02] shadow-[0px_2px_10px_rgba(0,0,0,0.15)] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)] overflow-hidden transition">
-              <Link href={`/${product.subCate.slug}/${product.slug}`} className="flex flex-col h-full">
-                <div className="h-2/3">
-                  <div className="aspect-h-1 aspect-w-1 w-full h-full overflow-hidden xl:aspect-h-8 xl:aspect-w-7">
-                    <img
-                      width={500}
-                      height={400}
-                      src={`${process.env.NEXT_PUBLIC_FILE_PATH + product.image?.path}`}
-                      alt={product.imageAlt}
-                      className="h-full w-full object-cover object-center group-hover:opacity-75 hover:scale-110 transition"
-                    />
-                  </div>
-                </div>
-                <div className="grow p-2">
-                  <p className="text-sm text-gray-700 font-semibold text-center line-clamp-2">
-                    {product.name}
-                  </p>
-                </div>
-                <p className="text-center text-red-500 font-bold text-xl pb-12">
-                  {
-                    getPrice(product)
-                  }
-                </p>
-              </Link>
-            </div>
+            <ProductCard product={product} />
           </div>
         })
       }
@@ -254,7 +220,7 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
     },
     tablet: {
       breakpoint: { max: 1281, min: 464 },
-      items: 2
+      items: 3
     },
     mobile: {
       breakpoint: { max: 464, min: 0 },
@@ -263,9 +229,9 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
   }
 
   return (<>
-    <div className="lg:grid lg:grid-cols-6">
+    <div className="lg:grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-6">
       <div className="p-2 col-span-2">
-        <div className="bg-[#ffd300] shadow-lg rounded-md pt-9 min-h-[400px]">
+        <div className="bg-[#ffd300] shadow-lg rounded-md pt-9 min-h-[300px]">
           <div className="flex items-center mx-auto md:max-w-[340px] md:h-[120px] lg:max-w-2/3 lg:h-[120px] p-5 pt-0">
             {
               brandDescription[selectedBrand] && brandDescription[selectedBrand].logo ?

@@ -1,6 +1,6 @@
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, Pagination, Select, SelectItem, Slider } from "@nextui-org/react";
 import { useEffect, useMemo, useState } from "react";
-import { getPrice } from "@/lib/product"
+import ProductCard from "@/components/product/ProductCard"
 import { getTotalPages } from "@/lib/pagination"
 import { useSearchParams } from "next/navigation";
 import { FILTER_TYPE } from "@/lib/filter";
@@ -201,32 +201,7 @@ const Category = ({ params, productFilter }) => {
         <div className="w-full my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
           {data.map((product) => (
             <div key={product.id} className="h-full p-2 hover:opacity-75">
-              <div className="rounded-md border h-[400px] object-cover object-center group-hover:opacity-50
-            hover:-translate-y-2.5 hover:scale-[1.02] shadow-[0px_2px_10px_rgba(0,0,0,0.15)] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)] overflow-hidden transition">
-                <Link href={`/${product.subCate.slug}/${product.slug}`} className="flex flex-col h-full">
-                  <div className="h-2/3">
-                    <div className="aspect-h-1 aspect-w-1 w-full h-full overflow-hidden xl:aspect-h-8 xl:aspect-w-7">
-                      <img
-                        width={500}
-                        height={400}
-                        src={`${process.env.NEXT_PUBLIC_FILE_PATH + product.image?.path}`}
-                        alt={product.imageAlt}
-                        className="h-full w-full object-cover object-center group-hover:opacity-75 hover:scale-110 transition"
-                      />
-                    </div>
-                  </div>
-                  <div className="grow p-2">
-                    <p className="text-sm text-gray-700 font-semibold text-center line-clamp-2">
-                      {product.name}
-                    </p>
-                  </div>
-                  <p className="text-center text-red-500 font-bold text-xl pb-12">
-                    {
-                      getPrice(product)
-                    }
-                  </p>
-                </Link>
-              </div>
+              <ProductCard product={product} />
             </div>
           ))}
         </div>

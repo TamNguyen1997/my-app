@@ -13,7 +13,7 @@ const ProductCard = ({ product }) => {
               <img
                 width={500}
                 height={400}
-                src={`${process.env.NEXT_PUBLIC_FILE_PATH || "" + product.image?.path}`}
+                src={`${process.env.NEXT_PUBLIC_FILE_PATH + product.image?.path}`}
                 alt={product.imageAlt}
                 className="h-full w-full object-cover object-center group-hover:opacity-75 hover:scale-110 transition"
               />

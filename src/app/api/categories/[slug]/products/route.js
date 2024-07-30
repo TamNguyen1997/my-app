@@ -73,7 +73,14 @@ export async function GET(req, { params }) {
 
     let products = await db.product.findMany({
       where: condition,
-      include: { image: true, subCate: true, filterOnProduct: true }
+      include: {
+        image: true,
+        subCate: true,
+        filterOnProduct: true,
+        category: true,
+        brand: true,
+        saleDetails: true
+      }
     })
     if (query.filterId) {
       products = products.filter(item => item.filterOnProduct.length >= filterId.length)

@@ -76,7 +76,7 @@ export default function PopularItems() {
 
   useEffect(() => {
     Promise.all([
-      fetch(`/api/products/?size=${10}&page=${1}&highlight=true&active=true&productType=PRODUCT`).then(res => res.json()).then((value) => setProducts(value.result)),
+      fetch(`/api/products/?size=${10}&page=${1}&highlight=true&active=true&productType=PRODUCT&includeCate=true`).then(res => res.json()).then((value) => setProducts(value.result)),
       fetch(`/api/brands/thuong-hieu-rubbermaid/products/?active=true`).then(res => res.json()).then(json => {
         setRubberMaidProducts(json.products)
         setBrandProducts(json.products)
@@ -92,7 +92,7 @@ export default function PopularItems() {
   useEffect(() => {
     Promise.all(
       highlightCates
-        .map(cate => fetch(`/api/products/?size=${10}&page=${1}&categoryId=${cate.id}&active=true&productType=PRODUCT`)
+        .map(cate => fetch(`/api/products/?size=${10}&page=${1}&categoryId=${cate.id}&active=true&productType=PRODUCT&includeCate=true`)
           .then(res => res.json())
           .then(json => json.result))
     ).then(value => {
@@ -215,7 +215,7 @@ const ProductCarousel = ({ products, responsive }) => {
           return <div key={product.id} className="h-full p-2 hover:opacity-75">
             <div className="rounded-md border h-[400px] object-cover object-center group-hover:opacity-50
             hover:-translate-y-2.5 hover:scale-[1.02] shadow-[0px_2px_10px_rgba(0,0,0,0.15)] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)] overflow-hidden transition">
-              <Link href={`/san-pham/${product.slug}`} className="flex flex-col h-full">
+              <Link href={`/${product.subCate.slug}/${product.slug}`} className="flex flex-col h-full">
                 <div className="h-2/3">
                   <div className="aspect-h-1 aspect-w-1 w-full h-full overflow-hidden xl:aspect-h-8 xl:aspect-w-7">
                     <img

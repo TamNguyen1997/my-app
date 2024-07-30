@@ -18,7 +18,7 @@ export async function GET(req, { params }) {
       saleDetails: searchParams && searchParams.get("includeSale") !== "undefined" && searchParams.get("includeSale") !== null,
       image: true,
       category: true,
-      subCategory: true,
+      subCate: true,
       brand: true
     }
 

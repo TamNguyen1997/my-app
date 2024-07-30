@@ -1,6 +1,6 @@
 "use client"
 import { CartContext } from "@/context/CartProvider";
-import { Button, Input, Textarea } from "@nextui-org/react";
+import { Button, Input, Link, Textarea } from "@nextui-org/react";
 import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form"
 
@@ -65,7 +65,7 @@ const Cart = () => {
               cartdetails?.map((detail, i) =>
                 <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6" key={i}>
                   <div className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
-                    <a href={`/san-pham/${detail.product.slug}`} className="shrink-0 md:order-1">
+                    <a href={`/${detail.product.subCate.slug}/${detail.product.slug}`} className="shrink-0 md:order-1">
                       <img className="h-20 w-20 dark:block" src={`${process.env.NEXT_PUBLIC_FILE_PATH + detail.product.image?.path}`} alt="imac image" />
                     </a>
                     <div className="flex items-center justify-between md:order-3 md:justify-end">
@@ -86,7 +86,7 @@ const Cart = () => {
 
                     <div className="w-full min-w-0 flex-1 space-y-4 md:order-2 md:max-w-md">
                       <div>
-                        <a href={`/san-pham/${detail.product.slug}`} className="text-base font-medium text-gray-900 hover:underline dark:text-white">{detail.product.name}</a>
+                        <a href={`/${detail.product.subCate.slug}/${detail.product.slug}`} className="text-base font-medium text-gray-900 hover:underline dark:text-white">{detail.product.name}</a>
                         <p className="text-lg font-bold leading-tight text-red-600 dark:text-red-500">
                           {getPrice(detail.saleDetail, detail.secondarySaleDetail).toLocaleString()} đ</p>
                         <div className="text-[16px] flex opacity-80 pt-1">
@@ -195,21 +195,14 @@ const Cart = () => {
                 return <div
                   key={i}
                   className="space-y-6 overflow-hidden rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-                  <a href={`/san-pham/${product.slug}`} className="overflow-hidden rounded">
+                  <a href={`/${product.subCate.slug}/${product.slug}`} className="overflow-hidden rounded">
                     <img className="mx-auto h-44 w-44 dark:hidden" src={`${process.env.NEXT_PUBLIC_FILE_PATH + product.image?.path}`} alt="imac image" />
                   </a>
                   <div className="mt-6 flex items-center">
-                    <Button className="w-full items-center justify-center font-medium" color="primary"
-                      onClick={() => addItemToCart({
-                        quantity: 1,
-                        product: product,
-                        saleDetail: {},
-                        secondarySaleDetail: {}
-                      })}>
-                      <svg className="-ms-2 me-2 h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7h-1M8 7h-.688M13 5v4m-2-2h4" />
-                      </svg>
-                      Thêm vào giỏ hàng
+                    <Button className="text-sm font-bold uppercase bg-gradient-to-b from-[#ffed00] to-[#fff466] rounded-none w-full h-[45px] border border-[#e3e3e3] mb-2.5">
+                      <Link href={`/${product.subCate.slug}/${product.slug}`} className="text-black">
+                        Chi tiết
+                      </Link>
                     </Button>
                   </div>
                 </div>

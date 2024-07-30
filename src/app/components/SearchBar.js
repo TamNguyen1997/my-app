@@ -34,7 +34,7 @@ const SearchBar = () => {
       }
     );
 
-    fetch(`/api/products/?size=${5}&page=${1}&${queryString}`).then(
+    fetch(`/api/products/?size=${5}&page=${1}&${queryString}&includeCate=true`).then(
       async (value) => {
         const response = await value.json();
         setProducts(response.result);
@@ -108,7 +108,7 @@ const SearchBar = () => {
                   return (
                     <div key={product.id}>
                       <Link
-                        href={`/san-pham/${product.id}`}
+                        href={`/${product.subCate.slug}/${product.id}`}
                         onClick={() => onConditionChange({ name: '' })}
                       >
                         <div className="px-4 py-2 flex items-center gap-5 hover:bg-slate-50 cursor-pointer">

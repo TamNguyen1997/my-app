@@ -23,7 +23,10 @@ export async function GET(req, { params }) {
           categoryId: product.categoryId
         },
         include: {
-          image: true
+          image: true,
+          category: true,
+          subCate: true,
+          brand: true
         },
         take: 4
       }

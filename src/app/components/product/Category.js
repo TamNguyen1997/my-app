@@ -29,6 +29,9 @@ const Category = ({ params, productFilter }) => {
 
   const getProduct = () => {
     const hash = window.location.hash?.split('#')
+    fetch(`/api/filters/?categoryId=${params}`).then((res) => res.json()).then(json => {
+      setFilters(Object.groupBy(json.result, (item) => item.filterType))
+    })
     fetch(`/api/categories/${params}/products/?active=true&${window.location.hash ? hash[1] : `filterId=${productFilter || ""}`}`).then(async res => {
       if (res.ok) {
         const body = await res.json()
@@ -36,9 +39,6 @@ const Category = ({ params, productFilter }) => {
         setData(body.products)
         setTotal(body.total)
       }
-    })
-    fetch(`/api/filters/?categoryId=${params}`).then((res) => res.json()).then(json => {
-      setFilters(Object.groupBy(json.result, (item) => item.filterType))
     })
   }
 
@@ -81,7 +81,7 @@ const Category = ({ params, productFilter }) => {
 
   return (
     <>
-      <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN} / ${params}`} />
+      <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${params}`} />
       <div
         className="flex flex-col items-center 
         bg-[image:var(--image-url)] bg-no-repeat bg-center bg-cover
@@ -200,24 +200,34 @@ const Category = ({ params, productFilter }) => {
         </div>
         <div className="w-full my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
           {data.map((product) => (
-            <Link
-              href={`/ ${product.subCate.slug} / ${product.slug}`}
-              key={product.id}
-              className="group border rounded overflow-clip">
-              <img
-                src={`${process.env.NEXT_PUBLIC_FILE_PATH + product?.image?.path}`}
-                alt={product?.imageAlt}
-                className="object-cover object-center group-hover:opacity-50 p-2 hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)]" />
-              <p className="mt-4 text-sm text-gray-700 font-semibold text-center">
-                {product.name}
-              </p>
-
-              <p className="text-center text-red-500 font-bold text-xl pt-3 border-t-medium">
-                {
-                  getPrice(product)
-                }
-              </p>
-            </Link>
+            <div key={product.id} className="h-full p-2 hover:opacity-75">
+              <div className="rounded-md border h-[400px] object-cover object-center group-hover:opacity-50
+            hover:-translate-y-2.5 hover:scale-[1.02] shadow-[0px_2px_10px_rgba(0,0,0,0.15)] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)] overflow-hidden transition">
+                <Link href={`/${product.subCate.slug}/${product.slug}`} className="flex flex-col h-full">
+                  <div className="h-2/3">
+                    <div className="aspect-h-1 aspect-w-1 w-full h-full overflow-hidden xl:aspect-h-8 xl:aspect-w-7">
+                      <img
+                        width={500}
+                        height={400}
+                        src={`${process.env.NEXT_PUBLIC_FILE_PATH + product.image?.path}`}
+                        alt={product.imageAlt}
+                        className="h-full w-full object-cover object-center group-hover:opacity-75 hover:scale-110 transition"
+                      />
+                    </div>
+                  </div>
+                  <div className="grow p-2">
+                    <p className="text-sm text-gray-700 font-semibold text-center line-clamp-2">
+                      {product.name}
+                    </p>
+                  </div>
+                  <p className="text-center text-red-500 font-bold text-xl pb-12">
+                    {
+                      getPrice(product)
+                    }
+                  </p>
+                </Link>
+              </div>
+            </div>
           ))}
         </div>
         <div className="flex w-full justify-center">

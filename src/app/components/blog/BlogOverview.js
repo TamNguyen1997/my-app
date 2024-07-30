@@ -46,7 +46,7 @@ const BlogOverview = ({ activeCategory, activeTag }) => {
   const [category, setCategory] = useState({});
 
   useEffect(() => {
-    fetch(`/api/blogs?blogCategory=${activeCategory}&blogSubCategory=${activeTag || ""}`).then(res => res.json()).then(json => {
+    fetch(`/api/blogs?blogCategory=${activeCategory}&blogSubCategory=${activeTag || ""}&excludeSupport=true&active=true`).then(res => res.json()).then(json => {
       setBlogs(json)
       setCategory(blogCategories.find(item => item.id === activeCategory))
     })

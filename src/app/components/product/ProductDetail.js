@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BreadcrumbItem, Breadcrumbs, Button } from "@nextui-org/react";
+import { BreadcrumbItem, Breadcrumbs, Button, Link } from "@nextui-org/react";
 import Skeleton from "@/components/Skeleton";
 import SaleDetail from "@/components/SaleDetail";
 import ProductImageCarousel from "@/components/ProductImageCarousel";
@@ -28,7 +28,7 @@ export default ({ id }) => {
 
   return (
     <div>
-      <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/san-pham/${id}`} />
+      <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${product.subCate?.slug}/${id}`} />
       <div className="bg-[#ffed00] py-2.5">
         <div className="container">
           <Breadcrumbs
@@ -38,8 +38,14 @@ export default ({ id }) => {
               base: "[&>span]:text-black [&>span]:whitespace-normal"
             }}
           >
-            <BreadcrumbItem href={`/${product.category?.slug}`}>{product.category?.name}</BreadcrumbItem>
-            <BreadcrumbItem href={`/${product.category?.slug}/${product.subCategory?.slug}`}>{product.subCategory?.name}</BreadcrumbItem>
+            {
+              product.category ?
+                <BreadcrumbItem href={`/${product.category.slug}`}>{product.category.name}</BreadcrumbItem> : ""
+            }
+            {
+              product.subCate ?
+                <BreadcrumbItem href={`/${product.subCate.slug}`}>{product.subCate.name}</BreadcrumbItem> : ""
+            }
             <BreadcrumbItem>{product.name}</BreadcrumbItem>
           </Breadcrumbs>
         </div>
@@ -66,7 +72,9 @@ export default ({ id }) => {
               <p className="mb-2.5">Bạn cần trợ giúp?</p>
               <p className="font-bold mb-2.5">Đường dây nóng: 1900 5715 99</p>
               <Button className="text-sm font-bold uppercase bg-gradient-to-b from-[#ffed00] to-[#fff466] rounded-none w-full h-[45px] border border-[#e3e3e3] mb-2.5">
-                Liên hệ
+                <Link isExternal href="https://zalo.me/0902405225" className="text-black">
+                  Liên hệ
+                </Link>
               </Button>
             </div>
           </div>

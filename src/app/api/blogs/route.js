@@ -34,6 +34,10 @@ export async function GET(req) {
       }
       ]
     }
+
+    if (query.active) {
+      condition.active = query.active === 'true'
+    }
     if (query.blogCategory) {
       condition.blogCategory = query.blogCategory
     }

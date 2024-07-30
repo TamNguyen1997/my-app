@@ -40,7 +40,11 @@ export async function GET(req, { params }) {
     let products = await db.product.findMany({
       where: condition,
       include: {
-        image: true
+        image: true,
+        category: true,
+        subCate: true,
+        brand: true,
+        saleDetails: true
       }
     })
 

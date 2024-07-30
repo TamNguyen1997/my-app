@@ -38,8 +38,14 @@ export default ({ id }) => {
               base: "[&>span]:text-black [&>span]:whitespace-normal"
             }}
           >
-            <BreadcrumbItem href={`/${product.category?.slug}`}>{product.category?.name}</BreadcrumbItem>
-            <BreadcrumbItem href={`/${product.subCate?.slug}/${product.subCate?.slug}`}>{product.subCate?.name}</BreadcrumbItem>
+            {
+              product.category ?
+                <BreadcrumbItem href={`/${product.category.slug}`}>{product.category.name}</BreadcrumbItem> : ""
+            }
+            {
+              product.subCate ?
+                <BreadcrumbItem href={`/${product.subCate.slug}/${product.subCate.slug}`}>{product.subCate.name}</BreadcrumbItem> : ""
+            }
             <BreadcrumbItem>{product.name}</BreadcrumbItem>
           </Breadcrumbs>
         </div>

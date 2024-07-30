@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BreadcrumbItem, Breadcrumbs, Button } from "@nextui-org/react";
+import { BreadcrumbItem, Breadcrumbs, Button, Link } from "@nextui-org/react";
 import Skeleton from "@/components/Skeleton";
 import SaleDetail from "@/components/SaleDetail";
 import ProductImageCarousel from "@/components/ProductImageCarousel";
@@ -72,7 +72,9 @@ export default ({ id }) => {
               <p className="mb-2.5">Bạn cần trợ giúp?</p>
               <p className="font-bold mb-2.5">Đường dây nóng: 1900 5715 99</p>
               <Button className="text-sm font-bold uppercase bg-gradient-to-b from-[#ffed00] to-[#fff466] rounded-none w-full h-[45px] border border-[#e3e3e3] mb-2.5">
-                Liên hệ
+                <Link isExternal href="https://zalo.me/0902405225" className="text-black">
+                  Liên hệ
+                </Link>
               </Button>
             </div>
           </div>

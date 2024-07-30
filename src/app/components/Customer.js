@@ -1,15 +1,24 @@
-import Image from "next/image"
 import Link from "next/link"
 import Carousel from "react-multi-carousel"
 import "react-multi-carousel/lib/styles.css"
 
 const logo = [
-  "/brand/Logo-NikkoSG.png",
-  "/brand/Logo-Vingroup.png",
-  "/brand/Sun-group-logo.png",
-  "/brand/icon-Laz.svg",
-  "/brand/icon-Shopee.svg",
-  "/brand/Logo-Salinda-Resort.png"
+  "/icon/client/BW.png",
+  "/icon/client/Fusion.png",
+  "/icon/client/Hilton.png",
+  "/icon/client/Hoiana.png",
+  "/icon/client/Hyatt.png",
+  "/icon/client/Inter.png",
+  "/icon/client/JW.png",
+  "/icon/client/Melia.png",
+  "/icon/client/Movenpick.png",
+  "/icon/client/Novotel.png",
+  "/icon/client/Pullman.png",
+  "/icon/client/Regent.png",
+  "/icon/client/Novotel.png",
+  "/icon/client/Sheraton.png",
+  "/icon/client/TheGrand.png",
+  "/icon/client/Wyndham.png",
 ]
 
 const responsive = {

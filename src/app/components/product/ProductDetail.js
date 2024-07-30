@@ -39,7 +39,7 @@ export default ({ id }) => {
             }}
           >
             <BreadcrumbItem href={`/${product.category?.slug}`}>{product.category?.name}</BreadcrumbItem>
-            <BreadcrumbItem href={`/${product.category?.slug}/${product.subCategory?.slug}`}>{product.subCategory?.name}</BreadcrumbItem>
+            <BreadcrumbItem href={`/${product.subCate?.slug}/${product.subCate?.slug}`}>{product.subCate?.name}</BreadcrumbItem>
             <BreadcrumbItem>{product.name}</BreadcrumbItem>
           </Breadcrumbs>
         </div>

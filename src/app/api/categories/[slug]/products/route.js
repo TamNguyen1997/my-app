@@ -83,7 +83,7 @@ export async function GET(req, { params }) {
       }
     })
     if (query.filterId) {
-      products = products.filter(item => item.filterOnProduct.length >= filterId.length)
+      products = products.filter(item => item.filterOnProduct.length >= filterId.length && filterId.every(id => item.filterOnProduct.map(f => f.filterId).includes(id)))
     }
 
     if (query.range) {

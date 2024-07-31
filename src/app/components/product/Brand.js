@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Select, SelectItem, Slider } from "@nextui-org/react";
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Select, SelectItem, Slider, Spinner } from "@nextui-org/react";
 import { FILTER_TYPE } from "@/lib/filter";
 import ProductCard from "@/components/product/ProductCard";
 
@@ -47,6 +47,7 @@ const Brand = ({ params, productFilter }) => {
   const [data, setData] = useState([])
   const [selectedFilters, setSelectedFilters] = useState(new Set([]))
   const [brand, setBrand] = useState({ name: "" })
+  const [isLoading, setIsLoading] = useState(true)
 
   const [value, setValue] = useState([0, 100000000])
 
@@ -59,9 +60,9 @@ const Brand = ({ params, productFilter }) => {
     getProduct()
   }, [params, productFilter]);
 
-  const getProduct = () => {
+  const getProduct = async () => {
     const hash = window.location.hash?.split('#')
-    fetch(`/api/brands/${params}/products/?&active=true&${window.location.hash ? hash[1] : `filterId=${productFilter || ""}`}`).then(async res => {
+    await fetch(`/api/brands/${params}/products/?&active=true&${window.location.hash ? hash[1] : `filterId=${productFilter || ""}`}`).then(async res => {
       if (res.ok) {
         const body = await res.json()
         setBrand(body.brand)
@@ -69,7 +70,7 @@ const Brand = ({ params, productFilter }) => {
         setGroupData(Object.groupBy(body.products, (item) => item.subCategoryId))
       }
     })
-    fetch(`/api/filters/?brandId=${params}`).then((res) => res.json()).then(json => {
+    await fetch(`/api/filters/?brandId=${params}`).then((res) => res.json()).then(json => {
       setFilters(Object.groupBy(json.result, (item) => item.filterType))
 
       let temp = {}
@@ -96,6 +97,7 @@ const Brand = ({ params, productFilter }) => {
 
       setFilterIds(temp)
     })
+    setIsLoading(false)
   }
 
   const onFilterSelect = (value) => {
@@ -143,6 +145,8 @@ const Brand = ({ params, productFilter }) => {
     window.location.replace(`/${brand.slug}#${params.join("&")}`)
     getProduct()
   }
+
+  if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />
 
   return (
     <>
@@ -258,11 +262,15 @@ const Brand = ({ params, productFilter }) => {
             </DropdownMenu>
           </Dropdown>
         </div>
-        <div className="w-full my-5 flex flex-col gap-4 p-2">
-          {
-            Object.keys(groupedData).map(key => <BrandSection products={groupedData[key]} key={key} />)
-          }
-        </div>
+        {
+          !isLoading && !data.length ?
+            <p className="m-auto pt-4 text-lg opacity-55">Không tìm thấy sản phẩm nào.</p> :
+            <div className="w-full my-5 flex flex-col gap-4 p-2">
+              {
+                Object.keys(groupedData).map(key => <BrandSection products={groupedData[key]} key={key} />)
+              }
+            </div>
+        }
       </div>
     </>
   );

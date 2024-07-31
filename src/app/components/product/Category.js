@@ -1,4 +1,4 @@
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, Pagination, Select, SelectItem, Slider } from "@nextui-org/react";
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, Pagination, Select, SelectItem, Slider, Spinner } from "@nextui-org/react";
 import { useEffect, useMemo, useState } from "react";
 import ProductCard from "@/components/product/ProductCard"
 import { getTotalPages } from "@/lib/pagination"
@@ -9,6 +9,7 @@ const rowsPerPage = 20;
 
 const Category = ({ params, productFilter }) => {
   const [data, setData] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
   const [category, setCategory] = useState({ name: "" })
   const [value, setValue] = useState([0, 100000000])
   const [selectedFilters, setSelectedFilters] = useState(new Set([]))
@@ -28,41 +29,46 @@ const Category = ({ params, productFilter }) => {
   }, [total, rowsPerPage]);
 
   const getProduct = () => {
+    setIsLoading(true)
     const hash = window.location.hash?.split('#')
-    fetch(`/api/filters/?categoryId=${params}`).then((res) => res.json()).then(json => {
-      setFilters(Object.groupBy(json.result, (item) => item.filterType))
-      let temp = {}
+    const getData = async () => {
+      await fetch(`/api/filters/?categoryId=${params}`).then((res) => res.json()).then(json => {
+        setFilters(Object.groupBy(json.result, (item) => item.filterType))
+        let temp = {}
 
-      if (productFilter) {
-        json.result.forEach(item => {
-          if (item.slug === productFilter) {
-            temp[item.filterType] = [productFilter]
-            return
-          }
-        })
-      } else {
-        json.result.forEach(item => {
-          if (window.location.hash?.includes(item.slug)) {
-            if (temp[item.filterType]) {
-              temp[item.filterType].push(item.slug)
-            } else {
-              temp[item.filterType] = [item.slug]
+        if (productFilter) {
+          json.result.forEach(item => {
+            if (item.slug === productFilter) {
+              temp[item.filterType] = [productFilter]
+              return
             }
-          }
-        })
+          })
+        } else {
+          json.result.forEach(item => {
+            if (window.location.hash?.includes(item.slug)) {
+              if (temp[item.filterType]) {
+                temp[item.filterType].push(item.slug)
+              } else {
+                temp[item.filterType] = [item.slug]
+              }
+            }
+          })
 
-      }
+        }
 
-      setFilterIds(temp)
-    })
-    fetch(`/api/categories/${params}/products/?active=true&${window.location.hash ? hash[1] : `filterId=${productFilter || ""}`}`).then(async res => {
-      if (res.ok) {
-        const body = await res.json()
-        setCategory(body.category)
-        setData(body.products)
-        setTotal(body.total)
-      }
-    })
+        setFilterIds(temp)
+      })
+      await fetch(`/api/categories/${params}/products/?active=true&${window.location.hash ? hash[1] : `filterId=${productFilter || ""}`}`).then(async res => {
+        if (res.ok) {
+          const body = await res.json()
+          setCategory(body.category)
+          setData(body.products)
+          setTotal(body.total)
+        }
+      })
+      setIsLoading(false)
+    }
+    getData()
   }
 
   const filter = () => {
@@ -110,6 +116,7 @@ const Category = ({ params, productFilter }) => {
     setData(productFilter.filter(data))
   }
 
+  if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />
   return (
     <>
       <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${params}`} />
@@ -227,25 +234,30 @@ const Category = ({ params, productFilter }) => {
           </Dropdown>
         </div>
 
-        <div className="float-right">
-        </div>
-        <div className="w-full my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
-          {data.map((product) => (
-            <div key={product.id} className="h-full p-2 hover:opacity-75">
-              <ProductCard product={product} />
-            </div>
-          ))}
-        </div>
-        <div className="flex w-full justify-center">
-          <Pagination
-            isCompact
-            showControls
-            showShadow
-            page={page}
-            total={pages}
-            onChange={(page) => setPage(page)}
-          />
-        </div>
+
+        {
+          !isLoading && !data.length ?
+            <p className="m-auto pt-4 text-lg opacity-55">Không tìm thấy sản phẩm nào.</p> :
+            <>
+              <div className="w-full my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
+                {data.map((product) => (
+                  <div key={product.id} className="h-full p-2 hover:opacity-75">
+                    <ProductCard product={product} />
+                  </div>
+                ))}
+              </div>
+              <div className="flex w-full justify-center">
+                <Pagination
+                  isCompact
+                  showControls
+                  showShadow
+                  page={page}
+                  total={pages}
+                  onChange={(page) => setPage(page)}
+                />
+              </div>
+            </>
+        }
       </div>
     </>
   );

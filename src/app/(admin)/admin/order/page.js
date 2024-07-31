@@ -68,6 +68,7 @@ const Order = () => {
               </div>
           }>
           <TableHeader>
+            <TableColumn key="orderId" textValue="Mã đơn hàng" aria-label="Mã đơn hàng">Mã đơn hàng</TableColumn>
             <TableColumn key="name" textValue="Tên filter" aria-label="Tên filter">Tên khách hàng</TableColumn>
             <TableColumn key="status" textValue="status" aria-label="status">Trạng thái thanh toán</TableColumn>
             <TableColumn key="paymentMethod" textValue="paymentMethod" aria-label="paymentMethod">Phương thức thanh toán</TableColumn>

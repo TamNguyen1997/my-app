@@ -72,14 +72,15 @@ const Order = () => {
         <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
           <div className="space-y-2">
             <Input
-              label="Tên"
-              aria-label="Tên"
+              label="Tên khách hàng"
+              aria-label="Tên khách hàng"
               value={order.name}
               disabled
             />
             <Input
               label="Số điện thoại"
               aria-label="Số điện thoại"
+              type="phone"
               value={order.phone}
               disabled
             />
@@ -88,6 +89,7 @@ const Order = () => {
               label="Email"
               aria-label="Email"
               value={order.email}
+              type="email"
               disabled
             />
             <Input
@@ -109,11 +111,18 @@ const Order = () => {
             />
 
             <div className="flex gap-3">
+              <Input label="Mã đơn hàng"
+                value={order.orderId}
+                disabled />
               <Input label="Phương thức thanh toán"
                 value={order.paymentMethod}
                 disabled />
               <Input label="Trạng thái thanh toán"
                 value={order.status}
+                disabled />
+              <Input label="Số tiền chuyển khoản"
+                value={order.customerPayment}
+                type="number"
                 disabled />
             </div>
             <div className="flex gap-3">
@@ -123,7 +132,7 @@ const Order = () => {
               <Input label="Phương thức vận chuyển"
                 value={order.shippingMethod}
                 disabled />
-              <Input label="Mã đơn hàng"
+              <Input label="Mã vận chuyển"
                 value={order.shippingId}
                 disabled />
             </div>

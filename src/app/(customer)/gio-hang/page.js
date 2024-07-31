@@ -16,7 +16,7 @@ const COLOR_VARIANT = {
 }
 
 const Cart = () => {
-  const { cartdetails, addItemToCart, removeItemFromCart, updateItemQuantityInCart, getTotal } = useContext(CartContext)
+  const { cartdetails, addItemToCart, removeItemFromCart, updateItemQuantityInCart, getTotal, removeAllItems } = useContext(CartContext)
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [relatedProducts, setRelatedProducts] = useState([])
   const [selected, setSelected] = useState("COD");
@@ -69,16 +69,15 @@ const Cart = () => {
     }
   }
 
-  console.log(qr)
-
   const createOrder = async (data) => {
     const body = getBody(data)
 
-    const res = await fetch("/api/courier/create-order", {
+    const res = await fetch("/api/order/", {
       method: "POST", body: JSON.stringify(body)
     })
     if (res.ok) {
       toast.success("Đã đặt hàng")
+      removeAllItems()
     } else {
       toast.error("Không thể đặt hàng")
     }

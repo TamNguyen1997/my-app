@@ -42,7 +42,7 @@ export async function POST(req) {
         }
 
         const myHeaders = new Headers();
-        myHeaders.append("Token", "eyJhbGciOiJFUzI1NiJ9.eyJVc2VySWQiOjE0NzQ1MDU1LCJGcm9tU291cmNlIjo1LCJUb2tlbiI6IkUzS0xWM0FKT1NXTSIsImV4cCI6MTcyMjM5NzgxOCwiUGFydG5lciI6MTQ3NDUwNTV9.DJNHlxVCg7r1M4tNDk8ee7bt1UTWxZI83vVVHgUk-gMDOK_5Ieiz-eXCpME586A8gU4-zc8amMTD5gv3fLL94A");
+        myHeaders.append("Token", "eyJhbGciOiJFUzI1NiJ9.eyJVc2VySWQiOjE0NzQ1MDU1LCJGcm9tU291cmNlIjo1LCJUb2tlbiI6IkUzS0xWM0FKT1NXTSIsImV4cCI6MTcyMjUwNTQ2MSwiUGFydG5lciI6MTQ3NDUwNTV9.yncK9j0bxchwGPpYruIqQ9cGfqL2iIcLUE5vC5ROugFqnGQ2nMMAPR70RmE1EELR7WqCn8QJOr4Hsc-6FfapwA");
         myHeaders.append("Content-Type", "application/json");
 
         const result = await callApi(data);
@@ -66,7 +66,7 @@ export async function POST(req) {
 
 async function callApi(data) {
     const myHeaders = new Headers();
-    myHeaders.append("Token", "eyJhbGciOiJFUzI1NiJ9.eyJzdWIiOiIiLCJTU09JZCI6IjU4NWFmOWE0LThhYjMtNDE1Zi1hMzhmLTdjMjMwYWY1NmQ1ZCIsImludGVybmFsIjpmYWxzZSwiVXNlcklkIjoxNDc0NTA1NSwiRnJvbVNvdXJjZSI6MywiVG9rZW4iOiIxQzYwRjMxNERGQUZCRjM5NENFMTg5RTQwQjQ3MUNCMSIsInNlc3Npb25JZCI6IkNFQkFEQjYzREEzODU2N0Q5Qzg2OTFEMjBEOUU3NkFDIiwiZXhwIjoxNzIxNzIzNTE3LCJsc3RDaGlsZHJlbiI6IiIsIlBhcnRuZXIiOjAsImRldmljZUlkIjoiYzJ5eGJlYmFncnJxeDdxZTZ5ZWNscyIsInZlcnNpb24iOjF9.F5q6DJFiS8D5h2iESmZW1hNENMRdfCK0rT49VZSM8dtlkHb4_secvZPegef3TxLy596KlBw7RSZLdxxi_dy9Qg");
+    myHeaders.append("Token", "eyJhbGciOiJFUzI1NiJ9.eyJVc2VySWQiOjE0NzQ1MDU1LCJGcm9tU291cmNlIjo1LCJUb2tlbiI6IkUzS0xWM0FKT1NXTSIsImV4cCI6MTcyMjUwNTQ2MSwiUGFydG5lciI6MTQ3NDUwNTV9.yncK9j0bxchwGPpYruIqQ9cGfqL2iIcLUE5vC5ROugFqnGQ2nMMAPR70RmE1EELR7WqCn8QJOr4Hsc-6FfapwA");
     myHeaders.append("Content-Type", "application/json");
 
     const requestOptions = {

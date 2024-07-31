@@ -104,9 +104,10 @@ model sale_detail {
   price     Int?
   type      sale_detail_type @default(TEXT)
 
-  childSaleDetails sale_detail[] @relation("secondary_sale_detail")
-  saleDetail       sale_detail?  @relation("secondary_sale_detail", fields: [saleDetailId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  saleDetailId     String?       @map("sale_detail_id") @db.Uuid
+  childSaleDetails sale_detail[]      @relation("secondary_sale_detail")
+  saleDetail       sale_detail?       @relation("secondary_sale_detail", fields: [saleDetailId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  saleDetailId     String?            @map("sale_detail_id") @db.Uuid
+  product_on_order product_on_order[]
 
   @@index([productId])
   @@index([saleDetailId])
@@ -164,20 +165,26 @@ model filter_on_product {
 model order {
   id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
 
-  address    String
-  provinceId String @default("") @map("province_id")
-  wardId     String @default("") @map("ward_id")
-  districtId String @default("") @map("district_id")
-  phone      String
-  email      String
-  name       String
-  total      Int    @default(0)
+  address        String
+  provinceId     String           @default("") @map("province_id")
+  wardId         String           @default("") @map("ward_id")
+  districtId     String           @default("") @map("district_id")
+  phone          String
+  email          String
+  name           String
+  total          Int              @default(0)
+  shippingId     String?          @map("shipping_id")
+  shippingMethod SHIPPING_METHOD?
 
   status           ORDER_STATUS       @default(PENDING)
   paymentMethod    PAYMENT_METHOD     @default(OCD) @map("payment_method")
   product_on_order product_on_order[]
   createdAt        DateTime           @default(now()) @map("created_at")
   updatedAt        DateTime           @default(now()) @updatedAt @map("updated_at")
+}
+
+enum SHIPPING_METHOD {
+  VIETTEL_POST
 }
 
 enum ORDER_STATUS {
@@ -191,17 +198,19 @@ enum PAYMENT_METHOD {
 }
 
 model product_on_order {
-  product      product  @relation(fields: [productId], references: [id])
-  productId    String   @map("product_id") @db.Uuid
-  order        order    @relation(fields: [orderId], references: [id])
-  orderId      String   @map("order_id") @db.Uuid
-  quantity     Int      @default(0)
-  saleDetailId String   @map("sale_detail_id")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
+  product      product      @relation(fields: [productId], references: [id])
+  productId    String       @map("product_id") @db.Uuid
+  order        order        @relation(fields: [orderId], references: [id])
+  orderId      String       @map("order_id") @db.Uuid
+  quantity     Int          @default(0)
+  saleDetailId String?      @map("sale_detail_id") @db.Uuid
+  saleDetail   sale_detail? @relation(fields: [saleDetailId], references: [id])
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @default(now()) @updatedAt @map("updated_at")
 
   @@id([productId, orderId])
   @@index([orderId])
+  @@index([saleDetailId])
 }
 
 model image {

@@ -21,6 +21,10 @@ const CartProvider = ({ children }) => {
     updateCartDetails(cartdetails.filter(detail => detail.product.id !== item.product.id))
   };
 
+  const removeAllItems = () => {
+    updateCartDetails([])
+  };
+
   const updateItemQuantityInCart = (item, quantity) => {
     let cart = [...cartdetails]
     cart.forEach(detail => {
@@ -67,7 +71,8 @@ const CartProvider = ({ children }) => {
         addItemToCart,
         removeItemFromCart,
         updateItemQuantityInCart,
-        getTotal
+        getTotal,
+        removeAllItems
       }}
     >
       {children}

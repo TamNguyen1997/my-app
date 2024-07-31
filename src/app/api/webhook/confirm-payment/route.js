@@ -22,8 +22,8 @@ export async function POST(req) {
 
     console.log(body.data[0].amount)
 
-    console.log(description.split("OrId")[1].substring(0, 19))
-    const orderId = description.split("OrId")[1].substring(0, 19)
+    console.log(description.split("OrId")[1].substring(0, 20))
+    const orderId = description.split("OrId")[1].substring(0, 20)
     await db.order.updateMany({
       where: {
         orderId: orderId

@@ -49,7 +49,6 @@ const Brand = ({ params, productFilter }) => {
   const [brand, setBrand] = useState({ name: "" })
 
   const [value, setValue] = useState([0, 100000000])
-  const [selectedCategories, setSelectedCategories] = useState([])
 
   const [groupedData, setGroupData] = useState({})
   const [filters, setFilters] = useState({})
@@ -72,6 +71,30 @@ const Brand = ({ params, productFilter }) => {
     })
     fetch(`/api/filters/?brandId=${params}`).then((res) => res.json()).then(json => {
       setFilters(Object.groupBy(json.result, (item) => item.filterType))
+
+      let temp = {}
+
+      if (productFilter) {
+        json.result.forEach(item => {
+          if (item.slug === productFilter) {
+            temp[item.filterType] = [productFilter]
+            return
+          }
+        })
+      } else {
+        json.result.forEach(item => {
+          if (window.location.hash?.includes(item.slug)) {
+            if (temp[item.filterType]) {
+              temp[item.filterType].push(item.slug)
+            } else {
+              temp[item.filterType] = [item.slug]
+            }
+          }
+        })
+
+      }
+
+      setFilterIds(temp)
     })
   }
 
@@ -90,35 +113,35 @@ const Brand = ({ params, productFilter }) => {
   }
 
   const filter = () => {
-    let range = "range="
+    let range = ""
     if (JSON.stringify(value) !== JSON.stringify([0, 100000000])) {
-      range += `${value.join('-')}`
+      range += `range=${value.join('-')}`
     } else {
       if (!Object.keys(filterIds).length) {
         window.location.replace(`/${brand.slug}`)
         getProduct()
         return
       }
-      if (Object.keys(filterIds).length == 1 && filterIds[Object.keys(filterIds)[0]].length === 1) {
-        window.location.replace(`/${brand.slug}_${filterIds[Object.keys(filterIds)[0]][0]}`)
+      const ids = Object.values(filterIds).flat()
+      if (ids?.length === 1) {
+        window.location.replace(`/${brand.slug}_${ids[0]}`)
         getProduct()
         return
       }
     }
     let slugs = []
     Object.keys(filterIds).forEach(key => {
-      slugs.push(...filterIds[key])
+      if (filterIds[key]) slugs.push(...filterIds[key])
     })
-    window.location.replace(`/${brand.slug}#${range}&filterId=${slugs.join("&filterId=")}`)
+    let params = []
+    if (range) {
+      params.push(range)
+    }
+    if (slugs.length) {
+      params.push(`filterId=${slugs.join("&filterId=")}`)
+    }
+    window.location.replace(`/${brand.slug}#${params.join("&")}`)
     getProduct()
-  }
-
-  const getVariant = (id) => {
-    return selectedCategories.includes(id) ? 'solid' : 'ghost'
-  }
-
-  const getColor = (id) => {
-    return selectedCategories.includes(id) ? 'default' : ''
   }
 
   return (
@@ -140,10 +163,10 @@ const Brand = ({ params, productFilter }) => {
                   className="max-w-[200px]"
                   selectionMode="multiple"
                   labelPlacement="outside"
-                  defaultSelectedKeys={new Set(filters[key].find(item => item.slug === productFilter) ? [productFilter] : [])}
+                  defaultSelectedKeys={new Set([filters[key].find(item => window.location.hash.includes(item.slug) || item.slug === productFilter)?.slug])}
                   onSelectionChange={(value) => {
                     let obj = {}
-                    obj[key] = [...value]
+                    obj[key] = [...value].filter(item => item)
                     setFilterIds(Object.assign({}, filterIds, obj))
                   }}
                 >

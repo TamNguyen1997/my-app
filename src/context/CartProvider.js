@@ -12,7 +12,7 @@ const CartProvider = ({ children }) => {
     if (item) {
       updateItemQuantityInCart(e, parseInt(item.quantity) + 1)
     } else {
-      const details = JSON.parse(localStorage.getItem('cartdetails'));
+      const details = localStorage.getItem('cartdetails') ? JSON.parse(localStorage.getItem('cartdetails')) : [];
       updateCartDetails([...details, e])
     }
   };
@@ -57,7 +57,7 @@ const CartProvider = ({ children }) => {
   }, [cartdetails])
 
   useEffect(() => {
-    const cartdetails = JSON.parse(localStorage.getItem('cartdetails'));
+    const cartdetails = localStorage.getItem('cartdetails') ? JSON.parse(localStorage.getItem('cartdetails')) : [];
     if (cartdetails) {
       setCartDetails(cartdetails);
     }

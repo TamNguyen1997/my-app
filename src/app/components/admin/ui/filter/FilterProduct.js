@@ -33,6 +33,7 @@ const FilterProduct = ({ filterId, categories, brands, subCategories }) => {
   const addProduct = useDisclosure()
   const [selectedProduct, setSelectedProduct] = useState({})
   const [condition, setCondition] = useState({})
+  const [loadingState, setLoadingState] = useState("loading")
 
   const [total, setTotal] = useState(0)
 
@@ -43,14 +44,16 @@ const FilterProduct = ({ filterId, categories, brands, subCategories }) => {
   const [products, setProduct] = useState([])
   useEffect(() => {
     getProduct()
-  }, [filterId])
+  }, [page])
 
   const getProduct = useCallback(() => {
+    setLoadingState("loading")
     fetch(`/api/filters/${filterId}/products?page=${page}&size=${rowsPerPage}`).then(res => res.json()).then(json => {
       setProduct(json.result)
       setTotal(json.total)
+      setLoadingState("idle")
     })
-  }, [filterId])
+  }, [page])
 
   const pages = useMemo(() => {
     return total ? Math.ceil(total / rowsPerPage) : 0;
@@ -137,18 +140,20 @@ const FilterProduct = ({ filterId, categories, brands, subCategories }) => {
         </div>
         <div className="px-1 py-2 border-default-200">
           <Table
+            loadingState={loadingState}
             aria-label="Tất cả sản phẩm"
             bottomContent={
-              <div className="flex w-full justify-center">
-                <Pagination
-                  isCompact
-                  showControls
-                  showShadow
-                  page={page}
-                  total={pages}
-                  onChange={(page) => setPage(page)}
-                />
-              </div>
+              loadingState === "loading" ? null :
+                <div className="flex w-full justify-center">
+                  <Pagination
+                    isCompact
+                    showControls
+                    showShadow
+                    page={page}
+                    total={pages}
+                    onChange={(page) => setPage(page)}
+                  />
+                </div>
             }>
             <TableHeader>
               <TableColumn key="name" textValue="Tên sản phẩm" aria-label="Tên sản phẩm">Tên sản phẩm</TableColumn>
@@ -160,6 +165,7 @@ const FilterProduct = ({ filterId, categories, brands, subCategories }) => {
             </TableHeader>
             <TableBody
               items={products}
+              isLoading={loadingState === "loading"}
               emptyContent={"Không có sản phẩm nào"}
               loadingContent={<Spinner label="Loading..." />}>
               {(item) => (
@@ -263,7 +269,7 @@ const FilterProduct = ({ filterId, categories, brands, subCategories }) => {
                 <Button color="primary" type="submit" onPress={() => onSave()}>
                   Lưu
                 </Button>
-                <Button color="danger" variant="light" onPress={addProduct.onClose}>
+                <Button color="danger" variant="light" onPress={onClose}>
                   Close
                 </Button>
               </ModalFooter>

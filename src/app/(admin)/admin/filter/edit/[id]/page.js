@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import {
   Button,
@@ -68,13 +68,15 @@ const Filter = () => {
       await fetch('/api/filters', { method: "POST", body: JSON.stringify(filter) })
     if (res.ok) {
       toast.success("Đã lưu filter")
-      window.location.replace(`/admin/filter/edit/${(await res.json()).id}`)
+      if (id === "new") {
+        window.location.replace(`/admin/filter/edit/${(await res.json()).id}`)
+      }
     } else {
       toast.error("Không thể lưu filter")
     }
   }
 
-  const getTargetSelect = useCallback(() => {
+  const getTargetSelect = () => {
     switch (filter.targetType) {
       case "SUB_CATEGORY":
         return (<>
@@ -127,8 +129,9 @@ const Filter = () => {
         </>)
     }
 
-  }, [filter])
+  }
 
+  if (id !== "new" && !filter.id) return <></>
   return (
     <>
       <ToastContainer />

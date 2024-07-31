@@ -1,8 +1,16 @@
 import { db } from '@/app/db';
 import { NextResponse } from 'next/server';
+import queryString from 'query-string';
 
 export async function GET(req, { params }) {
+  let page = 1
+  let size = 10
   try {
+    const { query } = queryString.parseUrl(req.url);
+    if (query) {
+      page = parseInt(query.page) || 1
+      size = parseInt(query.size) || 10
+    }
     const result = await db.product.findMany({
       include: {
         image: true,
@@ -25,7 +33,9 @@ export async function GET(req, { params }) {
             }
           }
         ]
-      }
+      },
+      take: size,
+      skip: (page - 1) * size
     })
 
     return NextResponse.json({

@@ -27,6 +27,7 @@ const AvailableProduct = ({ filterId, categories, brands, subCategories, selecte
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [selectedProduct, setSelectedProduct] = useState({})
   const [condition, setCondition] = useState({})
+  const [loadingState, setLoadingState] = useState("loading")
 
   const [total, setTotal] = useState(0)
 
@@ -36,14 +37,17 @@ const AvailableProduct = ({ filterId, categories, brands, subCategories, selecte
 
   useEffect(() => {
     getProduct()
-  }, [filterId])
+  }, [page])
 
   const getProduct = useCallback(() => {
+    setLoadingState("loading")
+    console.log(page)
     fetch(`/api/filters/${filterId}/available-products?page=${page}&size=${rowsPerPage}`).then(res => res.json()).then(json => {
       setProduct(json.result)
       setTotal(json.total)
+      setLoadingState("idle")
     })
-  }, [filterId])
+  }, [page])
 
   const pages = useMemo(() => {
     return total ? Math.ceil(total / rowsPerPage) : 0;
@@ -102,6 +106,7 @@ const AvailableProduct = ({ filterId, categories, brands, subCategories, selecte
         </div>
         <div className="px-1 py-2 border-default-200">
           <Table
+            loadingState={loadingState}
             selectionMode="multiple"
             selectedKeys={selectedKeys}
             onSelectionChange={(value) => {
@@ -113,16 +118,17 @@ const AvailableProduct = ({ filterId, categories, brands, subCategories, selecte
             }}
             aria-label="Tất cả sản phẩm"
             bottomContent={
-              <div className="flex w-full justify-center">
-                <Pagination
-                  isCompact
-                  showControls
-                  showShadow
-                  page={page}
-                  total={pages}
-                  onChange={(page) => setPage(page)}
-                />
-              </div>
+              loadingState === "loading" ? null :
+                <div className="flex w-full justify-center">
+                  <Pagination
+                    isCompact
+                    showControls
+                    showShadow
+                    page={page}
+                    total={pages}
+                    onChange={(page) => setPage(page)}
+                  />
+                </div>
             }>
             <TableHeader>
               <TableColumn key="name" textValue="Tên sản phẩm" aria-label="Tên sản phẩm">Tên sản phẩm</TableColumn>
@@ -133,6 +139,7 @@ const AvailableProduct = ({ filterId, categories, brands, subCategories, selecte
               <TableColumn key="actions" textValue="actions" width="100"></TableColumn>
             </TableHeader>
             <TableBody
+              isLoading={loadingState === "loading"}
               items={products}
               emptyContent={"Không có sản phẩm nào"}
               loadingContent={<Spinner label="Loading..." />}>

@@ -10,6 +10,8 @@ import {
 } from "@nextui-org/react"
 import FilterProduct from "@/app/components/admin/ui/filter/FilterProduct";
 import { useParams } from "next/navigation";
+import { v4 } from "uuid";
+import slugify from "slugify";
 
 const FILTER_TYPE = [
   {
@@ -141,8 +143,9 @@ const Filter = () => {
           <Input
             type="text"
             label="Slug"
-            value={filter.slug}
-            labelPlacement="outside" isDisabled />
+            value={id === "new" ? v4() : filter.slug}
+            onValueChange={(value) => setFilter(Object.assign({}, filter, { slug: slugify(value, { locale: 'vi' }) }))}
+            labelPlacement="outside" isRequired />
           <Select
             label="Đối tượng filter"
             labelPlacement="outside"

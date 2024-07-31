@@ -56,6 +56,7 @@ export async function POST(req) {
         provinceId: order.provinceId,
         status: ORDER_STATUS.PENDING,
         paymentMethod: order.payment_method,
+        shippingFee: order.shippingFee,
         product_on_order: {
           create: products.map(item => {
             return {

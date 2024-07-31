@@ -175,6 +175,7 @@ model order {
   total          Int              @default(0)
   shippingId     String?          @map("shipping_id")
   shippingMethod SHIPPING_METHOD?
+  shippingFee    Int              @default(0) @map("shipping_fee")
 
   status           ORDER_STATUS       @default(PENDING)
   paymentMethod    PAYMENT_METHOD     @default(OCD) @map("payment_method")

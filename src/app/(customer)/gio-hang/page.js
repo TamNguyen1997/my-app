@@ -1,4 +1,5 @@
 "use client"
+import ProductCard from "@/app/components/product/ProductCard";
 import { CartContext } from "@/context/CartProvider";
 import { Button, Checkbox, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Textarea, useDisclosure } from "@nextui-org/react";
 import { useContext, useEffect, useState } from "react";
@@ -85,7 +86,7 @@ const Cart = () => {
 
   const getBody = (data) => {
     return {
-      order: { ...data, total: getTotal(), paymentMethod: selected },
+      order: { ...data, total: getTotal(), paymentMethod: selected, shippingFee: getTotal() > 2000000 ? 0 : shippingCost },
       products: cartdetails.map(detail => {
         return {
           productId: detail.product.id,
@@ -285,9 +286,24 @@ const Cart = () => {
                 <Checkbox radius="full" value="VIETQR" isSelected={selected === "VIETQR"} onValueChange={() => setSelected("VIETQR")}>Chuyển khoản VietQR</Checkbox>
               </div>
             </div>
-            <p className="text-small opacity-65">Phí vận chuyển: {shippingCost.toLocaleString()} đ</p>
-            <p>Tổng: {(shippingCost + getTotal()).toLocaleString()} đ</p>
-            <Button className=" w-full items-center justify-center" color="primary" type="submit">
+            {
+              getTotal() > 2000000 ? <>
+                <div>
+                  <p className="opacity-65 line-through">Phí vận chuyển: {shippingCost.toLocaleString()} đ</p>
+                  <p className="text-xs opacity-65">Miễn phí vận chuyển với đơn trên 2,000,000đ</p>
+                </div>
+                <p>Tổng: {(getTotal()).toLocaleString()} đ</p>
+              </> :
+                <>
+                  <div>
+                    <p className="opacity-65">Phí vận chuyển: {shippingCost.toLocaleString()} đ</p>
+                    <p className="text-xs opacity-65">Miễn phí vận chuyển với đơn trên 2,000,000đ</p>
+                  </div>
+                  <p>Tổng: {(shippingCost + getTotal()).toLocaleString()} đ</p>
+                </>
+            }
+
+            <Button className=" w-full items-center justify-center" color="primary" type="submit" isDisabled={!cartdetails || !cartdetails.length}>
               Checkout
             </Button>
 

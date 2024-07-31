@@ -117,6 +117,9 @@ const Order = () => {
                 disabled />
             </div>
             <div className="flex gap-3">
+              <Input label="Phí vận chuyển"
+                value={order.shippingFee}
+                disabled />
               <Input label="Phương thức vận chuyển"
                 value={order.shippingMethod}
                 disabled />

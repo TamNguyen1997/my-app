@@ -9,7 +9,10 @@ export async function POST(req) {
       totalPrice += parseInt(price)
     })
     totalPrice += parseInt(body["shipping_costs"])
-    const info = `THANH TOAN DH ${body["order_code"]}`
+    const info = body.orderId
+    if (!info) {
+      return NextResponse.json({ message: "Không tìm thấy đơn hàng" }, { status: 400 })
+    }
 
     return NextResponse.json({ qr: `https://img.vietqr.io/image/${process.env.BANK_ID}-${process.env.ACCOUNT_NO}-${process.env.TEMPLATE}.jpg?amount=${totalPrice}&addInfo=${info}&accountName=${process.env.ACCOUNT_NAME}`, status: 200 })
   } catch (e) {

@@ -44,32 +44,32 @@ export async function POST(req) {
     const order = raw.order
     const products = raw.products
 
-    await db.order.create({
-      data: {
-        address: order.address,
-        email: order.email,
-        name: order.name,
-        phone: order.phone,
-        total: order.total,
-        districtId: order.districtId,
-        wardId: order.wardId,
-        provinceId: order.provinceId,
-        status: ORDER_STATUS.PENDING,
-        paymentMethod: order.payment_method,
-        shippingFee: order.shippingFee,
-        product_on_order: {
-          create: products.map(item => {
-            return {
-              productId: item.productId,
-              quantity: parseInt(item.quantity),
-              saleDetailId: item.saleDetailId
-            }
-          })
+    return NextResponse.json({
+      order: await db.order.create({
+        data: {
+          address: order.address,
+          email: order.email,
+          name: order.name,
+          phone: order.phone,
+          total: order.total,
+          districtId: order.districtId,
+          wardId: order.wardId,
+          provinceId: order.provinceId,
+          status: ORDER_STATUS.PENDING,
+          paymentMethod: order.payment_method,
+          shippingFee: order.shippingFee,
+          product_on_order: {
+            create: products.map(item => {
+              return {
+                productId: item.productId,
+                quantity: parseInt(item.quantity),
+                saleDetailId: item.saleDetailId
+              }
+            })
+          }
         }
-      }
-    })
-
-    return NextResponse.json({ message: "OK" }, { status: 200 })
+      })
+    }, { status: 200 })
   } catch (e) {
     console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })

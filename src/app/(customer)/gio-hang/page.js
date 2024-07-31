@@ -51,22 +51,26 @@ const Cart = () => {
   } = useForm()
 
   const onSubmit = async (data) => {
-    if (selected === "COD") {
-      createOrder(data)
-    } else {
+    const createdOrder = await createOrder(data)
+    console.log(createdOrder)
+    if (selected === "VIETQR") {
       const res = await fetch("/api/pay", {
         method: "POST", body: JSON.stringify({
           price_list: [getTotal()],
           shipping_costs: [shippingCost],
-          order_code: "ASD"
+          order_code: "ASD",
+          orderId: btoa(createdOrder.id)
         })
       })
       if (res.ok) {
         setQr(await res.json())
-        onOpen()
+        onOpenChange()
+        removeAllItems()
       } else {
         console.log(res)
       }
+    } else {
+      removeAllItems()
     }
   }
 
@@ -78,7 +82,7 @@ const Cart = () => {
     })
     if (res.ok) {
       toast.success("Đã đặt hàng")
-      removeAllItems()
+      return (await res.json()).order
     } else {
       toast.error("Không thể đặt hàng")
     }

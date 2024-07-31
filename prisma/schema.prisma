@@ -165,17 +165,18 @@ model filter_on_product {
 model order {
   id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
 
-  address        String
-  provinceId     String           @default("") @map("province_id")
-  wardId         String           @default("") @map("ward_id")
-  districtId     String           @default("") @map("district_id")
-  phone          String
-  email          String
-  name           String
-  total          Int              @default(0)
-  shippingId     String?          @map("shipping_id")
-  shippingMethod SHIPPING_METHOD?
-  shippingFee    Int              @default(0) @map("shipping_fee")
+  address         String
+  provinceId      String           @default("") @map("province_id")
+  wardId          String           @default("") @map("ward_id")
+  districtId      String           @default("") @map("district_id")
+  phone           String
+  email           String
+  name            String
+  total           Int              @default(0)
+  shippingId      String?          @map("shipping_id")
+  shippingMethod  SHIPPING_METHOD?
+  shippingFee     Int              @default(0) @map("shipping_fee")
+  customerPayment Int              @default(0) @map("customer_payment")
 
   status           ORDER_STATUS       @default(PENDING)
   paymentMethod    PAYMENT_METHOD     @default(OCD) @map("payment_method")
@@ -190,6 +191,7 @@ enum SHIPPING_METHOD {
 
 enum ORDER_STATUS {
   PENDING
+  PAID
   DELIVERED
 }
 

@@ -17,12 +17,19 @@ export async function POST(req) {
       return NextResponse.json({ message: "Không hợp lệ" }, { status: 400 })
     }
 
-    await db.order.update({
+    const description = body.data[0].description
+    const amount = body.data[0].amount || 0
+
+    console.log(body.data[0].amount)
+
+    console.log(description.split("OrId")[1].substring(0, 10))
+    const orderId = description.split("OrId")[1].substring(0, 10)
+    await db.order.updateMany({
       where: {
-        id: atob(body.data[0].description)
+        orderId: orderId
       },
       data: {
-        customerPayment: body.amount,
+        customerPayment: amount,
         status: "PAID"
       }
     })

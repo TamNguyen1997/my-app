@@ -9,7 +9,7 @@ export async function POST(req) {
       totalPrice += parseInt(price)
     })
     totalPrice += parseInt(body["shipping_costs"])
-    const info = body.orderId
+    const info = `OrId${body.orderId}`
     if (!info) {
       return NextResponse.json({ message: "Không tìm thấy đơn hàng" }, { status: 400 })
     }

@@ -2,6 +2,7 @@ import { db } from '@/app/db';
 import { NextResponse } from 'next/server';
 import queryString from 'query-string';
 import { ORDER_STATUS } from "@prisma/client";
+import crypto from "crypto";
 
 export async function GET(req) {
   let page = 1
@@ -58,6 +59,7 @@ export async function POST(req) {
           status: ORDER_STATUS.PENDING,
           paymentMethod: order.payment_method,
           shippingFee: order.shippingFee,
+          orderId: crypto.randomBytes(10).toString("hex"),
           product_on_order: {
             create: products.map(item => {
               return {

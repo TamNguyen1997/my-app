@@ -59,7 +59,7 @@ const Cart = () => {
           price_list: [getTotal()],
           shipping_costs: [shippingCost],
           order_code: "ASD",
-          orderId: btoa(createdOrder.id)
+          orderId: createdOrder.orderId
         })
       })
       if (res.ok) {

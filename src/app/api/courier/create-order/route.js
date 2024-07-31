@@ -42,7 +42,7 @@ export async function POST(req) {
 
     if (listItem.length != 0) {
       const data = {
-        "ORDER_NUMBER": v4(),
+        "ORDER_NUMBER": order.orderId,
         "SENDER_FULLNAME": process.env.SAO_VIET_NAME,
         "SENDER_ADDRESS": process.env.SAO_VIET_ADDRESS,
         "SENDER_PHONE": process.env.SAO_VIET_PHONE,

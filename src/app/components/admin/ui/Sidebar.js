@@ -1,4 +1,4 @@
-import { Contact, Filter, HomeIcon, Image, Info, Layers, NotebookPen, ShoppingBasket } from 'lucide-react';
+import { Contact, Filter, HomeIcon, Image, Info, Layers, NotebookPen, ShoppingBasket, StickyNote } from 'lucide-react';
 
 const items = [
   {
@@ -48,6 +48,12 @@ const items = [
     name: 'Category',
     icon: <Layers />,
     link: '/admin/category'
+  },
+  {
+    id: "order",
+    name: 'Đơn hàng',
+    icon: <StickyNote />,
+    link: '/admin/order'
   }
 ]
 

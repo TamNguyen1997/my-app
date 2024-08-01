@@ -1,8 +1,7 @@
 "use client";
 
-import { Phone, ShoppingCart, Menu, ChevronRight, ArrowRight } from "lucide-react";
+import { Phone, ShoppingCart, Menu, ChevronRight } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 import { useEffect, useState, useContext, useRef } from "react";
 import SearchBar from "@/components/SearchBar";
 import { CartContext } from "@/context/CartProvider";
@@ -38,14 +37,14 @@ const Header = () => {
     <nav className="bg-black border-gray-200 dark:bg-gray-900 header">
       <div className="w-full h-full">
         <div className="flex w-full h-full">
-          <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+          <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto pl-10">
             <Link href="/">
-              <Image
-                src="/favicon.svg"
+              <img
+                src="/saoviet.png"
                 alt="favicon"
-                width="78"
-                height="30"
-                className="bg-black h-[81px] w-[200px]"
+                height={63}
+                width={165}
+                className="bg-black"
               />
             </Link>
           </div>

@@ -41,7 +41,7 @@ const brandDescription = {
   },
   "KLEEN-TEX": {
     logo: "/brand/Logo-Mapa.png",
-    slug: "thuong-hieu-mapa",
+    slug: "thuong-hieu-kleen-tex",
     description: `Hơn 50 năm phát triển, Kleen-Tex cung cấp loạt giải pháp về thảm, mang đến trải nghiệm tuyệt vời trong từng bước chân. 
     Thảm trải lối ra vào, logo nhiều màu, chống mỏi hay bất kỳ loại thảm cho ngành công nghiệp.`
   },
@@ -54,7 +54,7 @@ const brandDescription = {
   },
   "KIMBERLY-CLARK PROFESSIONAL": {
     logo: "/brand/Logo-Moerman.png",
-    slug: "thuong-hieu-moerman",
+    slug: "thuong-hieu-kimberly-clark",
     description: `Kimberly-Clark Corporation - tập đoàn chuyên sản xuất hàng hóa tiêu dùng, đặc biệt là các sản phẩm về Giấy. 
     Thành lập năm 1872 với hơn 140 năm hoạt động, khăn giấy cao cấp Kimberly-Clark luôn là tiện ích cho mọi gia đình.`
   },
@@ -74,6 +74,8 @@ export default function PopularItems() {
   const [moermanProducts, setMoermanProducts] = useState([])
   const [mapaProducts, setMapaProducts] = useState([])
   const [ghibliProducts, setGhibliProducts] = useState([])
+  const [kleenTexProducts, setKleenTexProducts] = useState([])
+  const [kimberlyProducts, setKimberlyProducts] = useState([])
   const [selectedBrand, setSelectedBrand] = useState("RUBBERMAID")
 
   const [brandProducts, setBrandProducts] = useState([])
@@ -93,6 +95,8 @@ export default function PopularItems() {
       fetch(`/api/brands/thuong-hieu-moerman/products/?active=true`).then(res => res.json()).then(json => setMoermanProducts(json.products)),
       fetch(`/api/brands/thuong-hieu-mapa/products/?active=true`).then(res => res.json()).then(json => setMapaProducts(json.products)),
       fetch(`/api/brands/thuong-hieu-ghibli/products/?active=true`).then(res => res.json()).then(json => setGhibliProducts(json.products)),
+      fetch(`/api/brands/thuong-hieu-kimberly-clark/products/?active=true`).then(res => res.json()).then(json => setKimberlyProducts(json.products)),
+      fetch(`/api/brands/thuong-hieu-kleen-tex/products/?active=true`).then(res => res.json()).then(json => setKleenTexProducts(json.products)),
       fetch(`/api/categories/?highlight=true&size=3&page=1&includeImage=true`).then(res => res.json()).then(json => setHighlightCates(json.result)),
     ]).then(() => {
       setIsLoading(false)
@@ -140,7 +144,7 @@ export default function PopularItems() {
           <Button radius="none"
             onClick={() => {
               setSelectedBrand("KIMBERLY-CLARK PROFESSIONAL")
-              setBrandProducts(rubberMaidProducts)
+              setBrandProducts(kimberlyProducts)
             }}
             className={`${getSelectedColor("KIMBERLY-CLARK PROFESSIONAL")} text-white text-medium font-bold hover:bg-slate-800 border-r border-white`}>
             KIMBERLY-CLARK
@@ -156,7 +160,7 @@ export default function PopularItems() {
           <Button radius="none"
             onClick={() => {
               setSelectedBrand("KLEEN-TEX")
-              setBrandProducts(moermanProducts)
+              setBrandProducts(kleenTexProducts)
             }}
             className={`${getSelectedColor("KLEEN-TEX")} text-white text-medium font-bold hover:bg-slate-800 border-r border-white`}>
             KLEEN-TEX

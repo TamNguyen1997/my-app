@@ -70,6 +70,11 @@ const Footer = () => {
               Hợp tác bán hàng
             </Link>
           </div>
+          <div>
+            <Link isExternal href="/lien-he" className="text-white">
+              Liên hệ
+            </Link>
+          </div>
 
         </div>
         <div className="p-3 flex flex-col gap-3 lg:col-span-2">
@@ -97,7 +102,7 @@ const Footer = () => {
         </div>
         <div className="flex flex-col lg:col-span-2">
           <Link href="/ve-chung-toi">
-            <p className="font-bold p-3 w-full">Về chúng tôi</p>
+            <p className="font-bold p-3 w-full text-white uppercase">Về chúng tôi</p>
           </Link>
           <p className="font-bold p-3 w-full">FANPAGE CHÍNH THỨC</p>
           <iframe

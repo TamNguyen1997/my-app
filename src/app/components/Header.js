@@ -80,13 +80,9 @@ const Header = () => {
                       <Link href="/kien-thuc-hay">Kiến thức hay</Link>
                     </div>
                     <div className="flex items-center gap-10">
-                      <Link href="/lien-he">Liên hệ</Link>
-                      <Link href="/">
-                        <div className="flex gap-3 items-center">
-                          <div>
-                            <Phone></Phone>
-                          </div>
-                          <div className="text-lg font-bold">090 380 2979</div>
+                      <Link href="tel:0903802979">
+                        <div className="flex items-center font-bold">
+                          Hotline: 090 380 2979
                         </div>
                       </Link>
                     </div>

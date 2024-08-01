@@ -26,11 +26,9 @@ const ProductCard = ({ product }) => {
           </p>
         </div>
       </Link>
-      <p className="text-red-500 font-bold pb-12">
-        {
-          getPrice(product)
-        }
-      </p>
+      {
+        getPrice(product) ? <p className="text-red-500 font-bold">{getPrice(product)}</p> : ""
+      }
     </div>
   )
 }

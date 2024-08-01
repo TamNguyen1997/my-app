@@ -158,10 +158,10 @@ const Header = () => {
 const BRANDS = [
   {
     id: 1,
-    slug: "thuong-hieu-mapa",
-    name: "Mapa",
+    slug: "thuong-hieu-ghibli",
+    name: "Ghibli",
     image: {
-      path: "/brand/Logo-Mapa.png"
+      path: "/brand/Logo-Ghibli.png"
     },
   },
   {
@@ -174,20 +174,37 @@ const BRANDS = [
   },
   {
     id: 3,
-    slug: "thuong-hieu-moerman",
-    name: "Moerman",
+    slug: "thuong-hieu-kimberly-clark",
+    name: "Kimberly - Clark",
     image: {
-      path: "/brand/Logo-Moerman.png"
+      path: "/brand/Logo-Kimberly-Clark.png"
     },
   },
   {
     id: 4,
-    slug: "thuong-hieu-ghibli",
-    name: "Ghibli",
+    slug: "thuong-hieu-moerman",
+    name: "Moerman",
     image: {
-      path: "/brand/Logo-Ghibli.png"
+      path: "/brand/Logo-Moerman.png"
+    }
+  },
+  {
+    id: 5,
+    slug: "thuong-hieu-kleen-tex",
+    name: "Kleen-tex",
+    image: {
+      path: "/brand/KLEEN-TEX.png"
     },
   },
+  {
+    id: 6,
+    slug: "thuong-hieu-mapa",
+    name: "Mapa",
+    image: {
+      path: "/brand/Logo-Mapa.png"
+    },
+  },
+
 ];
 
 const HeaderItems = ({ categories, setHoveredCate, menuRef, setMenuVisible, menuVisible }) => {

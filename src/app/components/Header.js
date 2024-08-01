@@ -175,7 +175,7 @@ const BRANDS = [
   {
     id: 3,
     slug: "thuong-hieu-kimberly-clark",
-    name: "Kimberly - Clark",
+    name: "Kimberly-Clark",
     image: {
       path: "/brand/Logo-Kimberly-Clark.png"
     },

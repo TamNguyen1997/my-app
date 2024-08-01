@@ -42,25 +42,29 @@ const SearchBar = () => {
         <p className="font-bold p-2">
           Tìm thấy {total} kết quả.
         </p>
-        <div className="w-full my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
-          {data.map((product) => (
-            <div key={product.id} className="h-full p-2 hover:opacity-75">
-              <ProductCard product={product} />
-            </div>
-          ))}
-        </div>
-        <div className="flex w-full justify-center">
-          <Pagination
-            isCompact
-            showControls
-            showShadow
-            page={page}
-            total={pages}
-            onChange={(page) => setPage(page)}
-          />
-        </div>
-      </div>
+        {
+          data?.length ? <>
 
+            <div className="w-full my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
+              {data.map((product) => (
+                <div key={product.id} className="h-full p-2 hover:opacity-75">
+                  <ProductCard product={product} />
+                </div>
+              ))}
+            </div>
+            <div className="flex w-full justify-center">
+              <Pagination
+                isCompact
+                showControls
+                showShadow
+                page={page}
+                total={pages}
+                onChange={(page) => setPage(page)}
+              />
+            </div>
+          </> : ""
+        }
+      </div>
     </>
   );
 };

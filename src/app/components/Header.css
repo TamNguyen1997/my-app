@@ -14,10 +14,6 @@
     flex: 1 1 0;
 }
 
-.fixed-header a:not(:first-of-type) {
-    border-left: 1px solid #FFAC0A;
-}
-
 .subcate-menu {
     transition: 0.3s ease-in-out;
     top: 150px;

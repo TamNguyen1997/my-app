@@ -262,10 +262,10 @@ const HeaderItems = ({ categories, setHoveredCate, menuRef, setMenuVisible, menu
 
   return (<>
     <div className="w-full font-bold header-items" ref={headerItemsRef}>
-      <div className="ml-0 w-full flex text-sm">
+      <div className="ml-0 flex text-sm">
         <Link href=""
           className={`
-            hover:bg-[#FFAC0A] transition py-4 menu-button
+            hover:bg-[#FFAC0A] transition py-4 menu-button w-28
             ${menuVisible && 'bg-[#FFAC0A]'}
           `}
           onMouseOver={() => {
@@ -276,26 +276,22 @@ const HeaderItems = ({ categories, setHoveredCate, menuRef, setMenuVisible, menu
         >
           <div className="flex">
             <Menu size="20" className="inline-block mr-2" />
-            <p>
-              Danh mục
-            </p>
+            Danh mục
           </div>
         </Link>
-        <span className="pl-2"></span>
         {
           subCategories.map((subcate) =>
-            <>
-              <span className="pl-2"></span>
-              <Link href={`/${subcate.slug}`}
-                key={subcate.id}
-                className={`
-                hover:bg-[#FFAC0A] transition py-4 sm:hidden md:block
+
+            <Link href={`/${subcate.slug}`}
+              key={subcate.id}
+              className={`
+                hover:bg-[#FFAC0A] transition py-4 px-2 sm:hidden md:block
                 text-center
               `}
-              >
-                {subcate.name}
-              </Link>
-            </>
+            >
+              {subcate.name}
+            </Link>
+
           )}
       </div>
     </div>

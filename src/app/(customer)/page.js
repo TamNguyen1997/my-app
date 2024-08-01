@@ -69,10 +69,10 @@ const Introduction = () => {
         </div>
 
         <div className="flex gap-5">
-          <img src="/brand/partner-10.png" alt="Rubbermaid"></img>
-          <img src="/brand/partner-20.png" alt="Ghibli"></img>
-          <img src="/brand/partner-30.png" alt="Moerman"></img>
-          <img src="/brand/partner-40.png" alt="Mapa"></img>
+          <img src="/brand/Rubbermaid.png" alt="Rubbermaid"></img>
+          <img src="/brand/Logo-Ghibli.png" alt="Ghibli"></img>
+          <img src="/brand/Logo-Moerman.png" alt="Moerman"></img>
+          <img src="/brand/Logo-Mapa.png" alt="Mapa"></img>
         </div>
       </div>
     </div>)

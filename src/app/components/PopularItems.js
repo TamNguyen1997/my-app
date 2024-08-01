@@ -30,28 +30,39 @@ const brandDescription = {
   "RUBBERMAID": {
     logo: "/brand/Rubbermaid.png",
     slug: "thuong-hieu-rubbermaid",
-    description: `Rubbermaid (Newell Brands) thành lập năm 1920 tại Hoa Kỳ, đi đầu trong các sản phẩm gia dụng và công nghiệp làm từ nhựa, dụng cụ vệ sinh gia đình và công nghiệp chất lượng cao.`
+    description: `Newell Rubbermaid, thành lập năm 1903 tại Thành phố Atlanta, tiểu bang Georgia, Hoa Kỳ. Thương hiệu Rubbermaid Commercial Products, 
+    tiên phong trong các giải pháp vệ sinh, tạo ra các sản phẩm ưu việt, được người dùng tin tưởng lựa chọn.`
   },
   "MAPA": {
     logo: "/brand/Logo-Mapa.png",
     slug: "thuong-hieu-mapa",
-    description: "MAPA là nhà sản xuất găng tay bảo hộ. Định hướng tầm nhìn & sứ mệnh của nhà sản xuất là đảm bảo chất lượng, luôn đổi mới thay công nghệ để sản phẩm đạt hiệu quả sử dụng tốt nhất."
+    description: `Từ khi chiếc găng tay nhung đầu tiên được sản xuất năm 1957, 
+    lịch sử của Mapa Professional luôn định hướng với một tầm nhìn: bảo vệ sức khỏe nhân viên, đảm bảo môi trường làm việc sạch sẽ, an toàn & lành mạnh.`
+  },
+  "KLEEN-TEX": {
+    logo: "/brand/Logo-Mapa.png",
+    slug: "thuong-hieu-mapa",
+    description: `Hơn 50 năm phát triển, Kleen-Tex cung cấp loạt giải pháp về thảm, mang đến trải nghiệm tuyệt vời trong từng bước chân. 
+    Thảm trải lối ra vào, logo nhiều màu, chống mỏi hay bất kỳ loại thảm cho ngành công nghiệp.`
   },
   "MOERMAN": {
     logo: "/brand/Logo-Moerman.png",
     slug: "thuong-hieu-moerman",
-    description: `Moerman thành lập từ năm 1885 tại Bỉ - 
-    một trong bốn hãng sản xuất lưỡi gạt cao su chất lượng nhất thế giới.
-    Chuyên cung cấp các dụng cụ vệ sinh kính chuyên dụng, được đánh giá cao về chất lượng, hiệu quả và tính an toàn, 
-    được tin tưởng sử dụng rộng rãi tại nhiều quốc gia.`
+    description: `Được thành lập năm 1885 - suốt chiều dài lịch sử - đến nay dụng cụ vệ sinh sàn, 
+    kính Moerman vẫn được duy trì như thương hiệu nổi tiếng vốn có của nó. 
+    Moerman, dụng cụ vệ sinh kính nổi tiếng toàn cầu.`
+  },
+  "KIMBERLY-CLARK PROFESSIONAL": {
+    logo: "/brand/Logo-Moerman.png",
+    slug: "thuong-hieu-moerman",
+    description: `Kimberly-Clark Corporation - tập đoàn chuyên sản xuất hàng hóa tiêu dùng, đặc biệt là các sản phẩm về Giấy. 
+    Thành lập năm 1872 với hơn 140 năm hoạt động, khăn giấy cao cấp Kimberly-Clark luôn là tiện ích cho mọi gia đình.`
   },
   "GHIBLI & WIRBEL": {
     logo: "/brand/Logo-Ghibli.png",
     slug: "thuong-hieu-ghibli",
-    description: `Ghibli & Wirbel - thành lập năm 1968, chuyên cung cấp máy móc, thiết bị làm sạch tiên tiến từ Italy. 
-    Đa dạng các dòng máy hiện đại, đáp ứng mọi không gian, từ gia đình đến nhà máy, xưởng sản xuất. 
-    Sở hữu các công nghệ và tính năng độc quyền, nâng cấp không gian tại doanh nghiệp.
-    Gồm các loại máy: hút bụi, chà sàn, đánh bóng, quét rác, giặt thảm.`
+    description: `Ghibli & Wirbel, nhà sản xuất thiết bị làm sạch thành lập năm 1968 tại Ý. 
+    Với hơn 50 năm kinh nghiệm, Ghibli & Wirbel giờ đây đã là Công ty hàng đầu trong lĩnh vực máy móc làm vệ sinh tại Châu Âu.`
 
   }
 }
@@ -106,12 +117,18 @@ export default function PopularItems() {
 
   return (
     <div className="flex flex-col gap-11">
-      <div>
-        <ProductCards category="SẢN PHẨM NỔI BẬT" products={products} />
-      </div>
+      <ProductCards category="SẢN PHẨM NỔI BẬT" products={products} />
 
       <div>
-        <div className="bg-black grid grid-cols-4">
+        <div className="bg-black grid lg:grid-cols-6 sm:grid-cols-3">
+          <Button radius="none"
+            onClick={() => {
+              setSelectedBrand("GHIBLI & WIRBEL")
+              setBrandProducts(ghibliProducts)
+            }}
+            className={`${getSelectedColor("GHIBLI & WIRBEL")} text-white text-medium font-bold border-r hover:bg-slate-800`}>
+            GHIBLI & WIRBEL
+          </Button>
           <Button radius="none"
             onClick={() => {
               setSelectedBrand("RUBBERMAID")
@@ -119,6 +136,14 @@ export default function PopularItems() {
             }}
             className={`${getSelectedColor("RUBBERMAID")} text-white text-medium font-bold hover:bg-slate-800 border-r border-white`}>
             RUBBERMAID
+          </Button>
+          <Button radius="none"
+            onClick={() => {
+              setSelectedBrand("KIMBERLY-CLARK PROFESSIONAL")
+              setBrandProducts(rubberMaidProducts)
+            }}
+            className={`${getSelectedColor("KIMBERLY-CLARK PROFESSIONAL")} text-white text-medium font-bold hover:bg-slate-800 border-r border-white`}>
+            KIMBERLY-CLARK
           </Button>
           <Button radius="none"
             onClick={() => {
@@ -130,19 +155,19 @@ export default function PopularItems() {
           </Button>
           <Button radius="none"
             onClick={() => {
+              setSelectedBrand("KLEEN-TEX")
+              setBrandProducts(moermanProducts)
+            }}
+            className={`${getSelectedColor("KLEEN-TEX")} text-white text-medium font-bold hover:bg-slate-800 border-r border-white`}>
+            KLEEN-TEX
+          </Button>
+          <Button radius="none"
+            onClick={() => {
               setSelectedBrand("MAPA")
               setBrandProducts(mapaProducts)
             }}
             className={`${getSelectedColor("MAPA")} text-white text-medium font-bold hover:bg-slate-800 border-r border-white`}>
             MAPA
-          </Button>
-          <Button radius="none"
-            onClick={() => {
-              setSelectedBrand("GHIBLI & WIRBEL")
-              setBrandProducts(ghibliProducts)
-            }}
-            className={`${getSelectedColor("GHIBLI & WIRBEL")} text-white text-medium font-bold hover:bg-slate-800`}>
-            GHIBLI & WIRBEL
           </Button>
         </div>
 
@@ -237,19 +262,20 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
 
   return (<>
     <div className="lg:grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-6">
-      <div className="p-2 col-span-2">
-        <div className="bg-[#ffd300] shadow-lg rounded-md pt-9 min-h-[300px]">
-          <div className="flex items-center mx-auto md:max-w-[340px] md:h-[120px] lg:max-w-2/3 lg:h-[120px] p-5 pt-0">
+      <div className="pt-2 col-span-2">
+        <div className="bg-[#ffd300] shadow-lg rounded-md">
+          <div className="flex mx-auto">
             {
               brandDescription[selectedBrand] && brandDescription[selectedBrand].logo ?
                 <img
+                  width={250}
                   className="mx-auto max-h-full"
                   src={brandDescription[selectedBrand].logo}
                 /> : null
             }
           </div>
 
-          <div className="px-10 font-bold text-justify h-[100px] overflow-auto">
+          <div className="px-5 font-bold text-justify h-[100px] overflow-auto scrollbar-hide">
             {
               brandDescription[selectedBrand] && brandDescription[selectedBrand].description
             }

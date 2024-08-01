@@ -316,4 +316,65 @@ const PROVINCES = [
   }
 ]
 
-export { PROVINCES }
+const getToken = async () => {
+  const res = await fetch(`https://partner.viettelpost.vn/v2/user/Login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(
+      {
+        "USERNAME": "saoviet.webtest@gmail.com",
+        "PASSWORD": "Saoviet@123"
+      }
+    )
+  })
+
+  if (res.ok) {
+    return await res.json()
+  } else {
+    return null
+  }
+}
+
+const getShippingPrice = async (data) => {
+  const myHeaders = new Headers();
+  const token = await getToken()
+  if (!token.data?.token) {
+    throw new Error("Không thể lấy token")
+  }
+  myHeaders.append("Token", token.data.token);
+  myHeaders.append("Content-Type", "application/json");
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: JSON.stringify(data),
+  };
+
+  const res = await fetch("https://partner.viettelpost.vn/v2/order/getPrice", requestOptions);
+  const result = JSON.parse(await res.text());
+  return result;
+}
+
+const createOrder = async (data) => {
+  const token = await getToken()
+  if (!token.data?.token) {
+    throw new Error("Không thể lấy token")
+  }
+
+  const myHeaders = new Headers()
+  myHeaders.append("Token", token.data.token)
+  myHeaders.append("Content-Type", "application/json");
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: JSON.stringify(data),
+  };
+
+  const res = await fetch("https://partner.viettelpost.vn/v2/order/createOrder", requestOptions);
+  return JSON.parse(await res.text());
+}
+
+export { PROVINCES, getShippingPrice, createOrder }

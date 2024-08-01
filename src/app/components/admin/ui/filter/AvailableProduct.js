@@ -41,7 +41,6 @@ const AvailableProduct = ({ filterId, categories, brands, subCategories, selecte
 
   const getProduct = useCallback(() => {
     setLoadingState("loading")
-    console.log(page)
     fetch(`/api/filters/${filterId}/available-products?page=${page}&size=${rowsPerPage}`).then(res => res.json()).then(json => {
       setProduct(json.result)
       setTotal(json.total)

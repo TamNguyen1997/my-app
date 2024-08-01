@@ -52,7 +52,6 @@ const Cart = () => {
 
   const onSubmit = async (data) => {
     const createdOrder = await createOrder(data)
-    console.log(createdOrder)
     if (selected === "VIETQR") {
       const res = await fetch("/api/pay", {
         method: "POST", body: JSON.stringify({

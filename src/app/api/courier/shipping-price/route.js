@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/app/db';
+import { getShippingPrice } from '@/lib/courier';
 
 export async function POST(req) {
     try {
@@ -41,18 +42,14 @@ export async function POST(req) {
             "LIST_ITEM": listItem
         }
 
-        const myHeaders = new Headers();
-        myHeaders.append("Token", "eyJhbGciOiJFUzI1NiJ9.eyJVc2VySWQiOjE0NzQ1MDU1LCJGcm9tU291cmNlIjo1LCJUb2tlbiI6IkUzS0xWM0FKT1NXTSIsImV4cCI6MTcyMjUwNTQ2MSwiUGFydG5lciI6MTQ3NDUwNTV9.yncK9j0bxchwGPpYruIqQ9cGfqL2iIcLUE5vC5ROugFqnGQ2nMMAPR70RmE1EELR7WqCn8QJOr4Hsc-6FfapwA");
-        myHeaders.append("Content-Type", "application/json");
-
-        const result = await callApi(data);
+        const result = await getShippingPrice(data);
 
         if (result.status == 200) {
             return NextResponse.json(result.data, { status: 200 })
         }
 
         data["ORDER_SERVICE"] = process.env.VIETTEL_POST_ORDER_SERVICE_RETRY;
-        const resultRetry = await callApi(data)
+        const resultRetry = await getShippingPrice(data)
 
         if (resultRetry.status == 200) {
             return NextResponse.json(result.data, { status: 200 })
@@ -62,21 +59,5 @@ export async function POST(req) {
     } catch (e) {
         return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
     }
-}
-
-async function callApi(data) {
-    const myHeaders = new Headers();
-    myHeaders.append("Token", "eyJhbGciOiJFUzI1NiJ9.eyJVc2VySWQiOjE0NzQ1MDU1LCJGcm9tU291cmNlIjo1LCJUb2tlbiI6IkUzS0xWM0FKT1NXTSIsImV4cCI6MTcyMjUwNTQ2MSwiUGFydG5lciI6MTQ3NDUwNTV9.yncK9j0bxchwGPpYruIqQ9cGfqL2iIcLUE5vC5ROugFqnGQ2nMMAPR70RmE1EELR7WqCn8QJOr4Hsc-6FfapwA");
-    myHeaders.append("Content-Type", "application/json");
-
-    const requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: JSON.stringify(data),
-    };
-
-    const res = await fetch("https://partner.viettelpost.vn/v2/order/getPrice", requestOptions);
-    const result = JSON.parse(await res.text());
-    return result;
 }
 

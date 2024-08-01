@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/app/db';
-import { v4 } from 'uuid';
+import { createOrder } from '@/lib/courier';
 
 export async function POST(req) {
   try {
@@ -63,18 +63,7 @@ export async function POST(req) {
         "LIST_ITEM": listItem
       }
 
-      const myHeaders = new Headers();
-      myHeaders.append("Token", "eyJhbGciOiJFUzI1NiJ9.eyJVc2VySWQiOjE0NzQ1MDU1LCJGcm9tU291cmNlIjo1LCJUb2tlbiI6IkUzS0xWM0FKT1NXTSIsImV4cCI6MTcyMjUwNTQ2MSwiUGFydG5lciI6MTQ3NDUwNTV9.yncK9j0bxchwGPpYruIqQ9cGfqL2iIcLUE5vC5ROugFqnGQ2nMMAPR70RmE1EELR7WqCn8QJOr4Hsc-6FfapwA");
-      myHeaders.append("Content-Type", "application/json");
-
-      const requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: JSON.stringify(data),
-      };
-
-      const res = await fetch("https://partner.viettelpost.vn/v2/order/createOrder", requestOptions);
-      const result = JSON.parse(await res.text());
+      const result = await createOrder(data);
       if (result.status == 200) {
         await db.order.update({
           where: {

@@ -16,7 +16,7 @@ export async function GET(req) {
   }
 }
 
-export async function GET(req) {
+export async function POST(req) {
 
   try {
     return NextResponse.json(await db.brand.create({ data: await req.json() }))

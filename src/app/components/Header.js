@@ -17,18 +17,10 @@ const Header = () => {
     name: "Thương hiệu",
     subcates: BRANDS
   };
-  const [categories, setCategories] = useState([
-    // brandCategory,
-    // ...[...Array(6)].map((_, index) => ({
-    //   id: index,
-    //   slug: `category-${index}`,
-    //   name: `Category ${index}`,
-    //   subcates: BRANDS
-    // }))
-  ]);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    fetch('/api/categories/?includeSubCate=true&size=7&showOnHeader=true').then(res => res.json()).then(json => setCategories([brandCategory, ...json.result]));
+    fetch('/api/categories/?includeSubCate=true&size=7&type=CATE').then(res => res.json()).then(json => setCategories([brandCategory, ...json.result]));
   }, []);
 
   const { cartdetails } = useContext(CartContext);
@@ -94,7 +86,6 @@ const Header = () => {
                   setHoveredCate={setHoveredCate}
                   menuRef={menuRef}
                   setMenuVisible={setMenuVisible}
-                  categories={categories}
                   menuVisible={menuVisible}
                 />
               </div>
@@ -203,20 +194,11 @@ const BRANDS = [
 
 ];
 
-const HeaderItems = ({ categories, setHoveredCate, menuRef, setMenuVisible, menuVisible }) => {
-  // const [categories, setCategories] = useState([]);
-
-  // useEffect(() => {
-  //   fetch('/api/categories/?includeSubCate=true&size=7&showOnHeader=true').then(res => res.json()).then(json => setCategories(json.result))
-  // }, [])
-
+const HeaderItems = ({ setHoveredCate, menuRef, setMenuVisible, menuVisible }) => {
   const [subCategories, setSubCategories] = useState([]);
-
   useEffect(() => {
-    setSubCategories(
-      (categories || []).filter(category => category.id !== "-1").reduce((acc, category) => [...acc, ...(category?.subcates || [])], [])?.filter((item, index, arr) => arr.findIndex(_i => _i.id === item.id) === index)
-    )
-  }, [categories]);
+    fetch('/api/categories/?type=SUB_CATE&size=7&showOnHeader=true').then(res => res.json()).then(json => setSubCategories(json.result))
+  }, [])
 
   const headerItemsRef = useRef();
 

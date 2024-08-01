@@ -200,8 +200,6 @@ const Category = () => {
             <TableHeader>
               <TableColumn key="name" textValue="name">Tên</TableColumn>
               <TableColumn key="slug" textValue="slug">Slug</TableColumn>
-              <TableColumn key="highlight" textValue="highlight">Nổi bật</TableColumn>
-              <TableColumn key="showOnHeader" textValue="showOnHeader">Hiện trên header</TableColumn>
               <TableColumn key="actions" textValue="actions"></TableColumn>
             </TableHeader>
             <TableBody
@@ -249,7 +247,11 @@ const Category = () => {
                       type="text"
                       label="Slug"
                       value={selectedCate.slug}
-                      labelPlacement="outside" isRequired disabled />
+                      onValueChange={(value) => setSelectedCate(Object.assign(
+                        {},
+                        selectedCate,
+                        { slug: slugify(value, { locale: 'vi' }).toLowerCase() }))}
+                      labelPlacement="outside" isRequired />
                     <div className="grid grid-cols-2">
                       <Switch defaultSelected={selectedCate.highlight} onValueChange={(value) => setSelectedCate(Object.assign(
                         {},
@@ -269,7 +271,7 @@ const Category = () => {
                         selectedCate.imageId ?
                           <img
                             className="w-full h-full"
-                            src={`${process.env.NEXT_PUBLIC_FILE_PATH + selectedCate?.image.path}`}
+                            src={`${process.env.NEXT_PUBLIC_FILE_PATH + selectedCate?.image?.path}`}
                           />
                           : <></>
                       }
@@ -417,10 +419,27 @@ const SubCategory = ({ categories }) => {
     )
   }
 
+  const quickUpdate = async (category, value) => {
+    const res = await fetch(`/api/categories/${category.id}`, { method: "PUT", body: JSON.stringify(value) })
+    if (res.ok) {
+      toast.success("Đã cập nhật")
+    } else {
+      toast.error("Không thể cập nhật")
+    }
+  }
+
   const renderCell = useCallback((subCategory, columnKey) => {
     const cellValue = subCategory[columnKey]
 
     switch (columnKey) {
+      case "highlight":
+        return <div className="relative flex items-center">
+          <Switch defaultSelected={subCategory.highlight} onValueChange={(value) => quickUpdate(subCategory, { highlight: value })}></Switch>
+        </div>
+      case "showOnHeader":
+        return <div className="relative flex items-center">
+          <Switch defaultSelected={subCategory.showOnHeader} onValueChange={(value) => quickUpdate(subCategory, { showOnHeader: value })}></Switch>
+        </div>
       case "actions":
         return (
           <div className="relative flex items-center gap-2">
@@ -488,6 +507,8 @@ const SubCategory = ({ categories }) => {
             <TableHeader>
               <TableColumn key="name" textValue="name">Tên</TableColumn>
               <TableColumn key="slug" textValue="slug">Slug</TableColumn>
+              <TableColumn key="highlight" textValue="highlight">Nổi bật</TableColumn>
+              <TableColumn key="showOnHeader" textValue="showOnHeader">Hiện trên header</TableColumn>
               <TableColumn key="actions" textValue="actions"></TableColumn>
             </TableHeader>
             <TableBody
@@ -527,7 +548,11 @@ const SubCategory = ({ categories }) => {
                       type="text"
                       label="Slug"
                       value={selectedSubCate.slug}
-                      labelPlacement="outside" isRequired disabled />
+                      onValueChange={(value) => setSelectedSubCate(Object.assign(
+                        {},
+                        selectedSubCate,
+                        { slug: slugify(value, { locale: 'vi' }).toLowerCase() }))}
+                      labelPlacement="outside" isRequired />
                     <Select
                       label="Category"
                       labelPlacement="outside"

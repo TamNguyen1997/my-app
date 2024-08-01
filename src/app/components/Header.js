@@ -42,8 +42,8 @@ const Header = () => {
               <img
                 src="/saoviet.png"
                 alt="favicon"
-                height={63}
-                width={165}
+                height={80}
+                width={200}
                 className="bg-black"
               />
             </Link>

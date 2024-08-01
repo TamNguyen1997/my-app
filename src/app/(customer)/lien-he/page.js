@@ -75,7 +75,7 @@ export default function Home() {
               <iframe className="w-full h-[232px] rounded-lg" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.452606546126!2d106.67820871480082!3d10.776605192321416!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x5fb3760076c1568a!2zQ8OUTkcgVFkgVE5ISCBUSMavxqBORyBN4bqgSSBE4buKQ0ggVuG7pCBW4buGIFNJTkggU0FPIFZJ4buGVA!5e0!3m2!1svi!2s!4v1618452841951!5m2!1svi!2s"></iframe>
             </div>
           </div>
-          <div className="p-4 lg:p-12 bg-[#ffd300] rounded-lg">
+          <div className="p-4 lg:p-12 bg-[#FFD400] rounded-lg">
             <p className="text-[16px] mt-2 mb-3 text-center font-bold">LIÊN HỆ</p>
             <span>
               Sao Việt rất vui vì được tiếp nhận liên hệ của bạn. Có bất cứ điều gì cần phản hồi/giải đáp, gửi ngay cho chúng mình bên dưới nhé!

@@ -28,7 +28,7 @@ export default ({ noBorder = false, item, containerClass = "lg:grid-cols-[160px_
         <div
           className={`${textClass}`}
         >
-          <p className="text-xs font-bold text-[#153f17] truncate line-clamp-2 whitespace-normal border-l-3 border-[#ffd300] pl-2 mb-2 blog-category">
+          <p className="text-xs font-bold text-[#153f17] truncate line-clamp-2 whitespace-normal border-l-3 border-[#FFD400] pl-2 mb-2 blog-category">
             {blogCategories[item.blogCategory].title}
           </p>
           <p className="text-sm font-bold text-[#191919] leading-normal truncate line-clamp-2 whitespace-normal hover:text-[#bb9051] transition mb-2 blog-title">{item.title}</p>

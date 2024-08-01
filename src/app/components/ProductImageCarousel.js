@@ -75,7 +75,7 @@ export default ({ items }) => {
 					[&_button]:!border-[#e3e3e3]
 					[&_button]:p-1
 					[&_button_img]:object-cover
-					[&>.react-multi-carousel-dot--active>button]:!bg-[#ffd300]
+					[&>.react-multi-carousel-dot--active>button]:!bg-[#FFD400]
 				`}
 				draggable={false}
 				swipeable

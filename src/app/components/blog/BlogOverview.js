@@ -73,7 +73,7 @@ const BlogOverview = ({ activeCategory, activeTag }) => {
                       text-black
                         text-[17px] font-semibold cursor-pointer relative pb-2 
                         after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-[0px] 
-                        after:bg-[#ffd300] after:h-[3px] after:transition-width
+                        after:bg-[#FFD400] after:h-[3px] after:transition-width
                         ${category.id === activeCategory && 'after:!w-[100%]'}
                       `}
                       key={category.id}
@@ -98,7 +98,7 @@ const BlogOverview = ({ activeCategory, activeTag }) => {
             <div className="w-full border border-[#ebebeb] mb-6"></div>
 
             <div className="mb-10" key={category.id}>
-              <div className="text-xl text-[#191919] leading-none font-bold uppercase border-l-4 border-[#ffd300] pl-3 mb-4">{category.title}</div>
+              <div className="text-xl text-[#191919] leading-none font-bold uppercase border-l-4 border-[#FFD400] pl-3 mb-4">{category.title}</div>
               <div className="flex flex-wrap">
                 {
                   category.tags?.map(tag => {
@@ -132,7 +132,7 @@ const BlogOverview = ({ activeCategory, activeTag }) => {
 
               <Link
                 href=""
-                className="flex justify-center items-center text-[#153f17] font-semibold w-[181px] h-[43px] rounded-[30px] border border-[#ffd300] hover:bg-[#ccefdc] transition mx-auto"
+                className="flex justify-center items-center text-[#153f17] font-semibold w-[181px] h-[43px] rounded-[30px] border border-[#FFD400] hover:bg-[#ccefdc] transition mx-auto"
               >
                 Xem tất cả
               </Link>

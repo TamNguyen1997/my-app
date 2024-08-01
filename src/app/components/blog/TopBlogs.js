@@ -3,7 +3,7 @@ import BlogItem from "@/components/blog/BlogItem";
 export default ({ items }) => {
 	return (
 		<>
-			<div className="text-lg text-[#191919] leading-none font-bold border-l-4 border-[#ffd300] pl-3 mb-4">Bài viết xem nhiều</div>
+			<div className="text-lg text-[#191919] leading-none font-bold border-l-4 border-[#FFD400] pl-3 mb-4">Bài viết xem nhiều</div>
 
 			<div className="space-y-3">
 				{

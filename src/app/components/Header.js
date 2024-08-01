@@ -50,7 +50,7 @@ const Header = () => {
           </div>
           <div className={`
             w-[80%] rounded-tl-[50px] rounded-bl-[50px]
-            bg-[#ffd300]
+            bg-[#FFD400]
           `}>
             <div className="pl-9">
               <div className="p-3 flex gap-7">
@@ -281,8 +281,8 @@ const HeaderItems = ({ categories, setHoveredCate, menuRef, setMenuVisible, menu
             <Link href={`/${subcate.slug}`}
               key={subcate.id}
               className={`
-                hover:bg-[#FFAC0A] transition py-4 px-2 sm:hidden md:block
-                text-center
+                hover:bg-[#FFAC0A] transition py-4 px-3 sm:hidden md:block
+                text-center capitalize
               `}
             >
               {subcate.name}

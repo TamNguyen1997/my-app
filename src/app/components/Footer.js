@@ -12,24 +12,24 @@ const Footer = () => {
             <p className="font-bold">CÔNG TY TNHH TMDV VỆ SINH SAO VIỆT</p>
             <div className="flex gap-2">
               <div>
-                <MapPin className="text-[#ffd300]" size="24" />
+                <MapPin className="text-[#FFD400]" size="24" />
               </div>
               <p className="w-">666/62 đường 3/2, phường 14, quận 10, TP Hồ Chí Minh</p>
             </div>
             <div className="flex gap-2">
-              <NotebookText className="text-[#ffd300]" size="24" />
+              <NotebookText className="text-[#FFD400]" size="24" />
               <p>MST: 0304014195</p>
             </div>
             <div className="flex gap-2">
-              <Mail className="text-[#ffd300]" size="24" />
+              <Mail className="text-[#FFD400]" size="24" />
               <p>Email: info@saovietco.vn</p>
             </div>
             <div className="flex gap-2">
-              <Phone className="text-[#ffd300]" size="24" />
+              <Phone className="text-[#FFD400]" size="24" />
               <p>Tel: 028 3863 9456 – 028 3863 9457</p>
             </div>
             <div className="flex gap-2">
-              <PhoneCall className="text-[#ffd300]" size="24" />
+              <PhoneCall className="text-[#FFD400]" size="24" />
               <p>Hotline: 090 380 2979</p>
             </div>
           </div>
@@ -106,7 +106,7 @@ const Footer = () => {
           </Link>
           <p className="font-bold p-3 w-full">FANPAGE CHÍNH THỨC</p>
           <iframe
-            className="border-[#ffd300] border h-[130px] rounded-lg w-[300px]"
+            className="border-[#FFD400] border h-[130px] rounded-lg w-[300px]"
             data-testid="fb:page Facebook Social Plugin"
             title="fb:page Facebook Social Plugin"
             allowtransparency="true"

@@ -200,7 +200,7 @@ export default function PopularItems() {
 
 const ProductCards = ({ category, products, redirect, banner }) => {
   const CategoryDisplay = () => (<>
-    <div className="bg-[#ffd300] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-1/3 h-[50px] m-auto shadow-md">
+    <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-1/3 h-[50px] m-auto shadow-md">
       <div className="m-auto text-black font-bold text-xl">
         {category || products[0].category?.name}
       </div>
@@ -267,7 +267,7 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
   return (<>
     <div className="lg:grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-6">
       <div className="pt-2 col-span-2">
-        <div className="bg-[#ffd300] shadow-lg rounded-md">
+        <div className="bg-[#FFD400] shadow-lg rounded-md">
           <div className="flex mx-auto">
             {
               brandDescription[selectedBrand] && brandDescription[selectedBrand].logo ?

@@ -326,7 +326,7 @@ enum image_type {
 
 model category {
   id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name         String   @unique
+  name         String
   slug         String   @default(dbgenerated("gen_random_uuid()"))
   highlight    Boolean  @default(false)
   showOnHeader Boolean  @default(false) @map("show_on_header")

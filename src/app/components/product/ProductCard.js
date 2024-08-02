@@ -19,7 +19,7 @@ const ProductCard = ({ product }) => {
           </div>
         </Link>
       </div>
-      <Link href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`} className="text-black">
+      <Link href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`} className="text-black h-[40px]">
         <div className="grow pt-2">
           <p className="text-sm text-gray-700 line-clamp-2">
             {product.name}

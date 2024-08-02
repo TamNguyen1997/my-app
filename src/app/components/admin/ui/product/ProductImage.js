@@ -1,8 +1,8 @@
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react"
 import ImagePicker from "../ImagePicker"
-import ProductImageCarousel from "@/components/ProductImageCarousel"
 import { useEffect, useState } from "react"
 import { ToastContainer, toast } from 'react-toastify';
+import { X } from "lucide-react";
 
 const ProductImage = ({ product }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
@@ -42,8 +42,16 @@ const ProductImage = ({ product }) => {
   return (
     <>
       <ToastContainer />
-      <div className="flex flex-col gap-3 w-2/3 h-2/3 m-auto">
-        <ProductImageCarousel items={images.map(item => item.path) || []} />
+      <div className="gap-3 p-5">
+        <div className="flex flex-wrap gap-2">
+          {
+            images.map((item, i) => <ImageItem key={i}
+              deleteItem={(item) => {
+                setImages(images.filter(img => img.id != item.id))
+              }}
+              onClick={() => { }} img={item} />)
+          }
+        </div>
         <div className="flex flex-row gap-2 px-3 py-4 justify-end">
           <Button color="primary" onClick={onOpen} className="w-24">Chọn ảnh</Button>
           <Button color="primary" onClick={onSave} className="w-24">Lưu</Button>
@@ -71,6 +79,28 @@ const ProductImage = ({ product }) => {
       </Modal>
     </>
   )
+}
+
+const ImageItem = ({ img, onClick, deleteItem }) => {
+  return <>
+    <div className={`
+                  w-40 h-40
+                  group relative flex flex-col rounded hover:opacity-70 cursor-pointer
+                  shadow-[0px_2px_10px_rgba(0,0,0,0.15)] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)]
+                  hover:scale-[1.02]
+                  transition duration-400
+                `}>
+      <img
+        src={`${process.env.NEXT_PUBLIC_FILE_PATH + img.path}`}
+        alt={img.alt}
+        className="aspect-auto object-cover rounded-t shrink-0"
+        onClick={() => onClick(img)} />
+
+      <span className="absolute -top-2.5 -right-2.5 hidden group-hover:block 
+      animate-vote bg-red-500 rounded-full hover:bg-red-700"
+        onClick={() => deleteItem(img)}><X color="#FFFFFF" /></span>
+    </div>
+  </>
 }
 
 export default ProductImage

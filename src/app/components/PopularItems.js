@@ -201,7 +201,6 @@ export default function PopularItems() {
   );
 }
 
-
 const ProductCards = ({ category, products, redirect, banner }) => {
   const CategoryDisplay = () => (<>
     <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-2/3 md:w-1/3 h-[50px] m-auto shadow-md">

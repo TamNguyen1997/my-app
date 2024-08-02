@@ -286,7 +286,7 @@ const Cart = () => {
 
               <div className="flex flex-wrap gap-5">
                 <Checkbox radius="full" value="COD" isSelected={selected === "COD"} onValueChange={() => setSelected("COD")}>Thanh toán khi giao hàng (COD)</Checkbox>
-                <Checkbox radius="full" value="VIETQR" isSelected={selected === "VIETQR"} onValueChange={() => setSelected("VIETQR")}>Chuyển khoản VietQR</Checkbox>
+                <Checkbox radius="full" value="VIETQR" isSelected={selected === "VIETQR"} onValueChange={() => setSelected("VIETQR")}>Chuyển khoản</Checkbox>
               </div>
             </div>
             {

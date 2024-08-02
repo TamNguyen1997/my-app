@@ -14,6 +14,18 @@ export async function DELETE(req, { params }) {
   }
 }
 
+export async function GET(req, { params }) {
+  if (!params.slug) {
+    return NextResponse.json({ message: `Resource not found ${params.slug}` }, { status: 400 })
+  }
+
+  try {
+    return NextResponse.json(await db.category.findFirst({ where: { slug: params.slug } }))
+  } catch (e) {
+    return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
+  }
+}
+
 export async function PUT(req, { params }) {
   if (!params.slug) {
     return NextResponse.json({ message: `Resource not found ${params.slug}` }, { status: 400 })

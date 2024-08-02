@@ -35,6 +35,7 @@ export async function GET(req) {
     })
 
   } catch (e) {
+    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }
@@ -64,7 +65,7 @@ export async function POST(req) {
             create: products.map(item => {
               return {
                 productId: item.productId,
-                quantity: parseInt(item.quantity),
+                quantity: parseInt(item.quantity || "1"),
                 saleDetailId: item.saleDetailId
               }
             })

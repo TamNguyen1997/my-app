@@ -1,7 +1,6 @@
 "use client"
 
-import { Button, Spinner } from "@nextui-org/react";
-import Link from "next/link";
+import { Button, Link, Spinner } from "@nextui-org/react";
 import { useEffect, useState } from "react"
 import Carousel from "react-multi-carousel"
 import "react-multi-carousel/lib/styles.css"
@@ -185,7 +184,7 @@ export default function PopularItems() {
         Object.keys(highlightProductsFromCates).length ? highlightCates.filter(cate => highlightProductsFromCates[cate.slug]).map((cate, i) => {
           return <div key={i}>
             <ProductCards banner={cate.image?.path} products={highlightProductsFromCates[cate.slug]} />
-            <Link
+            <Link isExternal
               href={`/${cate.slug}`}
               className="flex justify-center items-center text-[#153f17] font-semibold w-[181px] 
               h-[43px] rounded-[30px] border border-[#FFD400] hover:bg-[#ccefdc] transition mx-auto"
@@ -209,7 +208,7 @@ const ProductCards = ({ category, products, redirect, banner }) => {
       </div>
       {
         redirect ?
-          <Link
+          <Link isExternal
             href={redirect}
             className="flex justify-center items-center text-[#153f17] font-semibold w-[181px] 
               h-[43px] rounded-[30px] border border-[#FFD400] hover:bg-[#ccefdc] transition mx-auto"

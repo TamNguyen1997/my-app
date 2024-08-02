@@ -118,7 +118,7 @@ const ImageCms = () => {
                         Lưu
                       </Button>
                       <Button color="danger" variant="light" onPress={onClose}>
-                        Close
+                        Đóng
                       </Button>
                     </ModalFooter>
                   </>

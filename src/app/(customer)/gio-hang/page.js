@@ -1,7 +1,7 @@
 "use client"
 import ProductCard from "@/app/components/product/ProductCard";
 import { CartContext } from "@/context/CartProvider";
-import { Button, Checkbox, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Textarea, useDisclosure } from "@nextui-org/react";
+import { Button, Checkbox, Input, Link, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Textarea, useDisclosure } from "@nextui-org/react";
 import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form"
 import { ToastContainer, toast } from 'react-toastify';
@@ -122,7 +122,7 @@ const Cart = () => {
                   Xác nhận chuyển khoản thành công
                 </Button>
                 <Button color="danger" variant="light" onPress={onClose}>
-                  Close
+                  Đóng
                 </Button>
               </ModalFooter>
             </>
@@ -316,12 +316,12 @@ const Cart = () => {
 
             <div className="flex items-center justify-center gap-2">
               <span className="text-sm font-normal text-gray-500 dark:text-gray-400"> hoặc </span>
-              <a href="/" title="" className="inline-flex items-center gap-2 text-sm font-medium text-primary-700 underline hover:no-underline dark:text-primary-500">
+              <Link isExternal href="/" title="" className="inline-flex items-center gap-2 text-sm font-medium text-primary-700 underline hover:no-underline dark:text-primary-500">
                 Tiếp tục mua hàng
                 <svg className="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 12H5m14 0-4 4m4-4-4-4" />
                 </svg>
-              </a>
+              </Link>
             </div>
           </div>
         </form>

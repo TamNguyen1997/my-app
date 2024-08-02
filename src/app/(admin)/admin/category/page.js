@@ -291,7 +291,7 @@ const Category = () => {
                       Lưu
                     </Button>
                     <Button color="danger" variant="light" onPress={onClose}>
-                      Close
+                      Đóng
                     </Button>
                   </ModalFooter>
                 </>
@@ -316,7 +316,7 @@ const Category = () => {
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
-                  Close
+                  Đóng
                 </Button>
               </ModalFooter>
             </>
@@ -605,7 +605,7 @@ const SubCategory = ({ categories }) => {
                       Lưu
                     </Button>
                     <Button color="danger" variant="light" onPress={onClose}>
-                      Close
+                      Đóng
                     </Button>
                   </ModalFooter>
                 </>

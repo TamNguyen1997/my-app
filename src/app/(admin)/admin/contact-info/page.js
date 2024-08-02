@@ -180,7 +180,7 @@ const ContactInfoCms = () => {
                 </ModalBody>
                 <ModalFooter>
                   <Button color="danger" variant="light" onPress={onClose}>
-                    Close
+                    Đóng
                   </Button>
                 </ModalFooter>
               </>

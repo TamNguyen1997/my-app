@@ -332,7 +332,7 @@ const ComponentPartDetails = ({ productId, categories, subCategories }) => {
                     Lưu
                   </Button>
                   <Button color="danger" variant="light" onPress={onClose}>
-                    Close
+                    Đóng
                   </Button>
                 </ModalFooter>
               </>

@@ -1,6 +1,6 @@
 "use client"
 
-import { Button, Input, Spinner, Textarea } from "@nextui-org/react";
+import { Button, Input, Select, SelectItem, Spinner, Textarea } from "@nextui-org/react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
@@ -65,8 +65,8 @@ const Order = () => {
     <>
       <ToastContainer />
       <div className="flex py-3 gap-3">
-        <Button onClick={orderShipping} isDisabled={order.shippingId}>Tạo đơn vận chuyển Viettel Post</Button>
-        <Button isDisabled={order.shippingId}>Tạo đơn vận chuyển 24/7</Button>
+        <Button onClick={orderShipping} isDisabled={order.shippingId} color="primary">Tạo đơn vận chuyển Viettel Post</Button>
+        <Button isDisabled={order.shippingId} color="primary">Tạo đơn vận chuyển 24/7</Button>
       </div>
       <form >
         <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
@@ -135,6 +135,26 @@ const Order = () => {
               <Input label="Mã vận chuyển"
                 value={order.shippingId}
                 disabled />
+              <Select label="Trạng thái đơn hàng"
+                defaultSelectedKeys={new Set([order.shippingStatus || "WAITING"])}
+                onSelectionChange={async (value) => {
+                  const res = await fetch(`/api/order/${order.id}`, { method: "PUT", body: JSON.stringify({ shippingStatus: value.values().next().value }) })
+                  if (res.ok) {
+                    toast.success("Đã cập nhật")
+                  } else {
+                    toast.success("Không thể cập nhật")
+                  }
+                }}>
+                <SelectItem key="WAITING">
+                  Đang đợi giao hàng
+                </SelectItem>
+                <SelectItem key="SHIPPING">
+                  Đang giao hàng
+                </SelectItem>
+                <SelectItem key="SHIPPED">
+                  Đã giao hàng
+                </SelectItem>
+              </Select>
             </div>
           </div>
 

@@ -1,19 +1,20 @@
+import { Image } from '@nextui-org/react';
 import { useState } from 'react';
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 
 const responsive = {
     desktop: {
-      breakpoint: { max: 3000, min: 1024 },
-      items: 3
+        breakpoint: { max: 3000, min: 1024 },
+        items: 3
     },
     tablet: {
-      breakpoint: { max: 1024, min: 464 },
-      items: 2
+        breakpoint: { max: 1024, min: 464 },
+        items: 2
     },
     mobile: {
-      breakpoint: { max: 464, min: 0 },
-      items: 1
+        breakpoint: { max: 464, min: 0 },
+        items: 1
     }
 };
 
@@ -32,10 +33,10 @@ const AboutUsMilestone = () => {
                     className="text-3xl font-semibold bg-[linear-gradient(291.66deg,#713ff4_25.14%,#cd55ff_104.99%)] bg-clip-text mb-8"
                     style={{ WebkitTextFillColor: 'rgba(0,0,0,0)' }}
                 >
-                    Linimasa Perjalanan ELSA
+                    Lịch sử hình thành
                 </h2>
 
-                <Carousel
+                {/* <Carousel
                     responsive={responsive}
                     infinite
                     autoPlay
@@ -45,16 +46,22 @@ const AboutUsMilestone = () => {
                     {
                         images.map((image, i) => {
                             return <img
-                                key={i} 
+                                key={i}
                                 src={image}
-                                width="1280" 
-                                height="720" 
+                                width="1280"
+                                height="720"
                                 alt=""
                                 className="w-full h-[calc(100%_-_32px)] object-cover"
                             />
                         })
                     }
-                </Carousel>
+                </Carousel> */}
+
+                <Image
+                    width={800}
+                    height={600}
+                    src='/about-us/image.png'
+                />
             </div>
         </div>
     )

@@ -58,7 +58,7 @@ const SearchBar = () => {
         }
         value={condition.name}
         onValueChange={(value) => {
-          onConditionChange({ name: value });
+          onConditionChange({ name: value, slug: value });
           if (value.length > 2) onSearch();
         }}
         onKeyDown={(e) => {
@@ -66,7 +66,7 @@ const SearchBar = () => {
             window.location.replace(`/tim-kiem?key=${slugify(condition.name)}`)
           }
         }}
-        onClear={() => onConditionChange({ name: '' })}
+        onClear={() => onConditionChange({ name: '', slug: '' })}
       />
       {condition.name && condition.name.length > 2 && (
         <div className="w-[400px] bg-white shadow-lg rounded-lg absolute top-full left-0 mt-2 overflow-hidden z-50">
@@ -80,7 +80,7 @@ const SearchBar = () => {
                   <Link
                     key={category.id}
                     href={`/${category.slug}`}
-                    onClick={() => onConditionChange({ name: '' })}
+                    onClick={() => onConditionChange({ name: '', slug: '' })}
                   >
                     <div className="px-4 py-2 hover:bg-slate-50 cursor-pointer">
                       {category.name}
@@ -109,7 +109,7 @@ const SearchBar = () => {
                     <div key={product.id}>
                       <Link
                         href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.id}`}
-                        onClick={() => onConditionChange({ name: '' })}
+                        onClick={() => onConditionChange({ name: '', slug: '' })}
                       >
                         <div className="px-4 py-2 flex items-center gap-5 hover:bg-slate-50 cursor-pointer">
                           {

@@ -278,7 +278,7 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
   return (<>
     <div className="lg:grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-6">
       <div className="pt-2 col-span-2">
-        <div className="bg-[#FFD400] shadow-lg rounded-md">
+        <div className="bg-[#FFD400] shadow-lg rounded-md w-full">
           <div className="flex mx-auto">
             {
               brandDescription[selectedBrand] && brandDescription[selectedBrand].logo ?

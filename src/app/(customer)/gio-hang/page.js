@@ -324,13 +324,14 @@ const Cart = () => {
 
         <div className="xl:mt-8 xl:block sm:mt-8">
           <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">Sản phẩm tương tự</h3>
-          <div className="mt-6 grid grid-cols-3 gap-4 sm:mt-8">
+          <div className="mt-6 grid md:grid-cols-3 gap-4 sm:mt-8 grid-cols-2">
             {
               relatedProducts?.map((product, i) => {
                 return <div
                   key={i}
-                  className="space-y-6 overflow-hidden rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-                  <ProductCard product={product} />
+                  className="space-y-3 overflow-hidden rounded-lg border border-gray-200 bg-white p-3 
+                  shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                  <ProductCard product={product} width={200} height={200} />
                 </div>
               })
             }

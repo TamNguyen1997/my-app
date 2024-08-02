@@ -64,7 +64,7 @@ const Brand = ({ params, productFilter }) => {
     const hash = window.location.hash?.split('#')
 
     fetch(`/api/brands/${params}`).then(res => res.json()).then(setBrand)
-    await fetch(`/api/products/?active=true&page=1&size=1000&includeCate=true&brandId=${params}&${window.location.hash ? hash[1] : `filterId=${productFilter || ""}`}`).then(async res => {
+    await fetch(`/api/products/?active=true&page=1&size=100&includeCate=true&brandId=${params}&${window.location.hash ? hash[1] : `filterId=${productFilter || ""}`}`).then(async res => {
       if (res.ok) {
         const body = await res.json()
         setData(body.result)

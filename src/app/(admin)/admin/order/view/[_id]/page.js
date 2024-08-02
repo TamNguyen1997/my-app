@@ -57,9 +57,22 @@ const Order = () => {
     const res = await fetch(`/api/courier/create-order`, { method: "POST", body: JSON.stringify({ orderId: _id }) })
     if (res.ok) {
       toast.success("Đã tạo đơn Viettel Post")
+      quickUpdate({ shippingOrderCreated: true, shippingMethod: "VIETTEL_POST" })
       getOrder()
     } else {
       toast.error("Không thể tạo đơn Viettel Post")
+    }
+  }
+
+  const quickUpdate = async (value) => {
+    const res = await fetch(`/api/order/${order.id}`, {
+      method: "PUT",
+      body: JSON.stringify(value)
+    })
+    if (res.ok) {
+      toast.success("Đã cập nhật")
+    } else {
+      toast.error("Không thể cập nhật")
     }
   }
   return (
@@ -143,14 +156,7 @@ const Order = () => {
               <Select label="Trạng thái đơn hàng"
                 disallowEmptySelection
                 defaultSelectedKeys={new Set([order.shippingStatus || "WAITING"])}
-                onSelectionChange={async (value) => {
-                  const res = await fetch(`/api/order/${order.id}`, { method: "PUT", body: JSON.stringify({ shippingStatus: value.values().next().value }) })
-                  if (res.ok) {
-                    toast.success("Đã cập nhật")
-                  } else {
-                    toast.error("Không thể cập nhật")
-                  }
-                }}>
+                onSelectionChange={(value) => quickUpdate({ shippingStatus: value.values().next().value })}>
                 <SelectItem key="WAITING">
                   Đang đợi giao hàng
                 </SelectItem>
@@ -164,17 +170,7 @@ const Order = () => {
               <Select label="Đã tạo đơn vận chuyển"
                 disallowEmptySelection
                 selectedKeys={new Set([order.shippingOrderCreated ? "true" : "false"])}
-                onSelectionChange={async (value) => {
-                  const res = await fetch(`/api/order/${order.id}`, {
-                    method: "PUT",
-                    body: JSON.stringify({ shippingOrderCreated: value.values().next().value === "true" })
-                  })
-                  if (res.ok) {
-                    toast.success("Đã cập nhật")
-                  } else {
-                    toast.error("Không thể cập nhật")
-                  }
-                }}>
+                onSelectionChange={(value) => quickUpdate({ shippingOrderCreated: value.values().next().value === "true" })}>
                 <SelectItem key="true">
                   Đã tạo đơn vận chuyển
                 </SelectItem>

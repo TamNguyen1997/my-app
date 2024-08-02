@@ -91,7 +91,15 @@ const SaleDetail = ({ saleDetails, product }) => {
           min={1} max={999} />
         <div className="flex lg:flex-nowrap flex-wrap">
           <div className="pr-3 pb-3">
-            <Button color="primary" fullWidth isDisabled={!getPrice()}>Mua ngay <ShoppingCart /></Button>
+            <Button color="primary" fullWidth isDisabled={!getPrice()} onClick={() => {
+              addItemToCart({
+                quantity: quantity,
+                product: product,
+                saleDetail: selectedDetail,
+                secondarySaleDetail: selectedSecondaryDetail
+              })
+              window.location.replace("/gio-hang")
+            }}>Mua ngay <ShoppingCart /></Button>
           </div>
           <div className="pb-3">
             <Button color="primary" fullWidth

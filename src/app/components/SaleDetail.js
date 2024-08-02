@@ -55,7 +55,7 @@ const SaleDetail = ({ saleDetails, product }) => {
       <div className="flex flex-col gap-3">
         <div className="flex gap-2 flex-wrap">
           {
-            saleDetails.filter(item => !item.saleDetailId).map(detail => {
+            saleDetails.filter(item => !item.saleDetailId && item.value).map(detail => {
               return <div key={detail.id} className="flex flex-col gap-1">
                 {
                   detail.type === "COLOR" ?
@@ -82,7 +82,6 @@ const SaleDetail = ({ saleDetails, product }) => {
               </div>
             })
           }
-
         </div>
 
         <Input type="number" label="Số lượng"

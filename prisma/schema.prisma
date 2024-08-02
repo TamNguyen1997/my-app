@@ -100,7 +100,7 @@ model sale_detail {
   id        String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   product   product          @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId String           @map("product_id") @db.Uuid
-  value     String
+  value     String?
   price     Int?
   type      sale_detail_type @default(TEXT)
 

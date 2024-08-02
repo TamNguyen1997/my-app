@@ -164,7 +164,7 @@ const Cart = () => {
                         <div className="text-[16px] flex opacity-80 pt-1">
                           <div className="pr-3">
                             {
-                              detail.saleDetail ? detail.saleDetail.type === "COLOR" ?
+                              detail.saleDetail && detail.saleDetail.value ? detail.saleDetail.type === "COLOR" ?
                                 <div className={`rounded-full ${COLOR_VARIANT[detail.saleDetail.value]} w-5 h-5 border-[#e3e3e3] border`}></div> :
                                 detail.saleDetail.value : ""
                             }

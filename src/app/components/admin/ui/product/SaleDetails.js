@@ -96,7 +96,6 @@ const SecondarySaleDetails = ({ saleDetails, setSaleDetails, saleDetail }) => {
                         defaultValue={detail.value}
                         aria-label={detail.value}
                         onValueChange={value => setSaleDetails(handleDetailChange(saleDetails, detail.id, { value: value }))}
-                        isRequired
                       />
                       : <ColorSelect detail={detail} setDetails={setSaleDetails} details={saleDetails} />
                   }
@@ -183,7 +182,6 @@ const SaleDetails = ({ product }) => {
                           defaultValue={detail.value}
                           aria-label={detail.value}
                           onValueChange={value => setSaleDetails(handleDetailChange(saleDetails, detail.id, { value: value }))}
-                          isRequired
                         />
                         : <ColorSelect detail={detail} setDetails={setSaleDetails} details={saleDetails} />
                     }

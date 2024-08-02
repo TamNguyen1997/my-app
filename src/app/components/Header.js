@@ -1,6 +1,6 @@
 "use client";
 
-import { Phone, ShoppingCart, Menu, ChevronRight } from "lucide-react";
+import { ShoppingCart, Menu, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState, useContext, useRef } from "react";
 import SearchBar from "@/components/SearchBar";
@@ -20,7 +20,37 @@ const Header = () => {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    fetch('/api/categories/?includeSubCate=true&type=CATE').then(res => res.json()).then(json => setCategories([brandCategory, ...json.result]));
+    fetch('/api/categories/?includeSubCate=true&type=CATE').then(res => res.json()).then(json => setCategories([brandCategory, ...json.result,
+      {
+        id: "1000",
+        slug: "tin-tuc",
+        name: "Tin tức",
+        subcates: [
+        ]
+      },
+      {
+        id: "1001",
+        slug: "kien-thuc-hay",
+        name: "Kiến thức hay",
+        subcates: [
+          {
+            id: "1",
+            slug: "kien-thuc-hay/tu-dien-thuat-ngu",
+            name: "Từ điển thuật ngữ"
+          },
+          {
+            id: "2",
+            slug: "kien-thuc-hay/tu-van-chon-mua",
+            name: "Tư vấn chọn mua"
+          },
+          {
+            id: "3",
+            slug: "kien-thuc-hay/huong-dan-su-dung",
+            name: "Hướng dẫn sử dụng"
+          }
+        ]
+      }
+    ]));
   }, []);
 
   const { cartdetails } = useContext(CartContext);
@@ -65,7 +95,7 @@ const Header = () => {
                     )}
                   </Link>
                 </div>
-                <div className="flex items-center text-sm">
+                <div className="items-center text-sm hidden md:flex">
                   <div className="flex gap-10">
                     <div className="flex items-center gap-10 uppercase">
                       <Link href="/tin-tuc">Tin tức</Link>
@@ -112,7 +142,11 @@ const Header = () => {
                         ${hoveredCate?.id === category.id && 'font-bold'}
                       `}
                     >
-                      <img src="https://cdn.tgdd.vn/content/Hot-73x72-1.png" alt="" title="" className="max-w-6 mr-2" />
+                      {
+                        category.slug !== "kien-thuc-hay" && category.slug !== "tin-tuc" ?
+                          <img src="https://cdn.tgdd.vn/content/Hot-73x72-1.png" alt="" title="" className="max-w-6 mr-2" /> : ""
+                      }
+
                       <span className="mr-2">{category.name}</span>
                       <ChevronRight size="15" className="ml-auto" />
                     </Link>

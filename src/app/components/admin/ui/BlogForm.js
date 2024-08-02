@@ -6,7 +6,6 @@ import { useState } from 'react';
 import RichTextEditor from './RichTextArea';
 
 import { parseDate } from "@internationalized/date";
-import { ToastContainer, toast } from 'react-toastify';
 import slugify from 'slugify';
 import crypto from "crypto";
 
@@ -61,10 +60,8 @@ const BlogForm = ({ blog, setBlog }) => {
       body: JSON.stringify(body)
     })
     if (!res.ok) {
-      toast.error((await res.json()).message)
       return
     }
-    window.location.reload()
   }
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
@@ -78,7 +75,6 @@ const BlogForm = ({ blog, setBlog }) => {
 
   return (
     <div className="p-3">
-      <ToastContainer />
       <RichTextEditor editor={editor} />
       <div className="pt-3 pr-3">
         <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-3'>
@@ -89,7 +85,21 @@ const BlogForm = ({ blog, setBlog }) => {
                 blog,
                 { title: value }))}
             ></Input>
-            <Input label="Slug" aria-label="Slug" value={blog?.slug}></Input>
+            <Input label="Slug" aria-label="Slug" value={blog?.slug}
+              onValueChange={(value) => setBlog(Object.assign(
+                {},
+                blog,
+                { slug: value }))}></Input>
+            <div className="items-end flex min-h-full">
+              <Button onClick={() => {
+                console.log(blog.title)
+                setBlog(Object.assign(
+                  {},
+                  blog,
+                  { slug: `${slugify(blog.title, { locale: 'vi' }).toLowerCase()}-${crypto.randomBytes(6).toString("hex")}` }))
+              }}
+                color="primary">Thêm slug</Button>
+            </div>
           </div>
           <div className='flex gap-3'>
             <Input label="Meta title" aria-label="Meta title" {...register('metaTitle')} defaultValue={blog?.metaDescription}></Input>
@@ -147,11 +157,14 @@ const BlogForm = ({ blog, setBlog }) => {
                 <Switch isSelected={isSelected} onValueChange={setIsSelected}></Switch>
               </div>
               <div>
+                <Link href={`/admin/blog/`}>
+                  Trở về
+                </Link>
                 <div className="float-right flex gap-3">
                   <Link href={`/admin/blog/preview/${blog.slug}`} isExternal>
                     Preview
                   </Link>
-                  <Button color="primary" type="submit">Lưu</Button>
+                  <Link href={`/admin/blog/edit/${blog.slug}`}>Lưu</Link>
                 </div>
               </div>
             </div>

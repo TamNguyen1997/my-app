@@ -50,11 +50,11 @@ const Filter = () => {
       case "actions":
         return (
           <div className="relative flex items-center gap-2">
-            <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-              <Link href={`/admin/filter/edit/${filter.id}`}>
+            <Link href={`/admin/filter/edit/${filter.id}`}>
+              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
                 <EditIcon />
-              </Link>
-            </span>
+              </span>
+            </Link>
             <span className="text-lg text-danger cursor-pointer active:opacity-50 pl-5">
               <Trash2 onClick={() => deleteFilter(filter.id)} />
             </span>

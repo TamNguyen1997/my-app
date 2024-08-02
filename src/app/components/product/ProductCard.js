@@ -27,7 +27,7 @@ const ProductCard = ({ product }) => {
         </div>
       </Link>
       {
-        getPrice(product) ? <p className="text-red-500 font-bold">{getPrice(product).toLocaleString()} đ</p> : ""
+        getPrice(product) ? <p className="text-red-500 font-bold">{getPrice(product)} đ</p> : ""
       }
     </div>
   )

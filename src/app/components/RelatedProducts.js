@@ -1,12 +1,10 @@
 "use client"
-import Link from "next/link"
 import { useEffect, useState } from "react"
-import { ShoppingCart } from "lucide-react";
-import { Button } from "@nextui-org/react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import ProductCard from "./product/ProductCard";
 
-const RelatedProducts = ({ productId, query }) => {
+const RelatedProducts = ({ query }) => {
   const [products, setProducts] = useState([])
 
   useEffect(() => {
@@ -88,22 +86,7 @@ const RelatedProducts = ({ productId, query }) => {
         swipeable
       >
         {
-          products.map((product) => {
-            return <Link key={product.id} href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`} className="group p-4">
-              <div className="relative pb-[100%] mb-3">
-                <img src={process.env.NEXT_PUBLIC_FILE_PATH + product?.image?.path} className="absolute inset-0 w-full h-full object-cover group-hover:opacity-75 transition" />
-              </div>
-              <h3 className="text-sm font-bold mb-4 text-center">
-                {product.name}
-              </h3>
-              {/* <p className="text-xs font-medium text-[#b61a2d] mb-4">160.000 ₫</p> */}
-              <Button className="text-sm font-bold uppercase bg-gradient-to-b from-[#ffed00] to-[#fff466] rounded-none w-full h-[45px] border border-[#e3e3e3] mb-2.5">
-                <Link href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`} className="text-black">
-                  Chi tiết
-                </Link>
-              </Button>
-            </Link>
-          })
+          products.map((product) => <ProductCard product={product} />)
         }
       </Carousel>
     </div>

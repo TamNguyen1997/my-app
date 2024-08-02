@@ -189,7 +189,6 @@ export default function PopularItems() {
               href={`/${cate.slug}`}
               className="flex justify-center items-center text-[#153f17] font-semibold w-[181px] 
               h-[43px] rounded-[30px] border border-[#FFD400] hover:bg-[#ccefdc] transition mx-auto"
-              onClick={() => setPage(page + 1)}
             >
               Xem thêm
             </Link>
@@ -215,7 +214,6 @@ const ProductCards = ({ category, products, redirect, banner }) => {
             href={redirect}
             className="flex justify-center items-center text-[#153f17] font-semibold w-[181px] 
               h-[43px] rounded-[30px] border border-[#FFD400] hover:bg-[#ccefdc] transition mx-auto"
-            onClick={() => setPage(page + 1)}
           >
             Xem thêm
           </Link>
@@ -246,7 +244,7 @@ const ProductCards = ({ category, products, redirect, banner }) => {
 const ProductCarousel = ({ products, responsive }) => {
   return (<>
     <Carousel responsive={responsive} infinite
-      className="[&_.react-multi-carousel-track]:pt-2"
+      className="[&_.react-multi-carousel-track]"
     >
       {
         products.map((product) => {
@@ -278,32 +276,25 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
   return (<>
     <div className="lg:grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-6">
       <div className="pt-2 col-span-2">
-        <div className="bg-[#FFD400] shadow-lg rounded-md w-full">
+        <div className="bg-[#FFD400] shadow-lg rounded-md w-full h-[300px]">
           <div className="flex mx-auto">
             {
               brandDescription[selectedBrand] && brandDescription[selectedBrand].logo ?
-                <img
-                  width={220}
-                  className="mx-auto max-h-full"
-                  src={brandDescription[selectedBrand].logo}
-                /> : null
+                <Link className="mx-auto max-h-full"
+                  href={`/${brandDescription[selectedBrand].slug}`}>
+                  <img
+                    width={220}
+                    src={brandDescription[selectedBrand].logo}
+                  />
+                </Link>
+                : null
             }
           </div>
 
-          <div className="px-5 text-justify h-[100px] overflow-auto scrollbar-hide">
+          <div className="px-5 text-justify overflow-auto scrollbar-hide">
             {
               brandDescription[selectedBrand] && brandDescription[selectedBrand].description
             }
-          </div>
-          <div className="flex justify-center items-center">
-            <Link
-              href={`/${brandDescription[selectedBrand].slug}`}
-              className="flex justify-center items-center text-[#153f17] font-semibold w-[181px] 
-              h-[43px] rounded-[30px] border border-[#FFD400] hover:bg-[#ccefdc] transition mx-auto"
-              onClick={() => setPage(page + 1)}
-            >
-              Xem thêm
-            </Link>
           </div>
         </div>
       </div>

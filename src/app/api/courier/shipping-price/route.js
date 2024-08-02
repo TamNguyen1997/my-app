@@ -19,9 +19,9 @@ export async function POST(req) {
                 "PRODUCT_NAME": item.product.name,
                 "PRODUCT_PRICE": item.price,
                 "PRODUCT_WEIGHT": item.product.weight,
-                "PRODUCT_LENGTH": 38,
-                "PRODUCT_WIDTH": 40,
-                "PRODUCT_HEIGHT": 25,
+                "PRODUCT_LENGTH": item.product.length,
+                "PRODUCT_WIDTH": item.product.width,
+                "PRODUCT_HEIGHT": item.product.height,
                 "PRODUCT_QUANTITY": products.find(product => product.saleDetailId === item.id).quantity
             })
         })

@@ -58,7 +58,15 @@ const Category = () => {
     e.preventDefault()
     if (selectedCate.id) {
       toast.promise(
-        fetch(`/api/categories/${selectedCate.id}`, { method: "PUT", body: JSON.stringify(selectedCate) }).then(async (res) => {
+        fetch(`/api/categories/${selectedCate.id}`, {
+          method: "PUT", body: JSON.stringify({
+            highlight: selectedCate.highlight,
+            showOnHeader: selectedCate.showOnHeader,
+            name: selectedCate.name,
+            slug: selectedCate.slug,
+            imageId: selectedCate.imageId
+          })
+        }).then(async (res) => {
           getCategories()
           if (!res.ok) {
             throw new Error((await res.json()).message)
@@ -358,7 +366,15 @@ const SubCategory = ({ categories }) => {
 
     if (selectedSubCate.id) {
       toast.promise(
-        fetch(`/api/categories/${selectedSubCate.id}`, { method: "PUT", body: JSON.stringify(selectedSubCate) }).then(async (res) => {
+        fetch(`/api/categories/${selectedSubCate.id}`, {
+          method: "PUT", body: JSON.stringify({
+            highlight: selectedSubCate.highlight,
+            showOnHeader: selectedSubCate.showOnHeader,
+            name: selectedSubCate.name,
+            slug: selectedSubCate.slug,
+            imageId: selectedSubCate.imageId
+          })
+        }).then(async (res) => {
           getSubCate()
           if (!res.ok) {
             throw new Error((await res.json()).message)

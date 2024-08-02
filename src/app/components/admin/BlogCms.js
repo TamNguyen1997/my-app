@@ -1,27 +1,36 @@
 import BlogForm from "@/components/admin/ui/BlogForm"
-import { Tabs, Tab, Table, TableHeader, TableColumn, TableRow, TableCell, TableBody, Spinner } from "@nextui-org/react";
-import { useCallback, useEffect, useState } from "react";
+import { Tabs, Tab, Table, TableHeader, TableColumn, TableRow, TableCell, TableBody, Spinner, Pagination } from "@nextui-org/react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { EditIcon, Trash2 } from "lucide-react";
 
+const rowsPerPage = 20;
 const BlogCms = () => {
-
+  const [page, setPage] = useState(1);
   const [blogs, setBlogs] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [loadingState, setLoadingState] = useState("loading")
 
   const [selectedTab, setSelectedTab] = useState("Tất cả blog")
   const [selectedBlog, setSelectedBlog] = useState({})
+  const [total, setTotal] = useState(0)
 
   useEffect(() => {
     getBlogs()
-  }, [])
+  }, [page])
 
-  const getBlogs = () => {
-    fetch("/api/blogs?excludeSupport=true").then(res => res.json()).then(setBlogs).then(() => setIsLoading(false))
+  const getBlogs = async () => {
+    setLoadingState("loading")
+    const json = await fetch(`/api/blogs?excludeSupport=true&size=${rowsPerPage}&page=${page}`).then(res => res.json())
+    setTotal(json.total)
+    setBlogs(json.result)
+    setLoadingState("idle")
   }
   const deleteBlog = (id) => {
-    setIsLoading(true)
     fetch(`/api/blogs/${id}`, { method: "DELETE" }).then(() => getBlogs())
   }
+
+  const pages = useMemo(() => {
+    return total ? Math.ceil(total / rowsPerPage) : 0;
+  }, [total, rowsPerPage]);
 
   const renderCell = useCallback((blog, columnKey) => {
     const cellValue = blog[columnKey];
@@ -48,14 +57,28 @@ const BlogCms = () => {
   return (<>
     <Tabs aria-label="Blogs" selectedKey={selectedTab} onSelectionChange={setSelectedTab}>
       <Tab key="Tất cả blog" title="Tất cả blog">
-        <Table aria-label="Blog">
+        <Table aria-label="Blog"
+          bottomContent={
+            loadingState === "loading" ? null :
+              <div className="flex w-full justify-center">
+                <Pagination
+                  isCompact
+                  showControls
+                  showShadow
+                  page={page}
+                  total={pages}
+                  onChange={(page) => setPage(page)}
+                />
+              </div>
+          }>
           <TableHeader>
             <TableColumn key="title">Tiêu đề</TableColumn>
+            <TableColumn key="slug">Slug</TableColumn>
             <TableColumn key="actions"></TableColumn>
           </TableHeader>
           <TableBody
             emptyContent={"Không có bài viết nào"}
-            isLoading={isLoading}
+            isLoading={loadingState === "loading"}
             loadingContent={<Spinner label="Loading..." />}>
             {
               blogs.map(blog => {

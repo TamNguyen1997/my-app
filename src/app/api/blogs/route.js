@@ -46,11 +46,15 @@ export async function GET(req) {
       condition.blogSubCategory = query.blogSubCategory
     }
 
-    return NextResponse.json(await db.blog.findMany({
+    const result = await db.blog.findMany({
       where: condition,
       take: size,
       skip: (page - 1) * size
-    }))
+    })
+    return NextResponse.json({
+      result,
+      total: await db.blog.count({ where: condition })
+    })
   } catch (e) {
     console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })

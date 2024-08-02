@@ -31,7 +31,7 @@ export default function PopularBlogs() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    fetch(`/api/blogs?excludeSupport=true&active=true&size=10&page=${1}`).then(res => res.json()).then(setBlogs).then(() => setIsLoading(false))
+    fetch(`/api/blogs?excludeSupport=true&active=true&size=10&page=${1}`).then(res => res.json()).then((json) => setBlogs(json.result)).then(() => setIsLoading(false))
   }, [])
 
   if (isLoading) return <Spinner className="m-auto" />

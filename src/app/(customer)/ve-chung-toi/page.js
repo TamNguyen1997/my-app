@@ -5,7 +5,7 @@ import AboutUsArticle from "@/components/about-us/AboutUsArticle";
 import AboutUsMilestone from "@/components/about-us/AboutUsMilestone";
 import AboutUsNumbers from "@/components/about-us/AboutUsNumbers";
 import AboutUsPartner from "@/components/about-us/AboutUsPartner";
-import AboutUsForm from "@/components/about-us/AboutUsForm";
+import Contact from "@/components/contact/Contact";
 import { motion } from "framer-motion";
 
 export default function AboutUs() {
@@ -55,7 +55,7 @@ export default function AboutUs() {
                 transition={{ duration: 0.7, delay: 0.3 }}
                 viewport={{ once: true }}
             >
-                <AboutUsForm />
+                <Contact />
             </motion.div>
         </div>
     )

@@ -39,7 +39,7 @@ const brandDescription = {
     lịch sử của Mapa Professional luôn định hướng với một tầm nhìn: bảo vệ sức khỏe nhân viên, đảm bảo môi trường làm việc sạch sẽ, an toàn & lành mạnh.`
   },
   "KLEEN-TEX": {
-    logo: "/brand/Logo-Mapa.png",
+    logo: "/brand/KLEEN-TEX.png",
     slug: "thuong-hieu-kleen-tex",
     description: `Hơn 50 năm phát triển, Kleen-Tex cung cấp loạt giải pháp về thảm, mang đến trải nghiệm tuyệt vời trong từng bước chân. 
     Thảm trải lối ra vào, logo nhiều màu, chống mỏi hay bất kỳ loại thảm cho ngành công nghiệp.`
@@ -52,7 +52,7 @@ const brandDescription = {
     Moerman, dụng cụ vệ sinh kính nổi tiếng toàn cầu.`
   },
   "KIMBERLY-CLARK PROFESSIONAL": {
-    logo: "/brand/Logo-Moerman.png",
+    logo: "/brand/Logo-Kimberly-Clark.png",
     slug: "thuong-hieu-kimberly-clark",
     description: `Kimberly-Clark Corporation - tập đoàn chuyên sản xuất hàng hóa tiêu dùng, đặc biệt là các sản phẩm về Giấy. 
     Thành lập năm 1872 với hơn 140 năm hoạt động, khăn giấy cao cấp Kimberly-Clark luôn là tiện ích cho mọi gia đình.`

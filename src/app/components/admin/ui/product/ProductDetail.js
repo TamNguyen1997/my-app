@@ -74,6 +74,48 @@ const ProductDetail = ({
           />
         </div>
         <div className="flex gap-2">
+          <Input
+            type="number"
+            label="Khối lượng (g)"
+            labelPlacement="outside"
+            aria-label="Khối lượng"
+            value={product.weight}
+            min={0}
+            max={999}
+            onValueChange={(value) => setProduct(Object.assign({}, product, { weight: parseInt(value) }))}
+          />
+          <Input
+            type="number"
+            label="Chiều dài (cm)"
+            labelPlacement="outside"
+            aria-label="Chiều dài"
+            value={product.length}
+            min={0}
+            max={999}
+            onValueChange={(value) => setProduct(Object.assign({}, product, { length: parseInt(value) }))}
+          />
+          <Input
+            type="number"
+            label="Chiều rộng (cm)"
+            labelPlacement="outside"
+            aria-label="Chiều rộng"
+            value={product.width}
+            min={0}
+            max={999}
+            onValueChange={(value) => setProduct(Object.assign({}, product, { width: parseInt(value) }))}
+          />
+          <Input
+            type="number"
+            label="Chiều cao (cm)"
+            labelPlacement="outside"
+            aria-label="Chiều cao"
+            value={product.height}
+            min={0}
+            max={999}
+            onValueChange={(value) => setProduct(Object.assign({}, product, { height: parseInt(value) }))}
+          />
+        </div>
+        <div className="flex gap-2">
           <Select
             label="Category"
             aria-label="Category"

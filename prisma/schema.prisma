@@ -48,8 +48,8 @@ model product {
 
   productType product_type @default(PRODUCT) @map("product_type")
   width       Int          @default(0)
-  breadth     Int          @default(0)
-  depth       Int          @default(0)
+  length      Int          @default(0)
+  height      Int          @default(0)
   weight      Int          @default(0)
 
   componentParts  product[]           @relation("componentParts")

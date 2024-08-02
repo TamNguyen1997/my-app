@@ -17,7 +17,6 @@ import {
 } from "@nextui-org/react"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { EditIcon, Search, Trash2 } from "lucide-react"
-import { redirect } from "next/navigation";
 import SaleDetails from "@/app/components/admin/ui/product/SaleDetails";
 import TechnicalDetails from "@/app/components/admin/ui/product/TechnicalDetails";
 import ProductDetail from "@/app/components/admin/ui/product/ProductDetail";

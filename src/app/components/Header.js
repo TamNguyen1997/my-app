@@ -54,6 +54,13 @@ const Header = () => {
   }, []);
 
   const { cartdetails } = useContext(CartContext);
+  const getQuantity = (details) => {
+    let total = 0;
+    details.forEach(item => {
+      total += parseInt(item.quantity)
+    });
+    return total
+  }
 
   return (
     <nav className="bg-black border-gray-200 dark:bg-gray-900 header">
@@ -88,7 +95,7 @@ const Header = () => {
                     {cartdetails?.length ? (
                       <div className="rounded-full w-3 h-3 bg-red-600 text-white text-center text-[10px]">
                         <span className="animate-ping absolute inline-flex w-3 h-3 rounded-full bg-red-600 opacity-75"></span>
-                        {cartdetails.length}
+                        {getQuantity(cartdetails)}
                       </div>
                     ) : (
                       ""

@@ -79,7 +79,7 @@ const Order = () => {
           </TableHeader>
           <TableBody
             items={orders}
-            emptyContent={"Không có filter nào"}
+            emptyContent={"Không có đơn hàng nào"}
             isLoading={loadingState === "loading"}
             loadingContent={<Spinner label="Loading..." />}>
             {(item) => (

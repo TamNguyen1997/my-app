@@ -1,7 +1,7 @@
 "use client"
 
-import { Link, Pagination, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
-import { EditIcon } from "lucide-react";
+import { Button, Link, Pagination, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
+import { EditIcon, Search } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 const rowsPerPage = 10;
@@ -13,6 +13,8 @@ const Order = () => {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0)
 
+  const [condition, setCondition] = useState({})
+
   const pages = useMemo(() => {
     return total ? Math.ceil(total / rowsPerPage) : 0;
   }, [total, rowsPerPage]);
@@ -22,8 +24,12 @@ const Order = () => {
   }, [page])
 
   const getOrder = async () => {
+    let filteredCondition = { ...condition }
+    Object.keys(filteredCondition).forEach(key => filteredCondition[key] === undefined && delete filteredCondition[key])
+    const queryString = new URLSearchParams(filteredCondition).toString()
+
     setLoadingState("loading")
-    const res = await fetch(`/api/order/?size=${rowsPerPage}&page=${page}`)
+    const res = await fetch(`/api/order/?size=${rowsPerPage}&page=${page}&${queryString}`)
     const json = await res.json()
     setTotal(json.total)
     setOrders(json.result)
@@ -48,9 +54,57 @@ const Order = () => {
     }
   }, [])
 
+  const onConditionChange = (value) => {
+    setCondition(Object.assign({}, condition, value))
+  }
+
   return (
     <>
-      <div>
+      <div className="flex flex-col gap-3">
+        <div className="flex gap-3">
+          <Select
+            className="w-56"
+            label="Phương thức thanh toán"
+            labelPlacement="outside"
+            onSelectionChange={(value) => onConditionChange({ paymentMethod: value.values().next().value })}>
+            <SelectItem key="COD">
+              COD
+            </SelectItem>
+            <SelectItem key="VIETQR">
+              Chuyển khoản
+            </SelectItem>
+          </Select>
+          <Select
+            className="w-56"
+            label="Đã tạo đơn vận chuyển"
+            labelPlacement="outside"
+            onSelectionChange={(value) => onConditionChange({ shippingOrderCreated: value.values().next().value })}>
+            <SelectItem key="true">
+              Đã tạo đơn vận chuyển
+            </SelectItem>
+            <SelectItem key="false">
+              Chưa tạo đơn vận chuyển
+            </SelectItem>
+          </Select>
+          <Select
+            className="w-56"
+            label="Trạng thái đơn hàng"
+            labelPlacement="outside"
+            onSelectionChange={(value) => onConditionChange({ shippingStatus: value.values().next().value })}>
+            <SelectItem key="WAITING">
+              Đang đợi giao hàng
+            </SelectItem>
+            <SelectItem key="SHIPPING">
+              Đang giao hàng
+            </SelectItem>
+            <SelectItem key="SHIPPED">
+              Đã giao hàng
+            </SelectItem>
+          </Select>
+          <div className="items-end flex min-h-full">
+            <Button onClick={getOrder} color="primary"><Search /></Button>
+          </div>
+        </div>
         <Table
           aria-label="Tất cả order"
           loadingState={loadingState}
@@ -72,7 +126,6 @@ const Order = () => {
             <TableColumn key="name" textValue="Tên filter" aria-label="Tên filter">Tên khách hàng</TableColumn>
             <TableColumn key="status" textValue="status" aria-label="status">Trạng thái thanh toán</TableColumn>
             <TableColumn key="paymentMethod" textValue="paymentMethod" aria-label="paymentMethod">Phương thức thanh toán</TableColumn>
-            <TableColumn key="email" textValue="email" aria-label="email">Email khách hàng</TableColumn>
             <TableColumn key="phone" textValue="phone" aria-label="phone">Điện thoại</TableColumn>
             <TableColumn key="total" textValue="total" aria-label="total">Số tiền</TableColumn>
             <TableColumn key="actions" textValue="actions" width="100"></TableColumn>

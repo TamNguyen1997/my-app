@@ -1,10 +1,11 @@
 "use client"
 
-import { Button, Input, Select, SelectItem, Spinner, Textarea } from "@nextui-org/react";
+import { Button, DatePicker, Input, Select, SelectItem, Spinner, Textarea } from "@nextui-org/react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { PROVINCES } from "@/lib/courier"
+import { parseDate } from "@internationalized/date";
 
 const COLOR_VARIANT = {
   "#ffffff": "bg-[#ffffff]",
@@ -124,6 +125,10 @@ const Order = () => {
                 value={order.customerPayment}
                 type="number"
                 disabled />
+              <Input label="Tổng tiền"
+                value={order.total}
+                type="number"
+                disabled />
             </div>
             <div className="flex gap-3">
               <Input label="Phí vận chuyển"
@@ -136,13 +141,14 @@ const Order = () => {
                 value={order.shippingId}
                 disabled />
               <Select label="Trạng thái đơn hàng"
+                disallowEmptySelection
                 defaultSelectedKeys={new Set([order.shippingStatus || "WAITING"])}
                 onSelectionChange={async (value) => {
                   const res = await fetch(`/api/order/${order.id}`, { method: "PUT", body: JSON.stringify({ shippingStatus: value.values().next().value }) })
                   if (res.ok) {
                     toast.success("Đã cập nhật")
                   } else {
-                    toast.success("Không thể cập nhật")
+                    toast.error("Không thể cập nhật")
                   }
                 }}>
                 <SelectItem key="WAITING">
@@ -155,6 +161,38 @@ const Order = () => {
                   Đã giao hàng
                 </SelectItem>
               </Select>
+              <Select label="Đã tạo đơn vận chuyển"
+                disallowEmptySelection
+                defaultSelectedKeys={new Set([order.shippingOrderCreated ? "true" : "false"])}
+                onSelectionChange={async (value) => {
+                  const res = await fetch(`/api/order/${order.id}`, {
+                    method: "PUT",
+                    body: JSON.stringify({ shippingOrderCreated: value.values().next().value === "true" })
+                  })
+                  if (res.ok) {
+                    toast.success("Đã cập nhật")
+                  } else {
+                    toast.error("Không thể cập nhật")
+                  }
+                }}>
+                <SelectItem key="true">
+                  Đã tạo đơn vận chuyển
+                </SelectItem>
+                <SelectItem key="false">
+                  Chưa tạo đơn vận chuyển
+                </SelectItem>
+              </Select>
+            </div>
+            <div className="flex gap-3 w-1/4">
+              {
+                order.createdAt ? <DatePicker
+                  label="Ngày tạo đơn"
+                  value={order.createdAt ? getDateString(order.createdAt) : ""}
+                  aria-label="Date"
+                  disabled
+                /> : ""
+              }
+
             </div>
           </div>
 
@@ -204,6 +242,10 @@ const Order = () => {
       </form>
     </>
   )
+}
+
+const getDateString = (isoDate) => {
+  return parseDate(isoDate.split('T')[0])
 }
 
 export default Order

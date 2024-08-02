@@ -15,6 +15,19 @@ export async function GET(req) {
       page = parseInt(query.page) || 1
       size = parseInt(query.size) || 10
     }
+
+    if (query.paymentMethod) {
+      condition.paymentMethod = query.paymentMethod
+    }
+
+    if (query.shippingOrderCreated) {
+      condition.shippingOrderCreated = query.shippingOrderCreated === "true"
+    }
+
+    if (query.shippingStatus) {
+      condition.shippingStatus = query.shippingStatus
+    }
+
     const result = await db.order.findMany({
       where: condition,
       include: {

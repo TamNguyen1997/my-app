@@ -46,6 +46,12 @@ export async function GET(req) {
       condition.blogSubCategory = query.blogSubCategory
     }
 
+    if (query.slug) {
+      condition.slug = {
+        search: `${query.slug.trim().replaceAll(" ", " & ")}:*`
+      }
+    }
+
     const result = await db.blog.findMany({
       where: condition,
       take: size,

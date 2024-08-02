@@ -306,9 +306,10 @@ const Cart = () => {
                 </>
             }
 
-            <Button className=" w-full items-center justify-center" color="primary" type="submit" isDisabled={!cartdetails || !cartdetails.length}>
-              Checkout
+            <Button className="items-center justify-center flex m-auto" color="primary" type="submit" isDisabled={!cartdetails || !cartdetails.length}>
+              Thanh toán
             </Button>
+
 
             <div className="flex items-center justify-center gap-2">
               <span className="text-sm font-normal text-gray-500 dark:text-gray-400"> hoặc </span>

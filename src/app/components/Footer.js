@@ -80,7 +80,7 @@ const Footer = () => {
         <div className="p-3 flex flex-col gap-3 lg:col-span-2">
           <p className="font-bold ">THỜI GIAN LÀM VIỆC</p>
           <p>Thứ 2 – Thứ 6: 08h00 – 17h00</p>
-          <p>thứ 7: 8:00 - 12:00</p>
+          <p>Thứ 7: 8h00 - 12h00</p>
           <p>Chủ nhật & Ngày lễ: Nghỉ</p>
           <div className="flex gap-4">
             <Image height="200" width="200" src="/brand/Icon-dmca_protected.png" className="w-[90px] h-[30px]" alt="" />

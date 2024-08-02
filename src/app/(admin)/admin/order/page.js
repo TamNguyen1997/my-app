@@ -1,6 +1,6 @@
 "use client"
 
-import { Button, Link, Pagination, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
+import { Button, Checkbox, Link, Pagination, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
 import { EditIcon, Search } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -36,14 +36,24 @@ const Order = () => {
     setLoadingState("idle")
   }
 
-  const renderCell = useCallback((filter, columnKey) => {
-    const cellValue = filter[columnKey]
+  const renderCell = useCallback((order, columnKey) => {
+    const cellValue = order[columnKey]
     switch (columnKey) {
+      case "total":
+        return order.total + order.shippingFee
+      case "shippingOrderCreated":
+        return (
+          <div className="relative flex items-center gap-2">
+            <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+              <Checkbox isSelected={order.shippingOrderCreated} disabled />
+            </span>
+          </div>
+        )
       case "actions":
         return (
           <div className="relative flex items-center gap-2">
             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-              <Link href={`/admin/order/view/${filter.id}`}>
+              <Link href={`/admin/order/view/${order.id}`}>
                 <EditIcon />
               </Link>
             </span>
@@ -126,8 +136,9 @@ const Order = () => {
             <TableColumn key="name" textValue="Tên filter" aria-label="Tên filter">Tên khách hàng</TableColumn>
             <TableColumn key="status" textValue="status" aria-label="status">Trạng thái thanh toán</TableColumn>
             <TableColumn key="paymentMethod" textValue="paymentMethod" aria-label="paymentMethod">Phương thức thanh toán</TableColumn>
+            <TableColumn key="shippingOrderCreated" textValue="shippingOrderCreated" aria-label="shippingOrderCreated">Đã tạo đơn vận chuyển</TableColumn>
             <TableColumn key="phone" textValue="phone" aria-label="phone">Điện thoại</TableColumn>
-            <TableColumn key="total" textValue="total" aria-label="total">Số tiền</TableColumn>
+            <TableColumn key="total" textValue="total" aria-label="total">Tổng tiền</TableColumn>
             <TableColumn key="actions" textValue="actions" width="100"></TableColumn>
           </TableHeader>
           <TableBody

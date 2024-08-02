@@ -163,7 +163,7 @@ const Order = () => {
               </Select>
               <Select label="Đã tạo đơn vận chuyển"
                 disallowEmptySelection
-                defaultSelectedKeys={new Set([order.shippingOrderCreated ? "true" : "false"])}
+                selectedKeys={new Set([order.shippingOrderCreated ? "true" : "false"])}
                 onSelectionChange={async (value) => {
                   const res = await fetch(`/api/order/${order.id}`, {
                     method: "PUT",

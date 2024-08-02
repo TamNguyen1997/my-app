@@ -87,16 +87,15 @@ export async function GET(req, { params }) {
     }
 
     if (query.range) {
-      const minMax = query.range.split('-')
-      if (minMax.length != 2) return
+      const [min, max] = query.range.split('-')
+      if (!min && !max) return
 
       products = products.filter(item => {
         const hasSaleDetails = item.saleDetails?.length > 0
         if (!hasSaleDetails) return false
-        const max = item.saleDetails[0]?.price <= parseInt(minMax[1])
-        const min = item.saleDetails.filter(detail => detail.price >= parseInt(minMax[0])).length >= 0
-
-        return hasSaleDetails && max && min
+        const maxPrice = item.saleDetails[0]?.price <= parseInt(max)
+        const minPrice = item.saleDetails.filter(detail => detail.price >= parseInt(min)).length
+        return maxPrice && minPrice
       })
     }
 

@@ -372,7 +372,8 @@ const SubCategory = ({ categories }) => {
             showOnHeader: selectedSubCate.showOnHeader,
             name: selectedSubCate.name,
             slug: selectedSubCate.slug,
-            imageId: selectedSubCate.imageId
+            imageId: selectedSubCate.imageId,
+            cateId: selectedSubCate.cateId
           })
         }).then(async (res) => {
           getSubCate()

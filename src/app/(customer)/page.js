@@ -61,18 +61,17 @@ const Introduction = () => {
       backgroundSize: "100% 100%"
     }}>
       <div className="flex gap-5 max-w-[1200px] px-4 mx-auto w-full flex-col pt-[120px]">
-        <div className="text-xl font-medium pb-[76px] text-justify w-1/3">
+        <div className="text-xl font-medium pb-12 text-justify w-1/3">
           Một trong những công ty dẫn đầu cung cấp các giải pháp làm vệ sinh chuyên nghiệp là đối tác tin cậy của các nhà đầu tư.
           <br />
           <br />
           Các sản phẩm được Sao Việt chứng nhận chất lượng theo tiêu chuẩn quốc tế mang lại sự hài lòng cho người tiêu dùng.
         </div>
-
-        <div className="flex gap-5 flex-wrap">
-          <img src="/brand/Rubbermaid.png" alt="Rubbermaid"></img>
-          <img src="/brand/Logo-Ghibli.png" alt="Ghibli"></img>
-          <img src="/brand/Logo-Moerman.png" alt="Moerman"></img>
-          <img src="/brand/Logo-Mapa.png" alt="Mapa"></img>
+        <div className="flex gap-4 flex-wrap">
+          <img src="/brand/Rubbermaid.png" alt="Rubbermaid" width={200} height={80}></img>
+          <img src="/brand/Logo-Ghibli.png" alt="Ghibli" width={200} height={80}></img>
+          <img src="/brand/Logo-Moerman.png" alt="Moerman" width={200} height={80}></img>
+          <img src="/brand/Logo-Mapa.png" alt="Mapa" width={200} height={80}></img>
         </div>
       </div>
     </div>)

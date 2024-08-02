@@ -133,7 +133,7 @@ const Header = () => {
           <div
             onMouseOver={() => setMenuVisible(true)}
             onMouseOut={() => setMenuVisible(false)}
-            className="z-10 fixed w-full subcate-menu"
+            className="fixed w-full subcate-menu z-[10000]"
             ref={menuRef}
           >
             <div className="text-sm flex">

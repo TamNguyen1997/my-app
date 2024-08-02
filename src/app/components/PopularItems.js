@@ -76,7 +76,7 @@ export default function PopularItems() {
   const [ghibliProducts, setGhibliProducts] = useState([])
   const [kleenTexProducts, setKleenTexProducts] = useState([])
   const [kimberlyProducts, setKimberlyProducts] = useState([])
-  const [selectedBrand, setSelectedBrand] = useState("RUBBERMAID")
+  const [selectedBrand, setSelectedBrand] = useState("GHIBLI & WIRBEL")
 
   const [brandProducts, setBrandProducts] = useState([])
 
@@ -185,9 +185,14 @@ export default function PopularItems() {
         Object.keys(highlightProductsFromCates).length ? highlightCates.filter(cate => highlightProductsFromCates[cate.slug]).map((cate, i) => {
           return <div key={i}>
             <ProductCards banner={cate.image?.path} products={highlightProductsFromCates[cate.slug]} />
-            <div className="w-full flex flex-row min-w-screen justify-center items-center">
-              <Link href={`/${cate.slug}`} className="font-bold underline">Xem thêm</Link>
-            </div>
+            <Link
+              href={`/${cate.slug}`}
+              className="flex justify-center items-center text-[#153f17] font-semibold w-[181px] 
+              h-[43px] rounded-[30px] border border-[#FFD400] hover:bg-[#ccefdc] transition mx-auto"
+              onClick={() => setPage(page + 1)}
+            >
+              Xem thêm
+            </Link>
           </div>
         }
         ) : <></>
@@ -206,9 +211,15 @@ const ProductCards = ({ category, products, redirect, banner }) => {
       </div>
       {
         redirect ?
-          <div className="bg-black text-white rounded-tr-[42px] rounded-bl-[42px] text-md font-bold italic flex items-center w-[15%] min-w-[100px]">
-            <Link href={redirect} className="m-auto">Xem thêm</Link>
-          </div> : ""
+          <Link
+            href={redirect}
+            className="flex justify-center items-center text-[#153f17] font-semibold w-[181px] 
+              h-[43px] rounded-[30px] border border-[#FFD400] hover:bg-[#ccefdc] transition mx-auto"
+            onClick={() => setPage(page + 1)}
+          >
+            Xem thêm
+          </Link>
+          : ""
       }
     </div>
   </>)
@@ -272,14 +283,14 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
             {
               brandDescription[selectedBrand] && brandDescription[selectedBrand].logo ?
                 <img
-                  width={250}
+                  width={220}
                   className="mx-auto max-h-full"
                   src={brandDescription[selectedBrand].logo}
                 /> : null
             }
           </div>
 
-          <div className="px-5 font-bold text-justify h-[100px] overflow-auto scrollbar-hide">
+          <div className="px-5 text-justify h-[100px] overflow-auto scrollbar-hide">
             {
               brandDescription[selectedBrand] && brandDescription[selectedBrand].description
             }
@@ -287,7 +298,9 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
           <div className="flex justify-center items-center">
             <Link
               href={`/${brandDescription[selectedBrand].slug}`}
-              className="border border-black font-bold hover:bg-[#FFAC0A] hover:text-white hover:border-transparent transition rounded-full px-3 py-1 my-2.5"
+              className="flex justify-center items-center text-[#153f17] font-semibold w-[181px] 
+              h-[43px] rounded-[30px] border border-[#FFD400] hover:bg-[#ccefdc] transition mx-auto"
+              onClick={() => setPage(page + 1)}
             >
               Xem thêm
             </Link>

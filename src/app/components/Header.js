@@ -25,13 +25,14 @@ const Header = () => {
         id: "1000",
         slug: "tin-tuc",
         name: "Tin tức",
-        subcates: [
-        ]
+        class: "flex md:hidden",
+        subcates: []
       },
       {
         id: "1001",
         slug: "kien-thuc-hay",
         name: "Kiến thức hay",
+        class: "flex md:hidden",
         subcates: [
           {
             id: "1",
@@ -145,7 +146,8 @@ const Header = () => {
                       href={`/${category.slug}`}
                       onMouseOver={() => setHoveredCate(category)}
                       className={`
-                        flex items-center border-b hover:font-bold transition p-1.5
+                        items-center border-b hover:font-bold transition p-1.5 
+                        ${category.slug !== "kien-thuc-hay" && category.slug !== "tin-tuc" ? "flex" : category.class} 
                         ${hoveredCate?.id === category.id && 'font-bold'}
                       `}
                     >

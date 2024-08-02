@@ -62,14 +62,16 @@ const Brand = ({ params, productFilter }) => {
 
   const getProduct = async () => {
     const hash = window.location.hash?.split('#')
-    await fetch(`/api/brands/${params}/products/?&active=true&${window.location.hash ? hash[1] : `filterId=${productFilter || ""}`}`).then(async res => {
+
+    fetch(`/api/brands/${params}`).then(res => res.json()).then(setBrand)
+    await fetch(`/api/products/?active=true&page=1&size=1000&includeCate=true&brandId=${params}&${window.location.hash ? hash[1] : `filterId=${productFilter || ""}`}`).then(async res => {
       if (res.ok) {
         const body = await res.json()
-        setBrand(body.brand)
-        setData(body.products)
-        setGroupData(Object.groupBy(body.products, (item) => item.subCategoryId))
+        setData(body.result)
+        setGroupData(Object.groupBy(body.result, (item) => item.categoryId))
       }
     })
+
     await fetch(`/api/filters/?brandId=${params}`).then((res) => res.json()).then(json => {
       setFilters(Object.groupBy(json.result, (item) => item.filterType))
 
@@ -234,8 +236,8 @@ const Brand = ({ params, productFilter }) => {
             </div>
           </div>
         </div>
-        <div className="float-right">
-          <Dropdown className="float-right">
+        <div className="pt-3">
+          <Dropdown>
             <DropdownTrigger>
               <Button
                 variant="bordered">
@@ -277,15 +279,14 @@ const Brand = ({ params, productFilter }) => {
 };
 
 const BrandSection = ({ products }) => {
-
   return (
     <div>
       <div className="text-black font-bold text-4xl text-center items-center">
-        {products[0].subCategory?.name}
+        {products[0].category?.name}
       </div>
 
       <div className="w-full my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
-        {products.filter(product => product.subCateId && product.categoryId).map((product) => (
+        {products.map((product) => (
           <div key={product.id} className="h-full p-2 hover:opacity-75">
             <ProductCard product={product} />
           </div>

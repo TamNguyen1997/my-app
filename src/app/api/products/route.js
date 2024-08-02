@@ -59,6 +59,32 @@ export async function GET(req) {
         search: `${query.sku.trim().replaceAll(" ", " & ")}:*`
       }
     }
+
+    if (query.brandId) {
+      condition.brand = {
+        slug: query.brandId
+      }
+    }
+
+    let filterId = []
+    if (query.filterId) {
+      filterId = (await db.filter.findMany({
+        where: {
+          slug: {
+            in: Array.isArray(query.filterId) ? query.filterId : [query.filterId]
+          }
+        }
+      })).map(item => item.id)
+
+      condition.filterOnProduct = {
+        some: {
+          filterId: {
+            in: filterId
+          }
+        }
+      }
+    }
+
     if (query.slug) {
       condition.slug = {
         search: `${query.slug.trim().replaceAll(" ", " & ")}:*`

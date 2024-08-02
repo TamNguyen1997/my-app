@@ -200,6 +200,7 @@ const Category = () => {
             <TableHeader>
               <TableColumn key="name" textValue="name">Tên</TableColumn>
               <TableColumn key="slug" textValue="slug">Slug</TableColumn>
+              <TableColumn key="highlight" textValue="highlight">Nổi bật</TableColumn>
               <TableColumn key="actions" textValue="actions"></TableColumn>
             </TableHeader>
             <TableBody

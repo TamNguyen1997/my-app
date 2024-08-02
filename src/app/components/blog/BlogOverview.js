@@ -44,9 +44,10 @@ const blogCategories = [
 const BlogOverview = ({ activeCategory, activeTag }) => {
   const [blogs, setBlogs] = useState([]);
   const [category, setCategory] = useState({});
+  const [page, setPage] = useState(1)
 
   useEffect(() => {
-    fetch(`/api/blogs?blogCategory=${activeCategory}&blogSubCategory=${activeTag || ""}&excludeSupport=true&active=true`).then(res => res.json()).then(json => {
+    fetch(`/api/blogs?blogCategory=${activeCategory}&blogSubCategory=${activeTag || ""}&excludeSupport=true&active=true&size=10&page=${page}`).then(res => res.json()).then(json => {
       setBlogs(json)
       setCategory(blogCategories.find(item => item.id === activeCategory))
     })
@@ -133,8 +134,9 @@ const BlogOverview = ({ activeCategory, activeTag }) => {
               <Link
                 href=""
                 className="flex justify-center items-center text-[#153f17] font-semibold w-[181px] h-[43px] rounded-[30px] border border-[#FFD400] hover:bg-[#ccefdc] transition mx-auto"
+                onClick={() => setPage(page + 1)}
               >
-                Xem tất cả
+                Xem thêm
               </Link>
             </div>
           </motion.div>

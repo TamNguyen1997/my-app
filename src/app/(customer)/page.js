@@ -68,7 +68,7 @@ const Introduction = () => {
           Các sản phẩm được Sao Việt chứng nhận chất lượng theo tiêu chuẩn quốc tế mang lại sự hài lòng cho người tiêu dùng.
         </div>
 
-        <div className="flex gap-5">
+        <div className="flex gap-5 flex-wrap">
           <img src="/brand/Rubbermaid.png" alt="Rubbermaid"></img>
           <img src="/brand/Logo-Ghibli.png" alt="Ghibli"></img>
           <img src="/brand/Logo-Moerman.png" alt="Moerman"></img>

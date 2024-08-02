@@ -20,7 +20,7 @@ const Header = () => {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    fetch('/api/categories/?includeSubCate=true&size=7&type=CATE').then(res => res.json()).then(json => setCategories([brandCategory, ...json.result]));
+    fetch('/api/categories/?includeSubCate=true&type=CATE').then(res => res.json()).then(json => setCategories([brandCategory, ...json.result]));
   }, []);
 
   const { cartdetails } = useContext(CartContext);
@@ -67,11 +67,11 @@ const Header = () => {
                 </div>
                 <div className="flex items-center text-sm">
                   <div className="flex gap-10">
-                    <div className="flex items-center gap-10">
+                    <div className="flex items-center gap-10 uppercase">
                       <Link href="/tin-tuc">Tin tức</Link>
                       <Link href="/kien-thuc-hay">Kiến thức hay</Link>
                     </div>
-                    <div className="flex items-center gap-10">
+                    <div className="items-center gap-10 hidden md:block">
                       <Link href="tel:0903802979">
                         <div className="flex items-center font-bold">
                           Hotline: 090 380 2979
@@ -197,7 +197,7 @@ const BRANDS = [
 const HeaderItems = ({ setHoveredCate, menuRef, setMenuVisible, menuVisible }) => {
   const [subCategories, setSubCategories] = useState([]);
   useEffect(() => {
-    fetch('/api/categories/?type=SUB_CATE&size=7&showOnHeader=true').then(res => res.json()).then(json => setSubCategories(json.result))
+    fetch('/api/categories/?type=SUB_CATE&size=9&showOnHeader=true').then(res => res.json()).then(json => setSubCategories(json.result))
   }, [])
 
   const headerItemsRef = useRef();

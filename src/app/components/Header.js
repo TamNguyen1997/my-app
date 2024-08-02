@@ -263,7 +263,7 @@ const HeaderItems = ({ setHoveredCate, menuRef, setMenuVisible, menuVisible }) =
             <Link href={`/${subcate.slug}`}
               key={subcate.id}
               className={`
-                hover:bg-[#FFAC0A] transition py-4 px-3 sm:hidden md:block
+                hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
                 text-center capitalize
               `}
             >

@@ -94,7 +94,7 @@ const ImageCms = () => {
                               <div {...getRootProps({ className: 'dropzone' })}>
                                 <input {...getInputProps()} />
                                 <p className="text-center mx-auto">Kéo thả hoặc click để tải hình</p>
-                                <em>(Chỉ chấp nhận *.jpeg and *.png)</em>
+                                <em>(Chỉ chấp nhận *.jpeg, *.png, *.jpg, *svg)</em>
                               </div>
                             </section>
                           )}

@@ -49,8 +49,11 @@ const BlogForm = ({ blog, setBlog }) => {
   const editor = useEditor(editorConfig(blog.content))
 
   const onSubmit = async (data) => {
-    if (!blog.id) {
+    if (!blog.id && !blog.slug) {
       blog.slug = `${slugify(blog.title, { locale: 'vi' }).toLowerCase()}-${crypto.randomBytes(6).toString("hex")}`
+    }
+    if (blog.slug) {
+      blog.slug = `${slugify(blog.slug, { locale: 'vi' })}`
     }
     const body = Object.assign(blog, data, { thumbnail: thumbnail, content: editor.getHTML(), active: isSelected })
     const res = await fetch('/api/blogs', {
@@ -86,7 +89,7 @@ const BlogForm = ({ blog, setBlog }) => {
                 blog,
                 { title: value }))}
             ></Input>
-            <Input label="Slug" aria-label="Slug" value={blog?.slug} disabled></Input>
+            <Input label="Slug" aria-label="Slug" value={blog?.slug}></Input>
           </div>
           <div className='flex gap-3'>
             <Input label="Meta title" aria-label="Meta title" {...register('metaTitle')} defaultValue={blog?.metaDescription}></Input>

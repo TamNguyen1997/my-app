@@ -7,7 +7,7 @@ const ProductCard = ({ product }) => {
       <div className="rounded-md border object-cover object-center group-hover:opacity-50
             hover:-translate-y-2.5 hover:scale-[1.02] shadow-[0px_2px_10px_rgba(0,0,0,0.15)]
             hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)] overflow-hidden transition">
-        <Link href={`/${product.subCate.slug}/${product.slug}`} className="flex flex-col h-[300px]">
+        <Link href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`} className="flex flex-col h-[300px]">
           <div className="aspect-h-1 aspect-w-1 w-full h-full overflow-hidden xl:aspect-h-8 xl:aspect-w-7">
             <img
               width={300}
@@ -19,7 +19,7 @@ const ProductCard = ({ product }) => {
           </div>
         </Link>
       </div>
-      <Link href={`/${product.subCate.slug}/${product.slug}`} className="text-black w-2/3">
+      <Link href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`} className="text-black w-2/3">
         <div className="grow pt-2">
           <p className="text-sm text-gray-700 line-clamp-2">
             {product.name}

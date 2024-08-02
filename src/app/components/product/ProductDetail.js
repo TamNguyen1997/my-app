@@ -44,7 +44,7 @@ export default ({ id }) => {
             }
             {
               product.subCate ?
-                <BreadcrumbItem href={`/${product.subCate.slug}`}>{product.subCate.name}</BreadcrumbItem> : ""
+                <BreadcrumbItem href={`/${product.subCate ? product.subCate.slug : "san-pham"}`}>{product.subCate.name}</BreadcrumbItem> : ""
             }
             <BreadcrumbItem>{product.name}</BreadcrumbItem>
           </Breadcrumbs>

@@ -108,7 +108,7 @@ const SearchBar = () => {
                   return (
                     <div key={product.id}>
                       <Link
-                        href={`/${product.subCate.slug}/${product.id}`}
+                        href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.id}`}
                         onClick={() => onConditionChange({ name: '' })}
                       >
                         <div className="px-4 py-2 flex items-center gap-5 hover:bg-slate-50 cursor-pointer">

@@ -137,7 +137,7 @@ const Cart = () => {
               cartdetails?.map((detail, i) =>
                 <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6" key={i}>
                   <div className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
-                    <a href={`/${detail.product.subCate.slug}/${detail.product.slug}`} className="shrink-0 md:order-1">
+                    <a href={`/${detail.product.subCate ? detail.product.subCate.slug : "san-pham"}/${detail.product.slug}`} className="shrink-0 md:order-1">
                       <img className="h-20 w-20 dark:block" src={`${process.env.NEXT_PUBLIC_FILE_PATH + detail.product.image?.path}`} alt="imac image" />
                     </a>
                     <div className="flex items-center justify-between md:order-3 md:justify-end">
@@ -158,7 +158,7 @@ const Cart = () => {
 
                     <div className="w-full min-w-0 flex-1 space-y-4 md:order-2 md:max-w-md">
                       <div>
-                        <a href={`/${detail.product.subCate.slug}/${detail.product.slug}`} className="text-base font-medium text-gray-900 hover:underline dark:text-white">{detail.product.name}</a>
+                        <a href={`/${detail.product.subCate ? detail.product.subCate.slug : "san-pham"}/${detail.product.slug}`} className="text-base font-medium text-gray-900 hover:underline dark:text-white">{detail.product.name}</a>
                         <p className="text-lg font-bold leading-tight text-red-600 dark:text-red-500">
                           {getPrice(detail.saleDetail, detail.secondarySaleDetail).toLocaleString()} đ</p>
                         <div className="text-[16px] flex opacity-80 pt-1">

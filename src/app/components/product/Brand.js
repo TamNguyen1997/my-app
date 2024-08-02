@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Select, SelectItem, Slider, Spinner } from "@nextui-org/react";
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, Select, SelectItem, Slider, Spinner } from "@nextui-org/react";
 import { FILTER_TYPE } from "@/lib/filter";
 import ProductCard from "@/components/product/ProductCard";
 
@@ -281,17 +281,32 @@ const Brand = ({ params, productFilter }) => {
 const BrandSection = ({ products }) => {
   return (
     <div>
-      <div className="text-black font-bold text-4xl text-center items-center">
-        {products[0].category?.name}
+      <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-2/3 md:w-1/3 h-[50px] m-auto shadow-md">
+        <div className="m-auto text-black font-bold md:text-xl">
+          {products[0].category?.name}
+        </div>
       </div>
 
-      <div className="w-full my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
-        {products.map((product) => (
-          <div key={product.id} className="h-full p-2 hover:opacity-75">
-            <ProductCard product={product} />
+      {
+        products.length ? <>
+          <div className="w-full my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
+            {products.map((product) => (
+              <div key={product.id} className="h-full p-2 hover:opacity-75">
+                <ProductCard product={product} />
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+
+          <Link isExternal
+            href={`/${products[0].category.slug}`}
+            className="flex justify-center items-center text-[#153f17] font-semibold w-[181px] 
+              h-[43px] rounded-[30px] border border-[#FFD400] hover:bg-[#ccefdc] transition mx-auto"
+          >
+            Xem thêm
+          </Link>
+
+        </> : ""
+      }
     </div>
   )
 }

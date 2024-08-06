@@ -297,23 +297,81 @@ const HeaderItems = ({ setHoveredCate, menuRef, setMenuVisible, menuVisible }) =
         >
           <div className="flex">
             <Menu size="20" className="inline-block mr-2" />
-            Danh mục
+            DANH MỤC
           </div>
         </Link>
-        {
-          subCategories.map((subcate) =>
-
-            <Link href={`/${subcate.slug}`}
-              key={subcate.id}
-              className={`
+        <Link href={`/xe-lam-ve-sinh`}
+          className={`
                 hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
                 text-center capitalize
               `}
-            >
-              {subcate.name}
-            </Link>
-
-          )}
+        >
+          XE LÀM VỆ SINH
+        </Link>
+        <Link href={`/xe-day-giat-la`}
+          className={`
+                hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
+                text-center capitalize
+              `}
+        >
+          XE ĐẨY GIẶT LÀ
+        </Link>
+        <Link href={`/xe-vat-nuoc-lau-san`}
+          className={`
+                hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
+                text-center capitalize
+              `}
+        >
+          XE VẮT NƯỚC LAU SÀN
+        </Link>
+        <Link href={`/xe-lam-ve-sinh`}
+          className={`
+                hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
+                text-center capitalize
+              `}
+        >
+          MÁY HÚT BỤI
+        </Link>
+        <Link href={`/thung-nhua-dung-do`}
+          className={`
+                hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
+                text-center capitalize
+              `}
+        >
+          THÙNG NHỰA ĐỰNG ĐỒ
+        </Link>
+        <Link href={`/thanh-gat-kinh`}
+          className={`
+                hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
+                text-center capitalize
+              `}
+        >
+          THANH GẠT KÍNH
+        </Link>
+        <Link href={`/khan-lau-san`}
+          className={`
+                hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
+                text-center capitalize
+              `}
+        >
+          KHĂN LAU SÀN
+        </Link>
+        <Link href={`/gang-tay-bao-ho`}
+          className={`
+                hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
+                text-center capitalize
+              `}
+        >
+          GĂNG TAY BẢO HỘ
+        </Link>
+        <Link href={`/khan-giay`}
+          className={`
+                hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
+                text-center capitalize
+              `}
+        >
+          KHĂN GIẤY
+        </Link>
       </div>
     </div>
   </>

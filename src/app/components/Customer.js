@@ -50,7 +50,7 @@ const Customer = ({ hideTitle }) => {
       </div>
     }
 
-    <Carousel infinite responsive={responsive} className="w-full items-center" autoPlaySpeed={5000} autoPlay arrows={false} showDots centerMode>
+    <Carousel infinite responsive={responsive} className="w-full items-center" autoPlaySpeed={3000} autoPlay arrows={false} showDots centerMode>
       {
         logo.map((l, i) => <div className="p-3 w-full h-full m-auto items-center text-center content-center" key={i}>
           <img

@@ -69,7 +69,6 @@ const ProductDetail = ({
             value={product.quantity}
             min={0}
             max={999}
-            isRequired
             onValueChange={(value) => setProduct(Object.assign({}, product, { quantity: parseInt(value) }))}
           />
         </div>

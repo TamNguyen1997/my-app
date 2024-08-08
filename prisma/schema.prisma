@@ -342,8 +342,9 @@ model category {
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
 
-  imageId String? @db.Uuid
-  image   image?  @relation(fields: [imageId], references: [id])
+  headerOrder Int     @default(0) @map("header_order")
+  imageId     String? @db.Uuid
+  image       image?  @relation(fields: [imageId], references: [id])
 
   type     cate_type  @default(CATE)
   cateId   String?    @db.Uuid

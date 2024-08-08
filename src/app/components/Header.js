@@ -238,11 +238,6 @@ const BRANDS = [
 ];
 
 const HeaderItems = ({ setHoveredCate, menuRef, setMenuVisible, menuVisible }) => {
-  const [subCategories, setSubCategories] = useState([]);
-  useEffect(() => {
-    fetch('/api/categories/?type=SUB_CATE&size=9&showOnHeader=true').then(res => res.json()).then(json => setSubCategories(json.result))
-  }, [])
-
   const headerItemsRef = useRef();
 
   useEffect(() => {

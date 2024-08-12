@@ -334,7 +334,7 @@ const Cart = () => {
                 relatedProducts?.map((product, i) => {
                   return <div
                     key={i}
-                    className="space-y-3 overflow-hidden rounded-lg border border-gray-200 bg-white p-3 
+                    className="space-y-3 overflow-hidden rounded-lg border border-gray-200 bg-white pr-1 
                   shadow-sm dark:border-gray-700 dark:bg-gray-800">
                     <ProductCard product={product} width={200} height={200} />
                   </div>

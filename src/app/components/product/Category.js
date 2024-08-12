@@ -241,7 +241,7 @@ const Category = ({ params, productFilter }) => {
             <>
               <div className="w-full my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
                 {data.map((product) => (
-                  <div key={product.id} className="h-full p-2 hover:opacity-75">
+                  <div key={product.id} className="h-full pr-1 hover:opacity-75">
                     <ProductCard product={product} />
                   </div>
                 ))}

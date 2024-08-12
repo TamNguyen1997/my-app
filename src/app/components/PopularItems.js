@@ -225,13 +225,15 @@ const ProductCards = ({ category, products, redirect, banner }) => {
   </div>)
   return (
     <div>
-      <section className="rounded-tr-[50px] rounded-tl-[50px]">
-        {
-          banner ?
-            <BannerDisplay /> :
-            <CategoryDisplay />
-        }
-        <div className="mx-auto lg:max-w-full">
+      <section className="rounded-tr-[50px] rounded-tl-[50px] pb-3">
+        <div className="py-3">
+          {
+            banner ?
+              <BannerDisplay /> :
+              <CategoryDisplay />
+          }
+        </div>
+        <div className="mx-auto lg:max-w-full bg-gray-200 rounded-lg">
           <ProductCarousel products={products} responsive={responsive}></ProductCarousel>
         </div>
       </section>
@@ -246,7 +248,7 @@ const ProductCarousel = ({ products, responsive }) => {
     >
       {
         products.map((product) => {
-          return <div key={product.id} className="h-full p-2 hover:opacity-75">
+          return <div key={product.id} className="h-full pr-1 hover:opacity-75">
             <ProductCard product={product} />
           </div>
         })

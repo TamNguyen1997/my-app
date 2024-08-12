@@ -120,7 +120,9 @@ export default function PopularItems() {
 
   return (
     <div className="flex flex-col gap-11">
-      <ProductCards category="SẢN PHẨM NỔI BẬT" products={products} />
+      <div className="">
+        <ProductCards category="SẢN PHẨM NỔI BẬT" products={products} />
+      </div>
 
       <div>
         <div className="bg-black grid lg:grid-cols-6 sm:grid-cols-3">
@@ -182,11 +184,11 @@ export default function PopularItems() {
 
       {
         Object.keys(highlightProductsFromCates).length ? highlightCates.filter(cate => highlightProductsFromCates[cate.slug]).map((cate, i) => {
-          return <div key={i}>
+          return <div key={i} className="">
             <ProductCards banner={cate.image?.path} products={highlightProductsFromCates[cate.slug]} />
             <Link isExternal
               href={`/${cate.slug}`}
-              className="flex justify-center items-center text-[#153f17] font-semibold w-[181px] 
+              className="flex justify-center items-center text-[#153f17] font-semibold w-[181px] bg-white
               h-[43px] rounded-[30px] border border-[#FFD400] hover:bg-[#ccefdc] transition mx-auto"
             >
               Xem thêm
@@ -233,7 +235,7 @@ const ProductCards = ({ category, products, redirect, banner }) => {
               <CategoryDisplay />
           }
         </div>
-        <div className="mx-auto lg:max-w-full bg-gray-200 rounded-lg">
+        <div className="mx-auto lg:max-w-full">
           <ProductCarousel products={products} responsive={responsive}></ProductCarousel>
         </div>
       </section>
@@ -298,7 +300,7 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
           </div>
         </div>
       </div>
-      <div className="col-span-4">
+      <div className="col-span-4 py-2 pl-2">
         <ProductCarousel products={products} responsive={responsive}></ProductCarousel>
       </div>
     </div>

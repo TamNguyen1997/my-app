@@ -3,23 +3,23 @@ import { getPrice } from "@/lib/product"
 
 const ProductCard = ({ product }) => {
   return (
-    <div>
-      <div className="rounded-md border object-cover object-center group-hover:opacity-50
-            hover:-translate-y-2.5 hover:scale-[1.02] shadow-[0px_2px_10px_rgba(0,0,0,0.15)]
-            hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)] overflow-hidden transition">
-        <Link href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`} className="flex flex-col h-[300px]">
-          <div className="aspect-h-1 aspect-w-1 w-full h-full overflow-hidden xl:aspect-h-8 xl:aspect-w-7">
+    <div className="group-hover:opacity-50 hover:-translate-y-3 hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15) transition bg-white">
+      <div className="rounded-md border object-cover object-center 
+            shadow-[0px_2px_10px_rgba(0,0,0,0.15)] overflow-hidden">
+        <Link href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`} className="flex flex-col h-[250px]">
+          <div className="w-3/4 h-3/4 overflow-hidden">
             <img
-              width={300}
-              height={300}
+              width={200}
+              height={200}
               src={`${product.image?.path}`}
               alt={product.imageAlt}
-              className="h-full w-full object-cover object-center group-hover:opacity-75 hover:scale-110 transition"
+              className="h-full w-full object-cover object-center"
             />
           </div>
         </Link>
       </div>
-      <Link href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`} className="text-black h-[40px]">
+      <Link href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`}
+        className="text-black h-[40px] border-b-small border-gray-400 w-full">
         <div className="grow pt-2">
           <p className="text-sm text-gray-700 line-clamp-2">
             {product.name}
@@ -27,7 +27,7 @@ const ProductCard = ({ product }) => {
         </div>
       </Link>
       {
-        getPrice(product) ? <p className="text-red-500 font-bold">{getPrice(product)} đ</p> : ""
+        getPrice(product) ? <p className="text-red-500 font-bold w-full relative text-center items-center">{getPrice(product)} đ</p> : <p></p>
       }
     </div>
   )

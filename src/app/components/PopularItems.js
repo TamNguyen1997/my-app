@@ -228,15 +228,17 @@ const ProductCards = ({ category, products, redirect, banner }) => {
   return (
     <div>
       <section className="rounded-tr-[50px] rounded-tl-[50px] pb-3">
-        <div className="py-3">
-          {
-            banner ?
-              <BannerDisplay /> :
-              <CategoryDisplay />
-          }
-        </div>
-        <div className="mx-auto lg:max-w-full">
-          <ProductCarousel products={products} responsive={responsive}></ProductCarousel>
+        <div className="p-3 pt-0 bg-[#c7c7c7] rounded-md">
+          <div className="py-3">
+            {
+              banner ?
+                <BannerDisplay /> :
+                <CategoryDisplay />
+            }
+          </div>
+          <div className="mx-auto lg:max-w-full [&_.react-multi-carousel-track]:pt-3 -mt-3">
+            <ProductCarousel products={products} responsive={responsive}></ProductCarousel>
+          </div>
         </div>
       </section>
     </div>

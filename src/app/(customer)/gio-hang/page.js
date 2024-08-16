@@ -210,9 +210,12 @@ const Cart = () => {
             </div>
           </div>
 
-          <Button className="items-center justify-center flex m-auto mt-8" color="primary" type="button" isDisabled={!cartdetails || !cartdetails.length}>
-            Chuyển đến mục thanh toán
-          </Button>
+          <Link href="/thanh-toan" className="items-center justify-center flex m-auto mt-8">
+            <Button color="primary" type="button"
+              isDisabled={!cartdetails || !cartdetails.length}>
+              Chuyển đến mục thanh toán
+            </Button>
+          </Link>
 
           <div className="flex items-center justify-center gap-2">
             <span className="text-sm font-normal text-gray-500 dark:text-gray-400"> hoặc </span>

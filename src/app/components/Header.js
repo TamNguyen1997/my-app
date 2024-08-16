@@ -300,6 +300,14 @@ const HeaderItems = ({ setHoveredCate, menuRef, setMenuVisible, menuVisible }) =
             DANH MỤC
           </div>
         </Link>
+        <Link href={`/dung-cu-ve-sinh`}
+          className={`
+                hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
+                text-center capitalize
+              `}
+        >
+          DỤNG CỤ VỆ SINH
+        </Link>
         <Link href={`/xe-lam-ve-sinh`}
           className={`
                 hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
@@ -308,53 +316,29 @@ const HeaderItems = ({ setHoveredCate, menuRef, setMenuVisible, menuVisible }) =
         >
           XE LÀM VỆ SINH
         </Link>
-        <Link href={`/xe-day-giat-la`}
+        <Link href={`/thung-dung-do-da-nang`}
           className={`
                 hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
                 text-center capitalize
               `}
         >
-          XE ĐẨY GIẶT LÀ
+          THÙNG ĐỰNG ĐỒ ĐA NĂNG
         </Link>
-        <Link href={`/xe-vat-nuoc-lau-san`}
+        <Link href={`/may-ve-sinh-cong-nghiep`}
           className={`
                 hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
                 text-center capitalize
               `}
         >
-          XE VẮT NƯỚC LAU SÀN
+          MÁY VỆ SINH CỘNG NGHIỆP
         </Link>
-        <Link href={`/xe-lam-ve-sinh`}
+        <Link href={`/dung-cu-ve-sinh-kinh`}
           className={`
                 hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
                 text-center capitalize
               `}
         >
-          MÁY HÚT BỤI
-        </Link>
-        <Link href={`/thung-nhua-dung-do`}
-          className={`
-                hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
-                text-center capitalize
-              `}
-        >
-          THÙNG NHỰA ĐỰNG ĐỒ
-        </Link>
-        <Link href={`/thanh-gat-kinh`}
-          className={`
-                hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
-                text-center capitalize
-              `}
-        >
-          THANH GẠT KÍNH
-        </Link>
-        <Link href={`/khan-lau-san`}
-          className={`
-                hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
-                text-center capitalize
-              `}
-        >
-          KHĂN LAU SÀN
+          DỤNG CỤ VỆ SINH KÍNH
         </Link>
         <Link href={`/gang-tay-bao-ho`}
           className={`
@@ -364,13 +348,29 @@ const HeaderItems = ({ setHoveredCate, menuRef, setMenuVisible, menuVisible }) =
         >
           GĂNG TAY BẢO HỘ
         </Link>
-        <Link href={`/khan-giay`}
+        <Link href={`/tham-trai-san`}
           className={`
                 hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
                 text-center capitalize
               `}
         >
-          KHĂN GIẤY
+          THẢM TRẢI SÀN
+        </Link>
+        <Link href={`/khan-giay-giay-ve-sinh`}
+          className={`
+                hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
+                text-center capitalize
+              `}
+        >
+          KHĂN GIẤY/GIẤY VỆ SINH
+        </Link>
+        <Link href={`/dich-vu`}
+          className={`
+                hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
+                text-center capitalize
+              `}
+        >
+          DỊCH VỤ
         </Link>
       </div>
     </div>

@@ -74,6 +74,9 @@ export async function POST(req) {
           paymentMethod: order.payment_method,
           shippingFee: order.shippingFee,
           orderId: crypto.randomBytes(10).toString("hex"),
+          companyName: order.companyName,
+          companyEmail: order.companyEmail,
+          companyTaxCode: order.companyTaxCode,
           product_on_order: {
             create: products.map(item => {
               return {

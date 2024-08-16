@@ -123,7 +123,17 @@ const Order = () => {
               value={order.note}
               disabled
             />
-
+            <div className="flex gap-3">
+              <Input label="Tên Công ty"
+                value={order.companyName}
+                disabled />
+              <Input label="Mã số thuế"
+                value={order.companyTaxCode}
+                disabled />
+              <Input label="Email nhận hóa đơn"
+                value={order.companyEmail}
+                disabled />
+            </div>
             <div className="flex gap-3">
               <Input label="Mã đơn hàng"
                 value={order.orderId}
@@ -143,6 +153,7 @@ const Order = () => {
                 type="number"
                 disabled />
             </div>
+
             <div className="flex gap-3">
               <Input label="Phí vận chuyển"
                 value={order.shippingFee}

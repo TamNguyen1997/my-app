@@ -20,10 +20,10 @@ const responsive = {
 
 const AboutUsNumbers = () => {
   const [images] = useState([
-    "https://id.elsaspeak.com/wp-content/themes/elsawebsite/pages/about-us/images/banner/img-slider01.jpg",
-    "https://id.elsaspeak.com/wp-content/themes/elsawebsite/pages/about-us/images/banner/img-slider02.jpg",
-    "https://cdn.theatlantic.com/thumbor/viW9N1IQLbCrJ0HMtPRvXPXShkU=/0x131:2555x1568/976x549/media/img/mt/2017/06/shutterstock_319985324/original.jpg",
-    "https://id.elsaspeak.com/wp-content/themes/elsawebsite/pages/about-us/images/banner/img-slider04.jpg",
+    "/about-us/outstanding-1.jpg",
+    "/about-us/outstanding-2.jpg",
+    "/about-us/outstanding-3.jpg",
+    "/about-us/outstanding-4.jpg"
   ]);
 
   return (

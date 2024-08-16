@@ -27,7 +27,9 @@ const ProductCard = ({ product }) => {
         </div>
       </Link>
       {
-        getPrice(product) ? <p className="text-red-500 font-bold w-full relative text-center items-center">{getPrice(product)} đ</p> : <p></p>
+        getPrice(product) ?
+          <p className="text-red-500 font-bold w-full relative text-center items-center h-8">{getPrice(product)} đ</p> :
+          <p className="h-8"></p>
       }
     </div>
   )

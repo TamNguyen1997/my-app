@@ -7,13 +7,13 @@ const ProductCard = ({ product }) => {
       <div className="rounded-md border object-cover object-center 
             shadow-[0px_2px_10px_rgba(0,0,0,0.15)] overflow-hidden mx-auto">
         <Link href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`} className="flex flex-col h-[250px]">
-          <div className="w-3/4 h-3/4 overflow-hidden">
+          <div className="overflow-hidden">
             <img
               width={200}
               height={200}
-              src={`${product.image?.path}`}
+              src={`/gallery/product/as-590-ik-cbn-scaledjpg.jpeg`}
               alt={product.imageAlt}
-              className="h-full w-full object-cover object-center"
+              className=" object-cover object-center"
             />
           </div>
         </Link>

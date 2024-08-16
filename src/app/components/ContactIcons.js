@@ -16,7 +16,7 @@ const ContactIcons = () => {
           </Link>
         </li>
         <li>
-          <Link href="https://zalo.me/0902405225" isExternal>
+          <Link href="https://zalo.me/0902366617" isExternal>
             <span className="relative flex">
               <img src="/icon/zalo.png"></img>
               <span className="motion-safe:animate-ping-slow absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>

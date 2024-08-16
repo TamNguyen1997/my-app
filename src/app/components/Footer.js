@@ -66,7 +66,7 @@ const Footer = () => {
             </Link>
           </div>
           <div>
-            <Link isExternal href="https://docs.google.com/forms/d/e/1FAIpQLSeFq-zgAusY-WWdqsVWp6Cys7ZFRx0KVYgAKFQ37KAvwXtOig/viewform" className="text-white">
+            <Link isExternal href="https://docs.google.com/forms/d/e/1FAIpQLSfbYULWGzXgkpcHs5LnCOpgB6inG3zWxR47ocWoZF-MGTfwlw/viewform" className="text-white">
               Hợp tác bán hàng
             </Link>
           </div>

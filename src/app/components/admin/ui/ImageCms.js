@@ -8,7 +8,7 @@ import { redirect } from 'next/navigation'
 import ImagePicker from './ImagePicker'
 import BannerScheduler from './BannerScheduler'
 
-const ImageCms = () => {
+const ImageCms = ({ onImageClick }) => {
   const [reload, setReload] = useState(false)
 
   const [selectedTab, setSelectedTab] = useState("Gallery")
@@ -47,7 +47,7 @@ const ImageCms = () => {
   }
 
   return (
-    <div className="border shadow-md mx-auto p-5">
+    <div className="border shadow-md p-5">
       <Tabs aria-label="Gallery" selectedKey={selectedTab} onSelectionChange={setSelectedTab}>
         <Tab key="Gallery" title="Gallery">
           <div className='flex w-full flex-wrap md:flex-nowrap gap-4 py-5'>
@@ -127,7 +127,7 @@ const ImageCms = () => {
             </Modal>
           </div>
 
-          <ImagePicker onImageClick={() => { }} />
+          <ImagePicker onImageClick={onImageClick} />
         </Tab>
         <Tab key="Draggable Gallery" title="Quản lý banner">
           <BannerScheduler />

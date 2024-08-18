@@ -47,7 +47,10 @@ const SaleDetail = ({ saleDetails, product }) => {
 
   return (<>
     <div className="">
-      <p className="text-[30px] font-extrabold m-[10px_0_18px]">{product.name}</p>
+      <div className="m-[10px_0_18px]">
+        <p className="text-[30px] font-extrabold">{product.name}</p>
+        <p className="text-gray-500 text-small">SKU: {product.sku}</p>
+      </div>
       <p className="text-[32px] font-medium text-[#b61a2d] mb-2.5">{getPrice() ? `${getPrice()} đ` : ""}</p>
       <p className="text-sm mb-[30px]">Đã bao gồm VAT, chưa bao gồm phí giao hàng</p>
       <p className="text-sm mb-2.5">Giao hàng trong vòng 1-3 ngày</p>

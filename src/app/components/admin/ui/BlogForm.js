@@ -1,5 +1,5 @@
 import { useEditor } from '@tiptap/react';
-import ImagePicker from "@/components/admin/ui/ImagePicker";
+import ImageCms from "@/components/admin/ui/ImageCms";
 import { Button, DatePicker, Input, Link, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Switch, Textarea, useDisclosure } from '@nextui-org/react';
 import { useForm } from "react-hook-form"
 import { useState } from 'react';
@@ -184,14 +184,14 @@ const BlogForm = ({ blog, setBlog }) => {
       </div>
 
       <Modal
-        size="5xl" scrollBehavior="inside"
+        size="full" scrollBehavior="inside"
         isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">Chọn hình ảnh</ModalHeader>
               <ModalBody>
-                <ImagePicker disableAdd={true} onImageClick={selectedImage} disableDelete={true}></ImagePicker>
+                <ImageCms disableAdd={true} onImageClick={selectedImage} disableDelete={true} />
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>

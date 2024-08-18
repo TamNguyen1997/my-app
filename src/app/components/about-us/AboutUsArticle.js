@@ -9,11 +9,6 @@ Tiêu chí của Sao Việt - Khách hàng là trọng tâm nên mọi quyết �
 thích ứng nhanh, hợp tác và sự cam kết nghiêm túc để phục vụ khách hàng ngày càng tốt hơn.`,
       image: "/about-us/article-1.jpg",
     },
-    // {
-    //   title: "",
-    //   content: "Với sứ mệnh mang đến những sản phẩm chất lượng có giá trị cho người sử dụng và những giải pháp làm sạch có trách nhiệm xã hội, chúng tôi hiểu rằng sự tín nhiệm của quý khách hàng dành cho Sao Việt là điều rất quý giá. Và chúng tôi có trách nhiệm chăm sóc, duy trì mối quan hệ này, đồng thời hướng chúng ngày càng phát triển mạnh mẽ, phù hợp với nhu cầu và định hướng của cả hai bên.",
-    //   image: "https://id.elsaspeak.com/wp-content/themes/elsawebsite/pages/about-us/images/story/our-ceo.jpeg",
-    // },
     {
       title: "Giá trị bền vững",
       content: `Quỹ Từ Thiện “Trái Tim Sao Việt” được ban giám đốc Công ty – anh Đinh Công Hiếu và chị Đinh Thị Huế ký duyệt thành lập 

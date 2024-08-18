@@ -11,7 +11,7 @@ const ProductCard = ({ product }) => {
             <img
               width={200}
               height={200}
-              src={`/gallery/product/as-590-ik-cbn-scaledjpg.jpeg`}
+              src={`${product.image?.path}`}
               alt={product.imageAlt}
               className=" object-cover object-center"
             />

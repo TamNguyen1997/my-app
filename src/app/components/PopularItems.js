@@ -120,7 +120,7 @@ export default function PopularItems() {
 
   return (
     <div className="flex flex-col gap-11">
-      <div className="">
+      <div>
         <ProductCards category="SẢN PHẨM NỔI BẬT" products={products} />
       </div>
 
@@ -278,9 +278,9 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
   }
 
   return (<>
-    <div className="lg:grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-6">
-      <div className="pt-2 col-span-2">
-        <div className="bg-[#FFD400] shadow-lg rounded-md w-full h-[300px]">
+    <div className="lg:grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-6 bg-[#c7c7c7] p-3">
+      <div className="pt-2 col-span-2 ">
+        <div className="bg-[#FFD400] shadow-lg rounded-md w-full h-[330px]">
           <div className="flex mx-auto">
             {
               brandDescription[selectedBrand] && brandDescription[selectedBrand].logo ?

@@ -31,11 +31,20 @@ module.exports = {
       },
       animation: {
         'ping-slow': 'ping 2s linear infinite',
+        'ping-delay': 'ping-delay 7s linear infinite'
       },
       backgroundImage: {
         'introduction': "url('/Anh-gui-27.png')",
         'banner1': "url('/banner-1.jpg')",
         'contact': "url('/img-bg-contact.png')",
+      },
+      keyframes: {
+        'ping-delay': {
+          '20%, 100%': {
+            transform: 'scale(2)',
+            opacity: '0'
+          }
+        }
       }
     },
   },

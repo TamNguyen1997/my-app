@@ -33,6 +33,7 @@ const ImageCms = ({ onImageClick }) => {
       body: formData
     }).then(() => {
       setReload(true)
+      onOpenChange()
     })
   }
 
@@ -40,10 +41,6 @@ const ImageCms = ({ onImageClick }) => {
     const file = files[0]
     setUploadImage(file)
     setImageName(file.name)
-  }
-
-  if (reload) {
-    redirect('/admin/image')
   }
 
   return (
@@ -127,7 +124,7 @@ const ImageCms = ({ onImageClick }) => {
             </Modal>
           </div>
 
-          <ImagePicker onImageClick={onImageClick} />
+          <ImagePicker onImageClick={onImageClick} reload={reload} />
         </Tab>
         <Tab key="Draggable Gallery" title="Quản lý banner">
           <BannerScheduler />

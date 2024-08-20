@@ -228,7 +228,7 @@ const ProductCards = ({ category, products, redirect, banner }) => {
   return (
     <div>
       <section className="rounded-tr-[50px] rounded-tl-[50px] pb-3">
-        <div className="p-3 pt-0 bg-[#c7c7c7] rounded-md">
+        <div className="p-3 pt-0 rounded-md">
           <div className="py-3">
             {
               banner ?
@@ -252,7 +252,7 @@ const ProductCarousel = ({ products, responsive }) => {
     >
       {
         products.map((product) => {
-          return <div key={product.id} className="h-full pr-1 hover:opacity-75">
+          return <div key={product.id} className="h-full hover:opacity-75">
             <ProductCard product={product} />
           </div>
         })
@@ -278,9 +278,9 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
   }
 
   return (<>
-    <div className="lg:grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-6 bg-[#c7c7c7] p-3 rounded-md">
+    <div className="lg:grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-6">
       <div className="pt-2 col-span-2 ">
-        <div className="bg-[#FFD400] shadow-lg rounded-md w-full h-[330px]">
+        <div className="bg-[#FFD400] shadow-lg rounded-md w-full h-[365px]">
           <div className="flex mx-auto">
             {
               brandDescription[selectedBrand] && brandDescription[selectedBrand].logo ?

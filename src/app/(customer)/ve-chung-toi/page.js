@@ -11,7 +11,7 @@ import { motion } from "framer-motion";
 
 export default function AboutUs() {
   return (
-    <div className="font-open_san">
+    <div>
       <motion.div
         initial={{ x: -200, opacity: 0 }}
         whileInView={{ x: 0, opacity: 1 }}
@@ -73,7 +73,7 @@ export default function AboutUs() {
         <AboutUsNumbers />
       </motion.div>
 
-      <motion.div
+      {/* <motion.div
         initial={{ y: -200, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.7, delay: 0.3 }}
@@ -81,7 +81,7 @@ export default function AboutUs() {
         className="mb-6"
       >
         <AboutUsPartner />
-      </motion.div>
+      </motion.div> */}
 
       <motion.div
         initial={{ y: -200, opacity: 0 }}

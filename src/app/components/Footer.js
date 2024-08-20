@@ -88,13 +88,13 @@ const Footer = () => {
           </div>
           <p className="font-bold">MẠNG XÃ HỘI</p>
           <div className="flex gap-3">
-            <Link href="https://www.facebook.com/vesinhsaoviet/?ref=embed_page">
+            <Link href="https://www.facebook.com/vesinhsaoviet/?ref=embed_page" isExternal>
               <Facebook className="w-[30px] h-[30px] text-white" />
             </Link>
-            <Link href="/">
-              <Linkedin className="w-[30px] h-[30px] text-white" />
+            <Link href="https://www.tiktok.com/@vesinhsaoviet" isExternal>
+              <img src="/Titkok-line.svg" className="w-[30px] h-[30px] text-white" />
             </Link>
-            <Link href="/" className="pt-1">
+            <Link href="http://bit.ly/youtube-saoviet" className="pt-1" isExternal>
               <Youtube className="w-[30px] h-[30px] text-white" />
             </Link>
           </div>

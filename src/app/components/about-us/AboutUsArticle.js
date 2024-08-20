@@ -45,7 +45,7 @@ thích ứng nhanh, hợp tác và sự cam kết nghiêm túc để phục vụ
                     {
                       item.title && <h2 className="text-3xl font-semibold mb-6 hidden md:block">{item.title}</h2>
                     }
-                    <p className="leading-loose">{item.content}</p>
+                    <p className="leading-loose text-justify">{item.content}</p>
                   </div>
                   <div className="md:w-[calc(50%_-_20px)] w-full mb-5">
                     <h2 className="text-3xl text-center font-semibold mb-6 md:hidden block">{item.title}</h2>
@@ -61,8 +61,10 @@ thích ứng nhanh, hợp tác và sự cam kết nghiêm túc để phục vụ
                 {
                   !index && quote &&
                   <div
-                    className="text-white text-[18px] text-center max-w-[900px] rounded-2xl p-[70px_20px] mb-[60px] mx-auto whitespace-pre-wrap"
-                    style={{ background: "url(/icon/quote-open.png) no-repeat left 15px top 12px,url(/icon/quote-close.png) no-repeat right 15px bottom 15px,linear-gradient(290deg, #713ff4 25%, #cd55ff 105%)" }}
+                    className="text-[#196b00] text-[18px] text-center max-w-[800px] rounded-2xl p-[50px_20px] mb-[60px] mx-auto whitespace-pre-wrap"
+                    style={{
+                      background: `url(/icon/quote-open.png) no-repeat left 15px top 12px,url(/icon/quote-close.png) 
+                    no-repeat right 15px bottom 15px,linear-gradient(290deg, #d5e135 25%, #59b747 105%)` }}
                   >
                     {quote}
                   </div>

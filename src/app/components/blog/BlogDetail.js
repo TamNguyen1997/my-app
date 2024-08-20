@@ -52,7 +52,7 @@ const BlogDetail = ({ slug, category }) => {
   if (!blog.id) return <></>
 
   return (
-    <div className="bg-[#f6f6f6]">
+    <div className="bg-[#f6f6f6] font-open_san">
       <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/blog/${slug}`} />
       <div className="bg-opacity-40 py-6">
         <div className="container">

@@ -20,7 +20,7 @@ const responsive = {
 
 const AboutUsNumbers = () => {
   const [images] = useState([
-    "/about-us/outstanding-1.jpg",
+    "/about-us/outstanding-1.JPG",
     "/about-us/outstanding-2.jpg",
     "/about-us/outstanding-3.jpg",
     "/about-us/outstanding-4.jpg"

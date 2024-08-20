@@ -8,12 +8,16 @@ import ProductCard from "@/components/product/ProductCard";
 
 const responsive = {
   superLargeDesktop: {
-    breakpoint: { max: 4000, min: 3000 },
+    breakpoint: { max: 4000, min: 1279 },
     items: 10
   },
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
+  largeDesktop: {
+    breakpoint: { max: 3000, min: 1279 },
     items: 5
+  },
+  desktop: {
+    breakpoint: { max: 1279, min: 1024 },
+    items: 4
   },
   tablet: {
     breakpoint: { max: 1024, min: 464 },

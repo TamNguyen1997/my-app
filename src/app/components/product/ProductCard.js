@@ -3,7 +3,7 @@ import { getPrice } from "@/lib/product"
 
 const ProductCard = ({ product }) => {
   return (
-    <div className="group-hover:opacity-50 border hover:-translate-y-3 hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15) transition bg-white">
+    <div className="group-hover:opacity-50 border hover:-translate-y-3 hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15) transition bg-white max-w-[300px]">
       <div className="rounded-md object-cover object-center 
             overflow-hidden mx-auto">
         <Link href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`} className="flex flex-col h-[250px]">

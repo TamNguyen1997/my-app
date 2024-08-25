@@ -74,7 +74,8 @@
     "tailwindcss-animate": "^1.0.7",
     "tippy.js": "^6.3.7",
     "twemoji-parser": "^14.0.0",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/crypto-js": "^4.2.2",

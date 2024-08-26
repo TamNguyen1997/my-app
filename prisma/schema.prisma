@@ -390,3 +390,22 @@ enum category_type {
   BRAND
   CATEGORY
 }
+
+model redirect {
+  id   String @id @default(dbgenerated("gen_random_uuid()"))
+  from String
+  to   String
+
+  active       Boolean @default(true)
+  redirectCode Int     @default(301) @map("redirect_code")
+
+  redirectType redirect_type @default(EXACT) @map("redirect_type")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+}
+
+enum redirect_type {
+  EXACT
+  REGEX
+}

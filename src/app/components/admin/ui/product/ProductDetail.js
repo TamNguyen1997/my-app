@@ -1,6 +1,6 @@
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, useDisclosure } from "@nextui-org/react"
 import slugify from "slugify"
-import ImagePicker from "../ImagePicker"
+import ImageCms from "../ImageCms"
 import { useCallback } from "react"
 import { ToastContainer, toast } from 'react-toastify';
 
@@ -195,14 +195,14 @@ const ProductDetail = ({
       </div>
 
       <Modal
-        size="5xl" scrollBehavior="inside"
+        size="full" scrollBehavior="inside"
         isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">Chọn hình ảnh</ModalHeader>
               <ModalBody>
-                <ImagePicker disableAdd={true} onImageClick={selectImage} disableDelete={true}></ImagePicker>
+                <ImageCms disableAdd={true} onImageClick={selectImage} disableDelete={true} />
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>

@@ -1,4 +1,4 @@
-import { Contact, Filter, HomeIcon, Image, Info, Layers, NotebookPen, ShoppingBasket, StickyNote } from 'lucide-react';
+import { ArrowRightLeft, Contact, Filter, HomeIcon, Image, Info, Layers, NotebookPen, ShoppingBasket, StickyNote } from 'lucide-react';
 
 const items = [
   {
@@ -54,6 +54,12 @@ const items = [
     name: 'Đơn hàng',
     icon: <StickyNote />,
     link: '/admin/order'
+  },
+  {
+    id: "redirect",
+    name: 'Redirect',
+    icon: <ArrowRightLeft />,
+    link: '/admin/redirect'
   }
 ]
 

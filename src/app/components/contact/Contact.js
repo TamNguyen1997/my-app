@@ -134,6 +134,9 @@ export default function Contact() {
                 <Link href="https://bit.ly/lazada-saoviet">
                   <img src="icon-shopee.svg" width={70} height={70}></img>
                 </Link>
+                <Link href="https://www.tiktok.com/@vesinhsaoviet">
+                  <img src="icon-tiktok.png" width={70} height={70}></img>
+                </Link>
               </div>
             </div>
           </div>
@@ -141,11 +144,8 @@ export default function Contact() {
             <p className="uppercase text-white text-[26px] font-bold pb-4">Mạng xã hội</p>
             <div className="items-center text-center">
               <div className="flex gap-3">
-                <Link href="">
-                  <img src="icon-twitter.svg" width={70} height={70}></img>
-                </Link>
-                <Link href="https://www.linkedin.com/company/sao-viet-trade-company/">
-                  <img src="icon-linkedin.svg" width={70} height={70}></img>
+                <Link href="https://www.tiktok.com/@vesinhsaoviet">
+                  <img src="icon-tiktok.png" width={70} height={70}></img>
                 </Link>
                 <Link href="http://bit.ly/youtube-saoviet">
                   <img src="icon-youtube.svg" width={70} height={70}></img>

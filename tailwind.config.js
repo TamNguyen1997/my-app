@@ -1,4 +1,5 @@
 import { nextui } from "@nextui-org/react"
+import { Roboto } from "next/font/google"
 
 module.exports = {
   darkMode: ["class"],
@@ -25,13 +26,25 @@ module.exports = {
         }
       },
       fontFamily: {
-        open_san: ['Open Sans', 'san-serif']
-
+        open_san: ['Open Sans', 'san-serif'],
+        roboto: ["Roboto", "sans-serif"]
+      },
+      animation: {
+        'ping-slow': 'ping 2s linear infinite',
+        'ping-delay': 'ping-delay 7s linear infinite'
       },
       backgroundImage: {
         'introduction': "url('/Anh-gui-27.png')",
         'banner1': "url('/banner-1.jpg')",
         'contact': "url('/img-bg-contact.png')",
+      },
+      keyframes: {
+        'ping-delay': {
+          '20%, 100%': {
+            transform: 'scale(2)',
+            opacity: '0'
+          }
+        }
       }
     },
   },

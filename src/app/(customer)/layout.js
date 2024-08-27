@@ -1,16 +1,14 @@
-import { Open_Sans } from "next/font/google";
+import { Roboto } from "next/font/google";
 import "../globals.css";
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ContactIcons from '@/components/ContactIcons'
 import CartProvider from '@/context/CartProvider'
 
-const open_sans = Open_Sans({ subsets: ["latin"] });
-
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${open_sans.className} `}>
+      <body className='font-roboto'>
         <CartProvider>
           <Header />
           <div className="min-h-screen">

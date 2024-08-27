@@ -5,7 +5,6 @@ import { createOrder } from '@/lib/courier';
 export async function POST(req) {
   try {
     const raw = await req.json()
-    console.log(raw)
     const productOnOrders = await db.product_on_order.findMany({
       where: {
         orderId: raw.orderId

@@ -3,9 +3,9 @@ import ProductCard from "@/app/components/product/ProductCard";
 import { CartContext } from "@/context/CartProvider";
 import { Button, Checkbox, Input, Link, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Textarea, useDisclosure } from "@nextui-org/react";
 import { useContext, useEffect, useState } from "react";
-import { useForm } from "react-hook-form"
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+// import { useForm } from "react-hook-form"
+// import { ToastContainer, toast } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
 
 const COLOR_VARIANT = {
   "#ffffff": "bg-[#ffffff]",
@@ -18,21 +18,21 @@ const COLOR_VARIANT = {
 
 const Cart = () => {
   const { cartdetails, removeItemFromCart, updateItemQuantityInCart, getTotal, removeAllItems } = useContext(CartContext)
-  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  // const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [relatedProducts, setRelatedProducts] = useState([])
-  const [selected, setSelected] = useState("COD");
+  // const [selected, setSelected] = useState("COD");
 
-  const [cities, setCities] = useState([])
-  const [wards, setWards] = useState([])
-  const [districts, setDistricts] = useState([])
-  const [qr, setQr] = useState({})
-  const [shippingCost, setShippingCost] = useState(0)
+  // const [cities, setCities] = useState([])
+  // const [wards, setWards] = useState([])
+  // const [districts, setDistricts] = useState([])
+  // const [qr, setQr] = useState({})
+  // const [shippingCost, setShippingCost] = useState(0)
 
   useEffect(() => {
     if (cartdetails.length) {
       fetch(`/api/products/${cartdetails[0].product.id}/related?active=true`).then(res => res.json()).then(setRelatedProducts)
     }
-    fetch(`/api/courier/get-cities`).then(res => res.json()).then(data => setCities(data.data))
+    // fetch(`/api/courier/get-cities`).then(res => res.json()).then(data => setCities(data.data))
   }, [cartdetails.length])
 
   const getPrice = (saleDetail, secondarySaleDetail) => {
@@ -43,64 +43,64 @@ const Cart = () => {
     return 0
   }
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    getValues
-  } = useForm()
+  // const {
+  //   register,
+  //   handleSubmit,
+  //   formState: { errors },
+  //   getValues
+  // } = useForm()
 
-  const onSubmit = async (data) => {
-    const createdOrder = await createOrder(data)
-    if (selected === "VIETQR") {
-      const res = await fetch("/api/pay", {
-        method: "POST", body: JSON.stringify({
-          price_list: [getTotal()],
-          shipping_costs: [shippingCost],
-          order_code: "ASD",
-          orderId: createdOrder.orderId
-        })
-      })
-      if (res.ok) {
-        setQr(await res.json())
-        onOpen()
-      } else {
-        console.log(res)
-      }
-    } else {
-      removeAllItems()
-    }
-  }
+  // const onSubmit = async (data) => {
+  //   const createdOrder = await createOrder(data)
+  //   if (selected === "VIETQR") {
+  //     const res = await fetch("/api/pay", {
+  //       method: "POST", body: JSON.stringify({
+  //         price_list: [getTotal()],
+  //         shipping_costs: [shippingCost],
+  //         order_code: "ASD",
+  //         orderId: createdOrder.orderId
+  //       })
+  //     })
+  //     if (res.ok) {
+  //       setQr(await res.json())
+  //       onOpen()
+  //     } else {
+  //       console.log(res)
+  //     }
+  //   } else {
+  //     removeAllItems()
+  //   }
+  // }
 
-  const createOrder = async (data) => {
-    const body = getBody(data)
+  // const createOrder = async (data) => {
+  //   const body = getBody(data)
 
-    const res = await fetch("/api/order/", {
-      method: "POST", body: JSON.stringify(body)
-    })
-    if (res.ok) {
-      toast.success("Đã đặt hàng")
-      return (await res.json()).order
-    } else {
-      toast.error("Không thể đặt hàng")
-    }
-  }
+  //   const res = await fetch("/api/order/", {
+  //     method: "POST", body: JSON.stringify(body)
+  //   })
+  //   if (res.ok) {
+  //     toast.success("Đã đặt hàng")
+  //     return (await res.json()).order
+  //   } else {
+  //     toast.error("Không thể đặt hàng")
+  //   }
+  // }
 
-  const getBody = (data) => {
-    return {
-      order: { ...data, total: getTotal(), paymentMethod: selected, shippingFee: getTotal() > 2000000 ? 0 : shippingCost },
-      products: cartdetails.map(detail => {
-        return {
-          productId: detail.product.id,
-          quantity: detail.quantity,
-          saleDetailId: detail.secondarySaleDetail?.id || detail.saleDetail?.id
-        }
-      })
-    }
-  }
+  // const getBody = (data) => {
+  //   return {
+  //     order: { ...data, total: getTotal(), paymentMethod: selected, shippingFee: getTotal() > 2000000 ? 0 : shippingCost },
+  //     products: cartdetails.map(detail => {
+  //       return {
+  //         productId: detail.product.id,
+  //         quantity: detail.quantity,
+  //         saleDetailId: detail.secondarySaleDetail?.id || detail.saleDetail?.id
+  //       }
+  //     })
+  //   }
+  // }
 
   return (<>
-    <ToastContainer />
+    {/* <ToastContainer />
     <div>
       <Modal
         scrollBehavior="inside"
@@ -130,7 +130,7 @@ const Cart = () => {
         </ModalContent>
 
       </Modal>
-    </div>
+    </div> */}
     <section className="bg-white py-8 antialiased dark:bg-gray-900 md:py-16 flex mx-auto lg:max-w-2xl xl:max-w-4xl flex-col sm:p-2">
       <h2 className="text-xl font-semibold text-gray-900 sm:text-2xl">Giỏ hàng</h2>
       <div className="mt-6 sm:mt-8 md:gap-6 lg:items-start xl:gap-8">
@@ -209,8 +209,25 @@ const Cart = () => {
               </dl>
             </div>
           </div>
+
+          <Link href="/thanh-toan" className="items-center justify-center flex m-auto mt-8">
+            <Button color="primary" type="button"
+              isDisabled={!cartdetails || !cartdetails.length}>
+              Chuyển đến mục thanh toán
+            </Button>
+          </Link>
+
+          <div className="flex items-center justify-center gap-2">
+            <span className="text-sm font-normal text-gray-500 dark:text-gray-400"> hoặc </span>
+            <Link isExternal href="/" title="" className="inline-flex items-center gap-2 text-sm font-medium text-primary-700 underline hover:no-underline dark:text-primary-500">
+              Tiếp tục mua hàng
+              <svg className="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 12H5m14 0-4 4m4-4-4-4" />
+              </svg>
+            </Link>
+          </div>
         </div>
-        <form className="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:w-full" onSubmit={handleSubmit(onSubmit)}>
+        {/* <form className="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:w-full" onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
             <div className="space-y-2">
               <Input
@@ -324,7 +341,7 @@ const Cart = () => {
               </Link>
             </div>
           </div>
-        </form>
+        </form> */}
 
         {
           relatedProducts.length ? <div className="xl:mt-8 xl:block sm:mt-8">
@@ -334,7 +351,7 @@ const Cart = () => {
                 relatedProducts?.map((product, i) => {
                   return <div
                     key={i}
-                    className="space-y-3 overflow-hidden rounded-lg border border-gray-200 bg-white p-3 
+                    className="space-y-3 overflow-hidden rounded-lg border border-gray-200 bg-white pr-1 
                   shadow-sm dark:border-gray-700 dark:bg-gray-800">
                     <ProductCard product={product} width={200} height={200} />
                   </div>

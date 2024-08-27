@@ -11,15 +11,15 @@ const ContactIcons = () => {
           <Link href="https://www.facebook.com/vesinhsaoviet/?ref=embed_page" isExternal>
             <span className="relative flex">
               <img src="/icon/messenger.png"></img>
-              <span className="motion-safe:animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+              <span className="motion-safe:animate-ping-delay absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
             </span>
           </Link>
         </li>
         <li>
-          <Link href="https://zalo.me/0902405225" isExternal>
+          <Link href="https://zalo.me/0902366617" isExternal>
             <span className="relative flex">
               <img src="/icon/zalo.png"></img>
-              <span className="motion-safe:animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+              <span className="motion-safe:animate-ping-delay absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
             </span>
           </Link>
         </li>
@@ -27,7 +27,7 @@ const ContactIcons = () => {
           <Link href="tel:0903802979" isExternal>
             <span className="relative flex bg-[#FFD400] rounded-full">
               <img src="/icon/phone.png"></img>
-              <span className="motion-safe:animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+              <span className="motion-safe:animate-ping-delay absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
             </span>
           </Link>
         </li>

@@ -47,15 +47,13 @@ const ButtonGroup = ({ next, previous, goToSlide, ...rest }) => {
 
 const AboutUsBanner = () => {
   const [banners] = useState([
-    "https://id.elsaspeak.com/wp-content/themes/elsawebsite/pages/about-us/images/banner/img-slider01.jpg",
-    "https://id.elsaspeak.com/wp-content/themes/elsawebsite/pages/about-us/images/banner/img-slider02.jpg",
-    "https://cdn.theatlantic.com/thumbor/viW9N1IQLbCrJ0HMtPRvXPXShkU=/0x131:2555x1568/976x549/media/img/mt/2017/06/shutterstock_319985324/original.jpg",
-    "https://id.elsaspeak.com/wp-content/themes/elsawebsite/pages/about-us/images/banner/img-slider04.jpg",
+    "/about-us/banner-1.png",
+    "/about-us/banner-2.png"
   ]);
 
   return (
-    <div className="bg-[url(https://id.elsaspeak.com/wp-content/themes/elsawebsite/dist/images/bg-banner.png)] bg-cover">
-      <h2 className="text-3xl font-semibold text-white text-center py-8">Giới thiệu Sao Việt</h2>
+    <div className="bg-[url(/about-us/banner-bg.png)] bg-cover">
+      <h2 className="text-3xl font-semibold text-white text-center py-8">VỀ SAO VIỆT</h2>
       <div className="pb-[100px] hidden md:block">
         <div className="relative w-full max-w-[1240px] mx-auto px-2">
           <Carousel

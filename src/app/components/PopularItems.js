@@ -8,12 +8,16 @@ import ProductCard from "@/components/product/ProductCard";
 
 const responsive = {
   superLargeDesktop: {
-    breakpoint: { max: 4000, min: 3000 },
+    breakpoint: { max: 4000, min: 1279 },
     items: 10
   },
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
+  largeDesktop: {
+    breakpoint: { max: 3000, min: 1279 },
     items: 5
+  },
+  desktop: {
+    breakpoint: { max: 1279, min: 1024 },
+    items: 4
   },
   tablet: {
     breakpoint: { max: 1024, min: 464 },
@@ -120,7 +124,9 @@ export default function PopularItems() {
 
   return (
     <div className="flex flex-col gap-11">
-      <ProductCards category="SẢN PHẨM NỔI BẬT" products={products} />
+      <div>
+        <ProductCards category="SẢN PHẨM NỔI BẬT" products={products} />
+      </div>
 
       <div>
         <div className="bg-black grid lg:grid-cols-6 sm:grid-cols-3">
@@ -182,11 +188,11 @@ export default function PopularItems() {
 
       {
         Object.keys(highlightProductsFromCates).length ? highlightCates.filter(cate => highlightProductsFromCates[cate.slug]).map((cate, i) => {
-          return <div key={i}>
+          return <div key={i} className="">
             <ProductCards banner={cate.image?.path} products={highlightProductsFromCates[cate.slug]} />
             <Link isExternal
               href={`/${cate.slug}`}
-              className="flex justify-center items-center text-[#153f17] font-semibold w-[181px] 
+              className="flex justify-center items-center text-[#153f17] font-semibold w-[181px] bg-white
               h-[43px] rounded-[30px] border border-[#FFD400] hover:bg-[#ccefdc] transition mx-auto"
             >
               Xem thêm
@@ -225,14 +231,18 @@ const ProductCards = ({ category, products, redirect, banner }) => {
   </div>)
   return (
     <div>
-      <section className="rounded-tr-[50px] rounded-tl-[50px]">
-        {
-          banner ?
-            <BannerDisplay /> :
-            <CategoryDisplay />
-        }
-        <div className="mx-auto lg:max-w-full">
-          <ProductCarousel products={products} responsive={responsive}></ProductCarousel>
+      <section className="rounded-tr-[50px] rounded-tl-[50px] pb-3">
+        <div className="p-3 pt-0 rounded-md">
+          <div className="py-3">
+            {
+              banner ?
+                <BannerDisplay /> :
+                <CategoryDisplay />
+            }
+          </div>
+          <div className="mx-auto lg:max-w-full [&_.react-multi-carousel-track]:pt-3 -mt-3">
+            <ProductCarousel products={products} responsive={responsive}></ProductCarousel>
+          </div>
         </div>
       </section>
     </div>
@@ -246,7 +256,7 @@ const ProductCarousel = ({ products, responsive }) => {
     >
       {
         products.map((product) => {
-          return <div key={product.id} className="h-full p-2 hover:opacity-75">
+          return <div key={product.id} className="h-full hover:opacity-75">
             <ProductCard product={product} />
           </div>
         })
@@ -273,8 +283,8 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
 
   return (<>
     <div className="lg:grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-6">
-      <div className="pt-2 col-span-2">
-        <div className="bg-[#FFD400] shadow-lg rounded-md w-full h-[300px]">
+      <div className="pt-2 col-span-2 ">
+        <div className="bg-[#FFD400] shadow-lg rounded-md w-full h-[365px]">
           <div className="flex mx-auto">
             {
               brandDescription[selectedBrand] && brandDescription[selectedBrand].logo ?
@@ -296,7 +306,7 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
           </div>
         </div>
       </div>
-      <div className="col-span-4">
+      <div className="col-span-4 py-2 pl-2">
         <ProductCarousel products={products} responsive={responsive}></ProductCarousel>
       </div>
     </div>

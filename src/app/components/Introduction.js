@@ -1,4 +1,3 @@
-import Carousel from "react-multi-carousel"
 import "react-multi-carousel/lib/styles.css"
 
 const Introduction = () => {
@@ -21,58 +20,8 @@ const Introduction = () => {
         <div className="text-xl font-medium text-justify w-2/3">
           Các sản phẩm đạt đầy đủ chứng nhận theo tiêu chuẩn quốc tế. Mang đến sự hài lòng cho khách hàng của doanh nghiệp - là đối tác tin cậy của các nhà đầu tư.
         </div>
-        <div>
-          <Image />
-        </div>
       </div>
     </div>)
-}
-
-const images = [
-  "/introduction/Giai-thuong-sao-viet-1.JPG",
-  "/introduction/Giai-thuong-sao-viet-2.JPG"
-]
-
-const responsive = {
-  superLargeDesktop: {
-    breakpoint: { max: 4000, min: 3000 },
-    items: 4
-  },
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 4
-  },
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 3
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 2
-  }
-}
-
-const Image = () => {
-
-  return (<>
-    <Carousel infinite responsive={responsive} className="items-center" autoPlaySpeed={5000} autoPlay arrows={false} showDots centerMode>
-      {
-        images.map((l, i) => <div className="pr-3" key={i}>
-          <img
-            className="group-hover:opacity-50
-            hover:-translate-y-2.5 hover:scale-[1.02]
-            hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)]"
-            width={400}
-            height={300}
-            src={l}
-            alt={l}
-          />
-        </div>)
-      }
-    </Carousel>
-
-  </>
-  )
 }
 
 export default Introduction

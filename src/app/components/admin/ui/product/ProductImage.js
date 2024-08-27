@@ -1,5 +1,5 @@
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react"
-import ImagePicker from "../ImagePicker"
+import ImageCms from "../ImageCms"
 import { useEffect, useState } from "react"
 import { ToastContainer, toast } from 'react-toastify';
 import { X } from "lucide-react";
@@ -59,14 +59,14 @@ const ProductImage = ({ product }) => {
       </div>
 
       <Modal
-        size="5xl" scrollBehavior="inside"
+        size="full" scrollBehavior="inside"
         isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">Chọn hình ảnh</ModalHeader>
               <ModalBody>
-                <ImagePicker disableAdd={true} onImageClick={selectImage} disableDelete={true}></ImagePicker>
+                <ImageCms disableAdd={true} onImageClick={selectImage} disableDelete={true} />
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>

@@ -1,5 +1,5 @@
 import { EditorContent } from '@tiptap/react';
-import ImagePicker from "@/components/admin/ui/ImagePicker";
+import ImageCms from "@/components/admin/ui/ImageCms";
 import './Tiptap.css'
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react';
 import { useState } from 'react';
@@ -275,16 +275,16 @@ const BlogToolBar = ({ editor }) => {
         </div>
       </div>
       <div className="w-1/4"></div>
-      <Modal isOpen={imageModal.isOpen} onOpenChange={imageModal.onOpenChange} size="5xl" scrollBehavior="inside">
+      <Modal isOpen={imageModal.isOpen} onOpenChange={imageModal.onOpenChange} size="full" scrollBehavior="inside">
         <ModalContent>
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">Chèn hình</ModalHeader>
               <ModalBody>
-                <ImagePicker disableAdd onImageClick={(image) => {
+                <ImageCms disableAdd onImageClick={(image) => {
                   editor.chain().focus().setImage({ src: image.path }).run()
                   onClose()
-                }} disableDelete></ImagePicker>
+                }} disableDelete />
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>

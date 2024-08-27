@@ -1,34 +1,42 @@
-import { Link } from "@nextui-org/react"
+import { Button, Link } from "@nextui-org/react"
 import { getPrice } from "@/lib/product"
 
 const ProductCard = ({ product }) => {
   return (
-    <div>
-      <div className="rounded-md border object-cover object-center group-hover:opacity-50
-            hover:-translate-y-2.5 hover:scale-[1.02] shadow-[0px_2px_10px_rgba(0,0,0,0.15)]
-            hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)] overflow-hidden transition">
-        <Link href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`} className="flex flex-col h-[300px]">
-          <div className="aspect-h-1 aspect-w-1 w-full h-full overflow-hidden xl:aspect-h-8 xl:aspect-w-7">
+    <div className="group-hover:opacity-50 border hover:-translate-y-3 hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15) transition bg-white max-w-[300px]">
+      <div className="rounded-md object-cover object-center 
+            overflow-hidden mx-auto">
+        <Link href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`} className="flex flex-col h-[250px]">
+          <div className="overflow-hidden">
             <img
-              width={300}
-              height={300}
+              width={200}
+              height={200}
               src={`${product.image?.path}`}
               alt={product.imageAlt}
-              className="h-full w-full object-cover object-center group-hover:opacity-75 hover:scale-110 transition"
+              className=" object-cover object-center"
             />
           </div>
         </Link>
       </div>
-      <Link href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`} className="text-black h-[40px]">
-        <div className="grow pt-2">
-          <p className="text-sm text-gray-700 line-clamp-2">
+      <Link href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`}
+        className="text-black border-gray-400  w-full">
+        <div className="mx-auto border-b-medium w-[90%] py-3">
+          <p className="text-sm text-gray-700 line-clamp-2 font-roboto relative text-center items-center [word-spacing:3px] min-h-10">
             {product.name}
           </p>
         </div>
       </Link>
-      {
-        getPrice(product) ? <p className="text-red-500 font-bold">{getPrice(product)} đ</p> : ""
-      }
+      <div className="py-2">
+        {
+          getPrice(product) ?
+            <p className="text-red-500 font-bold w-full relative text-center items-center h-8">{getPrice(product)} đ</p> :
+            <Button className="flex text-sm font-bold uppercase bg-gradient-to-b from-[#ffed00] to-[#fff466] rounded-none m-auto h-8 border border-[#e3e3e3]">
+              <Link isExternal href="https://zalo.me/0902366617" className="text-black">
+                Liên hệ
+              </Link>
+            </Button>
+        }
+      </div>
     </div>
   )
 }

@@ -180,6 +180,10 @@ model order {
   customerPayment Int              @default(0) @map("customer_payment")
   orderId         String           @default(dbgenerated("gen_random_uuid()")) @map("order_id")
 
+  companyName    String? @map("company_name")
+  companyEmail   String? @map("company_email")
+  companyTaxCode String? @map("company_tax_code")
+
   status               ORDER_STATUS       @default(PENDING)
   paymentMethod        PAYMENT_METHOD     @default(COD) @map("payment_method")
   shippingOrderCreated Boolean            @default(false) @map("shipping_order_created")
@@ -386,4 +390,23 @@ enum blog_type {
 enum category_type {
   BRAND
   CATEGORY
+}
+
+model redirect {
+  id   String @id @default(dbgenerated("gen_random_uuid()"))
+  from String
+  to   String
+
+  active       Boolean @default(true)
+  redirectCode Int     @default(301) @map("redirect_code")
+
+  redirectType redirect_type @default(EXACT) @map("redirect_type")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+}
+
+enum redirect_type {
+  EXACT
+  REGEX
 }

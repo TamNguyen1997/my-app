@@ -58,9 +58,10 @@ const AboutUsMilestone = () => {
                 </Carousel> */}
 
                 <Image
-                    width={800}
-                    height={600}
-                    src='/about-us/image.png'
+                    width={1280}
+                    height={720}
+                    src='/about-us/history.png'
+                    className="w-full h-full object-cover"
                 />
             </div>
         </div>

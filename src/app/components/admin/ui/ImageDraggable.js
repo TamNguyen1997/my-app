@@ -3,7 +3,7 @@ import { useDrag, useDrop } from "react-dnd";
 import { X } from 'lucide-react';
 import { parseDate } from "@internationalized/date";
 import { Button, DatePicker, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Switch, useDisclosure } from '@nextui-org/react';
-import ImagePicker from "./ImagePicker";
+import ImageCms from "./ImagePicker";
 
 export function ImageDraggable({ itemData, moveRow, index, deleteImagePos, isScheduled, saveImage, setActiveFrom, setActiveTo, setActive }) {
   const { id } = itemData;
@@ -125,14 +125,14 @@ const AddPicture = ({ saveImage }) => {
   return (
     <>
       <Modal
-        size="5xl" scrollBehavior="inside"
+        size="full" scrollBehavior="inside"
         isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>
               <ModalBody>
                 <ModalHeader>Chọn hình</ModalHeader>
-                <ImagePicker onImageClick={onImageClick} disableDelete />
+                <ImageCms onImageClick={onImageClick} disableDelete />
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>

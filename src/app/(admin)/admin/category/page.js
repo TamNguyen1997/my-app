@@ -1,6 +1,6 @@
 "use client"
 
-import ImagePicker from "@/app/components/admin/ui/ImagePicker";
+import ImageCms from "@/app/components/admin/ui/ImageCms";
 import {
   Button, Input,
   Modal, ModalBody,
@@ -32,6 +32,8 @@ const Category = () => {
   const [total, setTotal] = useState(0)
   const [loadingState, setLoadingState] = useState("loading")
 
+  const [allCategories, setAllCategories] = useState([])
+
   const pages = useMemo(() => {
     return total ? Math.ceil(total / rowsPerPage) : 0;
   }, [total, rowsPerPage]);
@@ -50,6 +52,12 @@ const Category = () => {
   }
 
   useEffect(() => {
+    fetch(`/api/categories/?size=${10000}&page=${page}&type=CATE&includeImage=true`).then(async res => {
+      const data = await res.json()
+      setAllCategories(data.result)
+    })
+  }, [])
+  useEffect(() => {
     getCategories()
   }, [page, condition])
 
@@ -64,6 +72,8 @@ const Category = () => {
             showOnHeader: selectedCate.showOnHeader,
             name: selectedCate.name,
             slug: selectedCate.slug,
+            type: selectedCate.type,
+            cateId: selectedCate.cateId,
             imageId: selectedCate.imageId
           })
         }).then(async (res) => {
@@ -170,6 +180,7 @@ const Category = () => {
     onOpen()
   }
 
+  console.log(selectedCate)
   return (
     <div className="flex flex-col gap-10">
       <div className="flex gap-3 w-1/2">
@@ -183,7 +194,19 @@ const Category = () => {
             if (value.length > 2 || !value.length) setCondition(Object.assign({}, condition, { slug: value }))
           }}
         />
-
+        <Select
+          label="Loại"
+          labelPlacement="outside"
+          onSelectionChange={(value) =>
+            setCondition(Object.assign({}, condition, { type: value.values().next().value }))}
+        >
+          <SelectItem key="CATE">
+            CATE
+          </SelectItem>
+          <SelectItem key="SUB_CATE">
+            SUB_CATE
+          </SelectItem>
+        </Select>
         <div className="items-end flex min-h-full">
           <Button onClick={getCategories} color="primary"><Search /></Button>
         </div>
@@ -208,6 +231,7 @@ const Category = () => {
             <TableHeader>
               <TableColumn key="name" textValue="name">Tên</TableColumn>
               <TableColumn key="slug" textValue="slug">Slug</TableColumn>
+              <TableColumn key="type" textValue="type">Loại</TableColumn>
               <TableColumn key="highlight" textValue="highlight">Nổi bật</TableColumn>
               <TableColumn key="type" textValue="type">Loại</TableColumn>
               <TableColumn key="actions" textValue="actions"></TableColumn>
@@ -337,14 +361,14 @@ const Category = () => {
       </div>
       <Modal
         scrollBehavior="inside"
-        size="5xl"
+        size="full"
         isOpen={imageModal.isOpen} onOpenChange={imageModal.onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">Chọn hình</ModalHeader>
               <ModalBody>
-                <ImagePicker disableDelete onImageClick={image => {
+                <ImageCms disableDelete onImageClick={image => {
                   setSelectedCate(Object.assign({}, selectedCate, { imageId: image.id, image: image }))
                   onClose()
                 }} />

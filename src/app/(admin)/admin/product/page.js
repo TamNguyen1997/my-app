@@ -4,25 +4,17 @@ import {
   Spinner, Table,
   TableCell, TableColumn,
   TableHeader, TableRow,
-  TableBody, useDisclosure,
-  Modal, ModalHeader,
-  ModalBody,
-  Button, ModalContent,
+  TableBody,
+  Button,
   Switch,
   Pagination,
-  Card, CardBody, Tab, Tabs,
   Input,
   Select,
-  SelectItem
+  SelectItem,
+  Link
 } from "@nextui-org/react"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { EditIcon, Search, Trash2 } from "lucide-react"
-import SaleDetails from "@/app/components/admin/ui/product/SaleDetails";
-import TechnicalDetails from "@/app/components/admin/ui/product/TechnicalDetails";
-import ProductDetail from "@/app/components/admin/ui/product/ProductDetail";
-import ComponentPartDetails from "@/app/components/admin/ui/product/ComponentPartDetails";
-import ProductImage from "@/app/components/admin/ui/product/ProductImage";
-import ProductDescription from "@/app/components/admin/ui/product/ProductDescription";
 
 const rowsPerPage = 10;
 
@@ -32,14 +24,9 @@ const quickUpdateProduct = async (product, value) => {
 
 const ProductCms = () => {
   const [loadingState, setLoadingState] = useState("loading")
-  const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const [selectedProduct, setSelectedProduct] = useState({})
-  const [condition, setCondition] = useState({})
 
+  const [condition, setCondition] = useState({})
   const [total, setTotal] = useState(0)
-  const [categories, setCategories] = useState([])
-  const [subCategories, setSubCategories] = useState([])
-  const [brands, setBrands] = useState([])
 
   const [page, setPage] = useState(1);
   const [products, setProducts] = useState([]);
@@ -62,12 +49,6 @@ const ProductCms = () => {
     })
   }
 
-  useEffect(() => {
-    fetch('/api/categories?type=CATE').then(res => res.json()).then(json => setCategories(json.result))
-    fetch('/api/brands').then(res => res.json()).then(setBrands)
-    fetch('/api/categories?type=SUB_CATE').then(res => res.json()).then(json => setSubCategories(json.result))
-  }, [])
-
   const pages = useMemo(() => {
     return total ? Math.ceil(total / rowsPerPage) : 0;
   }, [total, rowsPerPage]);
@@ -76,24 +57,16 @@ const ProductCms = () => {
     fetch(`/api/products/${id}`, { method: "DELETE" }).then(() => getProduct())
   }
 
-  const openModal = async (product) => {
-    setSelectedProduct(product)
-    onOpen()
-  }
-
-  const newProduct = () => {
-    setSelectedProduct({})
-    onOpen()
-  }
-
   const renderCell = useCallback((product, columnKey) => {
     const cellValue = product[columnKey]
     switch (columnKey) {
       case "actions":
         return (
           <div className="relative flex items-center gap-2">
-            <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-              <EditIcon onClick={() => openModal(product)} />
+            <span className="text-lg text-default-400 cursor-pointer active:opacity-50 pt-2">
+              <Link href={`/admin/product/edit/${product.id}`}>
+                <EditIcon />
+              </Link>
             </span>
             <span className="text-lg text-danger cursor-pointer active:opacity-50 pl-5">
               <Trash2 onClick={() => deleteProduct(product.id)} />
@@ -184,6 +157,7 @@ const ProductCms = () => {
             <TableHeader>
               <TableColumn key="name" textValue="Tên sản phẩm" aria-label="Tên sản phẩm">Tên sản phẩm</TableColumn>
               <TableColumn key="slug" textValue="slug" aria-label="slug">Slug</TableColumn>
+              <TableColumn key="productType" textValue="sproductTypelug" aria-label="productType">Loại</TableColumn>
               <TableColumn key="highlight" textValue="highlight" aria-label="active">Nổi bật</TableColumn>
               <TableColumn key="active" textValue="active" aria-label="active">Active</TableColumn>
               <TableColumn key="actions" textValue="actions" width="100"></TableColumn>
@@ -201,74 +175,10 @@ const ProductCms = () => {
             </TableBody>
           </Table>
         </div>
+        <div className="pt-3">
+          <Link href="/admin/product/edit/new" className="float-right">Thêm sản phẩm</Link>
+        </div>
       </div>
-      <div className="p-3">
-        <Button color="primary" onClick={newProduct}>Thêm sản phẩm</Button>
-      </div>
-
-      <Modal
-        size="5xl" scrollBehavior="inside"
-        isOpen={isOpen} onOpenChange={onOpenChange}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">Chi tiết sản phẩm</ModalHeader>
-              <ModalBody>
-                <Tabs disabledKeys={selectedProduct.id ? [] : ["description", "image", "technical", "component", "sale"]}>
-                  <Tab title="Thông tin chung">
-                    <Card>
-                      <CardBody>
-                        <ProductDetail
-                          categories={categories}
-                          product={selectedProduct}
-                          setProduct={setSelectedProduct}
-                          brands={brands}
-                          subCategories={subCategories}
-                        />
-                      </CardBody>
-                    </Card>
-                  </Tab>
-                  <Tab title="Mô tả" key="description">
-                    <Card>
-                      <CardBody>
-                        <ProductDescription product={selectedProduct} />
-                      </CardBody>
-                    </Card>
-                  </Tab>
-                  <Tab title="Hình ảnh" key="image">
-                    <Card>
-                      <CardBody>
-                        <ProductImage product={selectedProduct} />
-                      </CardBody>
-                    </Card>
-                  </Tab>
-                  <Tab title="Phụ kiện" key="component">
-                    <Card>
-                      <CardBody>
-                        <ComponentPartDetails productId={selectedProduct.id} categories={categories} subCategories={subCategories} />
-                      </CardBody>
-                    </Card>
-                  </Tab>
-                  <Tab title="Thông số kĩ thuật" key="technical">
-                    <Card>
-                      <CardBody>
-                        <TechnicalDetails product={selectedProduct} />
-                      </CardBody>
-                    </Card>
-                  </Tab>
-                  <Tab title="Thông số bán hàng" key="sale">
-                    <Card>
-                      <CardBody>
-                        <SaleDetails product={selectedProduct} />
-                      </CardBody>
-                    </Card>
-                  </Tab>
-                </Tabs>
-              </ModalBody>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
     </>
   )
 }

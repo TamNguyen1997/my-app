@@ -60,6 +60,22 @@ const ImageCms = ({ onImageClick }) => {
                     <ModalBody>
                       <ModalHeader>Upload ảnh</ModalHeader>
                       <div className='grid grid-cols-2 gap-5'>
+                        <Dropzone
+                          maxFiles={1}
+                          multiple={false}
+                          accept="image/*"
+                          onDrop={acceptedFiles => setImage(acceptedFiles)}
+                        >
+                          {({ getRootProps, getInputProps }) => (
+                            <section className="container">
+                              <div {...getRootProps({ className: 'dropzone' })}>
+                                <input {...getInputProps()} />
+                                <p className="text-center mx-auto">Kéo thả hoặc click để tải hình</p>
+                                <em>(Chỉ chấp nhận *.jpeg, *.png, *.jpg, *svg)</em>
+                              </div>
+                            </section>
+                          )}
+                        </Dropzone>
                         <div className='flex flex-col gap-3'>
                           <Input aria-label="Tên ảnh" label="Tên ảnh" value={imageName} onValueChange={setImageName} isRequired></Input>
                           <Select
@@ -77,25 +93,10 @@ const ImageCms = ({ onImageClick }) => {
                             <SelectItem key="BANNER">
                               Banner
                             </SelectItem>
+
                           </Select>
                           <Textarea aria-label="Mô tả" label="Mô tả" value={imageDescription} onValueChange={setImageDescription}></Textarea>
                         </div>
-                        <Dropzone
-                          maxFiles={1}
-                          multiple={false}
-                          accept="image/*"
-                          onDrop={acceptedFiles => setImage(acceptedFiles)}
-                        >
-                          {({ getRootProps, getInputProps }) => (
-                            <section className="container">
-                              <div {...getRootProps({ className: 'dropzone' })}>
-                                <input {...getInputProps()} />
-                                <p className="text-center mx-auto">Kéo thả hoặc click để tải hình</p>
-                                <em>(Chỉ chấp nhận *.jpeg, *.png, *.jpg, *svg)</em>
-                              </div>
-                            </section>
-                          )}
-                        </Dropzone>
                       </div>
                       <div className='pr-4'>
                         {

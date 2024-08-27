@@ -233,7 +233,6 @@ const Category = () => {
               <TableColumn key="slug" textValue="slug">Slug</TableColumn>
               <TableColumn key="type" textValue="type">Loại</TableColumn>
               <TableColumn key="highlight" textValue="highlight">Nổi bật</TableColumn>
-              <TableColumn key="type" textValue="type">Loại</TableColumn>
               <TableColumn key="actions" textValue="actions"></TableColumn>
             </TableHeader>
             <TableBody

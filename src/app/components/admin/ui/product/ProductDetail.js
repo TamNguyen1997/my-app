@@ -1,13 +1,18 @@
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, useDisclosure } from "@nextui-org/react"
+import { Button, Input, Link, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, useDisclosure } from "@nextui-org/react"
 import slugify from "slugify"
 import ImageCms from "../ImageCms"
 import { useCallback } from "react"
 import { ToastContainer, toast } from 'react-toastify';
+import { useEditor } from "@tiptap/react";
+import { editorConfig } from "@/lib/editor";
+import RichTextEditor from "../RichTextArea";
 
 const ProductDetail = ({
   categories, product, setProduct,
   brands, subCategories }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
+
+  const editor = useEditor(editorConfig(product.description))
 
   const selectImage = (value) => {
     setProduct(Object.assign({}, product, { imageId: value.id, image: value }))
@@ -19,23 +24,32 @@ const ProductDetail = ({
   }, [product])
 
   const onSave = async () => {
-    let productToUpdate = { ...product }
+    let productToUpdate = { ...product, description: editor.getHTML() }
     delete productToUpdate.image
     delete productToUpdate.subCategory
     delete productToUpdate.brand
     delete productToUpdate.category
     delete productToUpdate.subCate
 
-    const res = product.id ?
-      await fetch(`/api/products/${product.id}`, { method: "PUT", body: JSON.stringify(productToUpdate) }) :
-      await fetch(`/api/products/`, { method: "POST", body: JSON.stringify(productToUpdate) })
-
-    if (res.ok) {
-      toast.success("Đã lưu")
+    if (!product.id) {
+      const createRes = await fetch(`/api/products/`, { method: "POST", body: JSON.stringify(productToUpdate) })
+      if (createRes.ok) {
+        toast.success("Đã lưu")
+        window.location.replace('/admin/product/edit/' + (await createRes.json()).id)
+      } else {
+        toast.error("Không thể lưu")
+      }
     } else {
-      toast.error("Không thể lưu")
+
+      const res = await fetch(`/api/products/${product.id}`, { method: "PUT", body: JSON.stringify(productToUpdate) })
+      if (res.ok) {
+        toast.success("Đã lưu")
+      } else {
+        toast.error("Không thể lưu")
+      }
+      setProduct(await res.json())
     }
-    setProduct(await res.json())
+
   }
 
   return (
@@ -48,7 +62,7 @@ const ProductDetail = ({
             label="Tên sản phẩm"
             labelPlacement="outside"
             aria-label="Tên sản phẩm"
-            defaultValue={product.name}
+            value={product.name}
             isRequired
             onValueChange={(value) => setProduct(Object.assign({}, product, { name: value, slug: slugify(value, { locale: "vi" }).toLowerCase() }))}
           />
@@ -174,6 +188,7 @@ const ProductDetail = ({
             <div>
               <Button color="primary" onClick={onOpen} className="w-24 float-right">Chọn ảnh</Button>
             </div>
+            <RichTextEditor editor={editor} />
           </div>
 
           <div>
@@ -188,10 +203,11 @@ const ProductDetail = ({
                 /> : null
             }
           </div>
-          <div>
-            <Button color="primary" onClick={onSave} className="w-24 float-right">Lưu</Button>
-          </div>
         </div>
+      </div>
+      <div className="flex float-right gap-2 px-2 w-full">
+        <Link href="/admin/product">Trở về</Link>
+        <Button color="primary" onClick={onSave}>Lưu</Button>
       </div>
 
       <Modal

@@ -2,7 +2,7 @@
 
 import {
   Button,
-  Card, CardBody, Tab, Tabs,
+  Card, CardBody, Spinner, Tab, Tabs,
 } from "@nextui-org/react"
 import { useEffect, useState } from "react"
 import SaleDetails from "@/app/components/admin/ui/product/SaleDetails";
@@ -48,9 +48,7 @@ const ProductCms = () => {
     }
   }
 
-  if (isLoading) {
-    return <></>
-  }
+  if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />
   return (
     <>
       <Tabs disabledKeys={product.id ? [] : ["description", "image", "technical", "component", "sale"]}>

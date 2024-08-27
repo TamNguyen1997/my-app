@@ -1,4 +1,4 @@
-import { Button, Input, Link, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, useDisclosure } from "@nextui-org/react"
+import { Button, Input, Link, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Switch, useDisclosure } from "@nextui-org/react"
 import slugify from "slugify"
 import ImageCms from "../ImageCms"
 import { useCallback } from "react"
@@ -85,6 +85,12 @@ const ProductDetail = ({
             max={999}
             onValueChange={(value) => setProduct(Object.assign({}, product, { quantity: parseInt(value) }))}
           />
+        </div>
+        <div className="flex gap-10">
+          <Switch isSelected={product.active}
+            onValueChange={(value) => setProduct(Object.assign({}, product, { active: value }))}>{product.active ? "Active" : "Inactive"}</Switch>
+          <Switch isSelected={product.highlight}
+            onValueChange={(value) => setProduct(Object.assign({}, product, { highlight: value }))}>{product.highlight ? "Nổi bật" : "Không nổi bật"}</Switch>
         </div>
         <div className="flex gap-2">
           <Input

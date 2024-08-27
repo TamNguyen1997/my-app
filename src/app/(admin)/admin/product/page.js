@@ -41,7 +41,7 @@ const ProductCms = () => {
     Object.keys(filteredCondition).forEach(key => filteredCondition[key] === undefined && delete filteredCondition[key])
     const queryString = new URLSearchParams(filteredCondition).toString()
 
-    await fetch(`/api/products/?size=${rowsPerPage}&page=${page}&${queryString}&productType=PRODUCT`).then(async (res) => {
+    await fetch(`/api/products/?size=${rowsPerPage}&page=${page}&${queryString}`).then(async (res) => {
       const data = await res.json()
       setProducts(data.result)
       setTotal(data.total)
@@ -85,6 +85,10 @@ const ProductCms = () => {
             <Switch defaultSelected={product.highlight} onValueChange={(value) => quickUpdateProduct(product, { highlight: value })}></Switch>
           </div>
         )
+      case "cate":
+        return product.category?.name
+      case "subcate":
+        return product.subCate?.name
       default:
         return cellValue
     }
@@ -157,7 +161,9 @@ const ProductCms = () => {
             <TableHeader>
               <TableColumn key="name" textValue="Tên sản phẩm" aria-label="Tên sản phẩm">Tên sản phẩm</TableColumn>
               <TableColumn key="slug" textValue="slug" aria-label="slug">Slug</TableColumn>
-              <TableColumn key="productType" textValue="sproductTypelug" aria-label="productType">Loại</TableColumn>
+              <TableColumn key="productType" textValue="productType" aria-label="productType">Loại</TableColumn>
+              <TableColumn key="cate" textValue="cate" aria-label="cate">Category</TableColumn>
+              <TableColumn key="subcate" textValue="subcate" aria-label="subcate">Sub-category</TableColumn>
               <TableColumn key="highlight" textValue="highlight" aria-label="active">Nổi bật</TableColumn>
               <TableColumn key="active" textValue="active" aria-label="active">Active</TableColumn>
               <TableColumn key="actions" textValue="actions" width="100"></TableColumn>

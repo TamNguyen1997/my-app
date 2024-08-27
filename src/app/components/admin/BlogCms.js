@@ -1,6 +1,6 @@
-import { Table, TableHeader, TableColumn, TableRow, TableCell, TableBody, Spinner, Pagination, Link } from "@nextui-org/react";
+import { Table, TableHeader, TableColumn, TableRow, TableCell, TableBody, Spinner, Pagination, Link, Input, Select, SelectItem, Button } from "@nextui-org/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { EditIcon, Trash2 } from "lucide-react";
+import { EditIcon, Search, Trash2 } from "lucide-react";
 
 import { BLOG_CATEGORIES, BLOG_SUB_CATEGORIES } from "@/lib/blog";
 
@@ -9,6 +9,7 @@ const BlogCms = () => {
   const [page, setPage] = useState(1);
   const [blogs, setBlogs] = useState([])
   const [loadingState, setLoadingState] = useState("loading")
+  const [condition, setCondition] = useState({})
 
   const [total, setTotal] = useState(0)
 
@@ -18,7 +19,11 @@ const BlogCms = () => {
 
   const getBlogs = async () => {
     setLoadingState("loading")
-    const json = await fetch(`/api/blogs?excludeSupport=true&size=${rowsPerPage}&page=${page}`).then(res => res.json())
+    let filteredCondition = { ...condition }
+    Object.keys(filteredCondition).forEach(key => filteredCondition[key] === undefined && delete filteredCondition[key])
+    const queryString = new URLSearchParams(filteredCondition).toString()
+
+    const json = await fetch(`/api/blogs?excludeSupport=true&size=${rowsPerPage}&page=${page}&${queryString}`).then(res => res.json())
     setTotal(json.total)
     setBlogs(json.result)
     setLoadingState("idle")
@@ -56,7 +61,54 @@ const BlogCms = () => {
     }
   }, [])
 
+  const onConditionChange = (value) => {
+    setCondition(Object.assign({}, condition, value))
+  }
+
   return (<>
+    <div className="flex gap-3 w-1/2 pb-3">
+      <Input label="Slug" aria-label="slug" labelPlacement="outside" value={condition.slug}
+        onValueChange={(value) => {
+          onConditionChange({ slug: value })
+          if (value.length > 2) getBlogs()
+        }}
+      />
+
+      <Select
+        label="Category"
+        labelPlacement="outside"
+        onSelectionChange={(value) => onConditionChange({ blogCategory: value.values().next().value })}>
+        {
+          BLOG_CATEGORIES.map((category) => <SelectItem key={category.id}>
+            {category.value}
+          </SelectItem>)
+        }
+      </Select>
+      <Select
+        label="Sub-category"
+        labelPlacement="outside"
+        onSelectionChange={(value) => onConditionChange({ blogSubCategory: value.values().next().value })}>
+        {
+          BLOG_SUB_CATEGORIES.map((subcate) => <SelectItem key={subcate.id}>
+            {subcate.value}
+          </SelectItem>)
+        }
+      </Select>
+      <Select
+        label="Active"
+        labelPlacement="outside"
+        onSelectionChange={(value) => onConditionChange({ active: value.values().next().value })}>
+        <SelectItem key="true">
+          Active
+        </SelectItem>
+        <SelectItem key="false">
+          Inactive
+        </SelectItem>
+      </Select>
+      <div className="items-end flex min-h-full">
+        <Button onClick={getBlogs} color="primary"><Search /></Button>
+      </div>
+    </div>
 
     <Table aria-label="Blog"
       bottomContent={

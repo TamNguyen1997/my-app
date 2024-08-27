@@ -119,7 +119,7 @@ const Header = () => {
                   </div>
                 </div>
               </div>
-              <div>
+              <div className="pr-10">
                 <HeaderItems
                   setHoveredCate={setHoveredCate}
                   menuRef={menuRef}
@@ -250,15 +250,15 @@ const HeaderItems = ({ setHoveredCate, menuRef, setMenuVisible, menuVisible }) =
 
       if (parentNode.getBoundingClientRect().bottom <= 0) {
         headerItemsRef.current.classList.add("fixed-header");
-        headerItemsRef.current.childNodes?.[0]?.classList.remove("container");
-        menuRef.current?.classList.remove("container");
+        // headerItemsRef.current.childNodes?.[0]?.classList.remove("container");
+        // menuRef.current?.classList.remove("container");
         menuHeight = headerItemsRef.current.getBoundingClientRect().height || 0;
       } else {
         // menuHeight = nav?.getBoundingClientRect().height || 0;
         menuHeight = menuButton?.getBoundingClientRect().bottom || 0;
         headerItemsRef.current.classList.remove("fixed-header");
-        menuRef.current?.classList.add("container");
-        headerItemsRef.current.childNodes?.[0]?.classList.add("container");
+        // menuRef.current?.classList.add("container");
+        // headerItemsRef.current.childNodes?.[0]?.classList.add("container");
       }
 
       if (menuRef.current) {

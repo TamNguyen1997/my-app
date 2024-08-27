@@ -2,6 +2,8 @@ import { Table, TableHeader, TableColumn, TableRow, TableCell, TableBody, Spinne
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { EditIcon, Trash2 } from "lucide-react";
 
+import { BLOG_CATEGORIES, BLOG_SUB_CATEGORIES } from "@/lib/blog";
+
 const rowsPerPage = 20;
 const BlogCms = () => {
   const [page, setPage] = useState(1);
@@ -45,6 +47,10 @@ const BlogCms = () => {
             </span>
           </div>
         );
+      case "cate":
+        return BLOG_CATEGORIES.find(item => item.id === blog.blogCategory)?.value
+      case "subcate":
+        return BLOG_SUB_CATEGORIES.find(item => item.id === blog.blogSubCategory)?.value
       default:
         return cellValue;
     }
@@ -69,6 +75,8 @@ const BlogCms = () => {
       <TableHeader>
         <TableColumn key="title">Tiêu đề</TableColumn>
         <TableColumn key="slug">Slug</TableColumn>
+        <TableColumn key="cate">Category</TableColumn>
+        <TableColumn key="subcate">Sub-category</TableColumn>
         <TableColumn key="actions"></TableColumn>
       </TableHeader>
       <TableBody

@@ -10,32 +10,7 @@ import slugify from 'slugify';
 import crypto from "crypto";
 
 import { editorConfig } from "@/lib/editor"
-
-const BLOG_CATEGORIES = [
-  {
-    id: "INFORMATION",
-    value: "Kiến thức hay"
-  },
-  {
-    id: "NEWS",
-    value: "Tin tức"
-  }
-]
-
-const BLOG_SUB_CATEGORIES = [
-  {
-    value: "Từ điển thuật ngữ",
-    id: "TERMINOLOGY",
-  },
-  {
-    value: "Tư vấn chọn mua",
-    id: "ADVISORY",
-  },
-  {
-    value: "Hướng dẫn sử dụng",
-    id: "MANUAL",
-  }
-]
+import { BLOG_CATEGORIES, BLOG_SUB_CATEGORIES } from "@/lib/blog";
 
 const BlogForm = ({ blog, setBlog }) => {
   const {
@@ -121,7 +96,7 @@ const BlogForm = ({ blog, setBlog }) => {
               <Input label="Tác giả" aria-label="Keyword" {...register('author')} defaultValue={blog?.author}></Input>
               <Select
                 label="Phân loại"
-                defaultSelectedKeys={new Set([blog.blogCategory])}
+                selectedKeys={new Set([blog.blogCategory])}
                 onSelectionChange={
                   (value) => setBlog(Object.assign({}, blog, { blogCategory: value.values().next().value }))
                 }
@@ -136,7 +111,7 @@ const BlogForm = ({ blog, setBlog }) => {
               </Select>
               <Select
                 label="Sub Category"
-                defaultSelectedKeys={new Set([blog.blogSubCategory])}
+                selectedKeys={new Set([blog.blogSubCategory])}
                 onSelectionChange={
                   (value) => setBlog(Object.assign({}, blog, { blogSubCategory: value.values().next().value }))
                 }

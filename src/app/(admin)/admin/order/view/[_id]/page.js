@@ -134,6 +134,11 @@ const Order = () => {
                 value={order.companyEmail}
                 disabled />
             </div>
+            <div>
+              <Input label="Địa chỉ công ty"
+                value={order.companyAddress}
+                disabled />
+            </div>
             <div className="flex gap-3">
               <Input label="Mã đơn hàng"
                 value={order.orderId}

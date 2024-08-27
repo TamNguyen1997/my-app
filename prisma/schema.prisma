@@ -183,6 +183,7 @@ model order {
   companyName    String? @map("company_name")
   companyEmail   String? @map("company_email")
   companyTaxCode String? @map("company_tax_code")
+  companyAddress String? @map("company_address")
 
   status               ORDER_STATUS       @default(PENDING)
   paymentMethod        PAYMENT_METHOD     @default(COD) @map("payment_method")

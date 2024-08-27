@@ -222,6 +222,13 @@ const Payment = () => {
                       isRequired
                     />
                     {errors.companyEmail && <span className="text-red-600 text-small">Bạn phải điền email nhận hóa đơn</span>}
+                    <Input
+                      label="Địa chỉ công ty"
+                      aria-label="Địa chỉ công ty"
+                      {...register("companyAddress", { required: true })}
+                      isRequired
+                    />
+                    {errors.companyEmail && <span className="text-red-600 text-small">Bạn phải điền địa chỉ công ty</span>}
                   </div>
                 }
               </div>

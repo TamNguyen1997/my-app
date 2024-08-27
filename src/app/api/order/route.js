@@ -77,6 +77,7 @@ export async function POST(req) {
           companyName: order.companyName,
           companyEmail: order.companyEmail,
           companyTaxCode: order.companyTaxCode,
+          companyAddress: order.companyAddress,
           product_on_order: {
             create: products.map(item => {
               return {

@@ -87,6 +87,7 @@ const Header = () => {
                 <div className="flex items-center gap-3">
                   <SearchBar />
                   <Link
+                    id="header-cart-btn"
                     href="/gio-hang"
                     className="bg-[#FFAC0A] h-[35px] items-center text-center relative flex rounded-md shadow-md">
                     <span className="px-1">

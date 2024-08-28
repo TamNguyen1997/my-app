@@ -45,6 +45,55 @@ const SaleDetail = ({ saleDetails, product }) => {
     return ""
   }
 
+  const addToCartAnimation = (evt, image = null) => {
+    const addBtn = evt?.target;
+    const headerCartBtn = document.getElementById("header-cart-btn");
+    if(!addBtn || !headerCartBtn) return;
+
+    const {
+      top: headerCartTop,
+      left: headerCartLeft,
+      width: headerCartWidth
+    } = headerCartBtn.getBoundingClientRect();
+    
+    let animateItem = document.createElement("div");
+    if(image) {
+      animateItem = document.createElement("img");
+      animateItem.src = image;
+    }
+
+    animateItem.style.position = "fixed";
+    animateItem.style.zIndex = 99999;
+    animateItem.style.background = "red";
+    animateItem.style.width = "50px";
+    animateItem.style.height = "50px";
+
+    document.body.appendChild(animateItem);
+
+    animateItem.animate(
+      [
+        {
+          transform: "scale(1)",
+          top: addBtn.getBoundingClientRect().top + "px",
+          left: addBtn.getBoundingClientRect().left + "px",
+          opacity: 0.8,
+        },
+        {
+          transform: "scale(0.2)",
+          top: headerCartTop + "px",
+          left: headerCartLeft + headerCartWidth / 2 + "px",
+          opacity: 0.4,
+        },
+      ],
+      {
+        duration: 600,
+        easing: "ease",
+      }
+    ).onfinish = (e) => {
+      e.target.effect.target.remove();
+    };
+  }
+
   return (<>
     <div className="">
       <div className="m-[10px_0_18px]">
@@ -93,7 +142,8 @@ const SaleDetail = ({ saleDetails, product }) => {
           min={1} max={999} />
         <div className="flex lg:flex-nowrap flex-wrap">
           <div className="pr-3 pb-3">
-            <Button color="primary" fullWidth isDisabled={!getPrice()} onClick={() => {
+            <Button color="primary" fullWidth isDisabled={!getPrice()} onClick={(evt) => {
+              addToCartAnimation(evt);
               addItemToCart({
                 quantity: quantity,
                 product: product,
@@ -106,7 +156,8 @@ const SaleDetail = ({ saleDetails, product }) => {
           <div className="pb-3">
             <Button color="primary" fullWidth
               isDisabled={!getPrice()}
-              onClick={() => {
+              onClick={(evt) => {
+                addToCartAnimation(evt);
                 addItemToCart({
                   quantity: quantity,
                   product: product,

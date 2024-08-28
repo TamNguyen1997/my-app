@@ -1,4 +1,4 @@
-import Customer from "@/components/Customer";
+import Partner from "@/components/Partner";
 
 const AboutUsPartner = () => {
 	return (
@@ -9,7 +9,7 @@ const AboutUsPartner = () => {
 						Đối tác của Sao Việt
 					</h2>
 
-					<Customer hideTitle />
+					<Partner />
 				</div>
 			</div>
 		</div>

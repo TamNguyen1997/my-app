@@ -19,7 +19,7 @@ thích ứng nhanh, hợp tác và sự cam kết nghiêm túc để phục vụ
     },
   ];
 
-  const quote = `“Nếu tất cả mọi người cùng nhau tiến về phía trước thì thành công sẽ tự đến” \n Henry Ford`;
+  const quote = `Nếu tất cả mọi người cùng nhau tiến về phía trước thì thành công sẽ tự đến \n Henry Ford`;
 
   return (
     <div className="bg-white pt-[100px] pb-10">
@@ -47,21 +47,21 @@ thích ứng nhanh, hợp tác và sự cam kết nghiêm túc để phục vụ
                     }
                     <p className="leading-loose text-justify">{item.content}</p>
                   </div>
-                  <div className="md:w-[calc(50%_-_20px)] w-full mb-5">
+                  <div className="md:w-[calc(50%_-_20px)] w-full mb-5 relative">
                     <h2 className="text-3xl text-center font-semibold mb-6 md:hidden block">{item.title}</h2>
                     <img
                       width="450"
                       height="300"
                       src={item.image}
-                      alt=""
-                      className="aspect-[16/9] object-cover w-full rounded"
+                      alt={item.image}
+                      className="aspect-[16/9] object-cover w-full rounded m-auto bottom-3 absolute right-0"
                     />
                   </div>
                 </div>
                 {
                   !index && quote &&
                   <div
-                    className="text-[#196b00] text-[18px] text-center max-w-[800px] rounded-2xl p-[50px_20px] mb-[60px] mx-auto whitespace-pre-wrap"
+                    className="text-[#196b00] text-[20px] text-center max-w-[800px] rounded-2xl p-[60px_30px] mb-[60px] mx-auto whitespace-pre-wrap"
                     style={{
                       background: `url(/icon/quote-open.png) no-repeat left 15px top 12px,url(/icon/quote-close.png) 
                     no-repeat right 15px bottom 15px,linear-gradient(290deg, #d5e135 25%, #59b747 105%)` }}

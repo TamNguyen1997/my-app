@@ -47,8 +47,8 @@ const ButtonGroup = ({ next, previous, goToSlide, ...rest }) => {
 
 const AboutUsBanner = () => {
   const [banners] = useState([
-    "/about-us/banner-1.png",
-    "/about-us/banner-2.png"
+    "/about-us/Cong-ty-Sao-Viet.png",
+    "/about-us/Cong-ty-Sao-Viet_02.png"
   ]);
 
   return (

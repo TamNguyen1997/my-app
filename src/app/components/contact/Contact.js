@@ -131,7 +131,7 @@ export default function Contact() {
                 <Link href="https://bit.ly/lazada-saoviet">
                   <img src="icon-lazada.svg" width={70} height={70}></img>
                 </Link>
-                <Link href="https://bit.ly/lazada-saoviet">
+                <Link href="https://shopee.vn/saovietcompany">
                   <img src="icon-shopee.svg" width={70} height={70}></img>
                 </Link>
                 <Link href="https://www.tiktok.com/@vesinhsaoviet">

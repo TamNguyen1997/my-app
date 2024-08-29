@@ -5,7 +5,7 @@ const AboutUsArticle = () => {
     {
       title: "Đội ngũ nhân viên",
       content: `Với sự say mê trong công việc, mong muốn khách hàng được sử dụng những sản phẩm chất lượng, an toàn - Sao Việt luôn tìm hiểu những sản phẩm tiêu chuẩn cao, thương hiệu uy tín, được người dùng trên thế giới tin dùng để phân phối tại thị trường Việt Nam.
-Tiêu chí của Sao Việt - Khách hàng là trọng tâm nên mọi quyết định kinh doanh đều hướng đến sự hài lòng của khách hàng.Để đáp ứng tiêu chí đó, chúng tôi đã xây đựng đội ngũ nhân viên năng động, sáng tạo, nhiều năm kinh nghiệm, 
+Tiêu chí của Sao Việt - Khách hàng là trọng tâm nên mọi quyết định kinh doanh đều hướng đến sự hài lòng của khách hàng. Để đáp ứng tiêu chí đó, chúng tôi đã xây đựng đội ngũ nhân viên năng động, sáng tạo, nhiều năm kinh nghiệm, 
 thích ứng nhanh, hợp tác và sự cam kết nghiêm túc để phục vụ khách hàng ngày càng tốt hơn.`,
       image: "/about-us/article-1.jpg",
     },
@@ -13,7 +13,7 @@ thích ứng nhanh, hợp tác và sự cam kết nghiêm túc để phục vụ
       title: "Giá trị bền vững",
       content: `Quỹ Từ Thiện “Trái Tim Sao Việt” được ban giám đốc Công ty – anh Đinh Công Hiếu và chị Đinh Thị Huế ký duyệt thành lập 
       vào ngày 3/10/2022. Quỹ được mọi thành viên trong công ty đóng góp các ý tưởng, tinh thần hăng hái và hành động nhiệt huyết để cố gắng xây dựng bằng mọi cách có thể.
-      “Hãy làm bất cứ điều gì có thể và ngay bây giờ để không bao giờ hối tiếc là quá muộn.Có trách nhiệm với cộng đồng chia sẽ yêu thương đó là SỨ MỆNH của toàn thể nhân viên Sao Việt đang hướng tới
+      “Hãy làm bất cứ điều gì có thể và ngay bây giờ để không bao giờ hối tiếc là quá muộn.Có trách nhiệm với cộng đồng chia sẽ yêu thương đó là SỨ MỆNH của toàn thể nhân viên Sao Việt đang hướng tới.
       `,
       image: "/about-us/article-2.jpg",
     },

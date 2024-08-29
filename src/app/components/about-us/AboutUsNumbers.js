@@ -20,10 +20,12 @@ const responsive = {
 
 const AboutUsNumbers = () => {
   const [images] = useState([
+    "/about-us/BNI-T3.2024.png",
     "/about-us/outstanding-1.JPG",
     "/about-us/outstanding-2.jpg",
     "/about-us/outstanding-3.jpg",
-    "/about-us/outstanding-4.jpg"
+    "/about-us/outstanding-4.jpg",
+    "/about-us/Nova-College.png"
   ]);
 
   return (

@@ -53,7 +53,7 @@ const AboutUsBanner = () => {
 
   return (
     <div className="bg-[url(/about-us/banner-bg.png)] bg-cover">
-      <h2 className="text-3xl font-semibold text-white text-center py-8">VỀ SAO VIỆT</h2>
+      <h2 className="text-[42px] font-semibold text-center py-8">VỀ SAO VIỆT</h2>
       <div className="pb-[100px] hidden md:block">
         <div className="relative w-full max-w-[1240px] mx-auto px-2">
           <Carousel

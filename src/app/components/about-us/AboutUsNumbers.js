@@ -32,7 +32,7 @@ const AboutUsNumbers = () => {
     <div className="bg-[url(/about-us/banner-bg.png)] pt-10 md:px-7 pb-4">
       <div className="relative container">
         <div className="max-w-full overflow-hidden">
-          <h2 className="text-3xl font-semibold text-white text-center mb-8">Nổi bật</h2>
+          <h2 className="text-3xl font-semibold text-center mb-8">Nổi bật</h2>
 
           <Carousel
             responsive={responsive}

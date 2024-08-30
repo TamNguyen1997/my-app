@@ -282,7 +282,7 @@ const BlogToolBar = ({ editor }) => {
               <ModalHeader className="flex flex-col gap-1">Chèn hình</ModalHeader>
               <ModalBody>
                 <ImageCms disableAdd onImageClick={(image) => {
-                  editor.chain().focus().setImage({ src: image.path }).run()
+                  editor.chain().focus().setImage({ src: `${process.env.NEXT_PUBLIC_FILE_PATH + image.path}` }).run()
                   onClose()
                 }} disableDelete />
               </ModalBody>

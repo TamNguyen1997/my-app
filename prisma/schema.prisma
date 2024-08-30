@@ -185,14 +185,29 @@ model order {
   companyTaxCode String? @map("company_tax_code")
   companyAddress String? @map("company_address")
 
-  status               ORDER_STATUS       @default(PENDING)
-  paymentMethod        PAYMENT_METHOD     @default(COD) @map("payment_method")
-  shippingOrderCreated Boolean            @default(false) @map("shipping_order_created")
-  product_on_order     product_on_order[]
-  createdAt            DateTime           @default(now()) @map("created_at")
-  updatedAt            DateTime           @default(now()) @updatedAt @map("updated_at")
+  status               ORDER_STATUS   @default(PENDING)
+  paymentMethod        PAYMENT_METHOD @default(COD) @map("payment_method")
+  shippingOrderCreated Boolean        @default(false) @map("shipping_order_created")
+
+  vnpayTransactionNo     String?          @map("vnpay_transaction_no")
+  bankTransactionNo      String?          @map("bank_transaction_no")
+  bankCode               String?          @map("bank_code")
+  vnpayResponseCode      Int?             @map("vnpay_response_code")
+  vnpayTransactionStatus Int?             @map("vnpay_transaction_status")
+  vnpayTxtRef            String?          @map("vnpay_txt_ref")
+  vnpayHashType          VNPAY_HASH_TYPE? @default(SHA256) @map("vnpay_hash_type")
+  vnpaySecureHash        String?          @map("vnpay_secure_hash")
+
+  product_on_order product_on_order[]
+  createdAt        DateTime           @default(now()) @map("created_at")
+  updatedAt        DateTime           @default(now()) @updatedAt @map("updated_at")
 
   @@index([orderId])
+}
+
+enum VNPAY_HASH_TYPE {
+  SHA256
+  HmacSHA512
 }
 
 enum SHIPPING_METHOD {

@@ -153,14 +153,8 @@ const Brand = ({ params, productFilter }) => {
   return (
     <>
       <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${brand.slug}`} />
-      <div className="flex flex-col items-center justify-center w-full h-60 bg-cover bg-center bg-no-repeat">
-        <div className="flex flex-col items-center justify-center w-full h-full bg-no-repeat bg-cover bg-banner1">
-        </div>
-      </div>
       <div className="w-9/12 mx-auto ">
         <div className="flex gap-2 pt-5">
-
-
           <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
             {
               Object.keys(filters || {}).map((key, index) =>

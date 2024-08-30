@@ -3,7 +3,6 @@
 import { useParams, usePathname } from "next/navigation";
 import ProductDetail from "@/app/components/product/ProductDetail";
 import Category from "@/app/components/product/Category";
-import Brand from "@/app/components/product/Brand";
 import { useEffect } from "react";
 
 const Cate = () => {
@@ -25,9 +24,6 @@ const Cate = () => {
 
   if (params.slug.length === 1) {
     const [slug, filter] = params.slug[0].split("_")
-    if (params.slug[0].startsWith('thuong-hieu')) {
-      return <Brand params={slug} productFilter={filter} />
-    }
     return <Category params={slug} productFilter={filter} />
   }
   return <ProductDetail id={params.slug[1]} />

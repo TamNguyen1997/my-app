@@ -115,23 +115,24 @@ model sale_detail {
 
 model filter {
   id         String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  slug       String      @unique @default(dbgenerated("gen_random_uuid()"))
   name       String      @default("")
-  imageUrl   String?
-  active     Boolean     @default(true)
-  categoryId String?
-  category   category?   @relation(references: [id], fields: [categoryId])
-  brandId    String?
-  brand      brand?      @relation(references: [id], fields: [brandId])
-  targetType target_type @default(CATEGORY)
-  filterType filter_type @default(BRAND)
 
   createdAt       DateTime            @default(now()) @map("created_at")
   updatedAt       DateTime            @default(now()) @updatedAt @map("updated_at")
-  filterOnProduct filter_on_product[]
+  filterValue     filter_value[]
+}
 
-  @@index([categoryId])
-  @@index([brandId])
+model filter_value {
+  id         String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  value      String      @default("")
+  filter     filter?     @relation(fields: [filterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  filterId   String      @map("filter_id") @db.Uuid  
+  translated_value       String      @default("")
+
+  createdAt  DateTime    @default(now()) @map("created_at")
+  updatedAt  DateTime    @default(now()) @updatedAt @map("updated_at")
+
+  @@index([filterId])
 }
 
 enum target_type {
@@ -154,7 +155,6 @@ model filter_on_product {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   product   product? @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   productId String?  @db.Uuid
-  filter    filter?  @relation(fields: [filterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   filterId  String?  @db.Uuid
 
   @@unique([filterId, productId])
@@ -372,7 +372,6 @@ model category {
   subcates category[] @relation("sub_cate")
   product  product[]
   sProduct product[]  @relation("subCate")
-  filter   filter[]
 
   @@unique([slug])
   @@index([imageId])
@@ -392,7 +391,6 @@ model brand {
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   product product[]
-  filter  filter[]
 
   @@unique([slug])
 }

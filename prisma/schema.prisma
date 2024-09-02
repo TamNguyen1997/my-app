@@ -138,12 +138,11 @@ model filter {
   id   String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name String @default("")
 
-  createdAt   DateTime       @default(now()) @map("created_at")
-  updatedAt   DateTime       @default(now()) @updatedAt @map("updated_at")
-  filterValue filter_value[]
-
-  technicalDetails technical_detail[]
-  saleDetails      sale_detail[]
+  createdAt        DateTime           @default(now()) @map("created_at")
+  updatedAt        DateTime           @default(now()) @updatedAt @map("updated_at")
+  filterValue      filter_value[]
+  technical_detail technical_detail[]
+  sale_detail      sale_detail[]
 }
 
 model filter_value {

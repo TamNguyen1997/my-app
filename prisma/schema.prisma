@@ -83,15 +83,14 @@ model product_on_image {
 
 model technical_detail {
   id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  row       String  @ignore
-  column    String  @ignore
   product   product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId String  @unique @db.Uuid 
-  
-  filter        filter      @relation(fields: [filterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  filterId      String      @map("filter_id") @db.Uuid
+  productId String  @unique @db.Uuid
+
+  filter        filter       @relation(fields: [filterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  filterId      String       @map("filter_id") @db.Uuid
   filterValue   filter_value @relation(fields: [filterValueId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  filterValueId String      @map("filter_value_id") @db.Uuid
+  filterValueId String       @map("filter_value_id") @db.Uuid
+
   @@index([productId])
   @@index([filterId])
   @@index([filterValueId])
@@ -113,53 +112,52 @@ model sale_detail {
   childSaleDetails sale_detail[]      @relation("secondary_sale_detail")
   saleDetail       sale_detail?       @relation("secondary_sale_detail", fields: [saleDetailId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   saleDetailId     String?            @map("sale_detail_id") @db.Uuid
-  product_on_order product_on_order[]
+  productOnOrder   product_on_order[]
 
-  filter        filter         @relation(fields: [filterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  filterId      String         @map("filter_id") @db.Uuid
+  filter   filter @relation(fields: [filterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  filterId String @map("filter_id") @db.Uuid
 
-  filterValue   filter_value   @relation(fields: [filterValueId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  filterValueId String         @map("filter_value_id") @db.Uuid
+  filterValue   filter_value @relation(fields: [filterValueId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  filterValueId String       @map("filter_value_id") @db.Uuid
 
-  sku             String
-  promotional_price Int?
-  show_price      Boolean        @default(true)
-  in_stock        Int            @default(0)
+  sku              String
+  promotionalPrice Int?
+  showPrice        Boolean @default(true)
+  inStock          Int     @default(0)
 
-  createdAt      DateTime        @default(now()) @map("created_at")
-  updatedAt      DateTime        @default(now()) @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@index([productId])
   @@index([saleDetailId])
   @@index([filterId])
   @@index([filterValueId])
-
 }
 
 model filter {
-  id         String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name       String      @default("")
+  id   String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name String @default("")
 
-  createdAt       DateTime            @default(now()) @map("created_at")
-  updatedAt       DateTime            @default(now()) @updatedAt @map("updated_at")
-  filterValue     filter_value[]
+  createdAt   DateTime       @default(now()) @map("created_at")
+  updatedAt   DateTime       @default(now()) @updatedAt @map("updated_at")
+  filterValue filter_value[]
 
   technicalDetails technical_detail[]
-  saleDetails   sale_detail[]
+  saleDetails      sale_detail[]
 }
 
 model filter_value {
-  id         String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  value      String      @default("")
-  filter     filter?     @relation(fields: [filterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  filterId   String      @map("filter_id") @db.Uuid  
-  translated_value       String      @default("")
+  id               String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  value            String  @default("")
+  filter           filter? @relation(fields: [filterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  filterId         String  @map("filter_id") @db.Uuid
+  translated_value String  @default("")
 
-  createdAt  DateTime    @default(now()) @map("created_at")
-  updatedAt  DateTime    @default(now()) @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   technicalDetails technical_detail[]
-  saleDetails   sale_detail[]
+  saleDetails      sale_detail[]
 
   @@index([filterId])
 }

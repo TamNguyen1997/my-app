@@ -37,13 +37,25 @@ const FilterProduct = ({ filterId, categories, brands, subCategories }) => {
   const [condition, setCondition] = useState({})
   const [loadingState, setLoadingState] = useState("loading")
 
-  const [total, setTotal] = useState(0)
+  const [total, setTotal] = useState(100)
 
   const [page, setPage] = useState(1)
 
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
 
-  const [products, setProduct] = useState([])
+  const [products, setProduct] = useState([...Array(5)].map((_, i) => ({
+    id: i,
+    attrId: "M0102",
+    attrViName: "Đen",
+    slug: "den",
+    attrEnName: "Black",
+    brand: "2f32fed6-2130-4b5c-8c84-4a13e70a0ee8",
+    category: "99b1f86c-f6cc-42f1-9907-1979abb52557",
+    subcate: "e51b6744-5c19-4c7c-88ed-36b5f835265c",
+    active: i % 2 == 0
+  })))
+
+  console.log(products)
 
   const tableHeaders = [
     {
@@ -89,12 +101,12 @@ const FilterProduct = ({ filterId, categories, brands, subCategories }) => {
   }, [page])
 
   const getProduct = useCallback(() => {
-    setLoadingState("loading")
-    fetch(`/api/filters/${filterId}/products?page=${page}&size=${rowsPerPage}`).then(res => res.json()).then(json => {
-      setProduct(json.result)
-      setTotal(json.total)
+    // setLoadingState("loading")
+    // fetch(`/api/filters/${filterId}/products?page=${page}&size=${rowsPerPage}`).then(res => res.json()).then(json => {
+    //   setProduct(json.result)
+    //   setTotal(json.total)
       setLoadingState("idle")
-    })
+    // })
   }, [page])
 
   const pages = useMemo(() => {
@@ -136,7 +148,7 @@ const FilterProduct = ({ filterId, categories, brands, subCategories }) => {
       case "active":
         return (
           <div className="flex justify-center">
-            <Switch className="[&>span:last-of-type]:m-0" />
+            <Switch isSelected={cellValue} className="[&>span:last-of-type]:m-0" />
           </div>
         )
       // case "category":
@@ -164,7 +176,7 @@ const FilterProduct = ({ filterId, categories, brands, subCategories }) => {
         )
       default:
         // return cellValue
-        return <Input value={cellValue} />;
+        return <Input value={cellValue} className="min-w-[100px]" />;
     }
   }, [])
 

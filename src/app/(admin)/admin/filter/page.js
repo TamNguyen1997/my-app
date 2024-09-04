@@ -219,9 +219,11 @@ const Filter = () => {
             <Search />
           </Button>
 
-          <Button color="primary" title="Thêm mới" className="mt-auto">
-            <Plus />
-          </Button>
+          <Link href="/admin/filter/edit/new" className="mt-auto">
+            <Button color="primary" title="Thêm mới">
+              <Plus />
+            </Button>
+          </Link>
         </div>
 
         <Table

@@ -553,22 +553,28 @@ const Filter = () => {
           <Input
             type="text"
             label="ID thuộc tính"
-            value=""
+            defaultValue={filter.id}
             labelPlacement="outside-left"
             isRequired
             className="[&_label]:grow"
+            onValueChange={(value) => setFilter(Object.assign(filter, { id: value }))}
           />
 
           <Input
             type="text"
             label="Tên thuộc tính"
-            value=""
+            defaultValue={filter.name}
             labelPlacement="outside-left"
             isRequired
             className="[&_label]:grow"
+            onValueChange={(value) => setFilter(Object.assign(filter, { name: value }))}
           />
 
-          <Switch className="max-w-full flex-row-reverse [&>span]:text-sm [&>span:last-of-type]:grow mr-[160px]">
+          <Switch
+            defaultSelected={filter.active}
+            className="max-w-full flex-row-reverse [&>span]:text-sm [&>span:last-of-type]:grow mr-[160px]"
+            onValueChange={(value) => setFilter(Object.assign(filter, { active: value }))}
+          >
             Trạng thái active
           </Switch> 
         </div>
@@ -577,7 +583,7 @@ const Filter = () => {
         {
           filter.id ? 
             <div className="-mt-2">
-              <FilterProduct filterId={filter.id} categories={categories} subCategories={subCategories} brands={brands} />
+              <FilterProduct filterId={filter.id} categories={categories} subCategories={subCategories} brands={brands} filter={filter} />
             </div> : ""
         }
         {/* {

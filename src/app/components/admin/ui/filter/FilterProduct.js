@@ -15,7 +15,8 @@ import {
   ModalFooter,
   Link,
   Switch,
-  Select, SelectItem
+  Select, SelectItem,
+  Chip
 } from "@nextui-org/react"
 import { EditIcon, Search, Trash2 } from "lucide-react"
 import SaleDetails from "@/app/components/admin/ui/product/SaleDetails";
@@ -29,7 +30,7 @@ import { toast, ToastContainer } from "react-toastify";
 
 const rowsPerPage = 10;
 
-const FilterProduct = ({ filterId, categories, brands, subCategories }) => {
+const FilterProduct = ({ filterId, categories, brands, subCategories, filter }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   const addProduct = useDisclosure()
@@ -44,18 +45,16 @@ const FilterProduct = ({ filterId, categories, brands, subCategories }) => {
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
 
   const [products, setProduct] = useState([...Array(5)].map((_, i) => ({
-    id: i,
+    id: i + 1,
     attrId: "M0102",
     attrViName: "Đen",
     slug: "den",
     attrEnName: "Black",
-    brand: "2f32fed6-2130-4b5c-8c84-4a13e70a0ee8",
-    category: "99b1f86c-f6cc-42f1-9907-1979abb52557",
-    subcate: "e51b6744-5c19-4c7c-88ed-36b5f835265c",
+    brand: [],
+    category: [],
+    subcate: [],
     active: i % 2 == 0
   })))
-
-  console.log(products)
 
   const tableHeaders = [
     {
@@ -142,13 +141,28 @@ const FilterProduct = ({ filterId, categories, brands, subCategories }) => {
     }
   }
 
+  const onCellValueChange = (productId, value) => {
+    if(!productId) return;
+    setProduct(products.map(product => product.id === productId ? Object.assign(product, value) : product));
+  }
+
   const renderCell = useCallback((product, columnKey) => {
     const cellValue = product[columnKey]
+    const selectionList = {
+      category: categories,
+      subcate: subCategories,
+      brand: brands
+    }
     switch (columnKey) {
       case "active":
         return (
           <div className="flex justify-center">
-            <Switch isSelected={cellValue} className="[&>span:last-of-type]:m-0" />
+            <Switch
+              aria-label={columnKey}
+              defaultSelected={cellValue}
+              onValueChange={(value) => onCellValueChange(product?.id, { [columnKey]: value })}
+              className="[&>span:last-of-type]:m-0"
+            />
           </div>
         )
       // case "category":
@@ -162,21 +176,46 @@ const FilterProduct = ({ filterId, categories, brands, subCategories }) => {
       case "brand":
         return (
           <Select
-            label=""
+            aria-label={columnKey}
+            selectionMode="multiple"
             labelPlacement="outside"
-            className="min-w-[120px]"
+            value={cellValue}
+            onSelectionChange={(value) => onCellValueChange(product?.id, { [columnKey]: Array.from(value) })}
+            classNames={{
+              base: "min-w-[120px]",
+              innerWrapper: "pr-6 !w-full",
+              trigger: "h-auto gap-2 py-2",
+              value: "whitespace-normal"
+            }}
+            renderValue={(items) => {
+              return (
+                <div className="flex flex-wrap gap-2">
+                  {
+                    items?.map(item => <Chip key={item.key}>{item.textValue}</Chip>)
+                  }
+                </div>
+              );
+            }}
           >
-            <SelectItem key="item_1">
-              Item 1
-            </SelectItem>
-            <SelectItem key="item_2">
-              Item 2
-            </SelectItem>
+            {
+              selectionList[columnKey].map((item) => 
+                <SelectItem key={item.id}>
+                  {item.name}
+                </SelectItem>
+              )
+            }
           </Select>
         )
       default:
         // return cellValue
-        return <Input value={cellValue} className="min-w-[100px]" />;
+        return (
+          <Input
+            aria-label={columnKey}
+            defaultValue={cellValue}
+            onValueChange={(value) => onCellValueChange(product?.id, { [columnKey]: value })}
+            className="min-w-[100px]"
+          />
+        );
     }
   }, [])
 
@@ -264,7 +303,7 @@ const FilterProduct = ({ filterId, categories, brands, subCategories }) => {
           <div className="flex gap-5">
             <Link href="/admin/filter">Quay về</Link>
             <Link href="/admin/filter/edit/new">Thêm filter</Link>
-            <Button color="primary" className="ml-auto">Lưu</Button>
+            <Button color="primary" className="ml-auto" onClick={() => console.log({filter, products})}>Lưu</Button>
             <Button color="default" variant="ghost" className="">Xoá</Button>
           </div>
         </div>

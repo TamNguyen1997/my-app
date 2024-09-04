@@ -14,6 +14,8 @@ import {
   Input,
   ModalFooter,
   Link,
+  Switch,
+  Select, SelectItem
 } from "@nextui-org/react"
 import { EditIcon, Search, Trash2 } from "lucide-react"
 import SaleDetails from "@/app/components/admin/ui/product/SaleDetails";
@@ -42,6 +44,46 @@ const FilterProduct = ({ filterId, categories, brands, subCategories }) => {
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
 
   const [products, setProduct] = useState([])
+
+  const tableHeaders = [
+    {
+      key: "attrId",
+      title: "ID giá trị thuộc tính"
+    },
+    {
+      key: "attrViName",
+      title: "Tên giá trị thuộc tính tiếng Việt",
+      required: true
+    },
+    {
+      key: "slug",
+      title: "Slug"
+    },
+    {
+      key: "attrEnName",
+      title: "Tên giá trị thuộc tính tiếng Anh"
+    },
+    {
+      key: "brand",
+      title: "ID thương hiệu",
+      required: true
+    },
+    {
+      key: "category",
+      title: "ID cate",
+      required: true
+    },
+    {
+      key: "subcate",
+      title: "ID sub-cate",
+      required: true
+    },
+    {
+      key: "active",
+      title: "Trạng thái active"
+    }
+  ];
+
   useEffect(() => {
     getProduct()
   }, [page])
@@ -91,25 +133,38 @@ const FilterProduct = ({ filterId, categories, brands, subCategories }) => {
   const renderCell = useCallback((product, columnKey) => {
     const cellValue = product[columnKey]
     switch (columnKey) {
-      case "actions":
+      case "active":
         return (
-          <div className="relative flex items-center gap-2">
-            <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-              <EditIcon onClick={() => openModal(product)} />
-            </span>
-            <span className="text-lg cursor-pointer active:opacity-50 text-red-500">
-              <Trash2 onClick={() => deleteFilterOnProduct(product.id)} />
-            </span>
+          <div className="flex justify-center">
+            <Switch className="[&>span:last-of-type]:m-0" />
           </div>
         )
+      // case "category":
+      //   return product.category?.name
+      // case "subcate":
+      //   return product.subCate?.name
+      // case "brand":
+      //   return product.brand?.name
       case "category":
-        return product.category?.name
       case "subcate":
-        return product.subCate?.name
       case "brand":
-        return product.brand?.name
+        return (
+          <Select
+            label=""
+            labelPlacement="outside"
+            className="min-w-[120px]"
+          >
+            <SelectItem key="item_1">
+              Item 1
+            </SelectItem>
+            <SelectItem key="item_2">
+              Item 2
+            </SelectItem>
+          </Select>
+        )
       default:
-        return cellValue
+        // return cellValue
+        return <Input value={cellValue} />;
     }
   }, [])
 
@@ -121,7 +176,7 @@ const FilterProduct = ({ filterId, categories, brands, subCategories }) => {
     <>
       <ToastContainer containerId={"FilterProduct"} />
       <div className="flex flex-col gap-2 min-h-full">
-        <div className="flex gap-3 w-1/2">
+        {/* <div className="flex gap-3 w-1/2">
           <Input label="Tên sản phẩm" aria-label="Tên sản phẩm" labelPlacement="outside" value={condition.name}
             onValueChange={(value) => {
               onConditionChange({ name: value })
@@ -137,7 +192,7 @@ const FilterProduct = ({ filterId, categories, brands, subCategories }) => {
           <div className="items-end flex min-h-full">
             <Button onClick={getProduct} color="primary"><Search /></Button>
           </div>
-        </div>
+        </div> */}
         <div className="px-1 py-2 border-default-200">
           <Table
             loadingState={loadingState}
@@ -156,12 +211,27 @@ const FilterProduct = ({ filterId, categories, brands, subCategories }) => {
                 </div>
             }>
             <TableHeader>
-              <TableColumn key="name" textValue="Tên sản phẩm" aria-label="Tên sản phẩm">Tên sản phẩm</TableColumn>
+              {/* <TableColumn key="name" textValue="Tên sản phẩm" aria-label="Tên sản phẩm">Tên sản phẩm</TableColumn>
               <TableColumn key="slug" textValue="slug" aria-label="slug">Slug</TableColumn>
               <TableColumn key="category" textValue="category" aria-label="slug">Category</TableColumn>
               <TableColumn key="subcate" textValue="subcate" aria-label="slug">Sub category</TableColumn>
               <TableColumn key="brand" textValue="brand" aria-label="slug">Nhãn hiệu</TableColumn>
-              <TableColumn key="actions" textValue="actions" width="100"></TableColumn>
+              <TableColumn key="actions" textValue="actions" width="100"></TableColumn> */}
+              {
+                tableHeaders.map(col => 
+                  <TableColumn
+                    key={col.key}
+                    text-value={col.title}
+                    aria-label={col.title}
+                    className={`
+                      max-w-[150px] whitespace-normal text-center last:w-[100px]
+                      ${col.required && "after:content-['*'] after:text-[#f31260]"}
+                    `}
+                  >
+                    {col.title}
+                  </TableColumn>
+                )
+              }
             </TableHeader>
             <TableBody
               items={products}
@@ -178,10 +248,12 @@ const FilterProduct = ({ filterId, categories, brands, subCategories }) => {
         </div>
 
         <div>
-          <Button color="primary" onClick={addProduct.onOpen} className="float-right">Thêm sản phẩm vào filter</Button>
+          {/* <Button color="primary" onClick={addProduct.onOpen} className="float-right">Thêm sản phẩm vào filter</Button> */}
           <div className="flex gap-5">
             <Link href="/admin/filter">Quay về</Link>
             <Link href="/admin/filter/edit/new">Thêm filter</Link>
+            <Button color="primary" className="ml-auto">Lưu</Button>
+            <Button color="default" variant="ghost" className="">Xoá</Button>
           </div>
         </div>
       </div>

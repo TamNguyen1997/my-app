@@ -6,7 +6,8 @@ import {
   Button,
   Input,
   Select,
-  SelectItem
+  SelectItem,
+  Switch
 } from "@nextui-org/react"
 import FilterProduct from "@/app/components/admin/ui/filter/FilterProduct";
 import { useParams } from "next/navigation";
@@ -136,7 +137,7 @@ const Filter = () => {
     <>
       <ToastContainer />
       <div className="flex flex-col gap-3">
-        <div className="flex gap-2">
+        {/* <div className="flex gap-2">
           <Input
             type="text"
             label="Tên"
@@ -182,8 +183,40 @@ const Filter = () => {
           <div className="items-end flex min-h-full">
             <Button onClick={onSave} color="primary">Lưu</Button>
           </div>
+        </div> */}
+        <h2 className="font-bold">THUỘC TÍNH</h2>
+        <div className="flex flex-col space-y-4 border rounded-2xl shadow-sm max-w-[444px] p-3 pb-5">
+          <Input
+            type="text"
+            label="ID thuộc tính"
+            value=""
+            labelPlacement="outside-left"
+            isRequired
+            className="[&_label]:grow"
+          />
+
+          <Input
+            type="text"
+            label="Tên thuộc tính"
+            value=""
+            labelPlacement="outside-left"
+            isRequired
+            className="[&_label]:grow"
+          />
+
+          <Switch className="max-w-full flex-row-reverse [&>span]:text-sm [&>span:last-of-type]:grow mr-[160px]">
+            Trạng thái active
+          </Switch> 
         </div>
+
+        <h2 className="font-bold mt-10">GIÁ TRỊ THUỘC TÍNH</h2>
         {
+          filter.id ? 
+            <div className="-mt-2">
+              <FilterProduct filterId={filter.id} categories={categories} subCategories={subCategories} brands={brands} />
+            </div> : ""
+        }
+        {/* {
           filter.id ?
             <div className="border rounded-lg shadow-lg p-3">
               <p className="font-bold pt-3">
@@ -191,7 +224,7 @@ const Filter = () => {
               </p>
               <FilterProduct filterId={filter.id} categories={categories} subCategories={subCategories} brands={brands} />
             </div> : ""
-        }
+        } */}
       </div>
     </>
   )

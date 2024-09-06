@@ -29,7 +29,7 @@ const ProductCard = ({ product }) => {
       <div className="py-2">
         {
           getPrice(product) ?
-            <p className="text-red-500 font-bold w-full relative text-center items-center h-8">{getPrice(product)} đ</p> :
+            <p className="text-red-500 font-bold w-full relative text-center items-center h-8 text-[24px]">{getPrice(product)} đ</p> :
             <Button className="flex text-sm font-bold uppercase bg-gradient-to-b from-[#ffed00] to-[#fff466] rounded-none m-auto h-8 border border-[#e3e3e3]">
               <Link isExternal href="https://zalo.me/0902366617" className="text-black">
                 Liên hệ

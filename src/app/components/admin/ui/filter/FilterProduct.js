@@ -229,7 +229,7 @@ const FilterProduct = ({ filterId, categories, brands, subCategories, filter }) 
               loadingContent={<Spinner label="Loading..." />}>
               {(item) => (
                 <TableRow key={item.id}>
-                  {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
+                  {(columnKey) => <TableCell className="max-w-8">{renderCell(item, columnKey)}</TableCell>}
                 </TableRow>
               )}
             </TableBody>

@@ -133,7 +133,7 @@ const BlogOverview = ({ activeCategory, activeTag }) => {
 
               <Link
                 href=""
-                className="flex justify-center items-center text-[#153f17] font-semibold w-[181px] h-[43px] rounded-[30px] border border-[#FFD400] hover:bg-[#ccefdc] transition mx-auto"
+                className="flex justify-center items-center text-[#153f17] font-semibold w-[181px] h-[43px] rounded-[30px] border border-[#FFD400] hover:bg-[#FFD400] transition mx-auto"
                 onClick={() => setPage(page + 1)}
               >
                 Xem thêm

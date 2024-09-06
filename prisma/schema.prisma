@@ -157,6 +157,10 @@ model filter_value {
 
   technicalDetails technical_detail[]
   saleDetails      sale_detail[]
+  categories       category[]         @relation("filterValueOnCategory")
+  subCategories    category[]         @relation("filterValueOnSubCategory")
+
+  brands brand[]
 
   @@index([filterId])
 }
@@ -399,9 +403,17 @@ model category {
   product  product[]
   sProduct product[]  @relation("subCate")
 
+  filterValueOnCategory   filter_value? @relation("filterValueOnCategory", fields: [filterValueOnCategoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  filterValueOnCategoryId String?
+
+  filterValueOnSubCategory   filter_value? @relation("filterValueOnSubCategory", fields: [filterValueOnSubCategoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  filterValueOnSubCategoryId String?
+
   @@unique([slug])
   @@index([imageId])
   @@index([cateId])
+  @@index([filterValueOnCategoryId])
+  @@index([filterValueOnSubCategoryId])
 }
 
 enum cate_type {
@@ -416,7 +428,9 @@ model brand {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  product product[]
+  product        product[]
+  filter_value   filter_value? @relation(fields: [filter_valueId], references: [id])
+  filter_valueId String?       @db.Uuid
 
   @@unique([slug])
 }

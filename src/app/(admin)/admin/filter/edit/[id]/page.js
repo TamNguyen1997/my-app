@@ -1,9 +1,8 @@
 "use client"
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import {
-  Button,
   Input,
   Select,
   SelectItem,
@@ -11,39 +10,7 @@ import {
 } from "@nextui-org/react"
 import FilterProduct from "@/app/components/admin/ui/filter/FilterProduct";
 import { useParams } from "next/navigation";
-import { v4 } from "uuid";
-import slugify from "slugify";
 
-const FILTER_TYPE = [
-  {
-    id: "BRAND",
-    name: "Thương hiệu",
-  },
-  {
-    id: "TYPE",
-    name: "Loại",
-  },
-  {
-    id: "DIMENSION",
-    name: "Kích thước",
-  },
-  {
-    id: "EFFIENCY",
-    name: "Hiệu suất",
-  },
-  {
-    id: "WATTAGE",
-    name: "Công suất tiêu thụ",
-  },
-  {
-    id: "COLOR",
-    name: "Màu sắc",
-  },
-  {
-    id: "BATTERY",
-    name: "Thời lượng pin",
-  },
-]
 
 const Filter = () => {
   const [filter, setFilter] = useState({
@@ -417,15 +384,6 @@ const Filter = () => {
   ])
 
   const { id } = useParams()
-  // useEffect(() => {
-  //   fetch('/api/categories?type=CATE').then(res => res.json()).then(json => setCategories(json.result))
-  //   fetch('/api/brands').then(res => res.json()).then(setBrands)
-  //   fetch('/api/categories?type=SUB_CATE').then(res => res.json()).then(json => setSubCategories(json.result))
-
-  //   if (id && id !== 'new') {
-  //     fetch(`/api/filters/${id}`).then(res => res.json()).then(setFilter)
-  //   }
-  // }, [])
 
   const onSave = async () => {
     const res = filter.id ?
@@ -501,53 +459,6 @@ const Filter = () => {
     <>
       <ToastContainer />
       <div className="flex flex-col gap-3">
-        {/* <div className="flex gap-2">
-          <Input
-            type="text"
-            label="Tên"
-            value={filter.name}
-            onValueChange={(value) => setFilter(Object.assign({}, filter, { name: value }))}
-            labelPlacement="outside" isRequired />
-          <Input
-            type="text"
-            label="Slug"
-            value={id === "new" ? v4() : filter.slug}
-            onValueChange={(value) => setFilter(Object.assign({}, filter, { slug: slugify(value, { locale: 'vi' }) }))}
-            labelPlacement="outside" isRequired />
-          <Select
-            label="Đối tượng filter"
-            labelPlacement="outside"
-            selectedKeys={new Set([filter.targetType || "CATEGORY"])}
-            onSelectionChange={(value) =>
-              setFilter(Object.assign({}, filter, { targetType: value.values().next().value }))}
-          >
-            <SelectItem key="BRAND">
-              Nhãn hàng
-            </SelectItem>
-            <SelectItem key="CATEGORY">
-              Category
-            </SelectItem>
-            <SelectItem key="SUB_CATEGORY">
-              Sub category
-            </SelectItem>
-          </Select>
-          {getTargetSelect()}
-          <Select
-            label="Loại filter"
-            labelPlacement="outside"
-            selectedKeys={new Set([filter.filterType || "BRAND"])}
-            onSelectionChange={(value) =>
-              setFilter(Object.assign({}, filter, { filterType: value.values().next().value }))}>
-            {
-              FILTER_TYPE.map(item => <SelectItem key={item.id}>
-                {item.name}
-              </SelectItem>)
-            }
-          </Select>
-          <div className="items-end flex min-h-full">
-            <Button onClick={onSave} color="primary">Lưu</Button>
-          </div>
-        </div> */}
         <h2 className="font-bold">THUỘC TÍNH</h2>
         <div className="flex flex-col space-y-4 border rounded-2xl shadow-sm max-w-[444px] p-3 pb-5">
           <Input
@@ -576,25 +487,16 @@ const Filter = () => {
             onValueChange={(value) => setFilter(Object.assign(filter, { active: value }))}
           >
             Trạng thái active
-          </Switch> 
+          </Switch>
         </div>
 
         <h2 className="font-bold mt-10">GIÁ TRỊ THUỘC TÍNH</h2>
         {
-          filter.id ? 
+          filter.id ?
             <div className="-mt-2">
               <FilterProduct filterId={filter.id} categories={categories} subCategories={subCategories} brands={brands} filter={filter} />
             </div> : ""
         }
-        {/* {
-          filter.id ?
-            <div className="border rounded-lg shadow-lg p-3">
-              <p className="font-bold pt-3">
-                Sản phẩm có trong filter
-              </p>
-              <FilterProduct filterId={filter.id} categories={categories} subCategories={subCategories} brands={brands} />
-            </div> : ""
-        } */}
       </div>
     </>
   )

@@ -58,12 +58,12 @@ export async function POST(req) {
     vnp_Params = sortObject(vnp_Params);
 
     var querystring = require('qs');
-    var signData = querystring.stringify(vnp_Params, { encode: false });
+    var signData = querystring.stringify(vnp_Params, { encode: true });
     var crypto = require("crypto");
     var hmac = crypto.createHmac("sha512", secretKey);
     var signed = hmac.update(new Buffer(signData, 'utf-8')).digest("hex");
     vnp_Params['vnp_SecureHash'] = signed;
-    vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: false });
+    vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: true });
 
     return NextResponse.json(vnpUrl, { status: 200 })
   } catch (e) {

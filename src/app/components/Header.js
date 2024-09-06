@@ -189,14 +189,6 @@ const Header = () => {
 const BRANDS = [
   {
     id: 1,
-    slug: "thuong-hieu-ghibli",
-    name: "Ghibli",
-    image: {
-      path: "/brand/Logo-Ghibli.png"
-    },
-  },
-  {
-    id: 2,
     slug: "thuong-hieu-rubbermaid",
     name: "Rubbermaid",
     image: {
@@ -204,20 +196,28 @@ const BRANDS = [
     },
   },
   {
-    id: 3,
-    slug: "thuong-hieu-kimberly-clark",
-    name: "Kimberly-Clark",
+    id: 2,
+    slug: "thuong-hieu-ghibli",
+    name: "Ghibli",
     image: {
-      path: "/brand/Logo-Kimberly-Clark.png"
+      path: "/brand/Logo-Ghibli.png"
     },
   },
   {
-    id: 4,
+    id: 3,
     slug: "thuong-hieu-moerman",
     name: "Moerman",
     image: {
       path: "/brand/Logo-Moerman.png"
     }
+  },
+  {
+    id: 4,
+    slug: "thuong-hieu-kimberly-clark",
+    name: "Kimberly-Clark",
+    image: {
+      path: "/brand/Logo-Kimberly-Clark.png"
+    },
   },
   {
     id: 5,

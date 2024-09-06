@@ -38,13 +38,36 @@ export async function GET(req) {
   }
 
   try {
-    const result = await db.filter.findMany({
+    let result = await db.filter.findMany({
       orderBy: [
         {
           updatedAt: "desc"
         }
       ],
       where: condition
+    })
+
+    result.forEach(async (filter, i) => {
+      const filterValues = (await db.filter_value.findMany({
+        where: { filterId: filter.id }, include: {
+          _count: {
+            as: "categoryCount",
+            select: { categories: true }
+          },
+          _count: {
+            as: "subCategoryCount",
+            select: { subCategories: true }
+          },
+          _count: {
+            as: "brandCount",
+            select: { brands: true }
+          }
+        }
+      }))
+
+      result[i].categoryCount = filterValues.reduce((acc, val) => acc + val.categoryCount, 0)
+      result[i].brandCount = filterValues.reduce((acc, val) => acc + val.brandCount, 0)
+      result[i].subCategoryCount = filterValues.reduce((acc, val) => acc + val.subCategoryCount, 0)
     })
 
     return NextResponse.json({

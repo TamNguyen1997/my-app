@@ -29,7 +29,7 @@ export async function GET(req) {
         orderId: orderId
       },
       data: {
-        customerPayment: parseInt(query.vnp_Amount),
+        customerPayment: parseInt(query.vnp_Amount) / 100,
         vnpayTransactionNo: query.vnp_TransactionNo,
         bankTransactionNo: query.vnp_BankTranNo,
         bankCode: query.vnp_BankCode,

@@ -17,15 +17,29 @@ export async function POST(req) {
       delete filterValue["categories"]
       delete filterValue["subCategories"]
       await db.filter_value.create({ data: filterValue })
-      for (let brand of brands) {
-        await db.brand.update({ where: { id: brand }, data: { filter_valueId: filterValueId } })
-      }
-      for (let category of categories) {
-        await db.category.update({ where: { id: category }, data: { filterValueOnCategoryId: filterValueId } })
-      }
-      for (let subCategory of subCategories) {
-        await db.category.update({ where: { id: subCategory }, data: { filterValueOnSubCategoryId: filterValueId } })
-      }
+
+      await db.brand.updateMany({
+        where: {
+          id: {
+            in: brands.map(brand => brand.id)
+          }
+        }, data: { filter_valueId: filterValueId }
+      })
+      await db.category.updateMany({
+        where: {
+          id: {
+            in: categories.map(cate => cate.id)
+          }
+        }, data: { filterValueOnCategoryId: filterValueId }
+      })
+
+      await db.category.updateMany({
+        where: {
+          id: {
+            in: subCategories.map(subcate => subcate.id)
+          }
+        }, data: { filterValueOnSubCategoryId: filterValueId }
+      })
     }
 
     return NextResponse.json({ message: "Create successfully" }, { status: 200 })

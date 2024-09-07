@@ -15,6 +15,7 @@ import {
 } from "@nextui-org/react"
 
 import { toast, ToastContainer } from "react-toastify";
+import { v4 } from "uuid";
 
 const FilterProduct = ({ categories, brands, subCategories, filter, setFilter }) => {
 
@@ -64,8 +65,42 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
     setFilter(filterToUpdate)
   }
 
-  const onSave = () => {
-    console.log(filter)
+  const onSave = async () => {
+    let res
+
+    let filterValues = filter.filterValue ? filter.filterValue.map(item => {
+      return {
+        ...item,
+        brands: item.brands ? item.brands.map(b => b.id) : [],
+        categories: item.categories ? item.categories.map(cate => cate.id) : [],
+        subCategories: item.subCategories ? item.subCategories.map(subcate => subcate.id) : [],
+      }
+    }) : []
+
+    if (!filter.createdAt) {
+      res = await fetch(`/api/filters/`, {
+        method: "POST",
+        body: JSON.stringify({
+          ...filter,
+          filterValue: filterValues
+        })
+      })
+    } else {
+      res = await fetch(`/api/filters/${filter.id}`, {
+        method: "PUT",
+        body: JSON.stringify({
+          ...filter,
+          filterValue: filterValues
+        })
+      })
+
+    }
+
+    if (res.ok) {
+      toast.success("Đã cập nhật")
+    } else {
+      toast.error("Không thể cập nhật")
+    }
   }
 
   const addNewFilterValue = () => {
@@ -74,7 +109,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
       filterValue: [
         ...filter.filterValue,
         {
-          id: `new-${filter.filterValue?.length || 1}`,
+          id: v4(),
           value: "",
           slug: "",
           translatedValue: "",
@@ -155,26 +190,26 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
 
   return (
     <>
-      <ToastContainer containerId={"FilterProduct"} />
+      <ToastContainer />
       <div className="flex flex-col gap-2 min-h-full">
 
         <div className="px-1 py-2 border-default-200">
           <Table
             // loadingState={loadingState}
             aria-label="Tất cả sản phẩm"
-          // bottomContent={
-          //   loadingState === "loading" ? null :
-          //     <div className="flex w-full justify-center">
-          //       <Pagination
-          //         isCompact
-          //         showControls
-          //         showShadow
-          //         page={page}
-          //         total={pages}
-          //         onChange={(page) => setPage(page)}
-          //       />
-          //     </div>
-          // }
+            // bottomContent={
+            //   loadingState === "loading" ? null :
+            //     <div className="flex w-full justify-center">
+            //       <Pagination
+            //         isCompact
+            //         showControls
+            //         showShadow
+            //         page={page}
+            //         total={pages}
+            //         onChange={(page) => setPage(page)}
+            //       />
+            //     </div>
+            // }
             bottomContent={
               <Button color="default" variant="ghost" onClick={() => addNewFilterValue()}>
                 Thêm thuộc tính

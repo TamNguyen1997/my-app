@@ -6,4 +6,4 @@ const page = () => {
   return <ImageCms onImageClick={() => {}}></ImageCms>
 }
 
-export default page;
+export default page

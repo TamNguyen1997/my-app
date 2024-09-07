@@ -31,8 +31,8 @@ model product {
   description String?
 
   saleDetails       sale_detail[]
-  technicalDetailId String?           @map("technical_detail_id") @db.Uuid
-  technical_detail  technical_detail?
+  technicalDetailId String?       @map("technical_detail_id") @db.Uuid
+  // technical_detail  technical_detail?
 
   category   category? @relation(fields: [categoryId], references: [id])
   categoryId String?   @map("category_id") @db.Uuid
@@ -56,6 +56,10 @@ model product {
   product         product?            @relation("componentParts", fields: [productId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   productId       String?             @db.Uuid
   filterOnProduct filter_on_product[]
+
+  metaTitle        String?
+  metaDescription  String?
+  technicalDetails technical_detail[]
 
   @@index([imageId])
   @@index([categoryId])
@@ -84,7 +88,7 @@ model product_on_image {
 model technical_detail {
   id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   product   product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId String  @unique @db.Uuid
+  productId String  @map("product_id") @db.Uuid
 
   filter        filter       @relation(fields: [filterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   filterId      String       @map("filter_id") @db.Uuid
@@ -114,11 +118,11 @@ model sale_detail {
   saleDetailId     String?            @map("sale_detail_id") @db.Uuid
   productOnOrder   product_on_order[]
 
-  filter   filter @relation(fields: [filterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  filterId String @map("filter_id") @db.Uuid
+  filter   filter? @relation(fields: [filterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  filterId String? @map("filter_id") @db.Uuid
 
-  filterValue   filter_value @relation(fields: [filterValueId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  filterValueId String       @map("filter_value_id") @db.Uuid
+  filterValue   filter_value? @relation(fields: [filterValueId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  filterValueId String?       @map("filter_value_id") @db.Uuid
 
   sku              String
   promotionalPrice Int?
@@ -463,4 +467,18 @@ model redirect {
 enum redirect_type {
   EXACT
   REGEX
+}
+
+enum history_status {
+  PROCESSING
+  PROCESSED
+  ERROR
+}
+
+model import_history {
+  id        String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  fileName  String
+  status    history_status
+  createdAt DateTime       @default(now()) @map("created_at")
+  updatedAt DateTime       @default(now()) @updatedAt @map("updated_at")
 }

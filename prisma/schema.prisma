@@ -408,10 +408,10 @@ model category {
   sProduct product[]  @relation("subCate")
 
   filterValueOnCategory   filter_value? @relation("filterValueOnCategory", fields: [filterValueOnCategoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  filterValueOnCategoryId String?
+  filterValueOnCategoryId String?       @db.Uuid
 
   filterValueOnSubCategory   filter_value? @relation("filterValueOnSubCategory", fields: [filterValueOnSubCategoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  filterValueOnSubCategoryId String?
+  filterValueOnSubCategoryId String?       @db.Uuid
 
   @@unique([slug])
   @@index([imageId])

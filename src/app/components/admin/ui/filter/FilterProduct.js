@@ -13,7 +13,7 @@ import {
   Chip,
   Button
 } from "@nextui-org/react"
-
+import { Trash2 } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
 import { v4 } from "uuid";
 
@@ -55,6 +55,10 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
     {
       key: "active",
       title: "Trạng thái active"
+    },
+    {
+      key: "actions",
+      title: ""
     }
   ];
 
@@ -108,7 +112,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
     setFilter({
       ...filter,
       filterValue: [
-        ...filter.filterValue || [],
+        ...structuredClone(filter.filterValue || []),
         {
           id: v4(),
           value: "",
@@ -124,6 +128,13 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
     });
   }
 
+  const removeFilterValue = (valueId) => {
+    setFilter({
+      ...filter,
+      filterValue: structuredClone(filter.filterValue || [])?.filter?.(filterValue => filterValue.id !== valueId)
+    });
+  }
+
   const renderCell = (filterValue, columnKey) => {
     const cellValue = filterValue[columnKey]
 
@@ -133,6 +144,12 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
       brands: brands
     }
     switch (columnKey) {
+      case "actions":
+        return (
+          <div className="flex justify-center text-danger">
+            <Trash2 onClick={() => removeFilterValue(filterValue?.id)} className="cursor-pointer" />
+          </div>
+        )
       case "active":
         return (
           <div className="flex justify-center">
@@ -196,7 +213,6 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
     <>
       <ToastContainer />
       <div className="flex flex-col gap-2 min-h-full">
-
         <div className="px-1 py-2 border-default-200">
           <Table
             // loadingState={loadingState}
@@ -228,7 +244,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
                     text-value={col.title}
                     aria-label={col.title}
                     className={`
-                      max-w-[150px] whitespace-normal text-center last:w-[100px]
+                      max-w-[150px] whitespace-normal text-center last:w-[50px] [&:nth-last-child(2)]:w-[90px]
                       ${col.required && "after:content-['*'] after:text-[#f31260]"}
                     `}
                   >

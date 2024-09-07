@@ -68,6 +68,25 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
     console.log(filter)
   }
 
+  const addNewFilterValue = () => {
+    setFilter({
+      ...filter,
+      filterValue: [
+        ...filter.filterValue,
+        {
+          id: `new-${filter.filterValue?.length || 1}`,
+          value: "",
+          slug: "",
+          translatedValue: "",
+          brands: [],
+          categories: [],
+          subCategories: [],
+          active: false
+        }
+      ]
+    });
+  }
+
   const renderCell = useCallback((filterValue, columnKey) => {
     const cellValue = filterValue[columnKey]
     const selectionList = {
@@ -156,6 +175,11 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
           //       />
           //     </div>
           // }
+            bottomContent={
+              <Button color="default" variant="ghost" onClick={() => addNewFilterValue()}>
+                Thêm thuộc tính
+              </Button>
+            }
           >
             <TableHeader>
               {

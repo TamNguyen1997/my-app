@@ -4,14 +4,31 @@ import queryString from 'query-string';
 
 export async function POST(req) {
   try {
-    const body = await req.json()
-    return NextResponse.json(
-      await db.filter.create(
-        {
-          data: body
-        }
-      )
-    )
+    let filter = await req.json()
+    let filterValueJson = filter["filterValue"]
+    delete filter["filterValue"];
+    await db.filter.create({ data: filter })
+    for (let filterValue of filterValueJson) {
+      const filterValueId = filterValue.id
+      let brands = filterValue["brands"]
+      let categories = filterValue["categories"]
+      let subCategories = filterValue["subCategories"]
+      delete filterValue["brands"]
+      delete filterValue["categories"]
+      delete filterValue["subCategories"]
+      await db.filter_value.create({ data: filterValue })
+      for (let brand of brands) {
+        await db.brand.update({ where: { id: brand }, data: { filter_valueId: filterValueId } })
+      }
+      for (let category of categories) {
+        await db.category.update({ where: { id: category }, data: { filterValueOnCategoryId: filterValueId } })
+      }
+      for (let subCategory of subCategories) {
+        await db.category.update({ where: { id: subCategory }, data: { filterValueOnSubCategoryId: filterValueId } })
+      }
+    }
+
+    return NextResponse.json({ message: "Create successfully" }, { status: 200 })
   } catch (e) {
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }

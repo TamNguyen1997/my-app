@@ -24,8 +24,8 @@ export async function POST(req) {
     var returnUrl = process.env.VNP_RETURN_URL;
 
     console.log(process.env.VNP_HASH_SECRET)
-    var date = new Date();
-    var expiration = new Date();
+    var date = new Date(new Date().toLocaleString('en', { timeZone: 'Asia/Ho_Chi_Minh' }));
+    var expiration = new Date(new Date().toLocaleString('en', { timeZone: 'Asia/Ho_Chi_Minh' }));
     expiration.setHours(expiration.getHours() + 1);
     var createDate = dateFormat(date, 'yyyymmddHHmmss');
     var expirationDate = dateFormat(expiration, 'yyyymmddHHmmss');

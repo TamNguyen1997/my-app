@@ -1,13 +1,5 @@
 import { NextResponse } from 'next/server';
-import { v4 } from "uuid";
 import dateFormat from "dateformat";
-
-function getSecureHash(params) {
-  var signData = JSON.stringify(params);
-  var crypto = require("crypto");
-  var hmac = crypto.createHmac("sha256", process.env.SECRET_KEY);
-  return hmac.update(new Buffer(signData, 'utf-8')).digest("hex");
-}
 
 export async function POST(req) {
   try {
@@ -60,12 +52,11 @@ export async function POST(req) {
     var querystring = require('qs');
     var signData = querystring.stringify(vnp_Params, { encode: true });
     var crypto = require("crypto");
-    var hmac = crypto.createHmac("sha512", secretKey);
-    var signed = hmac.update(new Buffer(signData, 'utf-8')).digest("hex");
+    var signed = crypto.createHmac("sha512", secretKey).update(Buffer.from(signData, 'utf-8')).digest("hex");
     vnp_Params['vnp_SecureHash'] = signed;
     vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: true });
 
-    return NextResponse.json(vnpUrl, { status: 200 })
+    return NextResponse.json({ vnpUrl }, { status: 200 })
   } catch (e) {
     console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })

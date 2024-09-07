@@ -8,7 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Payment = () => {
-  const { cartdetails, removeItemFromCart, updateItemQuantityInCart, getTotal, removeAllItems } = useContext(CartContext)
+  const { cartdetails, getTotal, removeAllItems } = useContext(CartContext)
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [selected, setSelected] = useState("COD");
   const [isVATActive, setIsVATActive] = useState(false);
@@ -47,7 +47,7 @@ const Payment = () => {
   const onSubmit = async (data) => {
     const createdOrder = await createOrder(data)
     if (selected === "VIETQR") {
-      const res = await fetch("/api/pay", {
+      const res = await fetch("/api/pay/vnpay", {
         method: "POST", body: JSON.stringify({
           price_list: [getTotal()],
           shipping_costs: [shippingCost],
@@ -55,9 +55,10 @@ const Payment = () => {
           orderId: createdOrder.orderId
         })
       })
-      if (res.ok) {
-        setQr(await res.json())
-        onOpen()
+      if (res.status == 200) {
+        const { vnpUrl } = await res.json()
+        console.log(vnpUrl)
+        window.location.replace(vnpUrl)
       } else {
         console.log(res)
       }

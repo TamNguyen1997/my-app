@@ -23,6 +23,7 @@ import TaskItem from '@tiptap/extension-task-item'
 import TaskList from '@tiptap/extension-task-list'
 import Link from '@tiptap/extension-link'
 import Blockquote from '@tiptap/extension-blockquote'
+import Youtube from '@tiptap/extension-youtube'
 import { EmojiReplacer } from '@/components/admin/ui/extensions/EmojiReplacer'
 
 const editorConfig = (content) => {
@@ -61,7 +62,8 @@ const editorConfig = (content) => {
       Placeholder.configure({
         placeholder: "Nhập văn bản"
       }),
-      Blockquote
+      Blockquote,
+      Youtube
     ],
     content: content || "<br><br><br><br><br><br><br>"
   }

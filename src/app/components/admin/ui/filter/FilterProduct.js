@@ -59,10 +59,12 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
   ];
 
   const onCellValueChange = (valueId, value) => {
-    if (!valueId) return;
     let filterToUpdate = { ...filter }
-    filterToUpdate.filterValue?.map(filterValue => filterValue.id === valueId ? Object.assign(filterValue, value) : filterValue)
+    console.log(value)
+    filterToUpdate.filterValue?.forEach(filterValue => filterValue.id === valueId ? Object.assign(filterValue, value) : filterValue)
     setFilter(filterToUpdate)
+
+    console.log(filter)
   }
 
   const onSave = async () => {
@@ -93,7 +95,6 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
           filterValue: filterValues
         })
       })
-
     }
 
     if (res.ok) {
@@ -107,7 +108,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
     setFilter({
       ...filter,
       filterValue: [
-        ...filter.filterValue,
+        ...filter.filterValue || [],
         {
           id: v4(),
           value: "",
@@ -116,14 +117,16 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
           brands: [],
           categories: [],
           subCategories: [],
+          filterId: filter.id,
           active: false
         }
       ]
     });
   }
 
-  const renderCell = useCallback((filterValue, columnKey) => {
+  const renderCell = (filterValue, columnKey) => {
     const cellValue = filterValue[columnKey]
+
     const selectionList = {
       categories: categories,
       subCategories: subCategories,
@@ -144,14 +147,15 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
       case "categories":
       case "subCategories":
       case "brands":
+        console.log(filterValue[columnKey].map(v => v.id))
         return (
           <Select
             aria-label={columnKey}
             selectionMode="multiple"
             labelPlacement="outside"
             value={cellValue}
-            onSelectionChange={(value) => onCellValueChange(filterValue?.id, { [columnKey]: Array.from(value) })}
-            selectedKeys={new Set(filterValue[columnKey].map(v => v.id))}
+            onSelectionChange={(value) => onCellValueChange(filterValue?.id, { [columnKey]: Array.from(value).map(item => { return { id: item } }) })}
+            defaultSelectedKeys={new Set(filterValue[columnKey] ? filterValue[columnKey].map(v => v.id) : [])}
             classNames={{
               base: "min-w-[120px] max-w-[240px]",
               innerWrapper: "pr-6 !w-full",
@@ -186,7 +190,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
           />
         );
     }
-  }, [])
+  }
 
   return (
     <>

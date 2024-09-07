@@ -48,6 +48,7 @@ export async function POST(req) {
     vnp_Params['vnp_TxnRef'] = orderId;
 
     vnp_Params = sortObject(vnp_Params);
+    console.log(vnp_Params)
 
     var querystring = require('qs');
     var signData = querystring.stringify(vnp_Params, { encode: true });

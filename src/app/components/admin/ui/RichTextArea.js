@@ -1,7 +1,7 @@
 import { EditorContent } from '@tiptap/react';
 import ImageCms from "@/components/admin/ui/ImageCms";
 import './Tiptap.css'
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react';
+import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure, Tooltip, Popover, PopoverTrigger, PopoverContent } from '@nextui-org/react';
 import { useState } from 'react';
 
 import { ColorPicker, useColor } from "react-color-palette";
@@ -30,7 +30,8 @@ import {
   RiSuperscript2,
   RiTable3,
   RiCheckboxLine,
-  RiCheckboxMultipleFill
+  RiCheckboxMultipleFill,
+  RiDoubleQuotesL
 } from 'react-icons/ri'
 import { LucideHighlighter, Pipette, TableCellsMerge, TableCellsSplit } from 'lucide-react';
 
@@ -38,9 +39,18 @@ import { TbColumnRemove, TbColumnInsertLeft, TbRowRemove, TbRowInsertBottom } fr
 
 const RichTextEditor = ({ editor }) => {
   return (
-    <div className='border rounded-lg bg-gray-100'>
-      <BlogToolBar editor={editor} />
-      <div className="h-full w-full shadow-md min-h-44 p-3 border bg-white">
+    <div className='border border-t-0 rounded-lg'>
+      <div className="sticky top-0 translate-x-[-1px] bg-white w-[calc(100%_+_2px)] z-[1000]">
+        <div
+          className={`
+            relative border rounded-t-lg before:content-[''] before:absolute before:inset-0 before:bg-gray-100 before:z-[-1] before:rounded-t-lg
+
+          `}
+        >
+          <BlogToolBar editor={editor} />
+        </div>
+      </div>
+      <div className="h-full w-full min-h-44 p-3 border rounded-b-lg bg-white">
         <EditorContent editor={editor} />
       </div>
     </div>
@@ -70,6 +80,10 @@ const BlogToolBar = ({ editor }) => {
 
   const [selectedTextColor, setSelectedTextColor] = useState('#000000')
   const [color, setColor] = useColor('#000000');
+  const [tableInfo, setTableInfo] = useState({
+    rows: 3,
+    columns: 3
+  });
 
   const [showColorPick, setShowColorPick] = useState(false)
 
@@ -92,187 +106,326 @@ const BlogToolBar = ({ editor }) => {
 
   return (
     <div className="p-3 flex gap-1 flex-wrap">
-      <div className="flex flex-wrap">
-        <div className={`${iconClassName} ${editor.isActive('bold') ? "opacity-25" : ""}`}
-          onClick={(e) => {
-            e.preventDefault();
-            editor.chain().focus().toggleBold().run();
-          }}>
-          <RiBold className="w-full h-full" />
-        </div>
-        <div className={`${iconClassName} ${editor.isActive('italic') ? "opacity-25" : ""}`}
-          onClick={() => editor.chain().focus().toggleItalic().run()}>
-          <RiItalic className="w-full h-full" />
-        </div>
-        <div className={`${iconClassName} ${editor.isActive('strike') ? "opacity-25" : ""}`}
-          onClick={() => editor.chain().focus().toggleStrike().run()}>
-          <RiStrikethrough className="w-full h-full" />
-        </div>
-        <div className={`${iconClassName} ${editor.isActive('underline') ? "opacity-25" : ""}`}
-          onClick={() => editor.chain().focus().setUnderline().run()}>
-          <RiUnderline className="w-full h-full" />
-        </div>
-        <div className={`${iconClassName} ${editor.isActive('code') ? "opacity-25" : ""}`}
-          onClick={() => editor.chain().focus().toggleCode().run()}>
-          <RiCodeSSlashLine className="w-full h-full" />
-        </div>
-        <div className="pr-5"></div>
-        <div className={`${iconClassName} ${editor.isActive('heading', { level: 1 }) ? "opacity-25" : ""}`}
-          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}>
-          <RiH1 className="w-full h-full" />
-        </div>
+      <div className="flex flex-wrap [&>div]:mt-1.5 [&>div]:ml-0.5">
+        <Tooltip showArrow content="Bold (Ctrl + B)">
+          <div title="bold" className={`${iconClassName} ${editor.isActive('bold') ? "opacity-25" : ""}`}
+            onClick={(e) => {
+              e.preventDefault();
+              editor.chain().focus().toggleBold().run();
+            }}>
+            <RiBold className="w-full h-full" />
+          </div>
+        </Tooltip>
 
-        <div className={`${iconClassName} ${editor.isActive('heading', { level: 2 }) ? "opacity-25" : ""}`}
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}>
-          <RiH2 className="w-full h-full" />
-        </div>
-        <div className={`${iconClassName} ${editor.isActive('heading', { level: 3 }) ? "opacity-25" : ""}`}
-          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}>
-          <RiH3 className="w-full h-full" />
-        </div>
-        <div className={`${iconClassName} ${editor.isActive('heading', { level: 4 }) ? "opacity-25" : ""}`}
-          onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}>
-          <RiH4 className="w-full h-full" />
-        </div>
-        <div className="pr-5"></div>
-        <div className={`${iconClassName} ${editor.isActive('orderedList') ? "opacity-25" : ""}`}
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}>
-          <RiListOrdered className="w-full h-full" />
-        </div>
-        <div className={`${iconClassName} ${editor.isActive('bulletList') ? "opacity-25" : ""}`}
-          onClick={() => editor.chain().focus().toggleBulletList().run()}>
-          <RiListUnordered className="w-full h-full" />
-        </div>
-        <div className={`${iconClassName} ${editor.isActive({ textAlign: 'left' }) ? "opacity-25" : ""}`}
-          onClick={() => editor.chain().focus().setTextAlign("left").run()}>
-          <RiAlignLeft className="w-full h-full" />
-        </div>
-        <div className={`${iconClassName} ${editor.isActive({ textAlign: 'center' }) ? "opacity-25" : ""}`}
-          onClick={() => editor.chain().focus().setTextAlign("center").run()}>
-          <RiAlignCenter className="w-full h-full" />
-        </div>
-        <div className={`${iconClassName} ${editor.isActive({ textAlign: 'right' }) ? "opacity-25" : ""}`}
-          onClick={() => editor.chain().focus().setTextAlign("right").run()}>
-          <RiAlignRight className="w-full h-full" />
-        </div>
-        <div className={`${iconClassName} ${editor.isActive({ textAlign: 'justify' }) ? "opacity-25" : ""}`}
-          onClick={() => editor.chain().focus().setTextAlign("justify").run()}>
-          <RiAlignJustify className="w-full h-full" />
-        </div>
-        <div className="pr-5"></div>
-        <div className={iconClassName}
-          onClick={imageModal.onOpen}>
-          <RiImage2Fill className="w-full h-full" />
-        </div>
-        <div className={iconClassName} onClick={linkModal.onOpen}>
-          <RiLink className="w-full h-full" />
-        </div>
+        <Tooltip showArrow content="Italic (Ctrl + I)">
+          <div className={`${iconClassName} ${editor.isActive('italic') ? "opacity-25" : ""}`}
+            onClick={() => editor.chain().focus().toggleItalic().run()}>
+            <RiItalic className="w-full h-full" />
+          </div>
+        </Tooltip>
+
+        <Tooltip showArrow content="Strikethrough (Ctrl + Shift + S)">
+          <div className={`${iconClassName} ${editor.isActive('strike') ? "opacity-25" : ""}`}
+            onClick={() => editor.chain().focus().toggleStrike().run()}>
+            <RiStrikethrough className="w-full h-full" />
+          </div>
+        </Tooltip>
+
+        <Tooltip showArrow content="Underline (Ctrl + U)">
+          <div className={`${iconClassName} ${editor.isActive('underline') ? "opacity-25" : ""}`}
+            onClick={() => editor.chain().focus().setUnderline().run()}>
+            <RiUnderline className="w-full h-full" />
+          </div>
+        </Tooltip>
+
+        <Tooltip showArrow content="Code (Ctrl + E)">
+          <div className={`${iconClassName} ${editor.isActive('code') ? "opacity-25" : ""}`}
+            onClick={() => editor.chain().focus().toggleCode().run()}>
+            <RiCodeSSlashLine className="w-full h-full" />
+          </div>
+        </Tooltip>
 
         <div className="pr-5"></div>
-        <div className={iconClassName}
-          onClick={() => editor.chain().focus().setHardBreak().run()}>
-          <RiTextWrap className="w-full h-full" />
-        </div>
-        <div className={`${iconClassName} ${editor.isActive('highlight') ? "opacity-25" : ""}`}
-          onClick={() => editor.chain().focus().toggleHighlight().run()}>
-          <LucideHighlighter className="w-full h-full" />
-        </div>
-        <div className={`${iconClassName} ${editor.isActive('subscript') ? "opacity-25" : ""}`}
-          onClick={() => editor.chain().focus().toggleSubscript().run()}>
-          <RiSubscript2 className="w-full h-full" />
-        </div>
-        <div className={`${iconClassName} ${editor.isActive('superscript') ? "opacity-25" : ""}`}
-          onClick={() => editor.chain().focus().toggleSuperscript().run()}>
-          <RiSuperscript2 className="w-full h-full" />
-        </div>
+
+        <Tooltip showArrow content="Heading 1 (Ctrl + Alt + 1)">
+          <div className={`${iconClassName} ${editor.isActive('heading', { level: 1 }) ? "opacity-25" : ""}`}
+            onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}>
+            <RiH1 className="w-full h-full" />
+          </div>
+        </Tooltip>
+
+        <Tooltip showArrow content="Heading 2 (Ctrl + Alt + 2)">
+          <div className={`${iconClassName} ${editor.isActive('heading', { level: 2 }) ? "opacity-25" : ""}`}
+            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}>
+            <RiH2 className="w-full h-full" />
+          </div>
+        </Tooltip>
+
+        <Tooltip showArrow content="Heading 3 (Ctrl + Alt + 3)">
+          <div className={`${iconClassName} ${editor.isActive('heading', { level: 3 }) ? "opacity-25" : ""}`}
+            onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}>
+            <RiH3 className="w-full h-full" />
+          </div>
+        </Tooltip>
+
+        <Tooltip showArrow content="Heading 4 (Ctrl + Alt + 4)">
+          <div className={`${iconClassName} ${editor.isActive('heading', { level: 4 }) ? "opacity-25" : ""}`}
+            onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}>
+            <RiH4 className="w-full h-full" />
+          </div>
+        </Tooltip>
+
+        <div className="pr-5"></div>
+
+        <Tooltip showArrow content="Ordered list (Ctrl + Alt + 7)">
+          <div className={`${iconClassName} ${editor.isActive('orderedList') ? "opacity-25" : ""}`}
+            onClick={() => editor.chain().focus().toggleOrderedList().run()}>
+            <RiListOrdered className="w-full h-full" />
+          </div>
+        </Tooltip>
+
+        <Tooltip showArrow content="Bullet list (Ctrl + Alt + 8)">
+          <div className={`${iconClassName} ${editor.isActive('bulletList') ? "opacity-25" : ""}`}
+            onClick={() => editor.chain().focus().toggleBulletList().run()}>
+            <RiListUnordered className="w-full h-full" />
+          </div>
+        </Tooltip>
+
+        <Tooltip showArrow content="Blockquote (Ctrl + Shift + B)">
+          <div className={`${iconClassName} ${editor.isActive('bulletList') ? "opacity-25" : ""}`}
+            onClick={() => editor.chain().focus().toggleBlockquote().run()}>
+            <RiDoubleQuotesL className="w-full h-full" />
+          </div>
+        </Tooltip>
+
+        <Tooltip showArrow content="Left align (Ctrl + Shift + L)">
+          <div className={`${iconClassName} ${editor.isActive({ textAlign: 'left' }) ? "opacity-25" : ""}`}
+            onClick={() => editor.chain().focus().setTextAlign("left").run()}>
+            <RiAlignLeft className="w-full h-full" />
+          </div>
+        </Tooltip>
+
+        <Tooltip showArrow content="Center align (Ctrl + Shift + E)">
+          <div className={`${iconClassName} ${editor.isActive({ textAlign: 'center' }) ? "opacity-25" : ""}`}
+            onClick={() => editor.chain().focus().setTextAlign("center").run()}>
+            <RiAlignCenter className="w-full h-full" />
+          </div>
+        </Tooltip>
+
+        <Tooltip showArrow content="Right align (Ctrl + Shift + R)">
+          <div className={`${iconClassName} ${editor.isActive({ textAlign: 'right' }) ? "opacity-25" : ""}`}
+            onClick={() => editor.chain().focus().setTextAlign("right").run()}>
+            <RiAlignRight className="w-full h-full" />
+          </div>
+        </Tooltip>
+
+        <Tooltip showArrow content="Justify (Ctrl + Shift + J)">
+          <div className={`${iconClassName} ${editor.isActive({ textAlign: 'justify' }) ? "opacity-25" : ""}`}
+            onClick={() => editor.chain().focus().setTextAlign("justify").run()}>
+            <RiAlignJustify className="w-full h-full" />
+          </div>
+        </Tooltip>
+
+        <div className="pr-5"></div>
+
+        <Tooltip showArrow content="Image">
+          <div className={iconClassName}
+            onClick={imageModal.onOpen}>
+            <RiImage2Fill className="w-full h-full" />
+          </div>
+        </Tooltip>
+
+        <Tooltip showArrow content="Link">
+          <div className={iconClassName} onClick={linkModal.onOpen}>
+            <RiLink className="w-full h-full" />
+          </div>
+        </Tooltip>
+
+        <div className="pr-5"></div>
+
+        <Tooltip showArrow content="Break (Ctrl/Shift + Enter)">
+          <div className={iconClassName}
+            onClick={() => editor.chain().focus().setHardBreak().run()}>
+            <RiTextWrap className="w-full h-full" />
+          </div>
+        </Tooltip>
+
+        <Tooltip showArrow content="Highlight (Ctrl + Shift + H)">
+          <div className={`${iconClassName} ${editor.isActive('highlight') ? "opacity-25" : ""}`}
+            onClick={() => editor.chain().focus().toggleHighlight().run()}>
+            <LucideHighlighter className="w-full h-full" />
+          </div>
+        </Tooltip>
+
+        <Tooltip showArrow content="Subscript (Ctrl + ,)">
+          <div className={`${iconClassName} ${editor.isActive('subscript') ? "opacity-25" : ""}`}
+            onClick={() => editor.chain().focus().toggleSubscript().run()}>
+            <RiSubscript2 className="w-full h-full" />
+          </div>
+        </Tooltip>
+
+        <Tooltip showArrow content="Superscript (Ctrl + .)">
+          <div className={`${iconClassName} ${editor.isActive('superscript') ? "opacity-25" : ""}`}
+            onClick={() => editor.chain().focus().toggleSuperscript().run()}>
+            <RiSuperscript2 className="w-full h-full" />
+          </div>
+        </Tooltip>
 
         <div className='pr-5'></div>
-        <div className={`${iconClassName} ${editor.isActive('taskList') ? "opacity-25" : ""}`}
-          onClick={() => editor.chain().focus().toggleTaskList().run()}>
-          <RiCheckboxLine className="w-full h-full" />
-        </div>
-        <div className={`${iconClassName} ${!editor.can().splitListItem('taskItem') ? "opacity-10" : ""}`}
-          onClick={() => editor.can().splitListItem('taskItem') ? editor.chain().focus().splitListItem('taskItem').run() : ""}>
-          <RiCheckboxMultipleFill className="w-full h-full" />
-        </div>
 
+        <Tooltip showArrow content="Line checkbox">
+          <div className={`${iconClassName} ${editor.isActive('taskList') ? "opacity-25" : ""}`}
+            onClick={() => editor.chain().focus().toggleTaskList().run()}>
+            <RiCheckboxLine className="w-full h-full" />
+          </div>
+        </Tooltip>
+
+        <Tooltip showArrow content="Multiple checkbox">
+          <div className={`${iconClassName} ${!editor.can().splitListItem('taskItem') ? "opacity-10" : ""}`}
+            onClick={() => editor.can().splitListItem('taskItem') ? editor.chain().focus().splitListItem('taskItem').run() : ""}>
+            <RiCheckboxMultipleFill className="w-full h-full" />
+          </div>
+        </Tooltip>
       </div>
-      <div className='flex'>
+      <div className='flex flex-wrap [&>div]:mt-1.5 [&>div]:ml-0.5'>
         <div className={`border w-10 rounded-large h-6`} style={{
           background: selectedTextColor
         }}></div>
-        <div className={`${iconClassName} ${editor.isActive('italic') ? "opacity-25" : ""}`}
-          onClick={() => setShowColorPick(!showColorPick)} data-dropdown-toggle="dropdown">
-          <Pipette />
-          {
-            showColorPick ? <div className="w-28 divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 absolute z-10" id="dropdown">
-              <ul className="py-2 text-sm flex flex-col gap-4 text-center items-center m-auto" aria-labelledby="dropdownDefaultButton">
-                <div className='items-center text-center m-auto'>
-                  <div className='flex flex-wrap pl-[6px]'>
+        <Tooltip showArrow content="Text color">
+          <div className={`${iconClassName} ${editor.isActive('italic') ? "opacity-25" : ""}`}
+            onClick={() => setShowColorPick(!showColorPick)} data-dropdown-toggle="dropdown">
+            <Pipette />
+            {
+              showColorPick ? <div className="w-28 divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 absolute z-10" id="dropdown">
+                <ul className="py-2 text-sm flex flex-col gap-4 text-center items-center m-auto" aria-labelledby="dropdownDefaultButton">
+                  <div className='items-center text-center m-auto'>
+                    <div className='flex flex-wrap pl-[6px]'>
 
-                    {
-                      Object.keys(TEXT_COLOR).map(key => {
-                        return (
-                          <div
-                            className={`w-5 h-5 border-2 hover:opacity-25`}
-                            style={{
-                              background: key
-                            }}
-                            key={key}
-                            onClick={() => {
-                              setTextColor(key)
-                            }}
-                          >
-                          </div>
-                        )
-                      })
-                    }
+                      {
+                        Object.keys(TEXT_COLOR).map(key => {
+                          return (
+                            <div
+                              className={`w-5 h-5 border-2 hover:opacity-25`}
+                              style={{
+                                background: key
+                              }}
+                              key={key}
+                              onClick={() => {
+                                setTextColor(key)
+                              }}
+                            >
+                            </div>
+                          )
+                        })
+                      }
 
+                    </div>
                   </div>
-                </div>
-                <div className='text-center items-center'>
-                  <button onClick={() => colorModal.onOpen()} className='border-3 rounded-md '>Chọn màu</button>
-                </div>
-              </ul>
-            </div> : ""
-          }
-
-        </div>
+                  <div className='text-center items-center'>
+                    <button onClick={() => colorModal.onOpen()} className='border-3 rounded-md '>Chọn màu</button>
+                  </div>
+                </ul>
+              </div> : ""
+            }
+          </div>
+        </Tooltip>
 
         <div className="pr-5"></div>
-        <div className={`${iconClassName} ${editor.isActive('italic') ? "opacity-25" : ""}`}
-          onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}>
-          <RiTable3 className="w-full h-full" />
-        </div>
-        <div className={`${iconClassName} ${editor.isActive('italic') ? "opacity-25" : ""}`}
-          onClick={() => editor.chain().focus().deleteTable().run()}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-grid-2x2-x"><path d="M12 3v17a1 1 0 0 1-1 1H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1H3" /><path d="m16 16 5 5" /><path d="m16 21 5-5" /></svg>
-        </div>
-        <div className={`${iconClassName} ${editor.isActive('italic') ? "opacity-25" : ""}`}
-          onClick={() => editor.chain().focus().deleteColumn().run()}>
-          <TbColumnRemove className="w-full h-full" />
-        </div>
-        <div className={`${iconClassName} ${editor.isActive('italic') ? "opacity-25" : ""}`}
-          onClick={() => editor.chain().focus().addColumnAfter().run()}>
-          <TbColumnInsertLeft className="w-full h-full" />
-        </div>
-        <div className={`${iconClassName} ${editor.isActive('italic') ? "opacity-25" : ""}`}
-          onClick={() => editor.chain().focus().addRowBefore().run()}>
-          <TbRowInsertBottom className="w-full h-full" />
-        </div>
-        <div className={`${iconClassName} ${editor.isActive('italic') ? "opacity-25" : ""}`}
-          onClick={() => editor.chain().focus().deleteRow().run()}>
-          <TbRowRemove className="w-full h-full" />
-        </div>
 
-        <div className={`${iconClassName} ${editor.isActive('italic') ? "opacity-25" : ""}`}
-          onClick={() => editor.chain().focus().mergeCells().run()}>
-          <TableCellsMerge className="w-full h-full" />
-        </div>
-        <div className={`${iconClassName} ${editor.isActive('italic') ? "opacity-25" : ""}`}
-          onClick={() => editor.chain().focus().splitCell().run()}>
-          <TableCellsSplit className="w-full h-full" />
-        </div>
+        {/* <Tooltip showArrow content="Insert table">
+          <div className={`${iconClassName} ${editor.isActive('italic') ? "opacity-25" : ""}`}
+            onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}>
+            <RiTable3 className="w-full h-full" />
+          </div>
+        </Tooltip> */}
+
+        
+        <Popover placement="bottom" showArrow={true}>
+          <Tooltip showArrow content="Insert table">
+            <div>
+              <PopoverTrigger>
+                <div className={`${iconClassName} ${editor.isActive('italic') ? "opacity-25" : ""}`}>
+                  <RiTable3 className="w-full h-full" />
+                </div>
+              </PopoverTrigger>
+            </div>
+          </Tooltip>
+          <PopoverContent>
+            <div className="px-1 py-2">
+              <div className="text-small font-bold pb-2">Insert table</div>
+              <div className="text-tiny">
+                <Input
+                  labelPlacement="outside"
+                  type="number"
+                  label="Rows"
+                  placeholder="Enter table rows"
+                  defaultValue={3}
+                  onValueChange={(value) => setTableInfo({ ...tableInfo, rows: Math.floor(value || 1) })}
+                  className="[&_label]:text-xs [&_label]:leading-none pb-2"
+                />
+                <Input
+                  labelPlacement="outside"
+                  type="number"
+                  label="Columns"
+                  placeholder="Enter table columns"
+                  defaultValue={3}
+                  onValueChange={(value) => setTableInfo({ ...tableInfo, columns: Math.floor(value || 1) })}
+                  className="[&_label]:text-xs [&_label]:leading-none"
+                />
+                <Button color="primary" className="mt-4" onClick={() => editor.chain().focus().insertTable({ rows: tableInfo.rows, cols: tableInfo.columns, withHeaderRow: true }).run()}>Insert</Button>
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
+
+        <Tooltip showArrow content="Delete table">
+          <div className={`${iconClassName} ${editor.isActive('italic') ? "opacity-25" : ""}`}
+            onClick={() => editor.chain().focus().deleteTable().run()}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-grid-2x2-x"><path d="M12 3v17a1 1 0 0 1-1 1H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1H3" /><path d="m16 16 5 5" /><path d="m16 21 5-5" /></svg>
+          </div>
+        </Tooltip>
+
+        <Tooltip showArrow content="Delete column">
+          <div className={`${iconClassName} ${editor.isActive('italic') ? "opacity-25" : ""}`}
+            onClick={() => editor.chain().focus().deleteColumn().run()}>
+            <TbColumnRemove className="w-full h-full" />
+          </div>
+        </Tooltip>
+
+        <Tooltip showArrow content="Add column after">
+          <div className={`${iconClassName} ${editor.isActive('italic') ? "opacity-25" : ""}`}
+            onClick={() => editor.chain().focus().addColumnAfter().run()}>
+            <TbColumnInsertLeft className="w-full h-full" />
+          </div>
+        </Tooltip>
+
+        <Tooltip showArrow content="Add column before">
+          <div className={`${iconClassName} ${editor.isActive('italic') ? "opacity-25" : ""}`}
+            onClick={() => editor.chain().focus().addRowBefore().run()}>
+            <TbRowInsertBottom className="w-full h-full" />
+          </div>
+        </Tooltip>
+
+        <Tooltip showArrow content="Delete row">
+          <div className={`${iconClassName} ${editor.isActive('italic') ? "opacity-25" : ""}`}
+            onClick={() => editor.chain().focus().deleteRow().run()}>
+            <TbRowRemove className="w-full h-full" />
+          </div>
+        </Tooltip>
+
+        <Tooltip showArrow content="Merge cells">
+          <div className={`${iconClassName} ${editor.isActive('italic') ? "opacity-25" : ""}`}
+            onClick={() => editor.chain().focus().mergeCells().run()}>
+            <TableCellsMerge className="w-full h-full" />
+          </div>
+        </Tooltip>
+
+        <Tooltip showArrow content="Split cell">
+          <div className={`${iconClassName} ${editor.isActive('italic') ? "opacity-25" : ""}`}
+            onClick={() => editor.chain().focus().splitCell().run()}>
+            <TableCellsSplit className="w-full h-full" />
+          </div>
+        </Tooltip>
       </div>
       <div className="w-1/4"></div>
       <Modal isOpen={imageModal.isOpen} onOpenChange={imageModal.onOpenChange} size="full" scrollBehavior="inside">

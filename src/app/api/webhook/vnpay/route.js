@@ -6,7 +6,9 @@ export async function GET(req) {
   try {
     const { query } = queryString.parseUrl(req.url);
 
+    console.log("?????????????????")
     console.log(query.vnp_OrderInfo)
+    console.log(query)
     if (query.vnp_TmnCode !== process.env.MERCHANT_CODE) {
       return NextResponse.json({ message: "MERCHANT_CODE not match" }, { status: 401 })
     }

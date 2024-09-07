@@ -21,7 +21,7 @@ const ProductCard = ({ product }) => {
       <Link href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`}
         className="text-black border-gray-400  w-full">
         <div className="mx-auto border-b-medium w-[90%] py-3">
-          <p className="text-sm text-gray-700 line-clamp-3 font-roboto relative text-justify [word-spacing:3px] min-h-14">
+          <p className="text-sm text-gray-700 line-clamp-3 font-roboto relative text-justify [word-spacing:1.5px] min-h-14">
             {product.name}
           </p>
         </div>
@@ -30,7 +30,7 @@ const ProductCard = ({ product }) => {
         {
           getPrice(product) ?
             <p className="text-red-500 font-bold w-full relative text-center items-center h-8 text-[22px]">{getPrice(product)} đ</p> :
-            <Button className="flex text-sm font-bold uppercase bg-gradient-to-b from-[#ffed00] to-[#fff466] rounded-lg w-[90%] h-8 m-auto">
+            <Button className="flex text-sm font-bold uppercase bg-gradient-to-b from-[#ffed00] to-[#fff466] rounded-3xl w-[90%] h-8 m-auto">
               <Link isExternal href="https://zalo.me/0902366617" className="text-black">
                 Liên hệ
               </Link>

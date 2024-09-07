@@ -192,8 +192,8 @@ export default function PopularItems() {
             <ProductCards banner={cate.image?.path} products={highlightProductsFromCates[cate.slug]} />
             <Link isExternal
               href={`/${cate.slug}`}
-              className="flex justify-center items-center text-[#153f17] font-semibold w-[181px] bg-white
-              h-[43px] rounded-[30px] border border-[#FFD400] hover:bg-[#FFD400] transition mx-auto"
+              className="flex justify-center items-center text-black font-semibold w-[181px] bg-white
+              h-[43px] rounded-[30px] border border-black hover:bg-[#FFD400] transition mx-auto"
             >
               Xem thêm
             </Link>
@@ -216,8 +216,8 @@ const ProductCards = ({ category, products, redirect, banner }) => {
         redirect ?
           <Link isExternal
             href={redirect}
-            className="flex justify-center items-center text-[#153f17] font-semibold w-[181px] 
-              h-[43px] rounded-[30px] border border-[#FFD400] hover:bg-[#FFD400] transition mx-auto"
+            className="flex justify-center items-center font-semibold w-[181px] text-black
+              h-[43px] rounded-[30px] border border-black hover:bg-[#FFD400] transition mx-auto"
           >
             Xem thêm
           </Link>

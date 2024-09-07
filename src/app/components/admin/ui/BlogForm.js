@@ -140,6 +140,7 @@ const BlogForm = ({ blog, setBlog }) => {
                     Preview
                   </Link>
                   <Link href={`/admin/blog/edit/${blog.slug}`}>Lưu</Link>
+                  <Link href={`/admin/blog/edit/${blog.slug}`}>Lưu bản nháp</Link>
                 </div>
               </div>
             </div>

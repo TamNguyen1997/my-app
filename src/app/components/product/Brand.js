@@ -293,8 +293,8 @@ const BrandSection = ({ products }) => {
 
           <Link isExternal
             href={`/${products[0].category?.slug}`}
-            className="flex justify-center items-center text-[#153f17] font-semibold w-[181px] 
-              h-[43px] rounded-[30px] border border-[#FFD400] hover:bg-[#FFD400] transition mx-auto"
+            className="flex justify-center items-center font-semibold w-[181px] text-black
+              h-[43px] rounded-[30px] border border-black hover:bg-[#FFD400] transition mx-auto"
           >
             Xem thêm
           </Link>

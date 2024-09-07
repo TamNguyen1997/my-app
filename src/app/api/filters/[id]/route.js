@@ -35,14 +35,14 @@ export async function PUT(req, { params }) {
       await db.brand.updateMany({
         where: {
           id: {
-            in: brands.map(brand => brand.id)
+            in: brands.map(brand => brand)
           }
         }, data: { filter_valueId: filterValueId }
       })
       await db.category.updateMany({
         where: {
           id: {
-            in: categories.map(cate => cate.id)
+            in: categories.map(cate => cate)
           }
         }, data: { filterValueOnCategoryId: filterValueId }
       })
@@ -50,7 +50,7 @@ export async function PUT(req, { params }) {
       await db.category.updateMany({
         where: {
           id: {
-            in: subCategories.map(subcate => subcate.id)
+            in: subCategories.map(subcate => subcate)
           }
         }, data: { filterValueOnSubCategoryId: filterValueId }
       })
@@ -59,6 +59,7 @@ export async function PUT(req, { params }) {
 
     return NextResponse.json({ message: "Update successfully" }, { status: 200 })
   } catch (e) {
+    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }

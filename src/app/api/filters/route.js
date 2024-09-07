@@ -21,14 +21,14 @@ export async function POST(req) {
       await db.brand.updateMany({
         where: {
           id: {
-            in: brands.map(brand => brand.id)
+            in: brands.map(brand => brand)
           }
         }, data: { filter_valueId: filterValueId }
       })
       await db.category.updateMany({
         where: {
           id: {
-            in: categories.map(cate => cate.id)
+            in: categories.map(cate => cate)
           }
         }, data: { filterValueOnCategoryId: filterValueId }
       })
@@ -36,7 +36,7 @@ export async function POST(req) {
       await db.category.updateMany({
         where: {
           id: {
-            in: subCategories.map(subcate => subcate.id)
+            in: subCategories.map(subcate => subcate)
           }
         }, data: { filterValueOnSubCategoryId: filterValueId }
       })

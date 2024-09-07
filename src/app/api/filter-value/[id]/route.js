@@ -16,3 +16,20 @@ export async function PUT(req, { params }) {
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }
+
+export async function GET(req, { params }) {
+  try {
+    return NextResponse.json(
+      await db.filter_value.findFirst({
+        where: { id: params.id },
+        include: {
+          brands: true,
+          categories: true,
+          subCategories: true
+        }
+      })
+    )
+  } catch (e) {
+    return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
+  }
+}

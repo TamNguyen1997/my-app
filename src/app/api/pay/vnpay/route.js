@@ -40,7 +40,7 @@ export async function POST(req) {
     vnp_Params['vnp_ExpireDate'] = expirationDate;
     vnp_Params['vnp_IpAddr'] = ipAddr;
     vnp_Params['vnp_Locale'] = "vn";
-    vnp_Params['vnp_OrderInfo'] = "Info";
+    vnp_Params['vnp_OrderInfo'] = info;
     vnp_Params['vnp_OrderType'] = "other";
     vnp_Params['vnp_ReturnUrl'] = returnUrl;
     vnp_Params['vnp_Version'] = '2.1.0';

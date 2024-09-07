@@ -114,11 +114,11 @@ model sale_detail {
   saleDetailId     String?            @map("sale_detail_id") @db.Uuid
   productOnOrder   product_on_order[]
 
-  filter   filter @relation(fields: [filterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  filterId String @map("filter_id") @db.Uuid
+  filter   filter? @relation(fields: [filterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  filterId String? @map("filter_id") @db.Uuid
 
-  filterValue   filter_value @relation(fields: [filterValueId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  filterValueId String       @map("filter_value_id") @db.Uuid
+  filterValue   filter_value? @relation(fields: [filterValueId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  filterValueId String?       @map("filter_value_id") @db.Uuid
 
   sku              String
   promotionalPrice Int?

@@ -162,6 +162,13 @@ const SaleDetails = ({ product }) => {
               <div className="flex" >
                 <div className="w-11/12">
                   <div className="flex gap-2">
+                    <Input
+                      type="text"
+                      label="SKU"
+                      defaultValue={detail.sku}
+                      aria-label="SKU"
+                      onValueChange={value => setSaleDetails(handleDetailChange(saleDetails, detail.id, { sku: value }))}
+                    />
                     <Select
                       label="Loại"
                       defaultSelectedKeys={new Set([detail.type])}

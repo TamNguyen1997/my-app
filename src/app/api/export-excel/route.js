@@ -1,14 +1,20 @@
-import { db } from "@/app/db"
-import { EXPORT_MESSAGE } from "@/constants/message"
-import { NextResponse } from "next/server"
-import * as XLSX from "xlsx"
+import { db } from "@/app/db";
+import { EXPORT_MESSAGE } from "@/constants/message";
+import { NextResponse } from "next/server";
+import * as XLSX from "xlsx";
 
-const LIMIT = 1000
+const LIMIT = 1000;
 export async function GET(req) {
+  const url = new URL(req.url);
+  const searchParams = url.searchParams;
+
+  const start = parseInt(searchParams.get("start") || "0");
+  const end = parseInt(searchParams.get("end") || `${LIMIT}`);
+  const limit = end - start;
   try {
     const result = await db.product.findMany({
-      take: LIMIT,
-
+      take: limit,
+      skip: start,
       orderBy: {
         updatedAt: "desc",
       },
@@ -37,7 +43,7 @@ export async function GET(req) {
         createdAt: true,
         updatedAt: true,
       },
-    })
+    });
 
     const headers = [
       "ID SP",
@@ -55,7 +61,7 @@ export async function GET(req) {
       "Giá liên hệ",
       "Ngày tạo",
       "Ngày update",
-    ]
+    ];
 
     const data = result.map((el) => ({
       "ID SP": el.id,
@@ -81,13 +87,13 @@ export async function GET(req) {
         el.saleDetails.length > 0 ? el.saleDetails[0].promotionalPrice : "N/A",
       "Ngày tạo": new Date(el.createdAt).toLocaleDateString(),
       "Ngày update": new Date(el.updatedAt).toLocaleDateString(),
-    }))
+    }));
 
-    const workbook = XLSX.utils.book_new()
-    const worksheet = XLSX.utils.json_to_sheet(data, { header: headers })
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(data, { header: headers });
 
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
-    const buffer = XLSX.write(workbook, { bookType: "xlsx", type: "buffer" })
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    const buffer = XLSX.write(workbook, { bookType: "xlsx", type: "buffer" });
 
     return new NextResponse(buffer, {
       headers: {
@@ -95,12 +101,12 @@ export async function GET(req) {
         "Content-Type":
           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       },
-    })
+    });
   } catch (error) {
-    console.error(error)
+    console.error(error);
     return NextResponse.json(
       { message: EXPORT_MESSAGE.EXPORT_FAILED },
       { status: 500 }
-    )
+    );
   }
 }

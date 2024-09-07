@@ -18,7 +18,7 @@ import { useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
 import { history_status } from "@prisma/client";
 
-const HistoryList = ({ refreshData }) => {
+const HistoryList = ({ refreshData, onGetTotal }) => {
   const searchParams = useSearchParams();
   const [page, setPage] = useState(searchParams.get("page") || 1);
   const [limit] = useState(searchParams.get("limit") || 10);
@@ -41,6 +41,7 @@ const HistoryList = ({ refreshData }) => {
       setLoadingState("idle");
       setTotalPages(result.totalPages);
       setHistories(result.data);
+      onGetTotal(result.totalProduct);
       result.currentPage !== page && setPage(result.currentPage);
     } catch (error) {
       console.error(error);

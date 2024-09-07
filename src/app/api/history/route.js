@@ -12,10 +12,10 @@ export async function GET(req) {
   const search = searchParams.get("search") || ""
   const status = searchParams.get("status") || ""
 
-  console.log(status)
-
   try {
     const whereClause = {}
+
+    const totalProduct = await db.product.count()
 
     if (search && search !== "undefined") {
       whereClause.fileName = {
@@ -37,7 +37,6 @@ export async function GET(req) {
       page = totalPages
     }
 
-    // const skip = (page - 1) * limit;
     const skip = Math.max((page - 1) * limit, 0)
 
     const result = await db.import_history.findMany({
@@ -55,6 +54,7 @@ export async function GET(req) {
         currentPage: page,
         totalPages,
         totalCount,
+        totalProduct,
         message: HISTORY_MESSAGE.HISTORY_FETCH_SUCCESS,
       },
       { status: 200 }

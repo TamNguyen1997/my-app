@@ -87,8 +87,8 @@ const AboutUsArticle = () => {
               <img
                 width="450"
                 height="300"
-                src="/about-us/article-1.jpg"
-                alt="/about-us/article-1.jpg"
+                src="/about-us/article-2.jpg"
+                alt="/about-us/article-2.jpg"
                 className="aspect-[16/9] object-cover w-full rounded m-auto bottom-3 absolute right-0"
               />
             </div>

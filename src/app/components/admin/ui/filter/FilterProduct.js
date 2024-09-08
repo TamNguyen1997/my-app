@@ -1,6 +1,5 @@
 "use client"
 
-import { useCallback } from "react";
 import {
   Spinner, Table,
   TableCell, TableColumn,
@@ -34,10 +33,6 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
       title: "Slug"
     },
     {
-      key: "translatedValue",
-      title: "Tên tiếng Anh"
-    },
-    {
       key: "brands",
       title: "ID thương hiệu",
       required: true
@@ -64,11 +59,8 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
 
   const onCellValueChange = (valueId, value) => {
     let filterToUpdate = { ...filter }
-    console.log(value)
     filterToUpdate.filterValue?.forEach(filterValue => filterValue.id === valueId ? Object.assign(filterValue, value) : filterValue)
     setFilter(filterToUpdate)
-
-    console.log(filter)
   }
 
   const onSave = async () => {
@@ -91,6 +83,8 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
           filterValue: filterValues
         })
       })
+      const body = await res.json()
+      window.location.replace(`/admin/filter/edit/${body.id}`)
     } else {
       res = await fetch(`/api/filters/${filter.id}`, {
         method: "PUT",
@@ -117,7 +111,6 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
           id: v4(),
           value: "",
           slug: "",
-          translatedValue: "",
           brands: [],
           categories: [],
           subCategories: [],
@@ -173,21 +166,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
             value={cellValue}
             onSelectionChange={(value) => onCellValueChange(filterValue?.id, { [columnKey]: Array.from(value).map(item => { return { id: item } }) })}
             defaultSelectedKeys={new Set(filterValue[columnKey] ? filterValue[columnKey].map(v => v.id) : [])}
-            classNames={{
-              base: "min-w-[120px] max-w-[240px]",
-              innerWrapper: "pr-6 !w-full",
-              trigger: "h-auto gap-2 py-2",
-              value: "whitespace-normal"
-            }}
-            renderValue={(items) => {
-              return (
-                <div className="flex flex-wrap gap-2">
-                  {
-                    items?.map(item => <Chip key={item.key}>{item.textValue}</Chip>)
-                  }
-                </div>
-              );
-            }}
+            className="max-w-xs"
           >
             {
               selectionList[columnKey].map((item) =>
@@ -215,21 +194,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
       <div className="flex flex-col gap-2 min-h-full">
         <div className="px-1 py-2 border-default-200">
           <Table
-            // loadingState={loadingState}
             aria-label="Tất cả sản phẩm"
-            // bottomContent={
-            //   loadingState === "loading" ? null :
-            //     <div className="flex w-full justify-center">
-            //       <Pagination
-            //         isCompact
-            //         showControls
-            //         showShadow
-            //         page={page}
-            //         total={pages}
-            //         onChange={(page) => setPage(page)}
-            //       />
-            //     </div>
-            // }
             bottomContent={
               <Button color="default" variant="ghost" onClick={() => addNewFilterValue()}>
                 Thêm thuộc tính

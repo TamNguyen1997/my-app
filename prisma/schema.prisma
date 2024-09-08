@@ -150,12 +150,11 @@ model filter {
 }
 
 model filter_value {
-  id              String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  value           String  @default("")
-  slug            String?
-  filter          filter? @relation(fields: [filterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  filterId        String  @map("filter_id") @db.Uuid
-  translatedValue String  @default("") @map("translated_value")
+  id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  value    String  @default("")
+  slug     String?
+  filter   filter? @relation(fields: [filterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  filterId String  @map("filter_id") @db.Uuid
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")

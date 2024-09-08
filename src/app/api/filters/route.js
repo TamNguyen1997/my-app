@@ -7,7 +7,7 @@ export async function POST(req) {
     let filter = await req.json()
     let filterValueJson = filter["filterValue"]
     delete filter["filterValue"];
-    await db.filter.create({ data: filter })
+    const createdFilter = await db.filter.create({ data: filter })
     for (let filterValue of filterValueJson) {
       const filterValueId = filterValue.id
       let brands = filterValue["brands"]
@@ -42,7 +42,7 @@ export async function POST(req) {
       })
     }
 
-    return NextResponse.json({ message: "Create successfully" }, { status: 200 })
+    return NextResponse.json(createdFilter, { status: 200 })
   } catch (e) {
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }

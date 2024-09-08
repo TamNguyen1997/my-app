@@ -7,11 +7,14 @@ import {
 } from "@nextui-org/react"
 import FilterProduct from "@/app/components/admin/ui/filter/FilterProduct";
 import { useParams } from "next/navigation";
+import { v4 } from "uuid";
 
 
 const Filter = () => {
   const { id } = useParams()
-  const [filter, setFilter] = useState({})
+  const [filter, setFilter] = useState({
+    id: v4()
+  })
 
   const [categories, setCategories] = useState([])
   const [brands, setBrands] = useState([])
@@ -24,7 +27,6 @@ const Filter = () => {
 
     if (id && id !== 'new') {
       fetch(`/api/filters/${id}/filter-values`).then(res => res.json()).then(json => {
-        console.log(json)
         setFilter(json)
       })
     }

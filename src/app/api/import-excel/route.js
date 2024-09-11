@@ -4,11 +4,11 @@ import { NextResponse } from "next/server"
 import { history_status } from "@prisma/client"
 import { IMPORT_MESSAGE } from "@/constants/message"
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-}
+// export const config = {
+//   api: {
+//     bodyParser: false,
+//   },
+// }
 
 function isValidUUID(uuid) {
   return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(

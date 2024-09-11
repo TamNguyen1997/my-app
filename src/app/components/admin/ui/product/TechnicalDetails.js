@@ -49,6 +49,10 @@ const TechnicalDetails = ({ product }) => {
     setTechnicalDetails([...updateDetails])
   }
 
+  const deleteDetail = (id) => {
+    setTechnicalDetails(technicalDetails.filter(item => item.id !== id))
+  }
+
   return (
     <>
       <ToastContainer />
@@ -70,6 +74,11 @@ const TechnicalDetails = ({ product }) => {
                 filters.find(filter => filter.id === technicalDetails.find(detail => detail.id === item.id).filterId)
               }
               onSelectionChange={onSelectionChange} />
+            <div className="relative flex items-center pt-5">
+              <span className="text-lg text-danger cursor-pointer active:opacity-50 pl-5">
+                <Trash2 onClick={() => deleteDetail(item.id)} />
+              </span>
+            </div>
           </div>
           )
         }

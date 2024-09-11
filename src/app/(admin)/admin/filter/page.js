@@ -17,22 +17,18 @@ const Filter = () => {
   const tableHeaders = [
     {
       key: "id",
-      title: "ID thuộc tính"
+      title: "ID"
     },
     {
       key: "name",
       title: "Tên thuộc tính"
     },
     {
-      key: "attrId",
-      title: "ID giá trị thuộc tính"
+      key: "categoryCount",
+      title: "Số lượng cate"
     },
     {
-      key: "attrName",
-      title: "Tên giá trị thuộc tính tiếng Việt"
-    },
-    {
-      key: "subCateCount",
+      key: "subCategoryCount",
       title: "Số lượng sub-cate"
     },
     {
@@ -75,6 +71,10 @@ const Filter = () => {
     getFilter()
   }
 
+  const updateFilter = async (id, active) => {
+    await fetch(`/api/filters/${id}/active`, { method: "PUT", body: JSON.stringify({ active: active }) })
+  }
+
   const onConditionChange = (value) => {
     setCondition(Object.assign({}, condition, value))
   }
@@ -98,7 +98,7 @@ const Filter = () => {
       case "active":
         return (
           <div className="flex justify-center">
-            <Switch />
+            <Switch onClick={() => updateFilter(filter.id, !filter.active)} defaultSelected={filter.active} />
           </div>
         );
       default:

@@ -75,30 +75,30 @@ export async function GET(req) {
           updatedAt: "desc"
         }
       ],
-      where: condition
+      where: condition,
+      include: {
+        filterValue: true
+      }
     })
 
     result.forEach(async (filter, i) => {
       const filterValues = (await db.filter_value.findMany({
         where: { filterId: filter.id }, include: {
           _count: {
-            as: "categoryCount",
             select: { categories: true }
           },
           _count: {
-            as: "subCategoryCount",
             select: { subCategories: true }
           },
           _count: {
-            as: "brandCount",
             select: { brands: true }
           }
         }
       }))
 
-      result[i].categoryCount = filterValues.reduce((acc, val) => acc + val.categoryCount, 0)
-      result[i].brandCount = filterValues.reduce((acc, val) => acc + val.brandCount, 0)
-      result[i].subCategoryCount = filterValues.reduce((acc, val) => acc + val.subCategoryCount, 0)
+      result[i].categoryCount = filterValues.reduce((acc, val) => acc + val._count?.categories, 0) || 0
+      result[i].brandCount = filterValues.reduce((acc, val) => acc + val._count?.brands, 0) || 0
+      result[i].subCategoryCount = filterValues.reduce((acc, val) => acc + val._count?.subCategories, 0) || 0
     })
 
     return NextResponse.json({

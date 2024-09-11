@@ -104,7 +104,7 @@ enum sale_detail_type {
 }
 
 model sale_detail {
-  id        String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id        String           @id @default(dbgenerated("gen_random_uuid()"))
   product   product          @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId String           @map("product_id") @db.Uuid
   value     String?
@@ -137,8 +137,9 @@ model sale_detail {
 }
 
 model filter {
-  id   String @id @default(dbgenerated("gen_random_uuid()"))
-  name String @default("")
+  id     String  @id @default(dbgenerated("gen_random_uuid()"))
+  name   String  @default("")
+  active Boolean @default(false)
 
   createdAt        DateTime           @default(now()) @map("created_at")
   updatedAt        DateTime           @default(now()) @updatedAt @map("updated_at")
@@ -388,7 +389,7 @@ enum image_type {
 }
 
 model category {
-  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id           String   @id @default(dbgenerated("gen_random_uuid()"))
   name         String
   slug         String   @default(dbgenerated("gen_random_uuid()"))
   highlight    Boolean  @default(false)
@@ -426,7 +427,7 @@ enum cate_type {
 }
 
 model brand {
-  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
   name      String   @unique
   slug      String   @default(dbgenerated("gen_random_uuid()"))
   createdAt DateTime @default(now()) @map("created_at")
@@ -434,9 +435,10 @@ model brand {
 
   product        product[]
   filter_value   filter_value? @relation(fields: [filter_valueId], references: [id])
-  filter_valueId String?       @db.Uuid
+  filter_valueId String?
 
   @@unique([slug])
+  @@index([filter_valueId])
 }
 
 enum blog_type {

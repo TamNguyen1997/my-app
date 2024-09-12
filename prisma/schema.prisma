@@ -342,6 +342,7 @@ model blog {
   createdAt       DateTime  @default(now()) @map("created_at")
   updatedAt       DateTime  @default(now()) @updatedAt @map("updated_at")
   type            blog_type @default(BLOG)
+  draft           String?
 
   blogCategory    blog_category     @default(INFORMATION) @map("blog_category")
   blogSubCategory blog_sub_category @default(MANUAL) @map("blog_sub_category")

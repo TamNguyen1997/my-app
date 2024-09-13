@@ -3,9 +3,9 @@ import { db } from '@/app/db';
 import queryString from 'query-string';
 
 export async function GET(req) {
-  try {
-    const { query } = queryString.parseUrl(req.url);
+  const { query } = queryString.parseUrl(req.url);
 
+  try {
     console.log("?????????????????")
     console.log(query.vnp_OrderInfo)
     console.log(query)

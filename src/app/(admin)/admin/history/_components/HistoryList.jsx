@@ -14,14 +14,12 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
-import { useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
 import { history_status } from "@prisma/client";
 
 const HistoryList = ({ refreshData, onGetTotal }) => {
-  const searchParams = useSearchParams();
-  const [page, setPage] = useState(searchParams.get("page") || 1);
-  const [limit] = useState(searchParams.get("limit") || 10);
+  const [page, setPage] = useState(1);
+  const [limit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [loadingState, setLoadingState] = useState("loading");
   const [histories, setHistories] = useState([]);
@@ -51,7 +49,7 @@ const HistoryList = ({ refreshData, onGetTotal }) => {
   useEffect(() => {
     fetchImportHistory();
 
-    return () => {};
+    return () => { };
   }, [page, refreshData]);
 
   function convertIsoToLocalTime(isoString) {

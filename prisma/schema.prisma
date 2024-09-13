@@ -273,7 +273,7 @@ model product_on_order {
   order        order        @relation(fields: [orderId], references: [id])
   orderId      String       @map("order_id") @db.Uuid
   quantity     Int          @default(0)
-  saleDetailId String?      @map("sale_detail_id") @db.Uuid
+  saleDetailId String?      @map("sale_detail_id")
   saleDetail   sale_detail? @relation(fields: [saleDetailId], references: [id])
   createdAt    DateTime     @default(now()) @map("created_at")
   updatedAt    DateTime     @default(now()) @updatedAt @map("updated_at")

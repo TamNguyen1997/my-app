@@ -68,6 +68,20 @@ export default () => {
             </CardBody>
           </Card>
         </Tab>
+        <Tab title="Khách hàng">
+          <Card>
+            <CardBody>
+              <SupportPage slug="khach-hang" editor={editor} />
+            </CardBody>
+          </Card>
+        </Tab>
+        <Tab title="Đối tác">
+          <Card>
+            <CardBody>
+              <SupportPage slug="doi-tac" editor={editor} />
+            </CardBody>
+          </Card>
+        </Tab>
       </Tabs>
     </div>
   )
@@ -97,7 +111,6 @@ const SupportPage = ({ slug, editor }) => {
     }
   }
 
-  console.log(editor?.getHTML())
   return (<>
     <ToastContainer />
     <RichTextEditor editor={editor} />

@@ -29,7 +29,8 @@ export async function GET(req) {
     if (query.excludeSupport) {
       condition.NOT = [{
         slug: {
-          in: ["ho-tro", "chinh-sach-bao-mat", "hop-tac-ban-hang", "chinh-sach-doi-tra", "chinh-sach-bao-hanh", "huong-dan-mua-hang", "hinh-thuc-thanh-toan", "hinh-thuc-van-chuyen"]
+          in: ["ho-tro", "chinh-sach-bao-mat", "hop-tac-ban-hang", "chinh-sach-doi-tra", "chinh-sach-bao-hanh",
+            "huong-dan-mua-hang", "hinh-thuc-thanh-toan", "hinh-thuc-van-chuyen", "doi-tac", "khach-hang"]
         }
       }
       ]

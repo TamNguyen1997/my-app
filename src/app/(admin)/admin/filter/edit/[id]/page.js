@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import {
   Input,
+  Spinner,
   Switch
 } from "@nextui-org/react"
 import FilterProduct from "@/app/components/admin/ui/filter/FilterProduct";
@@ -38,7 +39,7 @@ const Filter = () => {
     getData()
   }, [id])
 
-  if (isLoading) return <></>
+  if (isLoading) return <Spinner className="flex m-auto pt-10 w-full h-full" />
   return (
     <>
       <div className="flex flex-col gap-3">

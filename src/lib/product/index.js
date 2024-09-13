@@ -8,16 +8,4 @@ const getPrice = (product) => {
   return <>{product.saleDetails[0].price?.toLocaleString()} - {product.saleDetails[product.saleDetails.length - 1].price?.toLocaleString()} </>
 }
 
-const getMinPrice = () => {
-  if (!product.saleDetails?.length) return null
-
-  return product.saleDetails[0].price
-}
-
-const getMaxPrice = () => {
-  if (!product.saleDetails?.length) return null
-
-  return product.saleDetails[0].price
-}
-
 export { getPrice }

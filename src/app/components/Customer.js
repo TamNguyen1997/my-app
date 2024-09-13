@@ -19,6 +19,11 @@ const logo = [
   "/icon/client/Sheraton.png",
   "/icon/client/TheGrand.png",
   "/icon/client/Wyndham.png",
+  "/icon/client/Caravelle.png",
+  "/icon/client/El-Gaucho.png",
+  "/icon/client/Gallery.png",
+  "/icon/client/Jollibee.png",
+  "/icon/client/Starbucks.png",
 ]
 
 const responsive = {

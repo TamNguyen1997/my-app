@@ -1,6 +1,6 @@
-import { Table, TableHeader, TableColumn, TableRow, TableCell, TableBody, Spinner, Pagination, Link, Input, Select, SelectItem, Button } from "@nextui-org/react";
+import { Table, TableHeader, TableColumn, TableRow, TableCell, TableBody, Spinner, Pagination, Link, Input, Select, SelectItem, Button, Tooltip } from "@nextui-org/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { EditIcon, Search, Trash2 } from "lucide-react";
+import { EditIcon, Plus, Search, Trash2 } from "lucide-react";
 
 import { BLOG_CATEGORIES, BLOG_SUB_CATEGORIES } from "@/lib/blog";
 
@@ -105,8 +105,13 @@ const BlogCms = () => {
           Inactive
         </SelectItem>
       </Select>
-      <div className="items-end flex min-h-full">
-        <Button onClick={getBlogs} color="primary"><Search /></Button>
+      <div className="items-end flex min-h-full gap-3">
+        <Tooltip showArrow content="Tìm">
+          <Button onClick={getBlogs} color="primary"><Search /></Button>
+        </Tooltip>
+        <Tooltip showArrow content="Thêm blog">
+          <Button color="primary"><Link href="/admin/blog/edit/new" className="text-white"><Plus /></Link></Button>
+        </Tooltip>
       </div>
     </div>
 
@@ -144,9 +149,6 @@ const BlogCms = () => {
         }
       </TableBody>
     </Table>
-    <div className="pt-3">
-      <Link href="/admin/blog/edit/new" className="float-right">Thêm blog</Link>
-    </div>
   </>)
 }
 

@@ -21,7 +21,7 @@ const Filter = () => {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    getData()
+
     const getData = async () => {
       await Promise.all([
         fetch('/api/categories?page=1&size=10000').then(res => res.json()).then(json => setCategories(json.result)),
@@ -35,6 +35,7 @@ const Filter = () => {
       }
       setIsLoading(false)
     }
+    getData()
   }, [id])
 
   if (isLoading) return <></>

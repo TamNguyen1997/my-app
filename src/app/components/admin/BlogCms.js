@@ -1,4 +1,4 @@
-import { Table, TableHeader, TableColumn, TableRow, TableCell, TableBody, Spinner, Pagination, Link, Input, Select, SelectItem, Button, Tooltip } from "@nextui-org/react";
+import { Table, TableHeader, TableColumn, TableRow, TableCell, TableBody, Spinner, Pagination, Link, Input, Select, SelectItem, Button, Tooltip, Switch } from "@nextui-org/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { EditIcon, Plus, Search, Trash2 } from "lucide-react";
 
@@ -65,8 +65,9 @@ const BlogCms = () => {
     setCondition(Object.assign({}, condition, value))
   }
 
+  console.log(condition)
   return (<>
-    <div className="flex gap-3 w-1/2 pb-3">
+    <div className="flex gap-3 pb-3">
       <Input label="Slug" aria-label="slug" labelPlacement="outside" value={condition.slug}
         onValueChange={(value) => {
           onConditionChange({ slug: value })
@@ -94,17 +95,14 @@ const BlogCms = () => {
           </SelectItem>)
         }
       </Select>
-      <Select
-        label="Active"
-        labelPlacement="outside"
-        onSelectionChange={(value) => onConditionChange({ active: value.values().next().value })}>
-        <SelectItem key="true">
-          Active
-        </SelectItem>
-        <SelectItem key="false">
-          Inactive
-        </SelectItem>
-      </Select>
+
+      <Switch
+        className="pt-6"
+        isSelected={condition.active}
+        onValueChange={(value) => onConditionChange({ active: value })}>
+        {condition.active ? "Active" : "Inactive"}
+      </Switch>
+
       <div className="items-end flex min-h-full gap-3">
         <Tooltip showArrow content="Tìm">
           <Button onClick={getBlogs} color="primary"><Search /></Button>

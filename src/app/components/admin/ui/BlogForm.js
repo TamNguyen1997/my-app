@@ -11,6 +11,7 @@ import crypto from "crypto";
 
 import { editorConfig } from "@/lib/editor"
 import { BLOG_CATEGORIES, BLOG_SUB_CATEGORIES } from "@/lib/blog";
+import { toast, ToastContainer } from 'react-toastify';
 
 const BlogForm = ({ blog, setBlog }) => {
   const {
@@ -48,8 +49,32 @@ const BlogForm = ({ blog, setBlog }) => {
     onOpenChange()
   }
 
+  const loadDraft = () => {
+    editor.commands.setContent(blog.draft)
+  }
+
+  const loadContent = () => {
+    editor.commands.setContent(blog.content)
+  }
+
+  const saveDraft = async () => {
+    if (!blog.id) {
+      toast.error("Phải lưu blog trước")
+    } else {
+      const res = await fetch(`/api/blogs/${blog.id}/draft`, {
+        method: "PUT",
+        body: JSON.stringify({ draft: editor.getHTML() })
+      })
+      if (res.ok) {
+        toast.success("Đã lưu bản nháp")
+      } else {
+        toast.error("Không thể lưu bản nháp")
+      }
+    }
+  }
   return (
     <div className="p-3">
+      <ToastContainer />
       <RichTextEditor editor={editor} />
       <div className="pt-3 pr-3">
         <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-3'>
@@ -135,12 +160,14 @@ const BlogForm = ({ blog, setBlog }) => {
                 <Link href={`/admin/blog/`}>
                   Trở về
                 </Link>
+                <Link href="#" onClick={saveDraft} className='pl-4'>Lưu bản nháp</Link>
+                <Link href="#" onClick={loadDraft} className='pl-4'>Load bản nháp</Link>
+                <Link href="#" onClick={loadContent} className='pl-4'>Load bản chính</Link>
                 <div className="float-right flex gap-3">
                   <Link href={`/admin/blog/preview/${blog.slug}`} isExternal>
                     Preview
                   </Link>
                   <Link href={`/admin/blog/edit/${blog.slug}`}>Lưu</Link>
-                  <Link href={`/admin/blog/edit/${blog.slug}`}>Lưu bản nháp</Link>
                 </div>
               </div>
             </div>

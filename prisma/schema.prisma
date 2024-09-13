@@ -33,14 +33,14 @@ model product {
   saleDetails sale_detail[]
 
   category   category? @relation(fields: [categoryId], references: [id])
-  categoryId String?   @map("category_id") @db.Uuid
-  subCateId  String?   @map("sub_cate_id") @db.Uuid
+  categoryId String?   @map("category_id")
+  subCateId  String?   @map("sub_cate_id")
   subCate    category? @relation("subCate", fields: [subCateId], references: [id])
 
   quantity Int @default(0)
 
   brand            brand?             @relation(fields: [brandId], references: [id])
-  brandId          String?            @db.Uuid
+  brandId          String?
   product_on_order product_on_order[]
   product_on_image product_on_image[]
 
@@ -113,14 +113,14 @@ model sale_detail {
 
   childSaleDetails sale_detail[]      @relation("secondary_sale_detail")
   saleDetail       sale_detail?       @relation("secondary_sale_detail", fields: [saleDetailId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  saleDetailId     String?            @map("sale_detail_id") @db.Uuid
+  saleDetailId     String?            @map("sale_detail_id")
   productOnOrder   product_on_order[]
 
   filter   filter? @relation(fields: [filterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  filterId String? @map("filter_id") @db.Uuid
+  filterId String? @map("filter_id")
 
   filterValue   filter_value? @relation(fields: [filterValueId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  filterValueId String?       @map("filter_value_id") @db.Uuid
+  filterValueId String?       @map("filter_value_id")
 
   sku              String?
   promotionalPrice Int?
@@ -403,17 +403,17 @@ model category {
   image       image?  @relation(fields: [imageId], references: [id])
 
   type     cate_type  @default(CATE)
-  cateId   String?    @db.Uuid
+  cateId   String?
   cate     category?  @relation("sub_cate", fields: [cateId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   subcates category[] @relation("sub_cate")
   product  product[]
   sProduct product[]  @relation("subCate")
 
   filterValueOnCategory   filter_value? @relation("filterValueOnCategory", fields: [filterValueOnCategoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  filterValueOnCategoryId String?       @db.Uuid
+  filterValueOnCategoryId String?
 
   filterValueOnSubCategory   filter_value? @relation("filterValueOnSubCategory", fields: [filterValueOnSubCategoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  filterValueOnSubCategoryId String?       @db.Uuid
+  filterValueOnSubCategoryId String?
 
   @@unique([slug])
   @@index([imageId])

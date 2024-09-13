@@ -78,7 +78,7 @@ export default function Contact() {
           <div className="p-4 lg:p-12 bg-[#FFD400] rounded-lg">
             <p className="text-[16px] mt-2 mb-3 text-center font-bold">LIÊN HỆ</p>
             <span>
-              Sao Việt rất vui vì được tiếp nhận liên hệ của bạn. Có bất cứ điều gì cần phản hồi/giải đáp, gửi ngay cho chúng mình bên dưới nhé!
+              Sao Việt hân hạnh được tiếp nhận liên hệ từ quý khách hàng. Nếu có bất kỳ thắc mắc hay phản ánh nào, xin vui lòng để lại thông tin bên dưới!
             </span>
             <div >
               <form className="max-w-4xl flex-1 lg:w-full" onSubmit={handleSubmit(onSubmit)}>

@@ -164,7 +164,6 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
       case "categories":
       case "subCategories":
       case "brands":
-        console.log(filterValue[columnKey].map(v => v.id))
         return (
           <Select
             aria-label={columnKey}

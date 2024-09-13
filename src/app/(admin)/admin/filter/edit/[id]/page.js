@@ -18,21 +18,26 @@ const Filter = () => {
 
   const [categories, setCategories] = useState([])
   const [brands, setBrands] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    Promise.all([
-      fetch('/api/categories?page=1&size=10000').then(res => res.json()).then(json => setCategories(json.result)),
-      fetch('/api/brands').then(res => res.json()).then(setBrands)
-    ])
+    getData()
+    const getData = async () => {
+      await Promise.all([
+        fetch('/api/categories?page=1&size=10000').then(res => res.json()).then(json => setCategories(json.result)),
+        fetch('/api/brands').then(res => res.json()).then(setBrands)
+      ])
 
-    if (id && id !== 'new') {
-      fetch(`/api/filters/${id}/filter-values`).then(res => res.json()).then(json => {
-        setFilter(json)
-      })
+      if (id && id !== 'new') {
+        await fetch(`/api/filters/${id}/filter-values`).then(res => res.json()).then(json => {
+          setFilter(json)
+        })
+      }
+      setIsLoading(false)
     }
   }, [id])
 
-  if (id !== "new" && !filter.id) return <></>
+  if (isLoading) return <></>
   return (
     <>
       <div className="flex flex-col gap-3">

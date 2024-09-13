@@ -121,11 +121,18 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
     });
   }
 
-  const removeFilterValue = (valueId) => {
+  const removeFilterValue = async (valueId) => {
     setFilter({
       ...filter,
       filterValue: structuredClone(filter.filterValue || [])?.filter?.(filterValue => filterValue.id !== valueId)
     });
+
+    const res = await fetch(`/api/filter-value/${valueId}`, { method: "DELETE" })
+    if (res.ok) {
+      toast.success("Đã xóa")
+    } else {
+      toast.error("Không thể xóa")
+    }
   }
 
   const renderCell = (filterValue, columnKey) => {

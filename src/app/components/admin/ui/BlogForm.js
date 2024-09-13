@@ -157,7 +157,8 @@ const BlogForm = ({ blog, setBlog }) => {
                 <Switch isSelected={isSelected} onValueChange={setIsSelected}></Switch>
               </div>
               <div>
-                <Link href={`/admin/blog/`}>
+
+                <Link href={`/admin/blog/`} className='pt-2'>
                   Trở về
                 </Link>
                 <Link href="#" onClick={saveDraft} className='pl-4'>Lưu bản nháp</Link>
@@ -167,7 +168,7 @@ const BlogForm = ({ blog, setBlog }) => {
                   <Link href={`/admin/blog/preview/${blog.slug}`} isExternal>
                     Preview
                   </Link>
-                  <Link href={`/admin/blog/edit/${blog.slug}`}>Lưu</Link>
+                  <Button type="submit" href={`/admin/blog/edit/${blog.slug}`} color="primary">Lưu</Button>
                 </div>
               </div>
             </div>
@@ -205,7 +206,7 @@ const BlogForm = ({ blog, setBlog }) => {
           )}
         </ModalContent>
       </Modal>
-    </div>
+    </div >
   );
 };
 

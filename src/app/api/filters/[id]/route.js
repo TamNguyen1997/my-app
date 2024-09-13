@@ -23,7 +23,6 @@ export async function PUT(req, { params }) {
     let filterValueJson = filter["filterValue"].filter(item => item.createdAt)
     let newFilterValueJson = filter["filterValue"].filter(item => !item.createdAt)
 
-    await db.filter_value.deleteMany({ where: { id: { not: { in: filter["filterValue"].map(item => item.id) } } } })
     delete filter["filterValue"];
     await db.filter.update({ where: { id: filter.id }, data: filter })
     for (let filterValue of filterValueJson) {

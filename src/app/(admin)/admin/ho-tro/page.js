@@ -26,13 +26,6 @@ export default () => {
             </CardBody>
           </Card>
         </Tab>
-        <Tab title="Chính sách bảo mật">
-          <Card>
-            <CardBody>
-              <SupportPage slug="hop-tac-ban-hang" editor={editor} />
-            </CardBody>
-          </Card>
-        </Tab>
         <Tab title="Chính sách đổi trả">
           <Card>
             <CardBody>

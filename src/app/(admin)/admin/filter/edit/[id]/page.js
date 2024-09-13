@@ -41,7 +41,7 @@ const Filter = () => {
           <Input
             type="text"
             label="ID thuộc tính"
-            defaultValue={filter.id}
+            value={filter.id}
             labelPlacement="outside-left"
             isRequired
             className="[&_label]:grow"
@@ -51,7 +51,7 @@ const Filter = () => {
           <Input
             type="text"
             label="Tên thuộc tính"
-            defaultValue={filter.name}
+            value={filter.name}
             labelPlacement="outside-left"
             isRequired
             className="[&_label]:grow"

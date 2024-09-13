@@ -41,7 +41,7 @@ export async function GET(req) {
         status: "PAID"
       }
     })
-    return NextResponse.json({ message: "OK" }, { status: 200 })
+    return NextResponse.redirect("https://dcvs.shop/thanh-toan/thanh-cong")
   } catch (e) {
     console.log(e)
     return NextResponse.json(e, { status: 400 })

@@ -72,33 +72,33 @@ const Brand = ({ params, productFilter }) => {
       }
     })
 
-    await fetch(`/api/filters/?brandId=${params}`).then((res) => res.json()).then(json => {
-      setFilters(Object.groupBy(json.result, (item) => item.filterType))
+    // await fetch(`/api/filters/?brandId=${params}`).then((res) => res.json()).then(json => {
+    //   setFilters(Object.groupBy(json.result, (item) => item.filterType))
 
-      let temp = {}
+    //   let temp = {}
 
-      if (productFilter) {
-        json.result.forEach(item => {
-          if (item.slug === productFilter) {
-            temp[item.filterType] = [productFilter]
-            return
-          }
-        })
-      } else {
-        json.result.forEach(item => {
-          if (window.location.hash?.includes(item.slug)) {
-            if (temp[item.filterType]) {
-              temp[item.filterType].push(item.slug)
-            } else {
-              temp[item.filterType] = [item.slug]
-            }
-          }
-        })
+    //   if (productFilter) {
+    //     json.result.forEach(item => {
+    //       if (item.slug === productFilter) {
+    //         temp[item.filterType] = [productFilter]
+    //         return
+    //       }
+    //     })
+    //   } else {
+    //     json.result.forEach(item => {
+    //       if (window.location.hash?.includes(item.slug)) {
+    //         if (temp[item.filterType]) {
+    //           temp[item.filterType].push(item.slug)
+    //         } else {
+    //           temp[item.filterType] = [item.slug]
+    //         }
+    //       }
+    //     })
 
-      }
+    //   }
 
-      setFilterIds(temp)
-    })
+    //   setFilterIds(temp)
+    // })
     setIsLoading(false)
   }
 

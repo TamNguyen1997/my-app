@@ -214,7 +214,7 @@ const Order = () => {
                 <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6" key={i}>
                   <div className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
                     <span className="shrink-0 md:order-1">
-                      <img className="h-20 w-20 dark:block" src={`${process.env.NEXT_PUBLIC_FILE_PATH + item.saleDetail.product.image?.path}`} alt="image" />
+                      <img className="h-20 w-20 dark:block" src={`${process.env.NEXT_PUBLIC_FILE_PATH + item.saleDetail?.product.image?.path}`} alt="image" />
                     </span>
                     <div className="flex items-center justify-between md:order-3 md:justify-end">
                       <div className="flex items-center w-32">
@@ -225,7 +225,7 @@ const Order = () => {
                       </div>
                       <div className="text-end md:order-4 md:w-32">
                         <p className="text-base font-bold text-gray-900 dark:text-white">
-                          {(parseInt(item.saleDetail.price || "0") * item.quantity).toLocaleString()} đ
+                          {(parseInt(item.saleDetail?.price || "0") * item.quantity).toLocaleString()} đ
                         </p>
                       </div>
                     </div>
@@ -234,7 +234,7 @@ const Order = () => {
                       <div>
                         <p className="text-base font-medium text-gray-900 hover:underline dark:text-white">{item.saleDetail.product.name}</p>
                         <p className="text-lg font-bold leading-tight text-red-600 dark:text-red-500">
-                          {item.saleDetail.price.toLocaleString()} đ</p>
+                          {item.saleDetail?.price.toLocaleString()} đ</p>
                         <div className="text-[16px] flex opacity-80 pt-1">
                           <div className="pr-3">
                             {

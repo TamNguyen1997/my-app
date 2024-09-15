@@ -31,7 +31,8 @@ import {
   RiTable3,
   RiCheckboxLine,
   RiCheckboxMultipleFill,
-  RiDoubleQuotesL
+  RiDoubleQuotesL,
+  RiVideoFill
 } from 'react-icons/ri'
 import { LucideHighlighter, Pipette, TableCellsMerge, TableCellsSplit } from 'lucide-react';
 
@@ -102,6 +103,18 @@ const BlogToolBar = ({ editor }) => {
       return
     }
     editor.chain().focus().extendMarkRange('link').setLink({ href: hyperlink }).run()
+  }
+
+  const addYoutubeVideo = () => {
+    const url = prompt('Chèn link youtube')
+
+    if (url) {
+      editor.commands.setYoutubeVideo({
+        src: url,
+        width: 640,
+        height: 480,
+      })
+    }
   }
 
   return (
@@ -235,6 +248,13 @@ const BlogToolBar = ({ editor }) => {
           </div>
         </Tooltip>
 
+        <Tooltip showArrow content="Link Youtube">
+          <div className={iconClassName}
+            onClick={addYoutubeVideo}>
+            <RiVideoFill className="w-full h-full" />
+          </div>
+        </Tooltip>
+
         <Tooltip showArrow content="Link">
           <div className={iconClassName} onClick={linkModal.onOpen}>
             <RiLink className="w-full h-full" />
@@ -332,14 +352,6 @@ const BlogToolBar = ({ editor }) => {
 
         <div className="pr-5"></div>
 
-        {/* <Tooltip showArrow content="Insert table">
-          <div className={`${iconClassName} ${editor.isActive('italic') ? "opacity-25" : ""}`}
-            onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}>
-            <RiTable3 className="w-full h-full" />
-          </div>
-        </Tooltip> */}
-
-        
         <Popover placement="bottom" showArrow={true}>
           <Tooltip showArrow content="Insert table">
             <div>
@@ -471,7 +483,6 @@ const BlogToolBar = ({ editor }) => {
           )}
         </ModalContent>
       </Modal>
-
       <Modal isOpen={colorModal.isOpen} onOpenChange={colorModal.onOpenChange}>
         <ModalContent>
           {(onClose) => (

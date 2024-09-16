@@ -112,7 +112,7 @@ const Payment = () => {
       </Modal>
     </div>
 
-    <section className="bg-white py-8 antialiased dark:bg-gray-900 md:py-16 flex mx-auto lg:max-w-2xl xl:max-w-4xl flex-col sm:p-2">
+    <section className="bg-white py-8 antialiased dark:bg-gray-900 md:py-16 flex mx-auto lg:max-w-2xl xl:max-w-4xl flex-col p-2">
       <h2 className="text-xl font-semibold text-gray-900 sm:text-2xl">Thanh toán</h2>
       <div className="mt-6 sm:mt-8 md:gap-6 lg:items-start xl:gap-8">
         <form className="mx-auto max-w-4xl flex-1 space-y-6 lg:w-full" onSubmit={handleSubmit(onSubmit)}>
@@ -145,7 +145,7 @@ const Payment = () => {
                 {...register("address", { required: true })}
                 isRequired
               />
-              <div className="flex gap-2">
+              <div className="grid sm:grid-cols-3 gap-2">
                 <Select label="Tỉnh/thành" placeholder="Chọn tỉnh/thành" isRequired onSelectionChange={(value) => {
                   const provinceId = value.values().next().value
                   register('provinceId', { value: provinceId })

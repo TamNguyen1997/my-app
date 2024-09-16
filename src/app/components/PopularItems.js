@@ -259,7 +259,7 @@ export default function PopularItems() {
 const ProductCards = ({ category, products, redirect, banner }) => {
   const CategoryDisplay = () => (
     <>
-      <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-2/3 md:w-1/3 h-[50px] m-auto shadow-md">
+      <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center sm:w-2/3 md:w-1/3 max-w-[240px] h-[50px] m-auto shadow-md">
         <div className="m-auto text-black font-bold md:text-xl">
           {category || products[0].category?.name}
         </div>
@@ -329,17 +329,21 @@ const ProductCarousel = ({ products, responsive }) => {
 
 const PopularBrandCard = ({ products, selectedBrand }) => {
   const responsive = {
-    desktop: {
+    largeDesktop: {
       breakpoint: { max: 3000, min: 1281 },
       items: 3,
     },
-    tablet: {
+    desktop: {
       breakpoint: { max: 1281, min: 464 },
       items: 3,
     },
+    tablet: {
+      breakpoint: { max: 1024, min: 464 },
+      items: 2,
+    },
     mobile: {
       breakpoint: { max: 464, min: 0 },
-      items: 2,
+      items: 1,
     },
   };
 

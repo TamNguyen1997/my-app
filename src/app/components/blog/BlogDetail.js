@@ -60,7 +60,7 @@ const BlogDetail = ({ slug, category }) => {
             variant="light"
             className="font-semibold"
             itemClasses={{
-              base: "[&>span]:text-[#23b701] last:[&>span]:text-black"
+              base: "[&>span]:text-[#23b701] last:[&>span]:text-black [&>span]:whitespace-normal"
             }}
           >
             <BreadcrumbItem href="/blog">Blog</BreadcrumbItem>

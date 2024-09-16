@@ -24,7 +24,7 @@ export default function Contact() {
   return (
     <div>
       <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/lien-he`} />
-      <div className="w-2/3 m-auto p-10 text-[14px]">
+      <div className="sm:w-2/3 m-auto py-10 px-2  text-[14px]">
         <ToastContainer />
         <div className="grid lg:grid-cols-2 xl:grid-cols-2 grid-cols-1 shadow-xl border rounded-lg">
           <div className="p-4 lg:p-12">

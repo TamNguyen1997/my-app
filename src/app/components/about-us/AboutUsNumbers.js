@@ -29,7 +29,7 @@ const AboutUsNumbers = () => {
   ]);
 
   return (
-    <div className="bg-[url(/about-us/banner-bg.png)] pt-10 md:px-7 pb-4">
+    <div className="bg-[url(/about-us/banner-bg.png)] bg-cover pt-10 md:px-7 pb-4">
       <div className="relative container">
         <div className="max-w-full overflow-hidden">
           <h2 className="text-3xl font-semibold text-center mb-8">Hoạt động nổi bật</h2>

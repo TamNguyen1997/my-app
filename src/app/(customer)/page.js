@@ -17,7 +17,7 @@ export default function Home() {
         whileInView={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.7, delay: 0.3 }}
         viewport={{ once: true }}
-        className="mx-auto w-3/4 ">
+        className="mx-auto sm:w-3/4 ">
         <HeroBanner />
       </motion.div>
       <motion.div
@@ -25,7 +25,7 @@ export default function Home() {
         whileInView={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.7, delay: 0.3 }}
         viewport={{ once: true }}
-        className="pb-[60px] pt-4 mx-auto w-3/4 ">
+        className="pb-[60px] pt-4 mx-auto sm:w-3/4 ">
         <PopularItems />
       </motion.div>
       <motion.div
@@ -41,7 +41,7 @@ export default function Home() {
         whileInView={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.7, delay: 0.3 }}
         viewport={{ once: true }}
-        className="pb-[60px] m-auto w-3/4">
+        className="pb-[60px] m-auto sm:w-3/4">
         <PopularBlogs />
       </motion.div>
       <motion.div
@@ -49,7 +49,7 @@ export default function Home() {
         whileInView={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.7, delay: 0.3 }}
         viewport={{ once: true }}
-        className="m-auto w-3/4">
+        className="m-auto sm:w-3/4">
         <Customer />
       </motion.div>
     </div>

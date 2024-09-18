@@ -6,7 +6,7 @@ import Image from "next/image";
 const Footer = () => {
   return (
     <div className="bg-[#212020] text-white p-2">
-      <div className="grid gap-2 m-auto grid-cols-2 lg:grid-cols-9">
+      <div className="grid gap-2 m-auto sm:grid-cols-2 lg:grid-cols-9">
         <div className="p-3 sm:grid-cols-1 lg:col-span-3">
           <div className="flex flex-col gap-3">
             <p className="font-bold">CÔNG TY TNHH TMDV VỆ SINH SAO VIỆT</p>
@@ -106,7 +106,7 @@ const Footer = () => {
           </Link>
           <p className="font-bold p-3 w-full">FANPAGE CHÍNH THỨC</p>
           <iframe
-            className="border-[#FFD400] border h-[130px] rounded-lg w-[300px]"
+            className="border-[#FFD400] border h-[130px] rounded-lg w-[300px] max-w-full overflow-hidden"
             data-testid="fb:page Facebook Social Plugin"
             title="fb:page Facebook Social Plugin"
             allowtransparency="true"

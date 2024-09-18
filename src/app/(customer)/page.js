@@ -41,7 +41,7 @@ export default function Home() {
         whileInView={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.7, delay: 0.3 }}
         viewport={{ once: true }}
-        className="pb-[60px] m-auto sm:w-3/4">
+        className="pb-[60px] m-auto sm:w-3/4 px-2">
         <PopularBlogs />
       </motion.div>
       <motion.div

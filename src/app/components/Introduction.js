@@ -17,7 +17,7 @@ const Introduction = () => {
           <img src="/brand/KLEEN-TEX.png" alt="KLEEN-TEX" width={175} height={70}></img>
           <img src="/brand/Logo-Mapa.png" alt="MAPA" width={175} height={70}></img>
         </div>
-        <div className="text-xl font-medium text-justify w-2/3">
+        <div className="text-xl font-medium text-justify w-2/3 mb-7">
           Các sản phẩm đạt đầy đủ chứng nhận theo tiêu chuẩn quốc tế. Mang đến sự hài lòng cho khách hàng của doanh nghiệp - là đối tác tin cậy của các nhà đầu tư.
         </div>
       </div>

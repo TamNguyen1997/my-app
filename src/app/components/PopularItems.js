@@ -259,7 +259,7 @@ export default function PopularItems() {
 const ProductCards = ({ category, products, redirect, banner }) => {
   const CategoryDisplay = () => (
     <>
-      <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center sm:w-2/3 md:w-1/3 max-w-[240px] h-[50px] m-auto shadow-md">
+      <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center sm:w-2/3 md:w-1/3 min-w-[240px] h-[50px] m-auto shadow-md">
         <div className="m-auto text-black font-bold md:text-xl">
           {category || products[0].category?.name}
         </div>
@@ -317,7 +317,7 @@ const ProductCarousel = ({ products, responsive }) => {
       >
         {products.map((product) => {
           return (
-            <div key={product.id} className="h-full hover:opacity-75">
+            <div key={product.id} className="h-full hover:opacity-75 [&>div]:mx-auto">
               <ProductCard product={product} />
             </div>
           );

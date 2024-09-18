@@ -44,7 +44,7 @@ const Cart = () => {
   }
 
   return (<>
-    <section className="bg-white py-8 antialiased dark:bg-gray-900 md:py-16 flex mx-auto lg:max-w-2xl xl:max-w-4xl flex-col sm:p-2">
+    <section className="bg-white py-8 antialiased dark:bg-gray-900 md:py-16 flex mx-auto lg:max-w-2xl xl:max-w-4xl flex-col p-2">
       <h2 className="text-xl font-semibold text-gray-900 sm:text-2xl">Giỏ hàng</h2>
       <div className="mt-6 sm:mt-8 md:gap-6 lg:items-start xl:gap-8">
         <div className="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl border p-4 border-gray-200 bg-white shadow-sm sm:p-6 rounded-lg">
@@ -143,13 +143,14 @@ const Cart = () => {
         {
           relatedProducts.length ? <div className="xl:mt-8 xl:block sm:mt-8">
             <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">Sản phẩm tương tự</h3>
-            <div className="mt-6 grid md:grid-cols-3 gap-4 sm:mt-8 grid-cols-2">
+            {/* <div className="mt-6 grid md:grid-cols-3 gap-4 sm:mt-8 grid-cols-2"> */}
+            <div className="mt-6 grid gap-4 sm:mt-8 grid-cols-[repeat(auto-fill,minmax(200px,1fr))]">
               {
                 relatedProducts?.map((product, i) => {
                   return <div
                     key={i}
                     className="space-y-3 overflow-hidden rounded-lg border border-gray-200 bg-white pr-1 
-                  shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                  shadow-sm dark:border-gray-700 dark:bg-gray-800 [&>div]:!border-none [&>div]:mx-auto [&>div]:max-w-full">
                     <ProductCard product={product} width={200} height={200} />
                   </div>
                 })

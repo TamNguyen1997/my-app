@@ -3,6 +3,7 @@ import { Button, Input, Link, Textarea } from "@nextui-org/react";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Contact() {
   const {
@@ -23,7 +24,7 @@ export default function Contact() {
   return (
     <div>
       <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/lien-he`} />
-      <div className="w-2/3 m-auto p-10 text-[14px]">
+      <div className="sm:w-2/3 m-auto py-10 px-2  text-[14px]">
         <ToastContainer />
         <div className="grid lg:grid-cols-2 xl:grid-cols-2 grid-cols-1 shadow-xl border rounded-lg">
           <div className="p-4 lg:p-12">
@@ -78,7 +79,7 @@ export default function Contact() {
           <div className="p-4 lg:p-12 bg-[#FFD400] rounded-lg">
             <p className="text-[16px] mt-2 mb-3 text-center font-bold">LIÊN HỆ</p>
             <span>
-              Sao Việt rất vui vì được tiếp nhận liên hệ của bạn. Có bất cứ điều gì cần phản hồi/giải đáp, gửi ngay cho chúng mình bên dưới nhé!
+              Sao Việt hân hạnh được tiếp nhận liên hệ từ quý khách hàng. Nếu có bất kỳ thắc mắc hay phản ánh nào, xin vui lòng để lại thông tin bên dưới!
             </span>
             <div >
               <form className="max-w-4xl flex-1 lg:w-full" onSubmit={handleSubmit(onSubmit)}>

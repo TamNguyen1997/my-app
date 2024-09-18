@@ -1,13 +1,5 @@
 import { NextResponse } from 'next/server';
-import { v4 } from "uuid";
 import dateFormat from "dateformat";
-
-function getSecureHash(params) {
-  var signData = JSON.stringify(params);
-  var crypto = require("crypto");
-  var hmac = crypto.createHmac("sha256", process.env.SECRET_KEY);
-  return hmac.update(new Buffer(signData, 'utf-8')).digest("hex");
-}
 
 export async function POST(req) {
   try {
@@ -32,8 +24,8 @@ export async function POST(req) {
     var returnUrl = process.env.VNP_RETURN_URL;
 
     console.log(process.env.VNP_HASH_SECRET)
-    var date = new Date();
-    var expiration = new Date();
+    var date = new Date(new Date().toLocaleString('en', { timeZone: 'Asia/Ho_Chi_Minh' }));
+    var expiration = new Date(new Date().toLocaleString('en', { timeZone: 'Asia/Ho_Chi_Minh' }));
     expiration.setHours(expiration.getHours() + 1);
     var createDate = dateFormat(date, 'yyyymmddHHmmss');
     var expirationDate = dateFormat(expiration, 'yyyymmddHHmmss');
@@ -48,7 +40,7 @@ export async function POST(req) {
     vnp_Params['vnp_ExpireDate'] = expirationDate;
     vnp_Params['vnp_IpAddr'] = ipAddr;
     vnp_Params['vnp_Locale'] = "vn";
-    vnp_Params['vnp_OrderInfo'] = "Info";
+    vnp_Params['vnp_OrderInfo'] = info;
     vnp_Params['vnp_OrderType'] = "other";
     vnp_Params['vnp_ReturnUrl'] = returnUrl;
     vnp_Params['vnp_Version'] = '2.1.0';
@@ -56,16 +48,16 @@ export async function POST(req) {
     vnp_Params['vnp_TxnRef'] = orderId;
 
     vnp_Params = sortObject(vnp_Params);
+    console.log(vnp_Params)
 
     var querystring = require('qs');
     var signData = querystring.stringify(vnp_Params, { encode: true });
     var crypto = require("crypto");
-    var hmac = crypto.createHmac("sha512", secretKey);
-    var signed = hmac.update(new Buffer(signData, 'utf-8')).digest("hex");
+    var signed = crypto.createHmac("sha512", secretKey).update(Buffer.from(signData, 'utf-8')).digest("hex");
     vnp_Params['vnp_SecureHash'] = signed;
     vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: true });
 
-    return NextResponse.json(vnpUrl, { status: 200 })
+    return NextResponse.json({ vnpUrl }, { status: 200 })
   } catch (e) {
     console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })

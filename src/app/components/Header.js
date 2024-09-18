@@ -67,14 +67,14 @@ const Header = () => {
     <nav className="bg-black border-gray-200 dark:bg-gray-900 header">
       <div className="w-full h-full">
         <div className="flex w-full h-full">
-          <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto pl-10">
-            <Link href="/">
+          <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto sm:pl-10 pl-4">
+            <Link href="/" className="pr-4">
               <img
                 src="/saoviet.png"
                 alt="favicon"
                 height={80}
                 width={200}
-                className="bg-black"
+                className="bg-black sm:w-[200px] w-[120px]"
               />
             </Link>
           </div>
@@ -83,19 +83,19 @@ const Header = () => {
             bg-[#FFD400]
           `}>
             <div className="pl-9">
-              <div className="p-3 flex gap-7">
-                <div className="flex items-center gap-3">
+              <div className="p-3 flex gap-7 pl-0">
+                <div className="w-full max-w-[397px] flex items-center gap-3 [&>div]:grow">
                   <SearchBar />
                   <Link
                     id="header-cart-btn"
                     href="/gio-hang"
-                    className="bg-[#FFAC0A] h-[35px] items-center text-center relative flex rounded-md shadow-md">
+                    className="flex bg-[#FFAC0A] h-[35px] min-w-[40px] items-center justify-center text-center relative flex rounded-md shadow-md">
                     <span className="px-1">
                       <ShoppingCart size={24} strokeWidth={2}></ShoppingCart>
                     </span>
-                    <span className="text-sm px-1">Giỏ hàng</span>
+                    <span className="text-sm whitespace-nowrap pl-1 pr-1.5 sm:block hidden">Giỏ hàng</span>
                     {cartdetails?.length ? (
-                      <div className="rounded-full w-3 h-3 bg-red-600 text-white text-center text-[10px]">
+                      <div className="absolute -top-1 -right-1 flex items-center justify-center rounded-full w-3 h-3 bg-red-600 text-white text-center text-[10px]">
                         <span className="animate-ping absolute inline-flex w-3 h-3 rounded-full bg-red-600 opacity-75"></span>
                         {getQuantity(cartdetails)}
                       </div>
@@ -279,10 +279,10 @@ const HeaderItems = ({ setHoveredCate, menuRef, setMenuVisible, menuVisible }) =
 
   return (<>
     <div className="w-full font-bold header-items" ref={headerItemsRef}>
-      <div className="ml-0 flex text-sm">
+      <div className="w-full ml-0 flex text-sm overflow-auto">
         <Link href=""
           className={`
-            hover:bg-[#FFAC0A] transition py-4 menu-button w-28
+            hover:bg-[#FFAC0A] transition pb-4 sm:pt-4 pt-2 menu-button w-28 mr-auto
             ${menuVisible && 'bg-[#FFAC0A]'}
           `}
           onMouseOver={() => {
@@ -292,7 +292,7 @@ const HeaderItems = ({ setHoveredCate, menuRef, setMenuVisible, menuVisible }) =
           onMouseOut={() => setMenuVisible(false)}
         >
           <div className="flex">
-            <Menu size="20" className="inline-block mr-2" />
+            <Menu size="20" className="inline-block mr-2 min-w-5" />
             DANH MỤC
           </div>
         </Link>

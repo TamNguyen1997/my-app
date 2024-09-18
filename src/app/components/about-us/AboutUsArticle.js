@@ -24,14 +24,14 @@ const AboutUsArticle = () => {
                 Chúng tôi đã xây dựng đội ngũ nhân viên năng động, sáng tạo, được đào tạo bài bản, thích ứng nhanh,
                 hợp tác và sự cam kết nghiêm túc để phục vụ khách hàng ngày càng tốt hơn.</p>
             </div>
-            <div className="md:w-[calc(50%_-_20px)] w-full mb-5 relative">
+            <div className="md:w-[calc(50%_-_20px)] w-full mb-5 relative flex flex-col justify-end">
               <h2 className="text-3xl text-center font-semibold mb-6 md:hidden block">Đội ngũ nhân viên</h2>
               <img
                 width="450"
                 height="300"
                 src="/about-us/article-1.jpg"
                 alt="/about-us/article-1.jpg"
-                className="aspect-[16/9] object-cover w-full rounded m-auto bottom-3 absolute right-0"
+                className="aspect-[16/9] object-cover w-full rounded mb-6"
               />
             </div>
           </div>
@@ -82,14 +82,14 @@ const AboutUsArticle = () => {
                 <span>.</span>
               </p>
             </div>
-            <div className="md:w-[calc(50%_-_20px)] w-full mb-5 relative">
+            <div className="md:w-[calc(50%_-_20px)] w-full mb-5 relative flex flex-col justify-end">
               <h2 className="text-3xl text-center font-semibold mb-6 md:hidden block">Giá trị bền vững</h2>
               <img
                 width="450"
                 height="300"
                 src="/about-us/article-2.jpg"
                 alt="/about-us/article-2.jpg"
-                className="aspect-[16/9] object-cover w-full rounded m-auto bottom-3 absolute right-0"
+                className="aspect-[16/9] object-cover w-full rounded mb-6"
               />
             </div>
           </div>

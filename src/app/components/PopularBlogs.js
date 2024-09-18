@@ -39,7 +39,7 @@ export default function PopularBlogs() {
   return (
     <>
       <div className="pb-2">
-        <div className="bg-black rounded-tr-[50px] rounded-bl-[50px] flex items-center w-1/3 h-[50px] m-auto">
+        <div className="bg-black rounded-tr-[50px] rounded-bl-[50px] flex items-center w-1/3 min-w-[222px] h-[50px] m-auto">
           <Link href="/" className="m-auto text-white font-bold text-xl">BÀI VIẾT NỔI BẬT</Link>
         </div>
       </div>
@@ -84,7 +84,7 @@ export default function PopularBlogs() {
 
       <Link
         href="/kien-thuc-hay"
-        className="flex items-center w-1/3 h-[50px] m-auto rounded-large border-medium border-slate-950 hover:opacity-30">
+        className="flex items-center w-1/3 min-w-[170px] h-[50px] m-auto rounded-large border-medium border-slate-950 hover:opacity-30">
         <span className="m-auto text-black">
           Xem tất cả tin tức
         </span>

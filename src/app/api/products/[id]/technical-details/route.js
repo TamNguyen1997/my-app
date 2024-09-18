@@ -9,11 +9,12 @@ export async function POST(req, { params }) {
         productId: params.id
       }
     })
-    await db.technical_detail.create({
-      data: body
+    await db.technical_detail.createMany({
+      data: body.details
     })
     return NextResponse.json({ message: "Success" })
   } catch (e) {
+    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }
@@ -24,9 +25,16 @@ export async function GET(req, { params }) {
   }
 
   try {
-    const result = await db.technical_detail.findFirst({ where: { productId: params.id } })
+    const result = await db.technical_detail.findMany({
+      where: { productId: params.id },
+      include: {
+        filterValue: true,
+        filter: true
+      }
+    })
     return NextResponse.json(result)
   } catch (e) {
+    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }

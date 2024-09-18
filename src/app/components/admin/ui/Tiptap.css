@@ -148,4 +148,26 @@
         margin: 1.5rem 0;
         padding-left: 1rem;
     }
+
+    div[data-youtube-video] {
+        cursor: move;
+        padding-right: 1.5rem;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 50%;
+
+        iframe {
+            border: 0.5rem solid var(--black-contrast);
+            display: block;
+            min-height: 200px;
+            min-width: 200px;
+            outline: 0px solid transparent;
+        }
+
+        &.ProseMirror-selectednode iframe {
+            outline: 3px solid var(--purple);
+            transition: outline 0.15s;
+        }
+    }
 }

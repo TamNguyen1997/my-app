@@ -72,33 +72,33 @@ const Brand = ({ params, productFilter }) => {
       }
     })
 
-    await fetch(`/api/filters/?brandId=${params}`).then((res) => res.json()).then(json => {
-      setFilters(Object.groupBy(json.result, (item) => item.filterType))
+    // await fetch(`/api/filters/?brandId=${params}`).then((res) => res.json()).then(json => {
+    //   setFilters(Object.groupBy(json.result, (item) => item.filterType))
 
-      let temp = {}
+    //   let temp = {}
 
-      if (productFilter) {
-        json.result.forEach(item => {
-          if (item.slug === productFilter) {
-            temp[item.filterType] = [productFilter]
-            return
-          }
-        })
-      } else {
-        json.result.forEach(item => {
-          if (window.location.hash?.includes(item.slug)) {
-            if (temp[item.filterType]) {
-              temp[item.filterType].push(item.slug)
-            } else {
-              temp[item.filterType] = [item.slug]
-            }
-          }
-        })
+    //   if (productFilter) {
+    //     json.result.forEach(item => {
+    //       if (item.slug === productFilter) {
+    //         temp[item.filterType] = [productFilter]
+    //         return
+    //       }
+    //     })
+    //   } else {
+    //     json.result.forEach(item => {
+    //       if (window.location.hash?.includes(item.slug)) {
+    //         if (temp[item.filterType]) {
+    //           temp[item.filterType].push(item.slug)
+    //         } else {
+    //           temp[item.filterType] = [item.slug]
+    //         }
+    //       }
+    //     })
 
-      }
+    //   }
 
-      setFilterIds(temp)
-    })
+    //   setFilterIds(temp)
+    // })
     setIsLoading(false)
   }
 
@@ -153,8 +153,8 @@ const Brand = ({ params, productFilter }) => {
   return (
     <>
       <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${brand.slug}`} />
-      <div className="w-9/12 mx-auto ">
-        <div className="flex gap-2 pt-5">
+      <div className="sm:w-9/12 mx-auto ">
+        <div className="flex gap-2 pt-5 px-2">
           <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
             {
               Object.keys(filters || {}).map((key, index) =>
@@ -230,7 +230,7 @@ const Brand = ({ params, productFilter }) => {
             </div>
           </div>
         </div>
-        <div className="pt-3">
+        <div className="pt-3 px-2">
           <Dropdown>
             <DropdownTrigger>
               <Button
@@ -283,9 +283,9 @@ const BrandSection = ({ products }) => {
 
       {
         products.length ? <>
-          <div className="w-full my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
+          <div className="w-full my-5 grid grid-cols-[repeat(auto-fill,minmax(222px,1fr))] gap-4 p-2">
             {products.map((product) => (
-              <div key={product.id} className="h-full hover:opacity-75">
+              <div key={product.id} className="h-full hover:opacity-75 [&>div]:mx-auto">
                 <ProductCard product={product} />
               </div>
             ))}

@@ -3,9 +3,9 @@ import { db } from '@/app/db';
 import queryString from 'query-string';
 
 export async function GET(req) {
-  try {
-    const { query } = queryString.parseUrl(req.url);
+  const { query } = queryString.parseUrl(req.url);
 
+  try {
     console.log("?????????????????")
     console.log(query.vnp_OrderInfo)
     console.log(query)
@@ -29,7 +29,7 @@ export async function GET(req) {
         orderId: orderId
       },
       data: {
-        customerPayment: parseInt(query.vnp_Amount),
+        customerPayment: parseInt(query.vnp_Amount) / 100,
         vnpayTransactionNo: query.vnp_TransactionNo,
         bankTransactionNo: query.vnp_BankTranNo,
         bankCode: query.vnp_BankCode,
@@ -41,7 +41,7 @@ export async function GET(req) {
         status: "PAID"
       }
     })
-    return NextResponse.json({ message: "OK" }, { status: 200 })
+    return NextResponse.redirect("https://dcvs.shop/thanh-toan/thanh-cong")
   } catch (e) {
     console.log(e)
     return NextResponse.json(e, { status: 400 })

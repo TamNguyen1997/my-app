@@ -19,6 +19,11 @@ const logo = [
   "/icon/client/Sheraton.png",
   "/icon/client/TheGrand.png",
   "/icon/client/Wyndham.png",
+  "/icon/client/Caravelle.png",
+  "/icon/client/El-Gaucho.png",
+  "/icon/client/Gallery.png",
+  "/icon/client/Jollibee.png",
+  "/icon/client/Starbucks.png",
 ]
 
 const responsive = {
@@ -45,12 +50,12 @@ const Customer = ({ hideTitle }) => {
   return (<>
 
     {
-      hideTitle ? "" : <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-2/3 md:w-1/3 h-[50px] m-auto shadow-md">
+      hideTitle ? "" : <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-2/3 md:w-1/3 min-w-[300px] h-[50px] m-auto shadow-md">
         <Link href="/" className="m-auto text-black font-bold md:text-xl">KHÁCH HÀNG SAO VIỆT</Link>
       </div>
     }
 
-    <Carousel infinite responsive={responsive} className="w-full items-center" autoPlaySpeed={3000} autoPlay arrows={false} showDots centerMode>
+    <Carousel infinite responsive={responsive} className="w-full items-center mb-6" autoPlaySpeed={3000} autoPlay arrows={false} showDots centerMode>
       {
         logo.map((l, i) => <div className="p-3 w-full h-full m-auto items-center text-center content-center" key={i}>
           <img

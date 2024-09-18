@@ -26,13 +26,6 @@ export default () => {
             </CardBody>
           </Card>
         </Tab>
-        <Tab title="Chính sách bảo mật">
-          <Card>
-            <CardBody>
-              <SupportPage slug="hop-tac-ban-hang" editor={editor} />
-            </CardBody>
-          </Card>
-        </Tab>
         <Tab title="Chính sách đổi trả">
           <Card>
             <CardBody>
@@ -68,6 +61,20 @@ export default () => {
             </CardBody>
           </Card>
         </Tab>
+        <Tab title="Khách hàng">
+          <Card>
+            <CardBody>
+              <SupportPage slug="khach-hang" editor={editor} />
+            </CardBody>
+          </Card>
+        </Tab>
+        <Tab title="Đối tác">
+          <Card>
+            <CardBody>
+              <SupportPage slug="doi-tac" editor={editor} />
+            </CardBody>
+          </Card>
+        </Tab>
       </Tabs>
     </div>
   )
@@ -97,7 +104,6 @@ const SupportPage = ({ slug, editor }) => {
     }
   }
 
-  console.log(editor?.getHTML())
   return (<>
     <ToastContainer />
     <RichTextEditor editor={editor} />

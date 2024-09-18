@@ -30,19 +30,17 @@ model product {
   updatedAt   DateTime @updatedAt @map("updated_at")
   description String?
 
-  saleDetails       sale_detail[]
-  technicalDetailId String?           @map("technical_detail_id") @db.Uuid
-  technical_detail  technical_detail?
+  saleDetails sale_detail[]
 
   category   category? @relation(fields: [categoryId], references: [id])
-  categoryId String?   @map("category_id") @db.Uuid
-  subCateId  String?   @map("sub_cate_id") @db.Uuid
+  categoryId String?   @map("category_id")
+  subCateId  String?   @map("sub_cate_id")
   subCate    category? @relation("subCate", fields: [subCateId], references: [id])
 
   quantity Int @default(0)
 
   brand            brand?             @relation(fields: [brandId], references: [id])
-  brandId          String?            @db.Uuid
+  brandId          String?
   product_on_order product_on_order[]
   product_on_image product_on_image[]
 
@@ -56,6 +54,10 @@ model product {
   product         product?            @relation("componentParts", fields: [productId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   productId       String?             @db.Uuid
   filterOnProduct filter_on_product[]
+
+  metaTitle        String?
+  metaDescription  String?
+  technical_detail technical_detail[]
 
   @@index([imageId])
   @@index([categoryId])
@@ -82,14 +84,14 @@ model product_on_image {
 }
 
 model technical_detail {
-  id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id        String  @id @default(dbgenerated("gen_random_uuid()"))
   product   product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId String  @unique @db.Uuid
+  productId String  @map("product_id") @db.Uuid
 
-  filter        filter       @relation(fields: [filterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  filterId      String       @map("filter_id") @db.Uuid
-  filterValue   filter_value @relation(fields: [filterValueId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  filterValueId String       @map("filter_value_id") @db.Uuid
+  filter        filter?       @relation(fields: [filterId], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  filterId      String?       @map("filter_id")
+  filterValue   filter_value? @relation(fields: [filterValueId], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  filterValueId String?       @map("filter_value_id")
 
   @@index([productId])
   @@index([filterId])
@@ -102,7 +104,7 @@ enum sale_detail_type {
 }
 
 model sale_detail {
-  id        String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id        String           @id @default(dbgenerated("gen_random_uuid()"))
   product   product          @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId String           @map("product_id") @db.Uuid
   value     String?
@@ -111,16 +113,16 @@ model sale_detail {
 
   childSaleDetails sale_detail[]      @relation("secondary_sale_detail")
   saleDetail       sale_detail?       @relation("secondary_sale_detail", fields: [saleDetailId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  saleDetailId     String?            @map("sale_detail_id") @db.Uuid
+  saleDetailId     String?            @map("sale_detail_id")
   productOnOrder   product_on_order[]
 
-  filter   filter @relation(fields: [filterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  filterId String @map("filter_id") @db.Uuid
+  filter   filter? @relation(fields: [filterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  filterId String? @map("filter_id")
 
-  filterValue   filter_value @relation(fields: [filterValueId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  filterValueId String       @map("filter_value_id") @db.Uuid
+  filterValue   filter_value? @relation(fields: [filterValueId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  filterValueId String?       @map("filter_value_id")
 
-  sku              String
+  sku              String?
   promotionalPrice Int?
   showPrice        Boolean @default(true)
   inStock          Int     @default(0)
@@ -135,8 +137,9 @@ model sale_detail {
 }
 
 model filter {
-  id   String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name String @default("")
+  id     String  @id @default(dbgenerated("gen_random_uuid()"))
+  name   String  @default("")
+  active Boolean @default(false)
 
   createdAt        DateTime           @default(now()) @map("created_at")
   updatedAt        DateTime           @default(now()) @updatedAt @map("updated_at")
@@ -146,14 +149,16 @@ model filter {
 }
 
 model filter_value {
-  id              String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  value           String  @default("")
-  filter          filter? @relation(fields: [filterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  filterId        String  @map("filter_id") @db.Uuid
-  translatedValue String  @default("") @map("translated_value")
+  id       String  @id @default(dbgenerated("gen_random_uuid()"))
+  value    String  @default("")
+  slug     String?
+  filter   filter? @relation(fields: [filterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  filterId String  @map("filter_id")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  active Boolean @default(false)
 
   technicalDetails technical_detail[]
   saleDetails      sale_detail[]
@@ -268,7 +273,7 @@ model product_on_order {
   order        order        @relation(fields: [orderId], references: [id])
   orderId      String       @map("order_id") @db.Uuid
   quantity     Int          @default(0)
-  saleDetailId String?      @map("sale_detail_id") @db.Uuid
+  saleDetailId String?      @map("sale_detail_id")
   saleDetail   sale_detail? @relation(fields: [saleDetailId], references: [id])
   createdAt    DateTime     @default(now()) @map("created_at")
   updatedAt    DateTime     @default(now()) @updatedAt @map("updated_at")
@@ -337,6 +342,7 @@ model blog {
   createdAt       DateTime  @default(now()) @map("created_at")
   updatedAt       DateTime  @default(now()) @updatedAt @map("updated_at")
   type            blog_type @default(BLOG)
+  draft           String?
 
   blogCategory    blog_category     @default(INFORMATION) @map("blog_category")
   blogSubCategory blog_sub_category @default(MANUAL) @map("blog_sub_category")
@@ -384,7 +390,7 @@ enum image_type {
 }
 
 model category {
-  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id           String   @id @default(dbgenerated("gen_random_uuid()"))
   name         String
   slug         String   @default(dbgenerated("gen_random_uuid()"))
   highlight    Boolean  @default(false)
@@ -397,17 +403,17 @@ model category {
   image       image?  @relation(fields: [imageId], references: [id])
 
   type     cate_type  @default(CATE)
-  cateId   String?    @db.Uuid
+  cateId   String?
   cate     category?  @relation("sub_cate", fields: [cateId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   subcates category[] @relation("sub_cate")
   product  product[]
   sProduct product[]  @relation("subCate")
 
-  filterValueOnCategory   filter_value? @relation("filterValueOnCategory", fields: [filterValueOnCategoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  filterValueOnCategoryId String?       @db.Uuid
+  filterValueOnCategory   filter_value? @relation("filterValueOnCategory", fields: [filterValueOnCategoryId], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  filterValueOnCategoryId String?
 
-  filterValueOnSubCategory   filter_value? @relation("filterValueOnSubCategory", fields: [filterValueOnSubCategoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  filterValueOnSubCategoryId String?       @db.Uuid
+  filterValueOnSubCategory   filter_value? @relation("filterValueOnSubCategory", fields: [filterValueOnSubCategoryId], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  filterValueOnSubCategoryId String?
 
   @@unique([slug])
   @@index([imageId])
@@ -422,17 +428,18 @@ enum cate_type {
 }
 
 model brand {
-  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
   name      String   @unique
   slug      String   @default(dbgenerated("gen_random_uuid()"))
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   product        product[]
-  filter_value   filter_value? @relation(fields: [filter_valueId], references: [id])
-  filter_valueId String?       @db.Uuid
+  filter_value   filter_value? @relation(fields: [filter_valueId], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  filter_valueId String?
 
   @@unique([slug])
+  @@index([filter_valueId])
 }
 
 enum blog_type {
@@ -463,4 +470,18 @@ model redirect {
 enum redirect_type {
   EXACT
   REGEX
+}
+
+enum history_status {
+  PROCESSING
+  PROCESSED
+  ERROR
+}
+
+model import_history {
+  id        String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  fileName  String
+  status    history_status
+  createdAt DateTime       @default(now()) @map("created_at")
+  updatedAt DateTime       @default(now()) @updatedAt @map("updated_at")
 }

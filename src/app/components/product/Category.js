@@ -32,32 +32,32 @@ const Category = ({ params, productFilter }) => {
     setIsLoading(true)
     const hash = window.location.hash?.split('#')
     const getData = async () => {
-      await fetch(`/api/filters/?categoryId=${params}`).then((res) => res.json()).then(json => {
-        setFilters(Object.groupBy(json.result, (item) => item.filterType))
-        let temp = {}
+      // await fetch(`/api/filters/?categoryId=${params}`).then((res) => res.json()).then(json => {
+      //   setFilters(Object.groupBy(json.result, (item) => item.filterType))
+      //   let temp = {}
 
-        if (productFilter) {
-          json.result.forEach(item => {
-            if (item.slug === productFilter) {
-              temp[item.filterType] = [productFilter]
-              return
-            }
-          })
-        } else {
-          json.result.forEach(item => {
-            if (window.location.hash?.includes(item.slug)) {
-              if (temp[item.filterType]) {
-                temp[item.filterType].push(item.slug)
-              } else {
-                temp[item.filterType] = [item.slug]
-              }
-            }
-          })
+      //   if (productFilter) {
+      //     json.result.forEach(item => {
+      //       if (item.slug === productFilter) {
+      //         temp[item.filterType] = [productFilter]
+      //         return
+      //       }
+      //     })
+      //   } else {
+      //     json.result.forEach(item => {
+      //       if (window.location.hash?.includes(item.slug)) {
+      //         if (temp[item.filterType]) {
+      //           temp[item.filterType].push(item.slug)
+      //         } else {
+      //           temp[item.filterType] = [item.slug]
+      //         }
+      //       }
+      //     })
 
-        }
+      //   }
 
-        setFilterIds(temp)
-      })
+      //   setFilterIds(temp)
+      // })
       await fetch(`/api/categories/${params}/products/?active=true&${window.location.hash ? hash[1] : `filterId=${productFilter || ""}`}`).then(async res => {
         if (res.ok) {
           const body = await res.json()

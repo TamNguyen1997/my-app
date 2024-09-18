@@ -1,12 +1,10 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Spinner, Table,
   TableCell, TableColumn,
   TableHeader, TableRow,
-  TableBody, useDisclosure,
-  Pagination,
+  TableBody,
   Input,
   Link,
   Switch,
@@ -14,42 +12,20 @@ import {
   Chip,
   Button
 } from "@nextui-org/react"
-
+import { Trash2 } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
+import { v4 } from "uuid";
 
-const rowsPerPage = 10;
-
-const FilterProduct = ({ filterId, categories, brands, subCategories, filter }) => {
-
-  const addProduct = useDisclosure()
-  const [loadingState, setLoadingState] = useState("loading")
-
-  const [total, setTotal] = useState(100)
-
-  const [page, setPage] = useState(1)
-
-  const [selectedKeys, setSelectedKeys] = useState(new Set([]));
-
-  const [products, setProduct] = useState([...Array(5)].map((_, i) => ({
-    id: i + 1,
-    attrId: "M0102",
-    attrViName: "Đen",
-    slug: "den",
-    attrEnName: "Black",
-    brand: [],
-    category: [],
-    subcate: [],
-    active: i % 2 == 0
-  })))
+const FilterProduct = ({ categories, brands, subCategories, filter, setFilter }) => {
 
   const tableHeaders = [
     {
-      key: "attrId",
-      title: "ID giá trị thuộc tính"
+      key: "id",
+      title: "ID thuộc tính"
     },
     {
-      key: "attrViName",
-      title: "Tên giá trị thuộc tính tiếng Việt",
+      key: "value",
+      title: "Tên tiếng Việt",
       required: true
     },
     {
@@ -57,109 +33,146 @@ const FilterProduct = ({ filterId, categories, brands, subCategories, filter }) 
       title: "Slug"
     },
     {
-      key: "attrEnName",
-      title: "Tên giá trị thuộc tính tiếng Anh"
-    },
-    {
-      key: "brand",
+      key: "brands",
       title: "ID thương hiệu",
       required: true
     },
     {
-      key: "category",
+      key: "categories",
       title: "ID cate",
       required: true
     },
     {
-      key: "subcate",
+      key: "subCategories",
       title: "ID sub-cate",
       required: true
     },
     {
       key: "active",
       title: "Trạng thái active"
+    },
+    {
+      key: "actions",
+      title: ""
     }
   ];
 
-  useEffect(() => {
-    getProduct()
-  }, [page])
-
-  const getProduct = useCallback(() => {
-    // setLoadingState("loading")
-    // fetch(`/api/filters/${filterId}/products?page=${page}&size=${rowsPerPage}`).then(res => res.json()).then(json => {
-    //   setProduct(json.result)
-    //   setTotal(json.total)
-    setLoadingState("idle")
-    // })
-  }, [page])
-
-  const pages = useMemo(() => {
-    return total ? Math.ceil(total / rowsPerPage) : 0;
-  }, [total, rowsPerPage]);
+  const onCellValueChange = (valueId, value) => {
+    let filterToUpdate = { ...filter }
+    filterToUpdate.filterValue?.forEach(filterValue => filterValue.id === valueId ? Object.assign(filterValue, value) : filterValue)
+    setFilter(filterToUpdate)
+  }
 
   const onSave = async () => {
-    const ids = new Set([...products.map(product => product.id), ...selectedKeys])
-    const res = await fetch(`/api/filters/${filterId}/products`, { method: "POST", body: JSON.stringify({ productIds: [...ids] }) })
+    let res
+
+    let filterValues = filter.filterValue ? filter.filterValue.map(item => {
+      return {
+        ...item,
+        brands: item.brands ? item.brands.map(b => b.id) : [],
+        categories: item.categories ? item.categories.map(cate => cate.id) : [],
+        subCategories: item.subCategories ? item.subCategories.map(subcate => subcate.id) : [],
+      }
+    }) : []
+
+    if (!filter.createdAt) {
+      res = await fetch(`/api/filters/`, {
+        method: "POST",
+        body: JSON.stringify({
+          ...filter,
+          filterValue: filterValues
+        })
+      })
+      const body = await res.json()
+      window.location.replace(`/admin/filter/edit/${body.id}`)
+    } else {
+      res = await fetch(`/api/filters/${filter.id}`, {
+        method: "PUT",
+        body: JSON.stringify({
+          ...filter,
+          filterValue: filterValues
+        })
+      })
+    }
 
     if (res.ok) {
-      addProduct.onClose()
-      toast.success("Đã thêm sản phẩm vào filter")
-      getProduct()
+      toast.success("Đã cập nhật")
     } else {
-      toast.error("Không thể thêm sản phẩm vào filter")
+      toast.error("Không thể cập nhật")
     }
   }
 
-  const onCellValueChange = (productId, value) => {
-    if (!productId) return;
-    setProduct(products.map(product => product.id === productId ? Object.assign(product, value) : product));
+  const addNewFilterValue = () => {
+    setFilter({
+      ...filter,
+      filterValue: [
+        ...structuredClone(filter.filterValue || []),
+        {
+          id: v4(),
+          value: "",
+          slug: "",
+          brands: [],
+          categories: [],
+          subCategories: [],
+          filterId: filter.id,
+          active: false
+        }
+      ]
+    });
   }
 
-  const renderCell = useCallback((product, columnKey) => {
-    const cellValue = product[columnKey]
+  const removeFilterValue = async (valueId) => {
+    setFilter({
+      ...filter,
+      filterValue: structuredClone(filter.filterValue || [])?.filter?.(filterValue => filterValue.id !== valueId)
+    });
+
+    const res = await fetch(`/api/filter-value/${valueId}`, { method: "DELETE" })
+    if (res.ok) {
+      toast.success("Đã xóa")
+    } else {
+      toast.error("Không thể xóa")
+    }
+  }
+
+  const renderCell = (filterValue, columnKey) => {
+    const cellValue = filterValue[columnKey]
+
     const selectionList = {
-      category: categories,
-      subcate: subCategories,
-      brand: brands
+      categories: categories,
+      subCategories: subCategories,
+      brands: brands
     }
     switch (columnKey) {
+      case "actions":
+        return (
+          <div className="flex justify-center text-danger">
+            <Trash2 onClick={() => removeFilterValue(filterValue?.id)} className="cursor-pointer" />
+          </div>
+        )
       case "active":
         return (
           <div className="flex justify-center">
             <Switch
               aria-label={columnKey}
               defaultSelected={cellValue}
-              onValueChange={(value) => onCellValueChange(product?.id, { [columnKey]: value })}
+              onValueChange={(value) => onCellValueChange(filterValue?.id, { [columnKey]: value })}
               className="[&>span:last-of-type]:m-0"
             />
           </div>
         )
-      case "category":
-      case "subcate":
-      case "brand":
+      case "categories":
+      case "subCategories":
+      case "brands":
         return (
           <Select
             aria-label={columnKey}
             selectionMode="multiple"
             labelPlacement="outside"
             value={cellValue}
-            onSelectionChange={(value) => onCellValueChange(product?.id, { [columnKey]: Array.from(value) })}
-            classNames={{
-              base: "min-w-[120px]",
-              innerWrapper: "pr-6 !w-full",
-              trigger: "h-auto gap-2 py-2",
-              value: "whitespace-normal"
-            }}
-            renderValue={(items) => {
-              return (
-                <div className="flex flex-wrap gap-2">
-                  {
-                    items?.map(item => <Chip key={item.key}>{item.textValue}</Chip>)
-                  }
-                </div>
-              );
-            }}
+            onSelectionChange={(value) => onCellValueChange(filterValue?.id, { [columnKey]: Array.from(value).map(item => { return { id: item } }) })}
+            defaultSelectedKeys={new Set(filterValue[columnKey] ? filterValue[columnKey].map(v => v.id) : [])}
+            className="max-w-xs"
           >
             {
               selectionList[columnKey].map((item) =>
@@ -171,40 +184,29 @@ const FilterProduct = ({ filterId, categories, brands, subCategories, filter }) 
           </Select>
         )
       default:
-        // return cellValue
         return (
           <Input
             aria-label={columnKey}
             defaultValue={cellValue}
-            onValueChange={(value) => onCellValueChange(product?.id, { [columnKey]: value })}
-            className="min-w-[100px]"
+            onValueChange={(value) => onCellValueChange(filterValue?.id, { [columnKey]: value })}
           />
         );
     }
-  }, [])
+  }
 
   return (
     <>
-      <ToastContainer containerId={"FilterProduct"} />
+      <ToastContainer />
       <div className="flex flex-col gap-2 min-h-full">
-
         <div className="px-1 py-2 border-default-200">
           <Table
-            loadingState={loadingState}
             aria-label="Tất cả sản phẩm"
             bottomContent={
-              loadingState === "loading" ? null :
-                <div className="flex w-full justify-center">
-                  <Pagination
-                    isCompact
-                    showControls
-                    showShadow
-                    page={page}
-                    total={pages}
-                    onChange={(page) => setPage(page)}
-                  />
-                </div>
-            }>
+              <Button color="default" variant="ghost" onClick={() => addNewFilterValue()}>
+                Thêm thuộc tính
+              </Button>
+            }
+          >
             <TableHeader>
               {
                 tableHeaders.map(col =>
@@ -213,7 +215,7 @@ const FilterProduct = ({ filterId, categories, brands, subCategories, filter }) 
                     text-value={col.title}
                     aria-label={col.title}
                     className={`
-                      max-w-[150px] whitespace-normal text-center last:w-[100px]
+                      max-w-[150px] whitespace-normal text-center last:w-[50px] [&:nth-last-child(2)]:w-[90px]
                       ${col.required && "after:content-['*'] after:text-[#f31260]"}
                     `}
                   >
@@ -223,9 +225,9 @@ const FilterProduct = ({ filterId, categories, brands, subCategories, filter }) 
               }
             </TableHeader>
             <TableBody
-              items={products}
-              isLoading={loadingState === "loading"}
-              emptyContent={"Không có sản phẩm nào"}
+              items={filter.filterValue || []}
+              // isLoading={loadingState === "loading"}
+              emptyContent={"Không có giá trị filter nào"}
               loadingContent={<Spinner label="Loading..." />}>
               {(item) => (
                 <TableRow key={item.id}>
@@ -240,7 +242,7 @@ const FilterProduct = ({ filterId, categories, brands, subCategories, filter }) 
           <div className="flex gap-5">
             <Link href="/admin/filter">Quay về</Link>
             <Link href="/admin/filter/edit/new">Thêm filter</Link>
-            <Button color="primary" className="ml-auto" onClick={() => console.log({ filter, products })}>Lưu</Button>
+            <Button color="primary" className="ml-auto" onClick={onSave}>Lưu</Button>
             <Button color="default" variant="ghost" className="">Xoá</Button>
           </div>
         </div>

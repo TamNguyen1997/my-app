@@ -11,7 +11,7 @@ const SuccessPayment = () => {
       <div className="mx-auto max-w-2xl px-4 2xl:px-0 text-center">
 
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl mb-2">
-          Cảm ơn quý khách đã hoàn tất thanh toán.
+          Cảm ơn quý khách đã đặt hàng.
         </h2>
         <p className="text-gray-500 dark:text-gray-400 mb-6 md:mb-8">Đơn hàng đang được xử lý. Chúng tôi sẽ liên hệ lại với quý khách trong thời gian sớm nhất!</p>
         <div class="items-center space-x-4">

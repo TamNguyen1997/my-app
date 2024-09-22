@@ -1,7 +1,7 @@
 "use client"
 
 import { CartContext } from "@/context/CartProvider";
-import { Button, Checkbox, Input, Link, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Textarea, useDisclosure } from "@nextui-org/react";
+import { Button, Checkbox, Input, Link, Select, SelectItem, Textarea, useDisclosure } from "@nextui-org/react";
 import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form"
 import { ToastContainer, toast } from 'react-toastify';
@@ -37,7 +37,6 @@ const Payment = () => {
       method: "POST", body: JSON.stringify(body)
     })
     if (res.ok) {
-      toast.success("Đã đặt hàng")
       return (await res.json()).order
     } else {
       toast.error("Không thể đặt hàng")
@@ -64,6 +63,7 @@ const Payment = () => {
       }
     } else {
       removeAllItems()
+      window.location.replace("/dat-hang/thanh-cong")
     }
   }
 
@@ -82,35 +82,6 @@ const Payment = () => {
 
   return (<div>
     <ToastContainer />
-    <div>
-      <Modal
-        scrollBehavior="inside"
-        isOpen={isOpen} onOpenChange={onOpenChange}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">Mã QR</ModalHeader>
-              <ModalBody>
-                <img src={qr.qr}>
-                </img>
-              </ModalBody>
-              <ModalFooter>
-                <Button color="primary" type="submit" onPress={() => {
-                  removeAllItems()
-                  toast.success("Đã xác nhận")
-                  onClose()
-                }}>
-                  Xác nhận chuyển khoản thành công
-                </Button>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Đóng
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-    </div>
 
     <section className="bg-white py-8 antialiased dark:bg-gray-900 md:py-16 flex mx-auto lg:max-w-2xl xl:max-w-4xl flex-col p-2">
       <h2 className="text-xl font-semibold text-gray-900 sm:text-2xl">Thanh toán</h2>

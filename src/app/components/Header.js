@@ -20,7 +20,7 @@ const Header = () => {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    fetch('/api/categories/?includeSubCate=true&type=CATE').then(res => res.json()).then(json => setCategories([brandCategory, ...json.result,
+    fetch('/api/categories/headers').then(res => res.json()).then(json => setCategories([brandCategory, ...json.result,
       {
         id: "1000",
         slug: "tin-tuc",
@@ -89,7 +89,7 @@ const Header = () => {
                   <Link
                     id="header-cart-btn"
                     href="/gio-hang"
-                    className="flex bg-[#FFAC0A] h-[35px] min-w-[40px] items-center justify-center text-center relative flex rounded-md shadow-md">
+                    className="bg-[#FFAC0A] h-[35px] min-w-[40px] items-center justify-center text-center relative flex rounded-md shadow-md">
                     <span className="px-1">
                       <ShoppingCart size={24} strokeWidth={2}></ShoppingCart>
                     </span>
@@ -139,7 +139,7 @@ const Header = () => {
             ref={menuRef}
           >
             <div className="text-sm flex">
-              <div className="bg-white shadow-lg w-[200px] border rounded-bl-lg">
+              <div className="bg-white shadow-lg w-[240px] border rounded-bl-lg">
                 {
                   categories?.map(category => (
                     <Link
@@ -154,7 +154,7 @@ const Header = () => {
                     >
                       {
                         category.slug !== "kien-thuc-hay" && category.slug !== "tin-tuc" ?
-                          <img src="https://cdn.tgdd.vn/content/Hot-73x72-1.png" alt="" title="" className="max-w-6 mr-2" /> : ""
+                          <img src={`/icon/header/${category.slug}.svg`} alt="" title="" className="max-w-6 mr-2" /> : ""
                       }
 
                       <span className="mr-2">{category.name}</span>

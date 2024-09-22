@@ -124,11 +124,11 @@ const BlogToolBar = ({ editor }) => {
   const [searchText, setSearchText] = useState("");
   const [replaceText, setReplaceText] = useState("");
   const [buttonText, setButtonText] = useState("");
-  const backgroundColorModal = useDisclosure();
-  const [showBackgroundColorPick, setShowBackgroundColorPick] = useState(false);
-  const [selectedBackgroundColor, setSelectedBackgroundColor] =
-    useState("#FFFFFF");
-  const [backgroundColor, setBackgroundColor] = useColor("#FFFFFF");
+  // const backgroundColorModal = useDisclosure();
+  // const [showBackgroundColorPick, setShowBackgroundColorPick] = useState(false);
+  // const [selectedBackgroundColor, setSelectedBackgroundColor] =
+  //   useState("#FFFFFF");
+  // const [backgroundColor, setBackgroundColor] = useColor("#FFFFFF");
 
   if (!editor) {
     return <></>;
@@ -196,13 +196,13 @@ const BlogToolBar = ({ editor }) => {
     setReplaceText("");
   };
 
-  const changeBackgroundColor = (color) => {
-    setSelectedBackgroundColor(color);
+  // const changeBackgroundColor = (color) => {
+  //   setSelectedBackgroundColor(color);
 
-    if (editor) {
-      editor.chain().focus().setBackgroundColor(color).run();
-    }
-  };
+  //   if (editor) {
+  //     editor.chain().focus().setBackgroundColor(color).run();
+  //   }
+  // };
 
   const handleAddButton = () => {
     if (editor) {
@@ -741,21 +741,7 @@ const BlogToolBar = ({ editor }) => {
         {/* ----------------------------------------------- */}
 
         <div className="pr-5"></div>
-        <Tooltip showArrow content="Choose font">
-          <select
-            value={selectedFont}
-            onChange={(e) => handleFontChange(e.target.value)}
-            className="w-max h-8 mt-[6px] ml-[2px] text-[10px] p-2 border rounded focus:outline-none"
-          >
-            {fonts.map((font) => (
-              <option key={font} value={font}>
-                {font}
-              </option>
-            ))}
-          </select>
-        </Tooltip>
-
-        <div className="flex flex-wrap [&>div]:ml-0.5">
+        {/* <div className="flex flex-wrap [&>div]:ml-0.5">
           <div
             className={`border w-10 rounded-large h-6`}
             style={{
@@ -811,7 +797,7 @@ const BlogToolBar = ({ editor }) => {
               )}
             </div>
           </Tooltip>
-        </div>
+        </div> */}
 
         <Popover placement="bottom" showArrow={true}>
           <Tooltip showArrow content="Replace">
@@ -963,6 +949,21 @@ const BlogToolBar = ({ editor }) => {
         </Tooltip>
         {/* ----------------------------------------------- */}
       </div>
+      <div className="flex flex-wrap [&>div]:mt-1.5 [&>div]:ml-0.5 w-full">
+        <Tooltip showArrow content="Choose font">
+          <select
+            value={selectedFont}
+            onChange={(e) => handleFontChange(e.target.value)}
+            className="w-max h-8 mt-[6px] ml-[2px] text-[14px] p-1 border rounded focus:outline-none"
+          >
+            {fonts.map((font) => (
+              <option key={font} value={font}>
+                {font}
+              </option>
+            ))}
+          </select>
+        </Tooltip>
+      </div>
       <div className="w-1/4"></div>
       <Modal
         isOpen={imageModal.isOpen}
@@ -1109,7 +1110,7 @@ const BlogToolBar = ({ editor }) => {
         </ModalContent>
       </Modal>
       {/* ----------------------------------------------- */}
-      <Modal
+      {/* <Modal
         isOpen={backgroundColorModal.isOpen}
         onOpenChange={backgroundColorModal.onOpenChange}
       >
@@ -1147,7 +1148,7 @@ const BlogToolBar = ({ editor }) => {
             </>
           )}
         </ModalContent>
-      </Modal>
+      </Modal> */}
     </div>
   );
 };

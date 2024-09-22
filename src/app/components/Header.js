@@ -154,7 +154,7 @@ const Header = () => {
                     >
                       {
                         category.slug !== "kien-thuc-hay" && category.slug !== "tin-tuc" ?
-                          <img src={`/icon/header/${category.slug}.svg`} alt="" title="" className="max-w-14 mr-2" /> : ""
+                          <img src={`/icon/header/${category.slug}.svg`} alt="" title="" className="max-w-10 mr-2" /> : ""
                       }
 
                       <span className="mr-2">{category.name}</span>

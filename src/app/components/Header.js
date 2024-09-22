@@ -139,7 +139,7 @@ const Header = () => {
             ref={menuRef}
           >
             <div className="text-sm flex">
-              <div className="bg-white shadow-lg w-[200px] border rounded-bl-lg">
+              <div className="bg-white shadow-lg w-[240px] border rounded-bl-lg">
                 {
                   categories?.map(category => (
                     <Link

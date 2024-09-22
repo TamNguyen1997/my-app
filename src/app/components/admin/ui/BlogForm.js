@@ -45,10 +45,6 @@ const BlogForm = ({ blog, setBlog }) => {
       blog.slug = `${slugify(blog.slug, { locale: "vi" })}`;
     }
 
-<<<<<<< HEAD
-=======
-    console.log(editor.getHTML());
->>>>>>> 9212c4fc2852a9fa0d6d80e1b8fb768198238436
     const body = Object.assign(blog, data, {
       thumbnail: thumbnail,
       content: editor.getHTML(),

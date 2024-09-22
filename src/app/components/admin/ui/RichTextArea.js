@@ -71,17 +71,17 @@ import {
 const RichTextEditor = ({ editor }) => {
   return (
     <div className="border border-t-0 rounded-lg">
-      <div className="sticky top-0 translate-x-[-1px] Background-white w-[calc(100%_+_2px)] z-[1000]">
+      <div className="sticky top-0 translate-x-[-1px] bg-white w-[calc(100%_+_2px)] z-[1000]">
         <div
           className={`
-            relative border rounded-t-lg before:content-[''] before:absolute before:inset-0 before:Background-gray-100 before:z-[-1] before:rounded-t-lg
+            relative border rounded-t-lg before:content-[''] before:absolute before:inset-0 before:bg-gray-100 before:z-[-1] before:rounded-t-lg
 
           `}
         >
           <BlogToolBar editor={editor} />
         </div>
       </div>
-      <div className="h-full w-full min-h-44 p-3 border rounded-b-lg Background-white">
+      <div className="h-full w-full min-h-44 p-3 border rounded-b-lg bg-white">
         <EditorContent editor={editor} />
       </div>
     </div>
@@ -89,21 +89,21 @@ const RichTextEditor = ({ editor }) => {
 };
 
 const TEXT_COLOR = {
-  "#000000": "Background-[#000000]",
-  "#FFFFFF": "Background-[#FFFFFF]",
-  "#CCCCCC": "Background-[#CCCCCC]",
-  "#33FF33": "Background-[#33FF33]",
-  "#009900": "Background-[#009900]",
-  "#DC143C": "Background-[#DC143C]",
-  "#F88379": "Background-[#F88379]",
-  "#66B2FF": "Background-[#66B2FF]",
-  "#0066CC": "Background-[#0066CC]",
-  "#FFBF00": "Background-[#FFBF00]",
+  "#000000": "bg-[#000000]",
+  "#FFFFFF": "bg-[#FFFFFF]",
+  "#CCCCCC": "bg-[#CCCCCC]",
+  "#33FF33": "bg-[#33FF33]",
+  "#009900": "bg-[#009900]",
+  "#DC143C": "bg-[#DC143C]",
+  "#F88379": "bg-[#F88379]",
+  "#66B2FF": "bg-[#66B2FF]",
+  "#0066CC": "bg-[#0066CC]",
+  "#FFBF00": "bg-[#FFBF00]",
 };
 
 const BlogToolBar = ({ editor }) => {
   const iconClassName =
-    "border w-6 h-6 justify-items-center items-center Background-white border";
+    "border w-6 h-6 justify-items-center items-center bg-white border";
   const imageModal = useDisclosure();
   const colorModal = useDisclosure();
   const linkModal = useDisclosure();
@@ -515,7 +515,7 @@ const BlogToolBar = ({ editor }) => {
             <Pipette />
             {showColorPick ? (
               <div
-                className="w-28 divide-y divide-gray-100 rounded-lg shadow dark:Background-gray-700 absolute z-10"
+                className="w-28 divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 absolute z-10"
                 id="dropdown"
               >
                 <ul
@@ -773,7 +773,7 @@ const BlogToolBar = ({ editor }) => {
               <Pipette />
               {showBackgroundColorPick ? (
                 <div
-                  className="w-28 divide-y divide-gray-100 rounded-lg shadow dark:Background-gray-700 absolute z-10"
+                  className="w-28 divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 absolute z-10"
                   id="dropdown"
                 >
                   <ul

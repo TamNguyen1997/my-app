@@ -22,7 +22,7 @@ const EditBlog = () => {
 
   console.log(blog);
 
-  // if (loading) return <></>;
+  if (loading) return <></>;
   return <BlogForm blog={blog} setBlog={setBlog} />;
 };
 

@@ -1,6 +1,8 @@
 import { db } from '@/app/db';
 import { NextResponse } from 'next/server';
 import queryString from 'query-string';
+import fsPromises from 'fs/promises';
+import path from 'path';
 
 export async function GET(req) {
   let page = 1
@@ -57,6 +59,28 @@ export async function POST(req) {
         data: raw
       })
       , { status: 200 })
+  } catch (e) {
+    console.log(e)
+    return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
+  }
+}
+
+export async function PUT(req) {
+  try {
+    const dataFilePath = path.join(process.cwd(), 'src/app/redirects/redirects.json');
+    const jsonData = await fsPromises.readFile(dataFilePath)
+    const objectData = JSON.parse(jsonData);
+
+    const raw = await req.json()
+
+    objectData[raw['url']] = {
+      "destination": raw['destination'],
+      "permanent": raw['permanent']
+    }
+    const updatedData = JSON.stringify(objectData);
+    await fsPromises.writeFile(dataFilePath, updatedData);
+
+    return NextResponse.json({ mesage: "Success" }, { status: 200 })
   } catch (e) {
     console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })

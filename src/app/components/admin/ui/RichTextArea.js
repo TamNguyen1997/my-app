@@ -120,7 +120,7 @@ const BlogToolBar = ({ editor }) => {
   const [showColorPick, setShowColorPick] = useState(false);
 
   // -----------------------------------------------
-  const [selectedFont, setSelectedFont] = useState("Arial");
+  const [selectedFont, setSelectedFont] = useState("Open Sans");
   const [searchText, setSearchText] = useState("");
   const [replaceText, setReplaceText] = useState("");
   const [buttonText, setButtonText] = useState("");
@@ -169,6 +169,7 @@ const BlogToolBar = ({ editor }) => {
   // -----------------------------------------------
 
   const fonts = [
+    "Open Sans",
     "Arial",
     "Times New Roman",
     "Courier New",

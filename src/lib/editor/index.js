@@ -29,7 +29,7 @@ import { EmojiReplacer } from "@/components/admin/ui/extensions/EmojiReplacer";
 import FontFamily from "@tiptap/extension-font-family";
 import IndentOutdent from "@/components/admin/ui/extensions/IndentOutdent";
 import ButtonNode from "@/components/admin/ui/extensions/ButtonNode";
-import BackgroundColor from "@/components/admin/ui/extensions/BackgroundColor";
+// import BackgroundColor from "@/components/admin/ui/extensions/BackgroundColor";
 
 const editorConfig = (content) => {
   return {
@@ -84,7 +84,7 @@ const editorConfig = (content) => {
       Youtube,
       /* ----------------------------------------------- */
       ButtonNode,
-      BackgroundColor,
+      // BackgroundColor,
       FontFamily.configure({
         types: ["textStyle"],
       }),

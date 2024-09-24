@@ -89,7 +89,7 @@ const Header = () => {
                   <Link
                     id="header-cart-btn"
                     href="/gio-hang"
-                    className="bg-[#FFAC0A] h-[35px] min-w-[40px] items-center justify-center text-center relative flex rounded-md shadow-md">
+                    className="bg-[#FFAC0A] h-[35px] min-w-[100px] items-center justify-center text-center relative flex rounded-md shadow-md">
                     <span className="px-1">
                       <ShoppingCart size={24} strokeWidth={2}></ShoppingCart>
                     </span>

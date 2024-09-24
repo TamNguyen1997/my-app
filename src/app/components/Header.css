@@ -36,3 +36,11 @@
         top: 0;
     }
 }
+
+@media (max-width: 767px) {
+/* @media (max-width: 639px) { */
+    .subcate-menu {
+        left: 0 !important;
+        width: 100% !important;
+    }
+}

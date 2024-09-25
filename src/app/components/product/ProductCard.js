@@ -22,7 +22,7 @@ const ProductCard = ({ product }) => {
         className="text-black border-gray-400  w-full">
         <div className="mx-auto border-b-medium w-[90%] py-3">
           <p className="sm:text-sm text-xs text-gray-700 line-clamp-3 font-roboto relative text-center [word-spacing:1.2px] sm:min-h-14">
-            {product.name} asgdasgdhj asjdghkasdh asdhasdk
+            {product.name}
           </p>
         </div>
       </Link>

@@ -36,8 +36,8 @@ const RedirectList = () => {
     const queryString = new URLSearchParams(filteredCondition).toString()
     fetch(`/api/redirects/?size=${rowsPerPage}&page=${page}&${queryString}&includeImage=true`).then(async res => {
       const data = await res.json()
-      setRedirects(data.result)
-      setTotal(data.total)
+      setRedirects([])
+      setTotal(0)
       setLoadingState("idle")
     })
   }

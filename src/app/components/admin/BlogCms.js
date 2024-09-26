@@ -76,6 +76,19 @@ const BlogCms = () => {
       case "cate":
         return BLOG_CATEGORIES.find((item) => item.id === blog.blogCategory)
           ?.value;
+      case "activeFrom":
+        return new Date(blog.updatedAt).toLocaleDateString("en-GB")
+      case "active":
+        return (
+          <div className="relative flex items-center gap-2">
+            <Switch
+              defaultSelected={blog.active}
+              onValueChange={async (value) =>
+                await fetch(`/api/blogs/${blog.id}`, { method: "PUT", body: JSON.stringify({ active: !blog.active }) })
+              }
+            ></Switch>
+          </div>
+        )
       case "subcate":
         return BLOG_SUB_CATEGORIES.find(
           (item) => item.id === blog.blogSubCategory
@@ -89,7 +102,6 @@ const BlogCms = () => {
     setCondition(Object.assign({}, condition, value));
   };
 
-  console.log(condition);
   return (
     <>
       <div className="flex gap-3 pb-3">
@@ -171,6 +183,8 @@ const BlogCms = () => {
         <TableHeader>
           <TableColumn key="title">Tiêu đề</TableColumn>
           <TableColumn key="slug">Slug</TableColumn>
+          <TableColumn key="activeFrom">Ngày air</TableColumn>
+          <TableColumn key="active">Air</TableColumn>
           <TableColumn key="cate">Category</TableColumn>
           <TableColumn key="subcate">Sub-category</TableColumn>
           <TableColumn key="actions"></TableColumn>

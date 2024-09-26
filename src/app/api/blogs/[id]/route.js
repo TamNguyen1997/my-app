@@ -14,6 +14,18 @@ export async function GET(req, { params }) {
   }
 }
 
+export async function PUT(req, { params }) {
+  try {
+    const json = await req.json()
+    const result = await db.blog.update({ where: { id: params.id }, data: { active: json.active } })
+
+    return NextResponse.json(result)
+  } catch (e) {
+    console.log(e)
+    return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
+  }
+}
+
 export async function DELETE(req, { params }) {
   try {
     return NextResponse.json(await db.blog.delete({ where: { id: params.id } }))

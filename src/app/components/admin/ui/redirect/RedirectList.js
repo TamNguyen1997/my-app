@@ -129,6 +129,7 @@ const RedirectList = () => {
     const res = await fetch(`/api/redirects`, { method: "PUT", body: JSON.stringify(dataToUpdate) });
     if (res.ok) {
       toast.success("Đã cập nhật");
+      getRedirects();
     } else {
       toast.error("Không thể cập nhật");
     }

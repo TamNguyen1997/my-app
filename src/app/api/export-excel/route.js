@@ -34,7 +34,7 @@ export async function GET(req) {
             inStock: true,
           },
         },
-        technicalDetails: {
+        technical_detail: {
           select: {
             filterId: true,
             filterValueId: true,
@@ -63,6 +63,8 @@ export async function GET(req) {
       "Ngày update",
     ];
 
+    console.log(result)
+
     const data = result.map((el) => ({
       "ID SP": el.id,
       SKU: el.sku || "N/A",
@@ -71,12 +73,12 @@ export async function GET(req) {
       "ID Cate": el.categoryId || "N/A",
       "ID sub-cate": el.subCateId || "N/A",
       "ID thuộc tính":
-        el.technicalDetails.length > 0
-          ? el.technicalDetails[0].filterId
+        el.technical_detail.length > 0
+          ? el.technical_detail[0].filterId
           : "N/A",
       "ID giá trị thuộc tính":
-        el.technicalDetails.length > 0
-          ? el.technicalDetails[0].filterValueId
+        el.technical_detail.length > 0
+          ? el.technical_detail[0].filterValueId
           : "N/A",
       "SL tồn kho": el.saleDetails.inStock || 0,
       "Trạng thái active": el.active ? "T" : "F",

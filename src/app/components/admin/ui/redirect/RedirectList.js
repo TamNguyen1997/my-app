@@ -34,8 +34,8 @@ const RedirectList = () => {
 
   // GET Object => Array
   const formatRedirectList = (src) => {
-    if(!src || !Object.keys(src)?.length) return [];
-    
+    if (!src || !Object.keys(src)?.length) return [];
+
     return Object.entries(src)?.map(([key, value]) => ({
       id: v4(),
       ...value,
@@ -45,7 +45,7 @@ const RedirectList = () => {
 
   // Array => PUT Object
   const formatRedirectObject = (src) => {
-    if(!src?.length) return {};
+    if (!src?.length) return {};
 
     return src.reduce((acc, item) => {
       let { id, source, ...value } = item;
@@ -61,7 +61,6 @@ const RedirectList = () => {
     const queryString = new URLSearchParams(filteredCondition).toString()
     fetch(`/api/redirects/?size=${rowsPerPage}&page=${page}&${queryString}&includeImage=true`).then(async res => {
       const data = await res.json()
-      // setRedirects([])
       setRedirects(formatRedirectList(data));
       setTotal(0)
       setLoadingState("idle")
@@ -71,7 +70,7 @@ const RedirectList = () => {
   useEffect(() => {
     getRedirects()
   }, []);
-  
+
   useEffect(() => {
     const isEmptyCondition = Object.keys(condition)?.every(key => !condition[key] && condition[key] !== false);
     setFilteredRedirects(redirects?.filter(redirect => isEmptyCondition || Object.keys(condition)?.some(key => condition[key] && (redirect[key] === condition[key] || redirect[key]?.toLowerCase().includes(condition[key]?.toLowerCase())))))
@@ -79,36 +78,10 @@ const RedirectList = () => {
 
   const deleteRedirect = (id) => {
     setRedirects(redirects?.filter(redirect => redirect.id !== id));
-    // toast.promise(
-    //   fetch(`/api/redirects/${id}`, { method: "DELETE" }).then(async (res) => {
-    //     getRedirects()
-    //     if (!res.ok) {
-    //       throw new Error((await res.json()).message)
-    //     }
-    //   }),
-    //   {
-    //     pending: 'Đang xóa redirect',
-    //     success: 'Đã xóa redirect',
-    //     error: {
-    //       render({ data }) {
-    //         return data.message
-    //       }
-    //     }
-    //   }
-    // )
-  }
-
-  const quickUpdate = async (redirect, value) => {
-    const res = await fetch(`/api/redirects/${redirect.id}`, { method: "PUT", body: JSON.stringify(value) })
-    if (res.ok) {
-      toast.success("Đã cập nhật")
-    } else {
-      toast.error("Không thể cập nhật")
-    }
   }
 
   const onCellValueChange = (redirectId, value) => {
-    let redirectsToUpdate = [ ...redirects ]?.map(redirect => redirect.id === redirectId ? Object.assign({...redirect}, value) : redirect);
+    let redirectsToUpdate = [...redirects]?.map(redirect => redirect.id === redirectId ? Object.assign({ ...redirect }, value) : redirect);
     setRedirects(redirectsToUpdate);
   }
 
@@ -143,18 +116,12 @@ const RedirectList = () => {
         return <div className="relative flex items-center">
           <Switch
             defaultSelected={cellValue}
-            // onValueChange={(value) => quickUpdate(redirect, { active: value })}
             onValueChange={(value) => onCellValueChange(redirect?.id, { [columnKey]: value })}
           ></Switch>
         </div>
       case "actions":
         return (
           <div className="relative flex items-center gap-2">
-            {/* <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-              <Link href={`/admin/redirect/edit/${redirect.id}`}>
-                <EditIcon />
-              </Link>
-            </span> */}
             <span className="text-lg text-danger cursor-pointer active:opacity-50 pl-5">
               <Trash2 onClick={() => { deleteRedirect(redirect.id) }} />
             </span>
@@ -235,9 +202,6 @@ const RedirectList = () => {
             INACTIVE
           </SelectItem>
         </Select>
-        {/* <div className="items-end flex min-h-full">
-          <Button onClick={getRedirects} color="primary"><Search /></Button>
-        </div> */}
       </div>
       <div className="flex flex-col gap-2">
         <div className="border-default-200">
@@ -278,7 +242,6 @@ const RedirectList = () => {
           </Table>
         </div>
         <div className="flex items-center ml-auto my-4">
-          {/* <Link href="/admin/redirect/edit/new">Thêm redirect</Link> */}
           <Button color="default" variant="ghost" className="min-w-[110px] mr-3" onClick={() => addNewRedirect()}>Thêm</Button>
           <Button color="primary" className="min-w-[110px]" onClick={() => onSave()}>Lưu</Button>
         </div>

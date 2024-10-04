@@ -10,7 +10,8 @@ import {
   NotebookPen,
   ShoppingBasket,
   StickyNote,
-} from "lucide-react"
+  User,
+} from "lucide-react";
 
 const items = [
   {
@@ -79,7 +80,13 @@ const items = [
     icon: <History />,
     link: "/admin/history",
   },
-]
+  {
+    id: "user",
+    name: "User",
+    icon: <User />,
+    link: "/admin/user",
+  },
+];
 
 export default () => {
   return (
@@ -102,11 +109,11 @@ export default () => {
                     <span className="ms-3">{item.name}</span>
                   </a>
                 </li>
-              )
+              );
             })}
           </ul>
         </div>
       </aside>
     </>
-  )
-}
+  );
+};

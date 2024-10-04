@@ -47,3 +47,43 @@ export const EXPORT_MESSAGE = {
   EXPORT_IN_PROGRESS: "Data is being downloaded, please wait...",
   SELECT_RANGE_ERROR: "Please select a data range for export.",
 };
+
+export const USER_MESSAGE = {
+  CREATE_SUCCESS: "User created successfully!",
+  CREATE_FAILED: "Error creating user, please try again.",
+  UPDATE_SUCCESS: "User updated successfully!",
+  UPDATE_FAILED: "Error updating user, please try again.",
+  DELETE_SUCCESS: "User deleted successfully!",
+  DELETE_FAILED: "Error deleting user, please try again.",
+  USER_NOT_FOUND: "User not found.",
+  PASSWORD_CHANGE_SUCCESS: "Password changed successfully!",
+  PASSWORD_CHANGE_FAILED: "Error changing password, please try again.",
+  PASSWORD_MISMATCH: "Passwords do not match.",
+  INCORRECT_PASSWORD: "Current password is incorrect.",
+  INVALID_USER_DATA: "Invalid user data provided.",
+  USERS_FETCH_SUCCESS: "User data fetched successfully!",
+  USERS_FETCH_FAILED: "Error fetching user data, please try again.",
+  USERNAME_ALREADY_EXISTS:
+    "Username already exists, please choose a different one.",
+  EMAIL_ALREADY_EXISTS:
+    "Email already exists, please use a different email address.",
+  USER_NOT_ACTIVE: "This user account is not active. Please contact support.",
+  USER_CREATE_IN_PROGRESS: "Creating user, please wait...",
+  USER_UPDATE_IN_PROGRESS: "Updating user, please wait...",
+  USER_DELETE_IN_PROGRESS: "Deleting user, please wait...",
+};
+
+export const LOGIN_MESSAGE = {
+  LOGIN_SUCCESS: "Login successful, welcome back!",
+  LOGIN_FAILED: "Login failed, please check your credentials.",
+  LOGOUT_SUCCESS: "Logged out successfully!",
+  LOGOUT_FAILED: "Error logging out, please try again.",
+  SESSION_EXPIRED: "Your session has expired, please log in again.",
+  UNAUTHORIZED: "You are not authorized to access this resource.",
+  FORGOT_PASSWORD_EMAIL_SENT: "Password reset email sent successfully!",
+  RESET_PASSWORD_SUCCESS: "Password reset successfully!",
+  RESET_PASSWORD_FAILED: "Error resetting password, please try again.",
+  ACCOUNT_LOCKED:
+    "Your account has been locked due to multiple failed login attempts. Please try again later.",
+  LOGIN_IN_PROGRESS: "Logging you in, please wait...",
+};

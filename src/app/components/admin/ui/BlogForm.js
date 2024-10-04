@@ -22,7 +22,6 @@ import RichTextEditor from "./RichTextArea";
 
 import { parseDate } from "@internationalized/date";
 import slugify from "slugify";
-import crypto from "crypto";
 
 import { editorConfig } from "@/lib/editor";
 import { BLOG_CATEGORIES, BLOG_SUB_CATEGORIES } from "@/lib/blog";
@@ -37,9 +36,7 @@ const BlogForm = ({ blog, setBlog }) => {
 
   const onSubmit = async (data) => {
     if (!blog.id && !blog.slug) {
-      blog.slug = `${slugify(blog.title, {
-        locale: "vi",
-      }).toLowerCase()}-${crypto.randomBytes(6).toString("hex")}`;
+      blog.slug = `${slugify(blog.title)}`;
     }
     if (blog.slug) {
       blog.slug = `${slugify(blog.slug, { locale: "vi" })}`;
@@ -57,6 +54,7 @@ const BlogForm = ({ blog, setBlog }) => {
     if (!res.ok) {
       return;
     }
+    window.location.replace(`/admin/blog/edit/${(await res.json()).slug}`)
   };
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -115,25 +113,6 @@ const BlogForm = ({ blog, setBlog }) => {
                 setBlog(Object.assign({}, blog, { slug: value }))
               }
             ></Input>
-            <div className="items-end flex min-h-full">
-              <Button
-                onClick={() => {
-                  console.log(blog.title);
-                  setBlog(
-                    Object.assign({}, blog, {
-                      slug: `${slugify(blog.title, {
-                        locale: "vi",
-                      }).toLowerCase()}-${crypto
-                        .randomBytes(6)
-                        .toString("hex")}`,
-                    })
-                  );
-                }}
-                color="primary"
-              >
-                Thêm slug
-              </Button>
-            </div>
           </div>
           <div className="flex gap-3">
             <Input

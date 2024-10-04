@@ -325,7 +325,8 @@ model banner {
 }
 
 model blog {
-  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id              String    @id @default(dbgenerated("gen_random_uuid()"))
+  blogId          String?   @default(dbgenerated("gen_random_uuid()")) @map("blog_id")
   title           String
   content         String
   slug            String    @unique @default(dbgenerated("gen_random_uuid()"))

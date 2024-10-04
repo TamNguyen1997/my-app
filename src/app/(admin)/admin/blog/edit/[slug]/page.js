@@ -11,6 +11,7 @@ const EditBlog = () => {
 
   useEffect(() => {
     if (!slug || slug === "new") {
+      setLoading(false)
       return;
     }
 
@@ -19,8 +20,6 @@ const EditBlog = () => {
       .then(setBlog)
       .then(() => setLoading(false));
   }, [slug]);
-
-  console.log(blog);
 
   if (loading) return <></>;
   return <BlogForm blog={blog} setBlog={setBlog} />;

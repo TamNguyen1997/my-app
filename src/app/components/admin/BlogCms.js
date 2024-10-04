@@ -83,7 +83,7 @@ const BlogCms = () => {
           <div className="relative flex items-center gap-2">
             <Switch
               defaultSelected={blog.active}
-              onValueChange={async (value) =>
+              onValueChange={async () =>
                 await fetch(`/api/blogs/${blog.id}`, { method: "PUT", body: JSON.stringify({ active: !blog.active }) })
               }
             ></Switch>

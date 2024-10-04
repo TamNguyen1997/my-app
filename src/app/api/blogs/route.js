@@ -1,13 +1,21 @@
 import { db } from '@/app/db';
 import { NextResponse } from 'next/server';
 import queryString from 'query-string';
+import crypto from "crypto";
 
 export async function POST(req) {
   try {
     const body = await req.json()
+    const blogId = crypto.randomBytes(6).toString("hex")
     if (body.id) return NextResponse.json(await db.blog.update({ where: { id: body.id }, data: body }))
 
-    return NextResponse.json(await db.blog.create({ data: body }))
+    return NextResponse.json(await db.blog.create({
+      data: {
+        ...body,
+        blogId: blogId,
+        slug: `${body.slug}-${blogId}`
+      }
+    }))
   } catch (e) {
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }

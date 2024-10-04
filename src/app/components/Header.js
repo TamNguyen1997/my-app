@@ -326,7 +326,7 @@ const HeaderItems = ({ setHoveredCate, menuRef, setMenuVisible, menuVisible }) =
                 text-center capitalize
               `}
         >
-          MÁY VỆ SINH CỘNG NGHIỆP
+          MÁY VỆ SINH CÔNG NGHIỆP
         </Link>
         <Link href={`/dung-cu-ve-sinh-kinh`}
           className={`

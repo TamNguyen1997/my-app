@@ -154,11 +154,11 @@ const BlogCms = () => {
             </Button>
           </Tooltip>
           <Tooltip showArrow content="Thêm blog">
-            <Button color="primary">
-              <Link href="/admin/blog/edit/new" className="text-white">
+            <Link href="/admin/blog/edit/new" className="text-white">
+              <Button color="primary">
                 <Plus />
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           </Tooltip>
         </div>
       </div>

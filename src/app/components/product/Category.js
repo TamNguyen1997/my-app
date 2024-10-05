@@ -1,4 +1,6 @@
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, Pagination, Select, SelectItem, Slider, Spinner } from "@nextui-org/react";
+"use client"
+
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Pagination, Select, SelectItem, Slider, Spinner } from "@nextui-org/react";
 import { useEffect, useMemo, useState } from "react";
 import ProductCard from "@/components/product/ProductCard"
 import { getTotalPages } from "@/lib/pagination"
@@ -32,32 +34,6 @@ const Category = ({ params, productFilter }) => {
     setIsLoading(true)
     const hash = window.location.hash?.split('#')
     const getData = async () => {
-      // await fetch(`/api/filters/?categoryId=${params}`).then((res) => res.json()).then(json => {
-      //   setFilters(Object.groupBy(json.result, (item) => item.filterType))
-      //   let temp = {}
-
-      //   if (productFilter) {
-      //     json.result.forEach(item => {
-      //       if (item.slug === productFilter) {
-      //         temp[item.filterType] = [productFilter]
-      //         return
-      //       }
-      //     })
-      //   } else {
-      //     json.result.forEach(item => {
-      //       if (window.location.hash?.includes(item.slug)) {
-      //         if (temp[item.filterType]) {
-      //           temp[item.filterType].push(item.slug)
-      //         } else {
-      //           temp[item.filterType] = [item.slug]
-      //         }
-      //       }
-      //     })
-
-      //   }
-
-      //   setFilterIds(temp)
-      // })
       await fetch(`/api/categories/${params}/products/?active=true&${window.location.hash ? hash[1] : `filterId=${productFilter || ""}`}`).then(async res => {
         if (res.ok) {
           const body = await res.json()

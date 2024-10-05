@@ -1,14 +1,19 @@
-"use client";
-
 import { BlogDetail } from "@/components/blog/BlogDetail"
-import { useParams } from "next/navigation";
+import { db } from '@/app/db';
 
-const Information = () => {
-  const { _id } = useParams()
+export async function generateMetadata({ params }, parent) {
+  const result = await db.blog.findFirst({ where: { slug: params.id } })
+  return {
+    title: result?.title,
+    description: result?.description,
+  }
+}
+
+const Information = ({ params }) => {
   return (
     <>
-      <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/kien-thuc-hay/${_id}`} />
-      <BlogDetail slug={_id.toString()} category="INFORMATION" />
+      <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/kien-thuc-hay/${params._id}`} />
+      <BlogDetail slug={params._id.toString()} category="INFORMATION" />
     </>
   )
 };

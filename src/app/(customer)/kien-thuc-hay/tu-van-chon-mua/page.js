@@ -1,6 +1,9 @@
-"use client";
-
 import BlogOverview from "@/components/blog/BlogOverview"
+
+export const metadata = {
+  title: 'Tư vấn chọn mua',
+  description: 'Tư vấn chọn mua',
+}
 
 const News = () => {
   return (

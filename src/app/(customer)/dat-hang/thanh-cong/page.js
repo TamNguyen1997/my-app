@@ -1,7 +1,10 @@
-'use client'
-
 import { Link } from '@nextui-org/react'
 import { CircleCheckBig } from 'lucide-react'
+
+export const metadata = {
+  title: 'Thanh toán thành công',
+  description: 'Thanh toán thành công',
+}
 
 const SuccessPayment = () => {
 

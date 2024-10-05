@@ -1,18 +1,10 @@
-"use client"
-import { BlogContent } from "@/components/blog/BlogDetail"
-import { Spinner } from "@nextui-org/react"
-import { useEffect, useState } from "react"
+import StaticBlog from "@/app/components/blog/StaticBlog"
 
-export default () => {
-  const [blog, setBlog] = useState({ content: "" })
+export const metadata = {
+  title: 'Hình thức vận chuyển',
+  description: 'Hình thức vận chuyển',
+}
 
-  useEffect(() => {
-    fetch(`/api/blogs/hinh-thuc-van-chuyen`).then(res => res.json()).then(setBlog)
-  }, [])
-  if (!blog.id) return <Spinner className="flex m-auto pt-10 w-full h-full" />
-  return (<>
-    <div className="container pt-5 pb-20">
-      <BlogContent blog={blog} />
-    </div>
-  </>)
+export default function Page() {
+  return (<StaticBlog slut="hinh-thuc-van-chuyen" />)
 }

@@ -1,6 +1,9 @@
-"use client";
-
 import BlogOverview from "@/components/blog/BlogOverview"
+
+export const metadata = {
+  title: 'Từ điển thuật ngữ',
+  description: 'Từ điển thuật ngữ',
+}
 
 export default () => {
   return (

@@ -1,17 +1,10 @@
-"use client"
-import { BlogContent } from "@/components/blog/BlogDetail"
-import { useEffect, useState } from "react"
+import StaticBlog from "@/app/components/blog/StaticBlog"
 
-export default () => {
-  const [blog, setBlog] = useState({ content: "" })
+export const metadata = {
+  title: 'Hỗ trợ',
+  description: 'Hỗ trợ',
+}
 
-  useEffect(() => {
-    fetch(`/api/blogs/ho-tro`).then(res => res.json()).then(setBlog)
-  }, [])
-  if (!blog.id) return <></>
-  return (<>
-    <div className="container pt-5 pb-20">
-      <BlogContent blog={blog} />
-    </div>
-  </>)
+export default function Page() {
+  return (<StaticBlog slut="ho-tro" />)
 }

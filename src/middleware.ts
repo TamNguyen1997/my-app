@@ -14,6 +14,22 @@ export function middleware(request: NextRequest) {
       return NextResponse.next();
     }
     // ---------------------------------------------------
+    if (pathname.startsWith("/admin")) {
+      const userCookie = request.cookies.get("user");
+
+      if (!userCookie) {
+        const url = request.nextUrl.clone();
+        url.pathname = "/login";
+        return NextResponse.redirect(url);
+      }
+
+      const [userId, username] = userCookie.value.split(":");
+
+      if (!userId || !username) {
+        return NextResponse.redirect("/login");
+      }
+    }
+
     if (pathname === "/login") {
       const userCookie = request.cookies.get("user");
 

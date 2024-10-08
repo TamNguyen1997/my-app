@@ -86,4 +86,6 @@ export const LOGIN_MESSAGE = {
   ACCOUNT_LOCKED:
     "Your account has been locked due to multiple failed login attempts. Please try again later.",
   LOGIN_IN_PROGRESS: "Logging you in, please wait...",
+  LOGOUT_IN_PROGRESS: "Logout you in, please wait...",
+  USER_NOT_LOGGED_IN: "User not logged in",
 };

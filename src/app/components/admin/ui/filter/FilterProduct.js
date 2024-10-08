@@ -9,7 +9,6 @@ import {
   Link,
   Switch,
   Select, SelectItem,
-  Chip,
   Button
 } from "@nextui-org/react"
 import { Trash2 } from "lucide-react";

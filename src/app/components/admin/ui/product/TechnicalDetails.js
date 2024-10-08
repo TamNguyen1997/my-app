@@ -1,4 +1,4 @@
-import { Button, Select, SelectItem } from "@nextui-org/react"
+import { Button, Input, Select, SelectItem } from "@nextui-org/react"
 import { Trash2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { toast, ToastContainer } from "react-toastify"
@@ -62,6 +62,12 @@ const TechnicalDetails = ({ product }) => {
       <div>
         {
           technicalDetails.map((item, i) => <div className="flex gap-2" key={i}>
+            <Input
+              labelPlacement="outside"
+              label="Filter ID"
+              value={item.filterId}
+              readOnly
+            />
             <Select labelPlacement="outside" label="Filter"
               defaultSelectedKeys={[item.filterId]}
               onSelectionChange={(value) => onSelectionChange({ filterId: value.values().next().value }, item.id)}>
@@ -95,13 +101,21 @@ const FilterValueSelect = ({ technicalDetail, getFilter, onSelectionChange }) =>
   const filterValues = getFilter()?.filterValue || []
 
   return (
-    <Select labelPlacement="outside" label="Giá trị filter" isDisabled={!filterValues.length}
-      defaultSelectedKeys={[technicalDetail.filterValueId]}
-      onSelectionChange={value => onSelectionChange({ filterValueId: value.values().next().value }, technicalDetail.id)}>
-      {
-        filterValues.map(item => <SelectItem key={item.id}>{item.value}</SelectItem>)
-      }
-    </Select>
+    <>
+      <Input
+        labelPlacement="outside"
+        label="Giá trị filter ID"
+        value={technicalDetail.filterValueId}
+        readOnly
+      />
+      <Select labelPlacement="outside" label="Giá trị filter" isDisabled={!filterValues.length}
+        defaultSelectedKeys={[technicalDetail.filterValueId]}
+        onSelectionChange={value => onSelectionChange({ filterValueId: value.values().next().value }, technicalDetail.id)}>
+        {
+          filterValues.map(item => <SelectItem key={item.id}>{item.value}</SelectItem>)
+        }
+      </Select>
+    </>
   )
 }
 

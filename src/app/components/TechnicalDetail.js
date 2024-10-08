@@ -7,8 +7,8 @@ const TechnicalDetail = ({ data }) => {
   const result = data.map(item => {
     return {
       id: v4(),
-      filter: item.filter.name,
-      filterValue: item.filterValue.value
+      filter: item.filter?.name,
+      filterValue: item.filterValue?.value
     }
   })
 

@@ -180,7 +180,6 @@ const Category = () => {
     onOpen()
   }
 
-  console.log(selectedCate)
   return (
     <div className="flex flex-col gap-10">
       <div className="flex gap-3 w-1/2">
@@ -283,22 +282,11 @@ const Category = () => {
                         selectedCate,
                         { slug: slugify(value, { locale: 'vi' }).toLowerCase() }))}
                       labelPlacement="outside" isRequired />
-                    <div className="grid grid-cols-3">
-                      <Switch defaultSelected={selectedCate.highlight} onValueChange={(value) => setSelectedCate(Object.assign(
-                        {},
-                        selectedCate,
-                        { highlight: value }))}>Nổi bật</Switch>
-                      {/* <Switch defaultSelected={selectedCate.showOnHeader}
-                        onValueChange={(value) => setSelectedCate(Object.assign(
-                          {},
-                          selectedCate,
-                          { showOnHeader: value }))}>Hiện trên header</Switch> */}
-                      <Input type="number" lable="Thứ tự trên header" value={selectedCate.headerOrder || 0}
-                        onValueChange={(value) => setSelectedCate(Object.assign(
-                          {},
-                          selectedCate,
-                          { headerOrder: parseInt(value) }))} />
-                    </div>
+                    <Switch defaultSelected={selectedCate.highlight} onValueChange={(value) => setSelectedCate(Object.assign(
+                      {},
+                      selectedCate,
+                      { highlight: value }))}>Nổi bật</Switch>
+
                     <Select label="Loại"
                       defaultSelectedKeys={new Set([selectedCate.type || "CATE"])}
                       onSelectionChange={(value) =>

@@ -67,7 +67,7 @@ const handleDetailChange = (saleDetails, id, value) => {
   return [...updateDetails]
 }
 
-const SecondarySaleDetails = ({ saleDetails, setSaleDetails, saleDetail }) => {
+const SecondarySaleDetails = ({ saleDetails, setSaleDetails, saleDetail, filters }) => {
   return (
     <>
       <div className="flex flex-col gap-2">
@@ -76,29 +76,27 @@ const SecondarySaleDetails = ({ saleDetails, setSaleDetails, saleDetail }) => {
             return <div className="flex" key={detail.id}>
               <div className="w-11/12">
                 <div className="flex gap-2">
-                  <Select
-                    label="Loại"
-                    defaultSelectedKeys={new Set([detail.type])}
-                    onSelectionChange={(value) => setSaleDetails(handleDetailChange(saleDetails, detail.id, { type: value.values().next().value }))}
-                  >
-                    <SelectItem key="COLOR">
-                      Màu
-                    </SelectItem>
-                    <SelectItem key="TEXT">
-                      Text
-                    </SelectItem>
+                  <Input
+                    type="text"
+                    label="SKU"
+                    defaultValue={detail.sku}
+                    aria-label="SKU"
+                    onValueChange={value => setSaleDetails(handleDetailChange(saleDetails, detail.id, { sku: value }))}
+                  />
+                  <Select label="Filter"
+                    defaultSelectedKeys={[detail.filterId]}
+                    onSelectionChange={(value) => setSaleDetails(handleDetailChange(saleDetails, detail.id, { filterId: value.values().next().value }))}>
+                    {
+                      filters.map(item => <SelectItem key={item.id}>{item.name}</SelectItem>)
+                    }
                   </Select>
-                  {
-                    detail.type === "TEXT" ?
-                      <Input
-                        type="text"
-                        label="Option"
-                        defaultValue={detail.value}
-                        aria-label={detail.value}
-                        onValueChange={value => setSaleDetails(handleDetailChange(saleDetails, detail.id, { value: value }))}
-                      />
-                      : <ColorSelect detail={detail} setDetails={setSaleDetails} details={saleDetails} />
-                  }
+
+                  <FilterValueSelect
+                    detail={detail} getFilter={() =>
+                      filters.find(filter => filter.id === saleDetails.find(sale => detail.id === sale.id).filterId)
+                    }
+                    setDetail={setSaleDetails}
+                    onSelectionChange={handleDetailChange} details={saleDetails} />
 
                   <Input type="number"
                     label="Giá"
@@ -252,7 +250,9 @@ const SaleDetails = ({ product }) => {
                 <SecondarySaleDetails
                   saleDetail={detail}
                   saleDetails={saleDetails}
-                  setSaleDetails={setSaleDetails} />
+                  setSaleDetails={setSaleDetails}
+                  filters={filters}
+                />
               </div>
             </div>
           })

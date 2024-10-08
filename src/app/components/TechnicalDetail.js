@@ -1,30 +1,30 @@
-import { Table, TableBody, TableColumn, TableHeader, TableRow, TableCell } from "@nextui-org/react";
+import { getKeyValue, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
+import { v4 } from "uuid";
 
 const TechnicalDetail = ({ data }) => {
-  if (!data || !data.column || !data.row) return <></>
-  const columns = JSON.parse(data.column)
-  const rows = JSON.parse(data.row)
+  if (!data || !data.length) return <></>
 
-  if (!columns.length || !rows.length) return <></>
+  const result = data.map(item => {
+    return {
+      id: v4(),
+      filter: item.filter.name,
+      filterValue: item.filterValue.value
+    }
+  })
 
   return (<>
     <div className="pt-6">
-      <Table aria-label="Example static collection table" isStriped>
+      <Table aria-label="Example static collection table" isStriped hideHeader>
         <TableHeader>
-          {
-            columns.map((item, i) => <TableColumn key={i}>{item.name}</TableColumn>)
-          }
+          <TableColumn key="filter" textValue="filter" aria-label="filter">filter</TableColumn>
+          <TableColumn key="filterValue" textValue="filterValue" aria-label="filterValue">filterValue</TableColumn>
         </TableHeader>
-        <TableBody>
-          {
-            rows.map((value, i) => {
-              return <TableRow key={i}>
-                {
-                  Object.keys(value).filter(item => item !== "id").map((item, i) => <TableCell key={i}>{value[item]}</TableCell>)
-                }
-              </TableRow>
-            })
-          }
+        <TableBody items={result}>
+          {(item) => (
+            <TableRow key={item.id}>
+              {(columnKey) => <TableCell>{getKeyValue(item, columnKey)}</TableCell>}
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </div>

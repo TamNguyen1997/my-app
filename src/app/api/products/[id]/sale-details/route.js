@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 export async function POST(req, { params }) {
   try {
     let body = (await req.json())
-
+    body.saleDetails.forEach(item => delete item.childSaleDetails)
     await db.sale_detail.deleteMany({
       where: {
         productId: params.id,
@@ -25,6 +25,7 @@ export async function POST(req, { params }) {
     })
     return NextResponse.json({ message: "Success" })
   } catch (e) {
+    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }

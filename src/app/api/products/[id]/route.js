@@ -14,7 +14,12 @@ export async function GET(req, { params }) {
 
     let condition = {}
     let include = {
-      technical_detail: query.includeTechnical === "true",
+      technical_detail: {
+        include: {
+          filterValue: true,
+          filter: true
+        }
+      },
       saleDetails: searchParams && searchParams.get("includeSale") !== "undefined" && searchParams.get("includeSale") !== null,
       image: true,
       category: true,
@@ -25,7 +30,8 @@ export async function GET(req, { params }) {
     if (query.includeSale === "true") {
       include.saleDetails = {
         include: {
-          childSaleDetails: true
+          filterValue: true,
+          filter: true
         }
       }
     }

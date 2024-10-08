@@ -1,6 +1,6 @@
 import { Button, Input } from "@nextui-org/react"
 import { ShoppingCart } from "lucide-react"
-import { useContext, useState } from "react"
+import { useContext, useMemo, useState } from "react"
 import { CartContext } from "@/context/CartProvider";
 
 const COLOR_VARIANT = {
@@ -21,10 +21,16 @@ const SaleDetail = ({ saleDetails, product }) => {
 
   const onPrimarySelect = (key) => {
     setSelectedDetail(saleDetails.find(detail => detail.id === key))
+    setSelectedSecondaryDetail({})
+  }
+
+  const getSecondaryDetails = () => {
+    return saleDetails
+      .filter(item => item.saleDetailId && item.saleDetailId === selectedDetail.id && item.filterValueId)
   }
 
   const onSecondarySelect = (key) => {
-    setSelectedSecondaryDetail(selectedDetail.secondarySaleDetails.find(detail => detail.id === key))
+    setSelectedSecondaryDetail(saleDetails.find(detail => detail.id === key))
   }
 
   const getVariant = (id, selected) => {
@@ -48,16 +54,16 @@ const SaleDetail = ({ saleDetails, product }) => {
   const addToCartAnimation = (evt, image = null) => {
     const addBtn = evt?.target;
     const headerCartBtn = document.getElementById("header-cart-btn");
-    if(!addBtn || !headerCartBtn) return;
+    if (!addBtn || !headerCartBtn) return;
 
     const {
       top: headerCartTop,
       left: headerCartLeft,
       width: headerCartWidth
     } = headerCartBtn.getBoundingClientRect();
-    
+
     let animateItem = document.createElement("div");
-    if(image) {
+    if (image) {
       animateItem = document.createElement("img");
       animateItem.src = image;
     }
@@ -107,7 +113,7 @@ const SaleDetail = ({ saleDetails, product }) => {
       <div className="flex flex-col gap-3">
         <div className="flex gap-2 flex-wrap">
           {
-            saleDetails.filter(item => !item.saleDetailId && item.value).map(detail => {
+            saleDetails.filter(item => !item.saleDetailId && item.filterValueId).map(detail => {
               return <div key={detail.id} className="flex flex-col gap-1">
                 {
                   detail.type === "COLOR" ?
@@ -115,24 +121,27 @@ const SaleDetail = ({ saleDetails, product }) => {
                     <Button color="default"
                       variant={getVariant(detail.id, selectedDetail.id)}
                       onPress={() => onPrimarySelect(detail.id)}
-                      value={detail.id}>{detail.value}</Button>
+                      value={detail.id}>{detail.filterValue.value}</Button>
                 }
-                <div>
-                  {
-                    saleDetails.filter(item => item.saleDetailId && item.saleDetailId === selectedDetail.id).map(sDetail => {
-                      if (sDetail.type === "COLOR") {
-                        return <div className={getColor(sDetail, selectedSecondaryDetail.id)} onClick={() => onSecondarySelect(sDetail.id)} key={sDetail.id}></div>
-                      }
-                      return <Button color="default"
-                        key={sDetail.id}
-                        variant={getVariant(sDetail.id, selectedSecondaryDetail.id)}
-                        onPress={() => onSecondarySelect(detail.id)}
-                        value={sDetail.id}>{sDetail.value}</Button>
-                    })
-                  }
-                </div>
+
               </div>
             })
+          }
+        </div>
+        <div>
+          {
+            getSecondaryDetails()
+              .map(sDetail => {
+                {/* if (sDetail.type === "COLOR") {
+                          return <div className={getColor(sDetail, selectedSecondaryDetail.id)}
+                            onClick={() => onSecondarySelect(sDetail.id)} key={sDetail.id}></div>
+                        } */}
+                return <Button color="default"
+                  key={sDetail.id}
+                  variant={getVariant(sDetail.id, selectedSecondaryDetail.id)}
+                  onPress={() => onSecondarySelect(sDetail.id)}
+                  value={sDetail.id}>{sDetail.filterValue.value}</Button>
+              })
           }
         </div>
 

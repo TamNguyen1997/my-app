@@ -1,6 +1,6 @@
 import { Button, Input } from "@nextui-org/react"
 import { ShoppingCart } from "lucide-react"
-import { useContext, useMemo, useState } from "react"
+import { useContext, useState } from "react"
 import { CartContext } from "@/context/CartProvider";
 
 const COLOR_VARIANT = {
@@ -46,7 +46,8 @@ const SaleDetail = ({ saleDetails, product }) => {
 
   const getPrice = () => {
     if (selectedSecondaryDetail.price) return selectedSecondaryDetail.price.toLocaleString()
-    if (!selectedSecondaryDetail.price && selectedDetail.price) return selectedDetail.price.toLocaleString()
+    if (selectedDetail.price && !getSecondaryDetails().length) return selectedDetail.price.toLocaleString()
+    if (!selectedSecondaryDetail.price && selectedDetail.price && getSecondaryDetails()) return ""
 
     return ""
   }

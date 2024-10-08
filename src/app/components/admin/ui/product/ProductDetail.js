@@ -1,11 +1,15 @@
-import { Button, Input, Link, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Switch, useDisclosure } from "@nextui-org/react"
+import { Button, DatePicker, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Switch, useDisclosure } from "@nextui-org/react"
 import slugify from "slugify"
 import ImageCms from "../ImageCms"
 import { useCallback } from "react"
 import { ToastContainer, toast } from 'react-toastify';
 import { useEditor } from "@tiptap/react";
 import { editorConfig } from "@/lib/editor";
+import { parseDate } from "@internationalized/date";
 import RichTextEditor from "../RichTextArea";
+
+const getDateString = (isoDate) =>
+  parseDate(new Date(isoDate).toISOString().split("T")[0]);
 
 const ProductDetail = ({
   categories, product, setProduct,
@@ -75,16 +79,6 @@ const ProductDetail = ({
             isRequired
             disabled
           />
-          <Input
-            type="number"
-            label="Số lượng"
-            labelPlacement="outside"
-            aria-label="Số lượng"
-            value={product.quantity}
-            min={0}
-            max={999}
-            onValueChange={(value) => setProduct(Object.assign({}, product, { quantity: parseInt(value) }))}
-          />
         </div>
         <div className="flex gap-10">
           <Switch isSelected={product.active}
@@ -139,6 +133,7 @@ const ProductDetail = ({
             label="Category"
             aria-label="Category"
             selectedKeys={new Set([product.categoryId || ""])}
+            isRequired
             onSelectionChange={(value) =>
               setProduct(Object.assign({}, product, { categoryId: value.size ? value.values().next().value : null, subCateId: null }))}
           >
@@ -149,6 +144,7 @@ const ProductDetail = ({
             aria-label="Sub category"
             isDisabled={getSubCate().length === 0}
             selectedKeys={new Set([product.subCateId || ""])}
+            isRequired
             onSelectionChange={(value) =>
               setProduct(Object.assign({}, product, { subCateId: value.size ? value.values().next().value : null }))
             }
@@ -174,27 +170,36 @@ const ProductDetail = ({
         </div>
         <div className='grid grid-cols-2 gap-3'>
           <div className="flex flex-col gap-3">
-            <Input
-              type="text"
-              label="SKU"
-              labelPlacement="outside"
-              aria-label="SKU"
-              defaultValue={product.sku}
-              onValueChange={(value) => setProduct(Object.assign({}, product, { sku: value }))}
-            />
+            <div className="flex gap-2">
+              <DatePicker
+                label="Ngày tạo"
+                labelPlacement="outside"
+                defaultValue={getDateString(product.createdAt)}
+                isReadOnly
+                aria-label="Ngày tạo"
+              />
+              <DatePicker
+                label="Ngày chỉnh sửa"
+                labelPlacement="outside"
+                defaultValue={getDateString(product.updatedAt)}
+                isReadOnly
+                aria-label="Ngày chỉnh sửa"
+              />
+            </div>
             <Input type="text"
               aria-label="Hình ảnh thumbnail"
               label="Hình ảnh thumbnail"
+              labelPlacement="outside"
               value={product.image?.name} isDisabled />
             <Input type="text"
               aria-label="Alt"
               label="Alt"
+              labelPlacement="outside"
               onValueChange={(value) => setProduct(Object.assign({}, product, { imageAlt: value }))}
               defaultValue={product?.imageAlt} />
             <div>
               <Button color="primary" onClick={onOpen} className="w-24 float-right">Chọn ảnh</Button>
             </div>
-            <RichTextEditor editor={editor} />
           </div>
 
           <div>
@@ -203,16 +208,16 @@ const ProductDetail = ({
                 <img
                   src={`${process.env.NEXT_PUBLIC_FILE_PATH + product.image?.path}`}
                   alt={`${product.imageAlt}`}
-                  width="300"
-                  height="200"
-                  className="float-right"
+                  width="150"
+                  height="100"
+                  className="mx-auto"
                 /> : null
             }
           </div>
         </div>
+        <RichTextEditor editor={editor} />
       </div>
-      <div className="flex float-right gap-2 px-2 w-full">
-        <Link href="/admin/product">Trở về</Link>
+      <div className="py-2">
         <Button color="primary" onClick={onSave}>Lưu</Button>
       </div>
 

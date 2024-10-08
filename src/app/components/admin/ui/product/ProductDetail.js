@@ -179,11 +179,11 @@ const ProductDetail = ({
                 aria-label="Ngày tạo"
               />
               <DatePicker
-                label="Ngày chỉnh sửa"
+                label="Ngày sửa đổi gần nhất"
                 labelPlacement="outside"
                 defaultValue={getDateString(product.updatedAt)}
                 isReadOnly
-                aria-label="Ngày chỉnh sửa"
+                aria-label="Ngày sửa đổi gần nhất"
               />
             </div>
             <Input type="text"

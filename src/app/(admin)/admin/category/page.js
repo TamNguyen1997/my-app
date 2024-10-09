@@ -149,8 +149,9 @@ const Category = () => {
 
     switch (columnKey) {
       case "highlight":
+      case "active":
         return <div className="relative flex items-center">
-          <CustomSwitch category={category} />
+          <CustomSwitch category={category} columnKey={columnKey} />
         </div>
       case "actions":
         return (
@@ -232,6 +233,7 @@ const Category = () => {
               <TableColumn key="name" textValue="name">Tên</TableColumn>
               <TableColumn key="slug" textValue="slug">Slug</TableColumn>
               <TableColumn key="type" textValue="type">Loại</TableColumn>
+              <TableColumn key="active" textValue="active">Active</TableColumn>
               <TableColumn key="highlight" textValue="highlight">Nổi bật</TableColumn>
               <TableColumn key="actions" textValue="actions"></TableColumn>
             </TableHeader>
@@ -400,9 +402,11 @@ const Category = () => {
   );
 };
 
-const CustomSwitch = ({ category }) => {
-
+const CustomSwitch = ({ category, columnKey }) => {
   const [cate, setCate] = useState(category)
-  return <Switch isSelected={cate.highlight} onValueChange={(value) => quickUpdate(cate, { highlight: value }, setCate)}></Switch>
+  if (columnKey === "highlight" && category.type === "SUB_CATE") {
+    return ""
+  }
+  return <Switch isSelected={cate[columnKey]} onValueChange={(value) => quickUpdate(cate, { [columnKey]: value }, setCate)}></Switch>
 }
 export default Category;

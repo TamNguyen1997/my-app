@@ -77,7 +77,9 @@ const Category = () => {
             slug: selectedCate.slug,
             type: selectedCate.type,
             cateId: selectedCate.cateId,
-            imageId: selectedCate.imageId
+            imageId: selectedCate.imageId,
+            metaDescription: selectedCate.metaDescription,
+            metaTitle: selectedCate.metaTitle
           })
         }).then(async (res) => {
           getCategories()
@@ -246,7 +248,7 @@ const Category = () => {
       <div>
         <Modal
           scrollBehavior="inside"
-          size="2xl"
+          size="5xl"
           isOpen={isOpen} onOpenChange={onOpenChange}>
           <form onSubmit={onSubmit}>
             <ModalContent>
@@ -272,6 +274,26 @@ const Category = () => {
                         selectedCate,
                         { slug: slugify(value, { locale: 'vi' }).toLowerCase() }))}
                       labelPlacement="outside" isRequired />
+                    <Input
+                      type="text"
+                      label="Meta title"
+                      value={selectedCate.metaTitle || ""}
+                      onValueChange={(value) => setSelectedCate(Object.assign(
+                        {},
+                        selectedCate,
+                        { metaTitle: value }))}
+                      labelPlacement="outside"
+                    />
+                    <Input
+                      type="text"
+                      label="Meta description"
+                      value={selectedCate.metaDescription || ""}
+                      onValueChange={(value) => setSelectedCate(Object.assign(
+                        {},
+                        selectedCate,
+                        { metaDescription: value }))}
+                      labelPlacement="outside"
+                    />
                     <Switch defaultSelected={selectedCate.highlight} onValueChange={(value) => setSelectedCate(Object.assign(
                       {},
                       selectedCate,

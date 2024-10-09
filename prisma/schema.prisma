@@ -410,6 +410,9 @@ model category {
   product  product[]
   sProduct product[]  @relation("subCate")
 
+  metaTitle       String? @map("meta_title")
+  metaDescription String? @map("meta_description")
+
   filterValueOnCategory   filter_value? @relation("filterValueOnCategory", fields: [filterValueOnCategoryId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   filterValueOnCategoryId String?
 

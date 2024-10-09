@@ -42,7 +42,7 @@ export async function PUT(req, { params }) {
     }
   })
 
-  if (highlightedCates.length === 3) {
+  if (highlightedCates.length === 3 && body.highlight) {
     return NextResponse.json({ message: "Tối đa 3 category nổi bật" }, { status: 400 })
   }
   delete body.image

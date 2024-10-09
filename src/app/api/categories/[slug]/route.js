@@ -1,4 +1,5 @@
 import { db } from '@/app/db';
+import { cate_type } from '@prisma/client';
 import { NextResponse } from 'next/server';
 
 export async function DELETE(req, { params }) {
@@ -31,6 +32,19 @@ export async function PUT(req, { params }) {
     return NextResponse.json({ message: `Resource not found ${params.slug}` }, { status: 400 })
   }
   let body = await req.json()
+  const highlightedCates = await db.category.findMany({
+    where: {
+      highlight: true,
+      type: cate_type.CATE,
+      NOT: {
+        id: params.slug
+      }
+    }
+  })
+
+  if (highlightedCates.length === 3) {
+    return NextResponse.json({ message: "Tối đa 3 category nổi bật" }, { status: 400 })
+  }
   delete body.image
   delete body.subcates
   try {

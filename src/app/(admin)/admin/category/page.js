@@ -20,6 +20,18 @@ import { ToastContainer, toast } from 'react-toastify';
 
 const rowsPerPage = 15;
 
+const quickUpdate = async (category, value, setCategory) => {
+  const res = await fetch(`/api/categories/${category.id}`, { method: "PUT", body: JSON.stringify(value) })
+  if (res.ok) {
+    toast.success("Đã cập nhật")
+    if (setCategory) {
+      setCategory(await res.json())
+    }
+  } else {
+    toast.error(`Không thể cập nhật: ${(await res.json()).message}`)
+  }
+}
+
 const Category = () => {
   const [categories, setCategories] = useState([])
   const [selectedCate, setSelectedCate] = useState({})
@@ -31,8 +43,6 @@ const Category = () => {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0)
   const [loadingState, setLoadingState] = useState("loading")
-
-  const [allCategories, setAllCategories] = useState([])
 
   const pages = useMemo(() => {
     return total ? Math.ceil(total / rowsPerPage) : 0;
@@ -50,13 +60,6 @@ const Category = () => {
       setLoadingState("idle")
     })
   }
-
-  useEffect(() => {
-    fetch(`/api/categories/?size=${10000}&page=${page}&type=CATE&includeImage=true`).then(async res => {
-      const data = await res.json()
-      setAllCategories(data.result)
-    })
-  }, [])
   useEffect(() => {
     getCategories()
   }, [page, condition])
@@ -87,7 +90,7 @@ const Category = () => {
           success: 'Đã chỉnh sửa category',
           error: {
             render({ data }) {
-              return data.message
+              return `Không thể cập nhật: ${data.message}`
             }
           }
         }
@@ -138,26 +141,13 @@ const Category = () => {
     )
   }
 
-  const quickUpdate = async (category, value) => {
-    const res = await fetch(`/api/categories/${category.id}`, { method: "PUT", body: JSON.stringify(value) })
-    if (res.ok) {
-      toast.success("Đã cập nhật")
-    } else {
-      toast.error("Không thể cập nhật")
-    }
-  }
-
   const renderCell = useCallback((category, columnKey) => {
     const cellValue = category[columnKey]
 
     switch (columnKey) {
       case "highlight":
         return <div className="relative flex items-center">
-          <Switch defaultSelected={category.highlight} onValueChange={(value) => quickUpdate(category, { highlight: value })}></Switch>
-        </div>
-      case "showOnHeader":
-        return <div className="relative flex items-center">
-          <Switch defaultSelected={category.showOnHeader} onValueChange={(value) => quickUpdate(category, { showOnHeader: value })}></Switch>
+          <CustomSwitch category={category} />
         </div>
       case "actions":
         return (
@@ -373,4 +363,10 @@ const Category = () => {
     </div>
   );
 };
+
+const CustomSwitch = ({ category }) => {
+
+  const [cate, setCate] = useState(category)
+  return <Switch isSelected={cate.highlight} onValueChange={(value) => quickUpdate(cate, { highlight: value }, setCate)}></Switch>
+}
 export default Category;

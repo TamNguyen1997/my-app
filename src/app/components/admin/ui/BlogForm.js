@@ -164,12 +164,6 @@ const BlogForm = ({ blog, setBlog }) => {
                 {...register("keyword")}
                 defaultValue={blog?.keyword}
               ></Input>
-              <Input
-                label="Tác giả"
-                aria-label="Keyword"
-                {...register("author")}
-                defaultValue={blog?.author}
-              ></Input>
               <Select
                 label="Phân loại"
                 selectedKeys={new Set([blog.blogCategory])}

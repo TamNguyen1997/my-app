@@ -4,54 +4,54 @@ import { useEffect, useState } from "react"
 import { toast, ToastContainer } from "react-toastify"
 import { v4 } from "uuid"
 
-const ColorSelect = ({ detail, setDetails, details }) => {
-  return (<>
-    <Select
-      label="Màu"
-      isRequired
-      placeholder="Chọn màu cho sản phẩm"
-      defaultSelectedKeys={new Set([detail.value])}
-      onSelectionChange={(value) => setDetails(handleDetailChange(details, detail.id, { value: value.values().next().value }))}
-    >
-      <SelectItem key="#ffffff" textValue="Trắng">
-        <div className="flex gap-2 items-center">
-          <div className="rounded-full bg-white w-8 h-8"></div>
-          <p>Trắng</p>
-        </div>
-      </SelectItem>
-      <SelectItem key="#4b5563" textValue="Xám">
-        <div className="flex gap-2 items-center">
-          <div className="rounded-full bg-gray-600 w-8 h-8"></div>
-          <p>Xám</p>
-        </div>
-      </SelectItem>
-      <SelectItem key="#1e3a8a" textValue="Xanh">
-        <div className="flex gap-2 items-center">
-          <div className="rounded-full bg-blue-900 w-8 h-8"></div>
-          <p>Xanh</p>
-        </div>
-      </SelectItem>
-      <SelectItem key="#facc15" textValue="Vàng">
-        <div className="flex gap-2 items-center">
-          <div className="rounded-full bg-yellow-400 w-8 h-8"></div>
-          <p>Vàng</p>
-        </div>
-      </SelectItem>
-      <SelectItem key="#dc2626" textValue="Đỏ">
-        <div className="flex gap-2 items-center">
-          <div className="rounded-full bg-red-600 w-8 h-8"></div>
-          <p>Đỏ</p>
-        </div>
-      </SelectItem>
-      <SelectItem key="#000000" textValue="Đen">
-        <div className="flex gap-2 items-center">
-          <div className="rounded-full bg-black w-8 h-8"></div>
-          <p>Đen</p>
-        </div>
-      </SelectItem>
-    </Select>
-  </>)
-}
+// const ColorSelect = ({ detail, setDetails, details }) => {
+//   return (<>
+//     <Select
+//       label="Màu"
+//       isRequired
+//       placeholder="Chọn màu cho sản phẩm"
+//       defaultSelectedKeys={new Set([detail.value])}
+//       onSelectionChange={(value) => setDetails(handleDetailChange(details, detail.id, { value: value.values().next().value }))}
+//     >
+//       <SelectItem key="#ffffff" textValue="Trắng">
+//         <div className="flex gap-2 items-center">
+//           <div className="rounded-full bg-white w-8 h-8"></div>
+//           <p>Trắng</p>
+//         </div>
+//       </SelectItem>
+//       <SelectItem key="#4b5563" textValue="Xám">
+//         <div className="flex gap-2 items-center">
+//           <div className="rounded-full bg-gray-600 w-8 h-8"></div>
+//           <p>Xám</p>
+//         </div>
+//       </SelectItem>
+//       <SelectItem key="#1e3a8a" textValue="Xanh">
+//         <div className="flex gap-2 items-center">
+//           <div className="rounded-full bg-blue-900 w-8 h-8"></div>
+//           <p>Xanh</p>
+//         </div>
+//       </SelectItem>
+//       <SelectItem key="#facc15" textValue="Vàng">
+//         <div className="flex gap-2 items-center">
+//           <div className="rounded-full bg-yellow-400 w-8 h-8"></div>
+//           <p>Vàng</p>
+//         </div>
+//       </SelectItem>
+//       <SelectItem key="#dc2626" textValue="Đỏ">
+//         <div className="flex gap-2 items-center">
+//           <div className="rounded-full bg-red-600 w-8 h-8"></div>
+//           <p>Đỏ</p>
+//         </div>
+//       </SelectItem>
+//       <SelectItem key="#000000" textValue="Đen">
+//         <div className="flex gap-2 items-center">
+//           <div className="rounded-full bg-black w-8 h-8"></div>
+//           <p>Đen</p>
+//         </div>
+//       </SelectItem>
+//     </Select>
+//   </>)
+// }
 
 const removeItem = (id, details) => {
   return details.filter(item => item.id != id).filter(item => item.saleDetailId !== id)
@@ -164,9 +164,9 @@ const SaleDetails = ({ product }) => {
     })
 
     if (res.ok) {
-      toast.success("Đã lưu thông số kĩ thuật")
+      toast.success("Đã lưu thông số bán hàng")
     } else {
-      toast.error("Không thể lưu thông số kĩ thuật")
+      toast.error("Không thể lưu thông số bán hàng")
     }
   }
 
@@ -188,10 +188,12 @@ const SaleDetails = ({ product }) => {
                       label="SKU"
                       defaultValue={detail.sku}
                       aria-label="SKU"
+                      isRequired
                       onValueChange={value => setSaleDetails(handleDetailChange(saleDetails, detail.id, { sku: value }))}
                     />
                     <Select label="Filter"
                       defaultSelectedKeys={[detail.filterId]}
+                      isRequired
                       onSelectionChange={(value) => setSaleDetails(handleDetailChange(saleDetails, detail.id, { filterId: value.values().next().value }))}>
                       {
                         filters.map(item => <SelectItem key={item.id}>{item.name}</SelectItem>)
@@ -205,6 +207,7 @@ const SaleDetails = ({ product }) => {
                       setDetail={setSaleDetails}
                       onSelectionChange={handleDetailChange} details={saleDetails} />
                     <Input type="number"
+                      isRequired
                       label="Giá"
                       defaultValue={detail.price}
                       aria-label="Giá"
@@ -272,6 +275,7 @@ const FilterValueSelect = ({ detail, getFilter, setDetail, onSelectionChange, de
   return (
     <Select label="Giá trị filter" isDisabled={!filterValues.length}
       defaultSelectedKeys={[detail.filterValueId]}
+      isRequired
       onSelectionChange={value => setDetail(onSelectionChange(details, detail.id, { filterValueId: value.values().next().value }, detail.id))}>
       {
         filterValues.map(item => <SelectItem key={item.id}>{item.value}</SelectItem>)

@@ -31,6 +31,10 @@ export async function GET(req) {
     condition.type = query.type
   }
 
+  if (query.active) {
+    condition.active = query.active === "true"
+  }
+
   if (query.includeSubCate) {
     include.subcates = {
       include: {

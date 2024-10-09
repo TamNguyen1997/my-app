@@ -395,6 +395,7 @@ model category {
   name         String
   slug         String   @default(dbgenerated("gen_random_uuid()"))
   highlight    Boolean  @default(false)
+  active       Boolean  @default(true)
   showOnHeader Boolean  @default(false) @map("show_on_header")
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")

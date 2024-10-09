@@ -79,7 +79,8 @@ const Category = () => {
             cateId: selectedCate.cateId,
             imageId: selectedCate.imageId,
             metaDescription: selectedCate.metaDescription,
-            metaTitle: selectedCate.metaTitle
+            metaTitle: selectedCate.metaTitle,
+            active: selectedCate.active
           })
         }).then(async (res) => {
           getCategories()
@@ -174,13 +175,14 @@ const Category = () => {
 
   return (
     <div className="flex flex-col gap-10">
-      <div className="flex gap-3 w-1/2">
-        <Input label="Tên category" aria-label="Tên category" labelPlacement="outside" defaultValue={condition.name}
+      <div className="flex gap-3 w-2/3">
+        <Input label="Tên category" className="pt-2"
+          aria-label="Tên category" labelPlacement="outside" defaultValue={condition.name}
           onValueChange={(value) => {
             if (value.length > 2 || !value.length) setCondition(Object.assign({}, condition, { name: value }))
           }}
         />
-        <Input label="Slug" aria-label="slug" labelPlacement="outside" value={condition.slug}
+        <Input label="Slug" aria-label="slug" labelPlacement="outside" value={condition.slug} className="pt-2"
           onValueChange={(value) => {
             if (value.length > 2 || !value.length) setCondition(Object.assign({}, condition, { slug: value }))
           }}
@@ -198,6 +200,13 @@ const Category = () => {
             SUB_CATE
           </SelectItem>
         </Select>
+
+        <Switch className="pt-6  w-full"
+          onValueChange={(value) => setCondition(Object.assign({}, condition, { active: value }))}>Active</Switch>
+        <Switch className="pt-6 w-full"
+          onValueChange={(value) => setCondition(Object.assign({}, condition, { highlight: value }))}>
+          Nổi bật
+        </Switch>
         <div className="items-end flex min-h-full">
           <Button onClick={getCategories} color="primary"><Search /></Button>
         </div>
@@ -245,118 +254,124 @@ const Category = () => {
         </div>
       </div>
 
-      <div>
-        <Modal
-          scrollBehavior="inside"
-          size="5xl"
-          isOpen={isOpen} onOpenChange={onOpenChange}>
-          <form onSubmit={onSubmit}>
-            <ModalContent>
-              {(onClose) => (
-                <>
-                  <ModalHeader className="flex flex-col gap-1">Chi tiết category</ModalHeader>
-                  <ModalBody>
-                    <Input
-                      type="text"
-                      label="Category"
-                      defaultValue={selectedCate.name}
-                      onValueChange={(value) => setSelectedCate(Object.assign(
-                        {},
-                        selectedCate,
-                        { name: value, slug: slugify(value, { locale: 'vi' }).toLowerCase() }))}
-                      labelPlacement="outside" isRequired />
-                    <Input
-                      type="text"
-                      label="Slug"
-                      value={selectedCate.slug}
-                      onValueChange={(value) => setSelectedCate(Object.assign(
-                        {},
-                        selectedCate,
-                        { slug: slugify(value, { locale: 'vi' }).toLowerCase() }))}
-                      labelPlacement="outside" isRequired />
-                    <Input
-                      type="text"
-                      label="Meta title"
-                      value={selectedCate.metaTitle || ""}
-                      onValueChange={(value) => setSelectedCate(Object.assign(
-                        {},
-                        selectedCate,
-                        { metaTitle: value }))}
-                      labelPlacement="outside"
-                    />
-                    <Input
-                      type="text"
-                      label="Meta description"
-                      value={selectedCate.metaDescription || ""}
-                      onValueChange={(value) => setSelectedCate(Object.assign(
-                        {},
-                        selectedCate,
-                        { metaDescription: value }))}
-                      labelPlacement="outside"
-                    />
+      <Modal
+        scrollBehavior="inside"
+        size="5xl"
+        isOpen={isOpen} onOpenChange={onOpenChange}>
+        <form onSubmit={onSubmit}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">Chi tiết category</ModalHeader>
+                <ModalBody>
+                  <Input
+                    type="text"
+                    label="Category"
+                    defaultValue={selectedCate.name}
+                    onValueChange={(value) => setSelectedCate(Object.assign(
+                      {},
+                      selectedCate,
+                      { name: value, slug: slugify(value, { locale: 'vi' }).toLowerCase() }))}
+                    labelPlacement="outside" isRequired />
+                  <Input
+                    type="text"
+                    label="Slug"
+                    value={selectedCate.slug}
+                    onValueChange={(value) => setSelectedCate(Object.assign(
+                      {},
+                      selectedCate,
+                      { slug: slugify(value, { locale: 'vi' }).toLowerCase() }))}
+                    labelPlacement="outside" isRequired />
+                  <Input
+                    type="text"
+                    label="Meta title"
+                    value={selectedCate.metaTitle || ""}
+                    onValueChange={(value) => setSelectedCate(Object.assign(
+                      {},
+                      selectedCate,
+                      { metaTitle: value }))}
+                    labelPlacement="outside"
+                  />
+                  <Input
+                    type="text"
+                    label="Meta description"
+                    value={selectedCate.metaDescription || ""}
+                    onValueChange={(value) => setSelectedCate(Object.assign(
+                      {},
+                      selectedCate,
+                      { metaDescription: value }))}
+                    labelPlacement="outside"
+                  />
+                  <div className="flex gap-5">
+
                     <Switch defaultSelected={selectedCate.highlight} onValueChange={(value) => setSelectedCate(Object.assign(
                       {},
                       selectedCate,
                       { highlight: value }))}>Nổi bật</Switch>
+                    <Switch defaultSelected={selectedCate.active} onValueChange={(value) => setSelectedCate(Object.assign(
+                      {},
+                      selectedCate,
+                      { active: value }))}>Active</Switch>
+                  </div>
 
-                    <Select label="Loại"
-                      defaultSelectedKeys={new Set([selectedCate.type || "CATE"])}
-                      onSelectionChange={(value) =>
-                        setSelectedCate(Object.assign({}, selectedCate, { type: value.values().next().value }))}>
-                      <SelectItem key="CATE">
-                        Category
-                      </SelectItem>
-                      <SelectItem key="SUB_CATE">
-                        Sub category
-                      </SelectItem>
-                    </Select>
+                  <Select label="Loại"
+                    defaultSelectedKeys={new Set([selectedCate.type || "CATE"])}
+                    onSelectionChange={(value) =>
+                      setSelectedCate(Object.assign({}, selectedCate, { type: value.values().next().value }))}>
+                    <SelectItem key="CATE">
+                      Category
+                    </SelectItem>
+                    <SelectItem key="SUB_CATE">
+                      Sub category
+                    </SelectItem>
+                  </Select>
+                  {
+                    selectedCate.type === "SUB_CATE" ?
+                      <Select
+                        label="Category"
+                        labelPlacement="outside"
+                        defaultSelectedKeys={new Set([selectedCate.cateId])}
+                        onSelectionChange={(value) =>
+                          setSelectedCate(Object.assign({}, selectedCate, { cateId: value.values().next().value }))}
+                      >
+                        {
+                          categories.map((category) => (
+                            <SelectItem key={category.id}>
+                              {category.name}
+                            </SelectItem>
+                          ))
+                        }
+                      </Select> :
+                      ""
+                  }
+                  <div>
+                    <Button color="primary" onClick={imageModal.onOpen}>Chọn hình</Button>
+                  </div>
+                  <div className="m-auto w-2/3">
                     {
-                      selectedCate.type === "SUB_CATE" ?
-                        <Select
-                          label="Category"
-                          labelPlacement="outside"
-                          defaultSelectedKeys={new Set([selectedCate.cateId])}
-                          onSelectionChange={(value) =>
-                            setSelectedCate(Object.assign({}, selectedCate, { cateId: value.values().next().value }))}
-                        >
-                          {
-                            categories.map((category) => (
-                              <SelectItem key={category.id}>
-                                {category.name}
-                              </SelectItem>
-                            ))
-                          }
-                        </Select> :
-                        ""
+                      selectedCate.imageId ?
+                        <img
+                          className="w-full h-full"
+                          src={`${process.env.NEXT_PUBLIC_FILE_PATH + selectedCate?.image?.path}`}
+                        />
+                        : <></>
                     }
-                    <div>
-                      <Button color="primary" onClick={imageModal.onOpen}>Chọn hình</Button>
-                    </div>
-                    <div className="m-auto w-2/3">
-                      {
-                        selectedCate.imageId ?
-                          <img
-                            className="w-full h-full"
-                            src={`${process.env.NEXT_PUBLIC_FILE_PATH + selectedCate?.image?.path}`}
-                          />
-                          : <></>
-                      }
-                    </div>
-                  </ModalBody>
-                  <ModalFooter>
-                    <Button color="primary" type="submit">
-                      Lưu
-                    </Button>
-                    <Button color="danger" variant="light" onPress={onClose}>
-                      Đóng
-                    </Button>
-                  </ModalFooter>
-                </>
-              )}
-            </ModalContent>
-          </form>
-        </Modal>
-      </div>
+                  </div>
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="primary" type="submit">
+                    Lưu
+                  </Button>
+                  <Button color="danger" variant="light" onPress={onClose}>
+                    Đóng
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </form>
+      </Modal>
+
       <Modal
         scrollBehavior="inside"
         size="full"

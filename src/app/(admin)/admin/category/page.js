@@ -108,7 +108,7 @@ const Category = () => {
           success: 'Đã tạo category',
           error: {
             render({ data }) {
-              return data.message
+              return `Không thể cập nhật: ${data.message}`
             }
           }
         }
@@ -305,7 +305,6 @@ const Category = () => {
                             ))
                           }
                         </Select> :
-
                         ""
                     }
                     <div>
@@ -323,7 +322,7 @@ const Category = () => {
                     </div>
                   </ModalBody>
                   <ModalFooter>
-                    <Button color="primary" type="submit" onPress={onClose}>
+                    <Button color="primary" type="submit">
                       Lưu
                     </Button>
                     <Button color="danger" variant="light" onPress={onClose}>

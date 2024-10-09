@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/app/db';
 import queryString from 'query-string';
+import { cate_type } from '@prisma/client';
 
 export async function GET(req) {
   let condition = {}
@@ -73,6 +74,18 @@ export async function POST(req) {
   let body = await req.json()
   delete body.image
   delete body.subCategory
+
+  const highlightedCates = await db.category.findMany({
+    where: {
+      highlight: true,
+      type: cate_type.CATE
+    }
+  })
+
+  if (highlightedCates.length === 3 && body.highlight) {
+    return NextResponse.json({ message: "Tối đa 3 category nổi bật" }, { status: 400 })
+  }
+
   return NextResponse.json(await db.category.create(
     {
       data: body

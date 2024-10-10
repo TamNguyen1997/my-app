@@ -160,12 +160,10 @@ model filter_value {
 
   active Boolean @default(false)
 
-  technicalDetails technical_detail[]
-  saleDetails      sale_detail[]
-  categories       category[]         @relation("filterValueOnCategory")
-  subCategories    category[]         @relation("filterValueOnSubCategory")
-
-  brands brand[]
+  technicalDetails         technical_detail[]
+  saleDetails              sale_detail[]
+  brand_on_filter_value    brand_on_filter_value[]
+  category_on_filter_value category_on_filter_value[]
 
   @@index([filterId])
 }
@@ -414,17 +412,11 @@ model category {
   metaTitle       String? @map("meta_title")
   metaDescription String? @map("meta_description")
 
-  filterValueOnCategory   filter_value? @relation("filterValueOnCategory", fields: [filterValueOnCategoryId], references: [id], onDelete: SetNull, onUpdate: SetNull)
-  filterValueOnCategoryId String?
-
-  filterValueOnSubCategory   filter_value? @relation("filterValueOnSubCategory", fields: [filterValueOnSubCategoryId], references: [id], onDelete: SetNull, onUpdate: SetNull)
-  filterValueOnSubCategoryId String?
+  category_on_filter_value category_on_filter_value[] @relation("category")
 
   @@unique([slug])
   @@index([imageId])
   @@index([cateId])
-  @@index([filterValueOnCategoryId])
-  @@index([filterValueOnSubCategoryId])
 }
 
 enum cate_type {
@@ -439,12 +431,34 @@ model brand {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  product        product[]
-  filter_value   filter_value? @relation(fields: [filter_valueId], references: [id], onDelete: SetNull, onUpdate: SetNull)
-  filter_valueId String?
+  product               product[]
+  brand_on_filter_value brand_on_filter_value[]
 
   @@unique([slug])
-  @@index([filter_valueId])
+}
+
+model brand_on_filter_value {
+  brandId String @map("brand_id")
+  brand   brand  @relation(fields: [brandId], references: [id])
+
+  filterValueId String       @map("filter_value_id")
+  filterValue   filter_value @relation(fields: [filterValueId], references: [id])
+
+  @@id([brandId, filterValueId])
+  @@index([brandId])
+  @@index([filterValueId])
+}
+
+model category_on_filter_value {
+  categoryId String   @map("category_id")
+  category   category @relation("category", fields: [categoryId], references: [id])
+
+  filterValueId String       @map("filter_value_id")
+  filterValue   filter_value @relation(fields: [filterValueId], references: [id])
+
+  @@id([categoryId, filterValueId])
+  @@index([categoryId])
+  @@index([filterValueId])
 }
 
 enum blog_type {

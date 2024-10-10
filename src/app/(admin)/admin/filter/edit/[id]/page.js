@@ -78,7 +78,13 @@ const Filter = () => {
         {
           id ?
             <div className="-mt-2">
-              <FilterProduct filterId={id} categories={categories} subCategories={categories} brands={brands} filter={filter} setFilter={setFilter} />
+              <FilterProduct
+                filterId={id}
+                categories={categories}
+                subCategories={categories.filter(item => item.type === "SUB_CATE")}
+                brands={brands}
+                filter={filter}
+                setFilter={setFilter} />
             </div> : ""
         }
       </div>

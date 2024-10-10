@@ -176,7 +176,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
             selectedKeys={
               (filterValue[columnKey] ? filterValue[columnKey].map(v => v.id) : [])
             }
-            className={`${columnKey === "brands" ? "min-w-[140px]" : "min-w-[200px]"}`}
+            className={`${columnKey === "brands" ? "min-w-[140px]" : "min-w-[200px] max-w-[200px]"}`}
           >
             <SelectItem textValue="All" key="all" onClick={() => {
               if(selectionList[columnKey]?.length === filterValue[columnKey]?.length) {

@@ -73,9 +73,8 @@ const editorConfig = (content) => {
       }),
       Link.configure({
         protocols: ["http", "https"],
-      }),
-      Link.extend({
-        inclusive: false,
+        openOnClick: false,
+        autolink: true,
       }),
       Placeholder.configure({
         placeholder: "Nhập văn bản",

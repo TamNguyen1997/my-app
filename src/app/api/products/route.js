@@ -65,23 +65,65 @@ export async function GET(req) {
         slug: query.brandId
       }
     }
+    let productIds = []
 
-    let filterId = []
+    if (query.productId) {
+      productIds.push(query.productId)
+    }
     if (query.filterId) {
-      filterId = (await db.filter.findMany({
+      const saleDetails = await db.sale_detail.findMany({
         where: {
-          slug: {
-            in: Array.isArray(query.filterId) ? query.filterId : [query.filterId]
-          }
+          OR: [
+            {
+              filterValueId: {
+                in: query.filterId
+              }
+            }, {
+              filterValue: {
+                slug: {
+                  in: query.filterId
+                }
+              }
+            }
+          ]
         }
-      })).map(item => item.id)
+      })
+      const saleDetailProductIds = saleDetails.map(item => item.productId)
 
-      condition.filterOnProduct = {
-        some: {
-          filterId: {
-            in: filterId
-          }
+      const technicalDetails = await db.technical_detail.findMany({
+        where: {
+          OR: [
+            {
+              filterValueId: {
+                in: query.filterId
+              }
+            },
+            {
+              filterValue: {
+                slug: {
+                  in: query.filterId
+                }
+              }
+            }
+          ]
         }
+      })
+
+      const technicalDetailsProductIds = technicalDetails.map(item => item.productId)
+
+      const intersection = Array.from(new Set([...saleDetailProductIds, ...technicalDetailsProductIds]))
+
+
+      if (!intersection.length) {
+        return NextResponse.json({ result: [], total: 0 })
+      }
+      productIds.push(...intersection)
+    }
+
+    console.log(productIds)
+    if (productIds.length) {
+      condition.id = {
+        in: productIds
       }
     }
 
@@ -106,9 +148,6 @@ export async function GET(req) {
 
     if (query.productType) {
       condition.productType = query.productType
-    }
-    if (query.productId) {
-      condition.productId = query.productId
     }
   }
 

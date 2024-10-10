@@ -1,4 +1,5 @@
 import { db } from '@/app/db';
+import { cate_type } from '@prisma/client';
 import { NextResponse } from 'next/server';
 import queryString from 'query-string';
 
@@ -52,21 +53,54 @@ export async function GET(req) {
   const { query } = queryString.parseUrl(req.url);
   let condition = {}
 
-  if (query) {
-    if (query.categoryId) {
-      const category = await db.category.findFirst({ where: { slug: query.categoryId } })
-      if (category) {
-        condition.categoryId = category.id
+  if (query.categoryId) {
+    condition.filterValue = condition.filterValue || {}
+    condition.filterValue = Object.assign(condition.filterValue, {
+      some: {
+        category_on_filter_value: {
+          every: {
+            category: {
+              OR: [
+                {
+                  slug: query.categoryId,
+                },
+                {
+                  id: query.categoryId
+                }
+              ]
+            }
+          }
+        }
       }
-    }
-
-    if (query.brandId) {
-      const brand = await db.brand.findFirst({ where: { slug: query.brandId } })
-      if (brand) {
-        condition.brandId = brand.id
-      }
-    }
+    })
   }
+
+  if (query.brandId) {
+    condition.filterValue = condition.filterValue || {}
+    condition.filterValue = Object.assign(condition.filterValue, {
+      some: {
+        brand_on_filter_value: {
+          every: {
+            brand: {
+              OR: [
+                {
+                  slug: query.brandId,
+                },
+                {
+                  id: query.brandId
+                }
+              ]
+            }
+          }
+        }
+      }
+    })
+  }
+
+  if (query.active) {
+    condition.active = query.active === "true"
+  }
+
 
   try {
     let result = await db.filter.findMany({
@@ -82,23 +116,40 @@ export async function GET(req) {
     })
 
     result.forEach(async (filter, i) => {
-      const filterValues = (await db.filter_value.findMany({
-        where: { filterId: filter.id }, include: {
-          _count: {
-            select: { categories: true }
+      const categoryCount = await db.category_on_filter_value.count({
+        where: {
+          filterValue: {
+            filterId: filter.id
           },
-          _count: {
-            select: { subCategories: true }
-          },
-          _count: {
-            select: { brands: true }
+          category: {
+            type: cate_type.CATE
           }
         }
-      }))
+      })
 
-      result[i].categoryCount = filterValues.reduce((acc, val) => acc + val._count?.categories, 0) || 0
-      result[i].brandCount = filterValues.reduce((acc, val) => acc + val._count?.brands, 0) || 0
-      result[i].subCategoryCount = filterValues.reduce((acc, val) => acc + val._count?.subCategories, 0) || 0
+      const subCategoryCount = await db.category_on_filter_value.count({
+        where: {
+          filterValue: {
+            filterId: filter.id
+          },
+          category: {
+            type: cate_type.SUB_CATE
+          }
+        }
+      })
+
+      const brandCount = await db.brand_on_filter_value.count({
+        where: {
+          filterValue: {
+            filterId: filter.id
+          },
+        }
+      })
+
+
+      result[i].categoryCount = categoryCount || 0
+      result[i].brandCount = brandCount || 0
+      result[i].subCategoryCount = subCategoryCount || 0
     })
 
     return NextResponse.json({

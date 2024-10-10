@@ -5,59 +5,23 @@ import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, Se
 import { FILTER_TYPE } from "@/lib/filter";
 import ProductCard from "@/components/product/ProductCard";
 
-const comparePriceDesc = (product1, product2) => {
-  return product1.saleDetails[0]?.price - product2.saleDetails[0]?.price
-}
-
-const comparePriceAsc = (product1, product2) => {
-  return product2.saleDetails[0]?.price - product1.saleDetails[0]?.price
-}
-
-const FILTER = {
-  "highlight": {
-    id: "highlight",
-    name: "Nổi bật",
-    filter: (products) => {
-      return products.filter(item => item.highlight)
-    }
-  },
-  "priceAsc": {
-    id: "priceAsc",
-    name: "Giá tăng",
-    filter: (products) => {
-      return products
-        .filter(product => product.saleDetails && product.saleDetails.length && product.saleDetails.filter(detail => detail.price).length)
-        .sort(comparePriceAsc)
-    }
-  },
-  "priceDesc": {
-    id: "priceDesc",
-    name: "Giá giảm",
-    filter: (products) => {
-      return products
-        .filter(product => product.saleDetails && product.saleDetails.length && product.saleDetails.filter(detail => detail.price).length)
-        .sort(comparePriceDesc)
-    }
-  },
-
-}
-
-
 const Brand = ({ params, productFilter }) => {
   const [data, setData] = useState([])
-  const [selectedFilters, setSelectedFilters] = useState(new Set([]))
   const [brand, setBrand] = useState({ name: "" })
   const [isLoading, setIsLoading] = useState(true)
 
   const [value, setValue] = useState([0, 100000000])
 
   const [groupedData, setGroupData] = useState({})
-  const [filters, setFilters] = useState({})
+  const [filters, setFilters] = useState([])
 
-  const [filterIds, setFilterIds] = useState({})
+  const [filterIds, setFilterIds] = useState([])
 
   useEffect(() => {
     getProduct()
+    fetch(`/api/filters/?categoryId=${params}&active=true`).then((res) => res.json()).then(json => {
+      setFilters(json.result)
+    })
   }, [params, productFilter]);
 
   const getProduct = async () => {
@@ -71,49 +35,7 @@ const Brand = ({ params, productFilter }) => {
         setGroupData(Object.groupBy(body.result, (item) => item.categoryId))
       }
     })
-
-    // await fetch(`/api/filters/?brandId=${params}`).then((res) => res.json()).then(json => {
-    //   setFilters(Object.groupBy(json.result, (item) => item.filterType))
-
-    //   let temp = {}
-
-    //   if (productFilter) {
-    //     json.result.forEach(item => {
-    //       if (item.slug === productFilter) {
-    //         temp[item.filterType] = [productFilter]
-    //         return
-    //       }
-    //     })
-    //   } else {
-    //     json.result.forEach(item => {
-    //       if (window.location.hash?.includes(item.slug)) {
-    //         if (temp[item.filterType]) {
-    //           temp[item.filterType].push(item.slug)
-    //         } else {
-    //           temp[item.filterType] = [item.slug]
-    //         }
-    //       }
-    //     })
-
-    //   }
-
-    //   setFilterIds(temp)
-    // })
     setIsLoading(false)
-  }
-
-  const onFilterSelect = (value) => {
-    setSelectedFilters(value)
-
-    if (!value.size) {
-      window.location.replace(`/${brand.slug}`)
-      return
-    }
-
-    const productFilter = FILTER[value.values().next().value]
-    if (!productFilter) return
-
-    setGroupData(Object.groupBy(productFilter.filter(data), (item) => item.subCategoryId))
   }
 
   const filter = () => {
@@ -121,35 +43,32 @@ const Brand = ({ params, productFilter }) => {
     if (JSON.stringify(value) !== JSON.stringify([0, 100000000])) {
       range += `range=${value.join('-')}`
     } else {
-      if (!Object.keys(filterIds).length) {
+      if (!filterIds.length) {
         window.location.replace(`/${brand.slug}`)
         getProduct()
         return
       }
-      const ids = Object.values(filterIds).flat()
-      if (ids?.length === 1) {
-        window.location.replace(`/${brand.slug}_${ids[0]}`)
+
+      if (filterIds.length === 1) {
+        window.location.replace(`/${brand.slug}_${filterIds[0]}`)
         getProduct()
         return
       }
     }
-    let slugs = []
-    Object.keys(filterIds).forEach(key => {
-      if (filterIds[key]) slugs.push(...filterIds[key])
-    })
-    let params = []
+    let query = []
     if (range) {
-      params.push(range)
+      query.push(range)
     }
-    if (slugs.length) {
-      params.push(`filterId=${slugs.join("&filterId=")}`)
+    if (filterIds.length) {
+      query.push(`filterId=${filterIds.join("&filterId=")}`)
     }
-    window.location.replace(`/${brand.slug}#${params.join("&")}`)
+    window.location.replace(`/${params}#${query.join("&")}`)
     getProduct()
   }
 
   if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />
 
+  console.log(filterIds)
   return (
     <>
       <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${brand.slug}`} />
@@ -157,22 +76,20 @@ const Brand = ({ params, productFilter }) => {
         <div className="flex gap-2 pt-5 px-2">
           <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
             {
-              Object.keys(filters || {}).map((key, index) =>
+              filters.map((filter, index) =>
                 <Select key={index}
-                  label={FILTER_TYPE.find(item => item.id === key).label}
+                  label={filter.name}
                   className="max-w-[200px]"
                   selectionMode="multiple"
                   labelPlacement="outside"
-                  defaultSelectedKeys={new Set([filters[key].find(item => window.location.hash.includes(item.slug) || item.slug === productFilter)?.slug])}
+                  defaultSelectedKeys={new Set([filter.filterValue.find(item => window.location.hash.includes(item.slug) || item.slug === productFilter)?.slug])}
                   onSelectionChange={(value) => {
-                    let obj = {}
-                    obj[key] = [...value].filter(item => item)
-                    setFilterIds(Object.assign({}, filterIds, obj))
+                    setFilterIds(Array.from(value))
                   }}
                 >
                   {
-                    filters[key].map((item, i) =>
-                      <SelectItem key={item.slug}>{item.name}</SelectItem>
+                    filter.filterValue.map((item, i) =>
+                      <SelectItem key={item.id}>{item.value}</SelectItem>
                     )
                   }
                 </Select>
@@ -229,34 +146,6 @@ const Brand = ({ params, productFilter }) => {
               <Button color="primary" onClick={filter}>Tìm</Button>
             </div>
           </div>
-        </div>
-        <div className="pt-3 px-2">
-          <Dropdown>
-            <DropdownTrigger>
-              <Button
-                variant="bordered">
-                {
-                  selectedFilters.size ? FILTER[selectedFilters.values().next().value].name : "Sắp xếp"
-                }
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu
-              aria-label="Example with disabled actions"
-              variant="light"
-              selectionMode="single"
-              selectedKeys={selectedFilters}
-              onSelectionChange={onFilterSelect}>
-              {
-                Object.keys(FILTER).map(key =>
-                  <DropdownItem textValue="item" key={key}>
-                    {
-                      FILTER[key].name
-                    }
-                  </DropdownItem>
-                )
-              }
-            </DropdownMenu>
-          </Dropdown>
         </div>
         {
           !isLoading && !data.length ?

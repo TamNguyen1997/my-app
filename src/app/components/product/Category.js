@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from "react";
 import ProductCard from "@/components/product/ProductCard"
 import { getTotalPages } from "@/lib/pagination"
 import { useSearchParams } from "next/navigation";
-import { FILTER_TYPE } from "@/lib/filter";
 
 const rowsPerPage = 20;
 
@@ -14,16 +13,20 @@ const Category = ({ params, productFilter }) => {
   const [isLoading, setIsLoading] = useState(true)
   const [category, setCategory] = useState({ name: "" })
   const [value, setValue] = useState([0, 100000000])
-  const [selectedFilters, setSelectedFilters] = useState(new Set([]))
   const searchParams = useSearchParams()
   const [total, setTotal] = useState(0)
   const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"))
-  const [filters, setFilters] = useState({})
+  const [filters, setFilters] = useState([])
 
-  const [filterIds, setFilterIds] = useState({})
+  const [filterIds, setFilterIds] = useState([])
+
+  console.log(category)
 
   useEffect(() => {
     getProduct()
+    fetch(`/api/filters/?categoryId=${params}&active=true`).then((res) => res.json()).then(json => {
+      setFilters(json.result)
+    })
   }, [params, productFilter]);
 
   const pages = useMemo(() => {
@@ -47,50 +50,36 @@ const Category = ({ params, productFilter }) => {
     getData()
   }
 
+  console.log(filterIds)
+
   const filter = () => {
     let range = ""
     if (JSON.stringify(value) !== JSON.stringify([0, 100000000])) {
       range += `range=${value.join('-')}`
     } else {
-      if (!Object.keys(filterIds).length) {
+      if (!filterIds.length) {
         window.location.replace(`/${category.slug}`)
         getProduct()
         return
       }
-      const ids = Object.values(filterIds).flat()
-      if (ids?.length === 1) {
-        window.location.replace(`/${category.slug}_${ids[0]}`)
+      if (filterIds.length === 1) {
+        window.location.replace(`/${category.slug}_${filterIds[0]}`)
         getProduct()
         return
       }
     }
-    let slugs = []
-    Object.keys(filterIds).forEach(key => {
-      if (filterIds[key]) slugs.push(...filterIds[key])
-    })
-    let params = []
+
+    let query = []
     if (range) {
-      params.push(range)
+      query.push(range)
     }
-    if (slugs.length) {
-      params.push(`filterId=${slugs.join("&filterId=")}`)
+    if (filterIds.length) {
+      query.push(`filterId=${filterIds.join("&filterId=")}`)
     }
-    window.location.replace(`/${category.slug}#${params.join("&")}`)
+    window.location.replace(`/${params}#${query.join("&")}`)
     getProduct()
   }
 
-  const onFilterSelect = (value) => {
-    setSelectedFilters(value)
-    if (!value.size) {
-      filter()
-      return
-    }
-
-    const productFilter = FILTER_TYPE[value.values().next().value]
-    if (!filter) return
-
-    setData(productFilter.filter(data))
-  }
 
   if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />
   return (
@@ -108,22 +97,21 @@ const Category = ({ params, productFilter }) => {
       <div className="w-9/12 mx-auto pt-5">
         <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
           {
-            Object.keys(filters || {}).map((key, index) =>
+            filters.map((filter, index) =>
               <Select key={index}
-                label={FILTER_TYPE.find(item => item.id === key).label}
+                label={filter.name}
                 className="max-w-[200px]"
                 selectionMode="multiple"
                 labelPlacement="outside"
-                defaultSelectedKeys={new Set([filters[key].find(item => window.location.hash.includes(item.slug) || item.slug === productFilter)?.slug])}
+                defaultSelectedKeys={new Set([
+                  filter.filterValue.find(item => window.location.hash.includes(item.slug) || item.slug === productFilter).id])}
                 onSelectionChange={(value) => {
-                  let obj = {}
-                  obj[key] = [...value].filter(item => item)
-                  setFilterIds(Object.assign({}, filterIds, obj))
+                  setFilterIds(Array.from(value))
                 }}
               >
                 {
-                  filters[key].map((item, i) =>
-                    <SelectItem key={item.slug}>{item.name}</SelectItem>
+                  filter.filterValue.map((item, i) =>
+                    <SelectItem key={item.slug || item.id}>{item.value}</SelectItem>
                   )
                 }
               </Select>
@@ -180,7 +168,7 @@ const Category = ({ params, productFilter }) => {
             <Button color="primary" onClick={filter}>Tìm</Button>
           </div>
         </div>
-
+        {/* 
         <div className="pt-4">
           <Dropdown className="pt-4">
             <DropdownTrigger>
@@ -208,7 +196,7 @@ const Category = ({ params, productFilter }) => {
               }
             </DropdownMenu>
           </Dropdown>
-        </div>
+        </div> */}
 
 
         {

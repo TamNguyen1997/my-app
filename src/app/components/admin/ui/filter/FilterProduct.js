@@ -57,7 +57,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
   ];
 
   const onCellValueChange = (valueId, value) => {
-    let filterToUpdate = { ...filter }
+    let filterToUpdate = structuredClone({ ...filter })
     filterToUpdate.filterValue?.forEach(filterValue => filterValue.id === valueId ? Object.assign(filterValue, value) : filterValue)
     setFilter(filterToUpdate)
   }
@@ -168,14 +168,39 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
             aria-label={columnKey}
             selectionMode="multiple"
             labelPlacement="outside"
-            value={cellValue}
-            onSelectionChange={(value) => onCellValueChange(filterValue?.id, { [columnKey]: Array.from(value).map(item => { return { id: item } }) })}
-            defaultSelectedKeys={new Set(filterValue[columnKey] ? filterValue[columnKey].map(v => v.id) : [])}
-            className="max-w-xs"
+            isMultiline
+            onSelectionChange={(value) => {
+              if(Array.from(value)?.includes("all")) return;
+              onCellValueChange(filterValue?.id, { [columnKey]: Array.from(value).map(item => ({ id: item })) })
+            }}
+            selectedKeys={
+              (filterValue[columnKey] ? filterValue[columnKey].map(v => v.id) : [])
+            }
+            className={`${columnKey === "brands" ? "min-w-[140px]" : "min-w-[200px]"}`}
           >
+            <SelectItem textValue="All" key="all" onClick={() => {
+              if(selectionList[columnKey]?.length === filterValue[columnKey]?.length) {
+                onCellValueChange(filterValue?.id, { [columnKey]: [] });
+              } else {
+                onCellValueChange(filterValue?.id, { [columnKey]: selectionList[columnKey].map(item => ({ id: item.id })) });
+              }
+            }}>
+              <div className="font-bold w-full flex justify-between">
+                All 
+                {
+                  selectionList[columnKey]?.length === filterValue[columnKey]?.length ? 
+                    <span className="absolute top-1/2 -translate-y-1/2 right-2 text-inherit w-3 h-3 flex-shrink-0">
+                      <svg viewBox="0 0 17 18">
+                        <polyline fill="none" points="1 9 7 14 15 4" stroke="currentColor" strokeDasharray="22" strokeDashoffset="44" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" style={{transition: "stroke-dashoffset 200ms"}}></polyline>
+                      </svg>
+                    </span>
+                    : ""
+                }
+              </div>
+            </SelectItem>
             {
               selectionList[columnKey].map((item) =>
-                <SelectItem key={item.id}>
+                <SelectItem textValue={item.name} title={item.name} key={item.id}>
                   {item.name}
                 </SelectItem>
               )
@@ -188,6 +213,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
             aria-label={columnKey}
             defaultValue={cellValue}
             onValueChange={(value) => onCellValueChange(filterValue?.id, { [columnKey]: value })}
+            className="min-w-[80px]"
           />
         );
     }
@@ -230,7 +256,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
               loadingContent={<Spinner label="Loading..." />}>
               {(item) => (
                 <TableRow key={item.id}>
-                  {(columnKey) => <TableCell className="max-w-8">{renderCell(item, columnKey)}</TableCell>}
+                  {(columnKey) => <TableCell className="px-1.5 last:pr-0">{renderCell(item, columnKey)}</TableCell>}
                 </TableRow>
               )}
             </TableBody>

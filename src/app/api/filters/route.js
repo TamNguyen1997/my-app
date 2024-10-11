@@ -11,35 +11,30 @@ export async function POST(req) {
     const createdFilter = await db.filter.create({ data: filter })
     for (let filterValue of filterValueJson) {
       const filterValueId = filterValue.id
-      let brands = filterValue["brands"]
-      let categories = filterValue["categories"]
-      let subCategories = filterValue["subCategories"]
+
+      let brandOnFilterValues = filterValue["brands"].map(item => ({
+        filterValueId: filterValueId,
+        brandId: item
+      }))
+
+      let categoryOnFilterValues = [
+        ...Array.from(new Set(filterValue["categories"])),
+        ...Array.from(new Set(filterValue["subCategories"]))]
+        .map(item => ({
+          categoryId: item,
+          filterValueId: filterValueId
+        }))
+
       delete filterValue["brands"]
       delete filterValue["categories"]
       delete filterValue["subCategories"]
       await db.filter_value.create({ data: filterValue })
 
-      await db.brand.updateMany({
-        where: {
-          id: {
-            in: brands.map(brand => brand)
-          }
-        }, data: { filter_valueId: filterValueId }
+      await db.brand_on_filter_value.createMany({
+        data: brandOnFilterValues
       })
-      await db.category.updateMany({
-        where: {
-          id: {
-            in: categories.map(cate => cate)
-          }
-        }, data: { filterValueOnCategoryId: filterValueId }
-      })
-
-      await db.category.updateMany({
-        where: {
-          id: {
-            in: subCategories.map(subcate => subcate)
-          }
-        }, data: { filterValueOnSubCategoryId: filterValueId }
+      await db.category_on_filter_value.createMany({
+        data: categoryOnFilterValues
       })
     }
 

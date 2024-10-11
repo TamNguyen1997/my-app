@@ -72,13 +72,13 @@ const ProductCms = () => {
             </CardBody>
           </Card>
         </Tab>
-        <Tab title="Phụ kiện" key="component">
+        {/* <Tab title="Phụ kiện" key="component">
           <Card>
             <CardBody>
               <ComponentPartDetails productId={product.id} categories={categories} subCategories={subCategories} />
             </CardBody>
           </Card>
-        </Tab>
+        </Tab> */}
         <Tab title="Thông số kĩ thuật" key="technical">
           <Card>
             <CardBody>

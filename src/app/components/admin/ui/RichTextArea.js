@@ -71,7 +71,7 @@ import {
 const RichTextEditor = ({ editor }) => {
   return (
     <div className="border border-t-0 rounded-lg">
-      <div className="sticky top-0 translate-x-[-1px] bg-white w-[calc(100%_+_2px)] z-[1000]">
+      <div className="sticky top-0 translate-x-[-1px] bg-white w-[calc(100%_+_2px)] z-[20]">
         <div
           className={`
             relative border rounded-t-lg before:content-[''] before:absolute before:inset-0 before:bg-gray-100 before:z-[-1] before:rounded-t-lg
@@ -190,14 +190,6 @@ const BlogToolBar = ({ editor }) => {
     setSearchText("");
     setReplaceText("");
   };
-
-  // const changeBackgroundColor = (color) => {
-  //   setSelectedBackgroundColor(color);
-
-  //   if (editor) {
-  //     editor.chain().focus().setBackgroundColor(color).run();
-  //   }
-  // };
 
   const handleAddButton = () => {
     if (editor) {

@@ -170,22 +170,25 @@ const ProductDetail = ({
         </div>
         <div className='grid grid-cols-2 gap-3'>
           <div className="flex flex-col gap-3">
-            <div className="flex gap-2">
-              <DatePicker
-                label="Ngày tạo"
-                labelPlacement="outside"
-                defaultValue={getDateString(product.createdAt)}
-                isReadOnly
-                aria-label="Ngày tạo"
-              />
-              <DatePicker
-                label="Ngày sửa đổi gần nhất"
-                labelPlacement="outside"
-                defaultValue={getDateString(product.updatedAt)}
-                isReadOnly
-                aria-label="Ngày sửa đổi gần nhất"
-              />
-            </div>
+            {
+              product.createdAt && product.updatedAt &&
+              <div className="flex gap-2">
+                <DatePicker
+                  label="Ngày tạo"
+                  labelPlacement="outside"
+                  defaultValue={getDateString(product.createdAt)}
+                  isReadOnly
+                  aria-label="Ngày tạo"
+                />
+                <DatePicker
+                  label="Ngày sửa đổi gần nhất"
+                  labelPlacement="outside"
+                  defaultValue={getDateString(product.updatedAt)}
+                  isReadOnly
+                  aria-label="Ngày sửa đổi gần nhất"
+                />
+              </div>
+            }
             <Input type="text"
               aria-label="Hình ảnh thumbnail"
               label="Hình ảnh thumbnail"

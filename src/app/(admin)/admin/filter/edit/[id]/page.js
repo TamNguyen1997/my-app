@@ -43,11 +43,11 @@ const Filter = () => {
   return (
     <>
       <div className="flex flex-col gap-3">
-        <h2 className="font-bold">THUỘC TÍNH</h2>
+        <h2 className="font-bold">FILTER</h2>
         <div className="flex flex-col space-y-4 border rounded-2xl shadow-sm max-w-[444px] p-3 pb-5">
           <Input
             type="text"
-            label="ID thuộc tính"
+            label="ID filter"
             value={filter.id}
             labelPlacement="outside-left"
             isRequired
@@ -57,7 +57,7 @@ const Filter = () => {
 
           <Input
             type="text"
-            label="Tên thuộc tính"
+            label="Tên filter"
             value={filter.name}
             labelPlacement="outside-left"
             isRequired
@@ -74,7 +74,7 @@ const Filter = () => {
           </Switch>
         </div>
 
-        <h2 className="font-bold mt-10">GIÁ TRỊ THUỘC TÍNH</h2>
+        <h2 className="font-bold mt-10">GIÁ TRỊ FILTER</h2>
         {
           id ?
             <div className="-mt-2">

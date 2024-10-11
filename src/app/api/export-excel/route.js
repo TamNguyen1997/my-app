@@ -52,8 +52,8 @@ export async function GET(req) {
       "URL SP",
       "ID Cate",
       "ID sub-cate",
-      "ID thuộc tính",
-      "ID giá trị thuộc tính",
+      "ID filter",
+      "ID giá trị filter",
       "SL tồn kho",
       "Trạng thái active",
       "Giá thường",
@@ -72,11 +72,11 @@ export async function GET(req) {
       "URL SP": el.slug || "N/A",
       "ID Cate": el.categoryId || "N/A",
       "ID sub-cate": el.subCateId || "N/A",
-      "ID thuộc tính":
+      "ID filter":
         el.technical_detail.length > 0
           ? el.technical_detail[0].filterId
           : "N/A",
-      "ID giá trị thuộc tính":
+      "ID giá trị filter":
         el.technical_detail.length > 0
           ? el.technical_detail[0].filterValueId
           : "N/A",

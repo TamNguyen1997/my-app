@@ -20,7 +20,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
   const tableHeaders = [
     {
       key: "id",
-      title: "ID thuộc tính"
+      title: "ID giá trị filter"
     },
     {
       key: "value",
@@ -170,7 +170,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
             labelPlacement="outside"
             isMultiline
             onSelectionChange={(value) => {
-              if(Array.from(value)?.includes("all")) return;
+              if (Array.from(value)?.includes("all")) return;
               onCellValueChange(filterValue?.id, { [columnKey]: Array.from(value).map(item => ({ id: item })) })
             }}
             selectedKeys={
@@ -179,19 +179,19 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
             className={`${columnKey === "brands" ? "min-w-[140px]" : "min-w-[200px] max-w-[200px]"}`}
           >
             <SelectItem textValue="All" key="all" onClick={() => {
-              if(selectionList[columnKey]?.length === filterValue[columnKey]?.length) {
+              if (selectionList[columnKey]?.length === filterValue[columnKey]?.length) {
                 onCellValueChange(filterValue?.id, { [columnKey]: [] });
               } else {
                 onCellValueChange(filterValue?.id, { [columnKey]: selectionList[columnKey].map(item => ({ id: item.id })) });
               }
             }}>
               <div className="font-bold w-full flex justify-between">
-                All 
+                All
                 {
-                  selectionList[columnKey]?.length === filterValue[columnKey]?.length ? 
+                  selectionList[columnKey]?.length === filterValue[columnKey]?.length ?
                     <span className="absolute top-1/2 -translate-y-1/2 right-2 text-inherit w-3 h-3 flex-shrink-0">
                       <svg viewBox="0 0 17 18">
-                        <polyline fill="none" points="1 9 7 14 15 4" stroke="currentColor" strokeDasharray="22" strokeDashoffset="44" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" style={{transition: "stroke-dashoffset 200ms"}}></polyline>
+                        <polyline fill="none" points="1 9 7 14 15 4" stroke="currentColor" strokeDasharray="22" strokeDashoffset="44" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" style={{ transition: "stroke-dashoffset 200ms" }}></polyline>
                       </svg>
                     </span>
                     : ""
@@ -225,10 +225,10 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
       <div className="flex flex-col gap-2 min-h-full">
         <div className="px-1 py-2 border-default-200">
           <Table
-            aria-label="Tất cả sản phẩm"
+            aria-label="Thêm giá trị filter"
             bottomContent={
               <Button color="default" variant="ghost" onClick={() => addNewFilterValue()}>
-                Thêm thuộc tính
+                Thêm giá trị filter
               </Button>
             }
           >
@@ -251,7 +251,6 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
             </TableHeader>
             <TableBody
               items={filter.filterValue || []}
-              // isLoading={loadingState === "loading"}
               emptyContent={"Không có giá trị filter nào"}
               loadingContent={<Spinner label="Loading..." />}>
               {(item) => (

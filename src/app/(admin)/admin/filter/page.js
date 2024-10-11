@@ -21,7 +21,7 @@ const Filter = () => {
     },
     {
       key: "name",
-      title: "Tên thuộc tính"
+      title: "Tên filter"
     },
     {
       key: "categoryCount",
@@ -37,7 +37,7 @@ const Filter = () => {
     },
     {
       key: "active",
-      title: "Trạng thái thuộc tính active"
+      title: "Trạng thái filter"
     },
     {
       key: "actions",
@@ -110,28 +110,28 @@ const Filter = () => {
     <>
       <div className="flex flex-col space-y-4 min-h-full p-2">
         <div className="flex gap-3">
-          <Input label="Tên thuộc tính" aria-label="Tên thuộc tính" labelPlacement="outside" defaultValue={condition.name}
+          <Input label="Tên filter" aria-label="Tên filter" labelPlacement="outside" defaultValue={condition.name}
             isClearable
             onValueChange={(value) => {
               if (value.length > 2 || value.length === 0) onConditionChange({ name: value })
             }}
           />
 
-          <Input label="Tên giá trị thuộc tính" aria-label="Tên giá trị thuộc tính" labelPlacement="outside" defaultValue={condition.attrName}
+          <Input label="Tên giá trị filter" aria-label="Tên giá trị filter" labelPlacement="outside" defaultValue={condition.attrName}
             isClearable
             onValueChange={(value) => {
               if (value.length > 2 || value.length === 0) onConditionChange({ attrName: value })
             }}
           />
 
-          <Input label="ID thuộc tính" aria-label="ID thuộc tính" labelPlacement="outside" defaultValue={condition.id}
+          <Input label="ID filter" aria-label="ID filter" labelPlacement="outside" defaultValue={condition.id}
             isClearable
             onValueChange={(value) => {
               if (value.length > 2 || value.length === 0) onConditionChange({ id: value })
             }}
           />
 
-          <Input label="ID giá trị thuộc tính" aria-label="ID giá trị thuộc tính" labelPlacement="outside" defaultValue={condition.attrId}
+          <Input label="ID giá trị filter" aria-label="ID giá trị filter" labelPlacement="outside" defaultValue={condition.attrId}
             isClearable
             onValueChange={(value) => {
               if (value.length > 2 || value.length === 0) onConditionChange({ attrId: value })

@@ -3,6 +3,7 @@ import { db } from "@/app/db"
 import { NextResponse } from "next/server"
 import { history_status } from "@prisma/client"
 import { IMPORT_MESSAGE } from "@/constants/message"
+import slugify from "slugify"
 
 // export const config = {
 //   api: {
@@ -131,11 +132,7 @@ async function importProduct(worksheet) {
       throw new Error(`"Line ${index + 1}": ${IMPORT_MESSAGE.BRAND_NOT_FOUND}`)
     }
 
-    const slug = name
-      .toString()
-      .toLowerCase()
-      .trim()
-      .replace(/[\s\W-]+/g, "-")
+    const slug = slugify(name, { locale: 'vi' }).toLowerCase()
 
     const isExisting = await db.product.findUnique({
       where: { id: productId },

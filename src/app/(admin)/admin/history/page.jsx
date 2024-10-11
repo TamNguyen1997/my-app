@@ -166,12 +166,13 @@ const History = () => {
             <Select
               label="Loại"
               labelPlacement="outside"
+              disallowEmptySelection
+              defaultSelectedKeys={["product"]}
               onSelectionChange={(value) => {
                 setType(value.values().next().value);
               }}
               className="!m-0 w-60"
             >
-              <SelectItem key="category">Danh mục</SelectItem>
               <SelectItem key="product">Sản phẩm</SelectItem>
               <SelectItem key="technical_detail">Thông số kỹ thuật</SelectItem>
               <SelectItem key="sale_detail">Thông số bán hàng</SelectItem>

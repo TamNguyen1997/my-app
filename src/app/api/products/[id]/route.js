@@ -82,9 +82,28 @@ export async function DELETE(req, { params }) {
   }
 
   try {
-    await db.technical_detail.deleteMany({ where: { productId: params.id } })
-    return NextResponse.json(await db.product.delete({ where: { id: params.id } }))
+    await db.$transaction(async tx => {
+      await tx.technical_detail.deleteMany({ where: { productId: params.id } })
+      await tx.sale_detail.deleteMany({
+        where: {
+          productId: params.id,
+          NOT: [
+            {
+              saleDetailId: null
+            }
+          ]
+        }
+      })
+      await tx.sale_detail.deleteMany({
+        where: {
+          productId: params.id
+        }
+      })
+      await tx.product.delete({ where: { id: params.id } })
+    })
+    return NextResponse.json({ message: "Success" })
   } catch (e) {
-    return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
+    console.log(e)
+    return NextResponse.json({ message: "Sản phẩm đã đặt hàng", error: e }, { status: 400 })
   }
 }

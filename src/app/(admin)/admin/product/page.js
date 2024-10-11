@@ -18,6 +18,7 @@ import {
 } from "@nextui-org/react"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { EditIcon, Search, Trash2 } from "lucide-react"
+import { toast, ToastContainer } from "react-toastify"
 
 const rowsPerPage = 10
 
@@ -64,8 +65,14 @@ const ProductCms = () => {
     return total ? Math.ceil(total / rowsPerPage) : 0
   }, [total, rowsPerPage])
 
-  const deleteProduct = (id) => {
-    fetch(`/api/products/${id}`, { method: "DELETE" }).then(() => getProduct())
+  const deleteProduct = async (id) => {
+    const res = await fetch(`/api/products/${id}`, { method: "DELETE" })
+    if (res.ok) {
+      getProduct()
+    } else {
+      const body = await res.json()
+      toast.error(body.message)
+    }
   }
 
   const renderCell = useCallback((product, columnKey) => {
@@ -121,6 +128,7 @@ const ProductCms = () => {
 
   return (
     <>
+      <ToastContainer />
       <div className="flex flex-col gap-2 border-r min-h-full p-2">
         <div className="flex gap-3 w-1/2">
           <Input

@@ -53,3 +53,51 @@ export async function GET(req, { params }) {
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }
+
+export async function POST(req, { params }) {
+  try {
+    const data = await req.json()
+
+    const result = await db.$transaction(async tx => {
+      const filterValue = await tx.filter_value.create({
+        data: {
+          value: data.value,
+          slug: data.slug,
+          filterId: params.id,
+          active: data.active
+        }
+      })
+
+      if (data.categories?.length) {
+        await tx.category_on_filter_value.create({
+          data: {
+            filterValueId: filterValue.id,
+            categoryId: data.categories[0]
+          }
+        })
+      }
+      if (data.subCategories?.length) {
+        await tx.category_on_filter_value.create({
+          data: {
+            filterValueId: filterValue.id,
+            categoryId: data.subCategories[0]
+          }
+        })
+      }
+      if (data.brands?.length) {
+        await tx.brand_on_filter_value.create({
+          data: {
+            filterValueId: filterValue.id,
+            brandId: data.brands[0]
+          }
+        })
+      }
+      return filterValue
+    })
+
+    return NextResponse.json(result)
+  } catch (e) {
+    console.log(e)
+    return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
+  }
+}

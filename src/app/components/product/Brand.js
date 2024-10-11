@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, Select, SelectItem, Slider, Spinner } from "@nextui-org/react";
-import { FILTER_TYPE } from "@/lib/filter";
 import ProductCard from "@/components/product/ProductCard";
 
 const Brand = ({ params, productFilter }) => {
@@ -20,7 +19,7 @@ const Brand = ({ params, productFilter }) => {
   useEffect(() => {
     getProduct()
     fetch(`/api/filters/?categoryId=${params}&active=true`).then((res) => res.json()).then(json => {
-      setFilters(json.result)
+      setFilters(json.result.filter(item => item.filterValue.length))
     })
   }, [params, productFilter]);
 
@@ -38,19 +37,20 @@ const Brand = ({ params, productFilter }) => {
     setIsLoading(false)
   }
 
+  console.log(filterIds)
   const filter = () => {
     let range = ""
     if (JSON.stringify(value) !== JSON.stringify([0, 100000000])) {
       range += `range=${value.join('-')}`
     } else {
       if (!filterIds.length) {
-        window.location.replace(`/${brand.slug}`)
+        window.location.replace(`/${params}`)
         getProduct()
         return
       }
 
       if (filterIds.length === 1) {
-        window.location.replace(`/${brand.slug}_${filterIds[0]}`)
+        window.location.replace(`/${params}#${filterIds[0]}`)
         getProduct()
         return
       }
@@ -68,7 +68,6 @@ const Brand = ({ params, productFilter }) => {
 
   if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />
 
-  console.log(filterIds)
   return (
     <>
       <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${brand.slug}`} />
@@ -82,14 +81,22 @@ const Brand = ({ params, productFilter }) => {
                   className="max-w-[200px]"
                   selectionMode="multiple"
                   labelPlacement="outside"
-                  defaultSelectedKeys={new Set([filter.filterValue.find(item => window.location.hash.includes(item.slug) || item.slug === productFilter)?.slug])}
+                  defaultSelectedKeys={new Set([
+                    filter.filterValue.find(item => window.location.hash.includes(item.slug) || item.slug === productFilter)?.slug])}
                   onSelectionChange={(value) => {
-                    setFilterIds(Array.from(value))
+                    const newValues = Array.from(value).filter(item => item)
+                    if (!newValues.length) {
+                      const temp = filterIds.filter(item => !filter.filterValue.map(item => item.id).includes(item))
+                      setFilterIds(temp)
+                    } else {
+                      const temp = filterIds.filter(item => !newValues.includes(item))
+                      setFilterIds([...newValues, ...temp])
+                    }
                   }}
                 >
                   {
-                    filter.filterValue.map((item, i) =>
-                      <SelectItem key={item.id}>{item.value}</SelectItem>
+                    filter.filterValue.filter(item => item.slug).map((item, i) =>
+                      <SelectItem key={item.slug}>{item.value}</SelectItem>
                     )
                   }
                 </Select>
@@ -156,7 +163,7 @@ const Brand = ({ params, productFilter }) => {
               }
             </div>
         }
-      </div>
+      </div >
     </>
   );
 };

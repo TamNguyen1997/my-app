@@ -20,12 +20,10 @@ const Category = ({ params, productFilter }) => {
 
   const [filterIds, setFilterIds] = useState([])
 
-  console.log(category)
-
   useEffect(() => {
     getProduct()
     fetch(`/api/filters/?categoryId=${params}&active=true`).then((res) => res.json()).then(json => {
-      setFilters(json.result)
+      setFilters(json.result.filter(item => item.filterValue.length))
     })
   }, [params, productFilter]);
 
@@ -50,8 +48,6 @@ const Category = ({ params, productFilter }) => {
     getData()
   }
 
-  console.log(filterIds)
-
   const filter = () => {
     let range = ""
     if (JSON.stringify(value) !== JSON.stringify([0, 100000000])) {
@@ -63,7 +59,7 @@ const Category = ({ params, productFilter }) => {
         return
       }
       if (filterIds.length === 1) {
-        window.location.replace(`/${category.slug}_${filterIds[0]}`)
+        window.location.replace(`/${category.slug}#${filterIds[0]}`)
         getProduct()
         return
       }
@@ -104,14 +100,21 @@ const Category = ({ params, productFilter }) => {
                 selectionMode="multiple"
                 labelPlacement="outside"
                 defaultSelectedKeys={new Set([
-                  filter.filterValue.find(item => window.location.hash.includes(item.slug) || item.slug === productFilter).id])}
+                  filter.filterValue.find(item => window.location.hash.includes(item.slug) || item.slug === productFilter)?.id])}
                 onSelectionChange={(value) => {
-                  setFilterIds(Array.from(value))
+                  const newValues = Array.from(value).filter(item => item)
+                  if (!newValues.length) {
+                    const temp = filterIds.filter(item => !filter.filterValue.map(item => item.id).includes(item))
+                    setFilterIds(temp)
+                  } else {
+                    const temp = filterIds.filter(item => !newValues.includes(item))
+                    setFilterIds([...newValues, ...temp])
+                  }
                 }}
               >
                 {
-                  filter.filterValue.map((item, i) =>
-                    <SelectItem key={item.slug || item.id}>{item.value}</SelectItem>
+                  filter.filterValue.filter(item => item.slug).map((item, i) =>
+                    <SelectItem key={item.slug}>{item.value}</SelectItem>
                   )
                 }
               </Select>

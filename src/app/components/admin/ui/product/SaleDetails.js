@@ -1,57 +1,10 @@
-import { Button, Checkbox, Input, Select, SelectItem } from "@nextui-org/react"
+import { Button, Checkbox, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Spinner, useDisclosure } from "@nextui-org/react"
 import { Trash2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { toast, ToastContainer } from "react-toastify"
 import { v4 } from "uuid"
-
-// const ColorSelect = ({ detail, setDetails, details }) => {
-//   return (<>
-//     <Select
-//       label="Màu"
-//       isRequired
-//       placeholder="Chọn màu cho sản phẩm"
-//       defaultSelectedKeys={new Set([detail.value])}
-//       onSelectionChange={(value) => setDetails(handleDetailChange(details, detail.id, { value: value.values().next().value }))}
-//     >
-//       <SelectItem key="#ffffff" textValue="Trắng">
-//         <div className="flex gap-2 items-center">
-//           <div className="rounded-full bg-white w-8 h-8"></div>
-//           <p>Trắng</p>
-//         </div>
-//       </SelectItem>
-//       <SelectItem key="#4b5563" textValue="Xám">
-//         <div className="flex gap-2 items-center">
-//           <div className="rounded-full bg-gray-600 w-8 h-8"></div>
-//           <p>Xám</p>
-//         </div>
-//       </SelectItem>
-//       <SelectItem key="#1e3a8a" textValue="Xanh">
-//         <div className="flex gap-2 items-center">
-//           <div className="rounded-full bg-blue-900 w-8 h-8"></div>
-//           <p>Xanh</p>
-//         </div>
-//       </SelectItem>
-//       <SelectItem key="#facc15" textValue="Vàng">
-//         <div className="flex gap-2 items-center">
-//           <div className="rounded-full bg-yellow-400 w-8 h-8"></div>
-//           <p>Vàng</p>
-//         </div>
-//       </SelectItem>
-//       <SelectItem key="#dc2626" textValue="Đỏ">
-//         <div className="flex gap-2 items-center">
-//           <div className="rounded-full bg-red-600 w-8 h-8"></div>
-//           <p>Đỏ</p>
-//         </div>
-//       </SelectItem>
-//       <SelectItem key="#000000" textValue="Đen">
-//         <div className="flex gap-2 items-center">
-//           <div className="rounded-full bg-black w-8 h-8"></div>
-//           <p>Đen</p>
-//         </div>
-//       </SelectItem>
-//     </Select>
-//   </>)
-// }
+import NewFilter from "@/components/admin/ui/product/NewFilter"
+import NewFilterValue from "@/components/admin/ui/product/NewFilterValue"
 
 const removeItem = (id, details) => {
   return details.filter(item => item.id != id).filter(item => item.saleDetailId !== id)
@@ -67,7 +20,9 @@ const handleDetailChange = (saleDetails, id, value) => {
   return [...updateDetails]
 }
 
-const SecondarySaleDetails = ({ saleDetails, setSaleDetails, saleDetail, filters }) => {
+const SecondarySaleDetails = ({ saleDetails, setSaleDetails, saleDetail, filters, setFilters, product }) => {
+  const newFilterModal = useDisclosure()
+
   return (
     <>
       <div className="flex flex-col gap-2">
@@ -81,20 +36,61 @@ const SecondarySaleDetails = ({ saleDetails, setSaleDetails, saleDetail, filters
                     label="SKU"
                     defaultValue={detail.sku}
                     aria-label="SKU"
+                    isRequired
                     onValueChange={value => setSaleDetails(handleDetailChange(saleDetails, detail.id, { sku: value }))}
                   />
                   <Select label="Filter"
-                    defaultSelectedKeys={[detail.filterId]}
-                    onSelectionChange={(value) => setSaleDetails(handleDetailChange(saleDetails, detail.id, { filterId: value.values().next().value }))}>
+                    isRequired
+                    selectedKeys={[detail.filterId]}
+                    onSelectionChange={(value) => {
+                      if (value.values().next().value !== "new") {
+                        setSaleDetails(handleDetailChange(saleDetails, detail.id, { filterId: value.values().next().value }))
+                      }
+                    }}>
+                    <SelectItem textValue="Thêm filter" key="new" onClick={() => {
+                      newFilterModal.onOpen()
+                    }}>
+                      <div className="font-bold w-full flex justify-between">
+                        Thêm filter
+                      </div>
+                    </SelectItem>
                     {
                       filters.map(item => <SelectItem key={item.id}>{item.name}</SelectItem>)
                     }
                   </Select>
 
+                  <Modal
+                    scrollBehavior="inside"
+                    size="xl"
+                    isOpen={newFilterModal.isOpen} onOpenChange={newFilterModal.onOpenChange}>
+                    <ModalContent>
+                      {(onClose) => (
+                        <>
+                          <ModalHeader className="flex flex-col gap-1">Filter mới</ModalHeader>
+                          <ModalBody>
+                            <NewFilter filters={filters}
+                              setFilters={setFilters}
+                              callback={(value) => {
+                                setSaleDetails(handleDetailChange(saleDetails, detail.id, { filterId: value }))
+                                onClose()
+                              }} />
+                            <ModalFooter>
+                              <Button color="danger" variant="light" onPress={onClose}>
+                                Đóng
+                              </Button>
+                            </ModalFooter>
+                          </ModalBody>
+                        </>
+                      )}
+                    </ModalContent>
+                  </Modal>
                   <FilterValueSelect
                     detail={detail} getFilter={() =>
                       filters.find(filter => filter.id === saleDetails.find(sale => detail.id === sale.id).filterId)
                     }
+                    brandId={product.brandId}
+                    categoryId={product.categoryId}
+                    subCategoryId={product.subCateId}
                     setDetail={setSaleDetails}
                     onSelectionChange={handleDetailChange} details={saleDetails} />
 
@@ -104,6 +100,7 @@ const SecondarySaleDetails = ({ saleDetails, setSaleDetails, saleDetail, filters
                     aria-label="Giá"
                     min={0}
                     max={999999999}
+                    isRequired
                     onValueChange={(value) => setSaleDetails(handleDetailChange(saleDetails, detail.id, { price: parseInt(value) }))}
                   />
                   <Input type="number"
@@ -147,11 +144,18 @@ const SecondarySaleDetails = ({ saleDetails, setSaleDetails, saleDetail, filters
 const SaleDetails = ({ product }) => {
   const [saleDetails, setSaleDetails] = useState([])
   const [filters, setFilters] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    fetch(`/api/products/${product.id}/sale-details`).then(res => res.json()).then(setSaleDetails)
-    fetch(`/api/filters/`).then(res => res.json()).then(json => setFilters(json.result))
+    Promise.all([fetch(`/api/products/${product.id}/sale-details`).then(res => res.json()).then(setSaleDetails),
+    fetch(`/api/filters/?active=true&availableOnly=true&categoryIds=${product.categoryId}&categoryIds=${product.subCateId}
+      &brandId=${product.brandId}&activeValue=true`)
+      .then(res => res.json())
+      .then(json => setFilters(json.result))
+    ]).then(() => setIsLoading(false))
   }, [product])
+
+  const newFilterModal = useDisclosure()
 
   const addEmptySaleDetail = () => {
     setSaleDetails([...saleDetails, { id: v4(), productId: product.id, type: "TEXT" }])
@@ -170,6 +174,7 @@ const SaleDetails = ({ product }) => {
     }
   }
 
+  if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />
   return (
     <>
       <ToastContainer />
@@ -192,20 +197,60 @@ const SaleDetails = ({ product }) => {
                       onValueChange={value => setSaleDetails(handleDetailChange(saleDetails, detail.id, { sku: value }))}
                     />
                     <Select label="Filter"
-                      defaultSelectedKeys={[detail.filterId]}
+                      selectedKeys={[detail.filterId]}
                       isRequired
-                      onSelectionChange={(value) => setSaleDetails(handleDetailChange(saleDetails, detail.id, { filterId: value.values().next().value }))}>
+                      onSelectionChange={(value) => {
+                        if (value.values().next().value !== "new") {
+                          setSaleDetails(handleDetailChange(saleDetails, detail.id, { filterId: value.values().next().value }))
+                        }
+                      }
+                      }>
+                      <SelectItem textValue="Thêm filter" key="new" onClick={() => {
+                        newFilterModal.onOpen()
+                      }}>
+                        <div className="font-bold w-full flex justify-between">
+                          Thêm filter
+                        </div>
+                      </SelectItem>
                       {
                         filters.map(item => <SelectItem key={item.id}>{item.name}</SelectItem>)
                       }
                     </Select>
-
+                    <Modal
+                      scrollBehavior="inside"
+                      size="xl"
+                      isOpen={newFilterModal.isOpen} onOpenChange={newFilterModal.onOpenChange}>
+                      <ModalContent>
+                        {(onClose) => (
+                          <>
+                            <ModalHeader className="flex flex-col gap-1">Filter mới</ModalHeader>
+                            <ModalBody>
+                              <NewFilter filters={filters}
+                                setFilters={setFilters}
+                                callback={(value) => {
+                                  setSaleDetails(handleDetailChange(saleDetails, detail.id, { filterId: value }))
+                                  onClose()
+                                }} />
+                              <ModalFooter>
+                                <Button color="danger" variant="light" onPress={onClose}>
+                                  Đóng
+                                </Button>
+                              </ModalFooter>
+                            </ModalBody>
+                          </>
+                        )}
+                      </ModalContent>
+                    </Modal>
                     <FilterValueSelect
                       detail={detail} getFilter={() =>
                         filters.find(filter => filter.id === saleDetails.find(sale => detail.id === sale.id).filterId)
                       }
+                      brandId={product.brandId}
+                      categoryId={product.categoryId}
+                      subCategoryId={product.subCateId}
                       setDetail={setSaleDetails}
-                      onSelectionChange={handleDetailChange} details={saleDetails} />
+                      onSelectionChange={handleDetailChange}
+                      details={saleDetails} />
                     <Input type="number"
                       isRequired
                       label="Giá"
@@ -251,10 +296,12 @@ const SaleDetails = ({ product }) => {
               </div>
               <div className="p-5 flex flex-col gap-1">
                 <SecondarySaleDetails
+                  product={product}
                   saleDetail={detail}
                   saleDetails={saleDetails}
                   setSaleDetails={setSaleDetails}
                   filters={filters}
+                  setFilters={setFilters}
                 />
               </div>
             </div>
@@ -268,19 +315,68 @@ const SaleDetails = ({ product }) => {
   )
 }
 
-const FilterValueSelect = ({ detail, getFilter, setDetail, onSelectionChange, details }) => {
+const FilterValueSelect = ({ detail, getFilter, setDetail, onSelectionChange, details, categoryId, subCategoryId, brandId }) => {
+  const newFilterValueModal = useDisclosure()
 
-  const filterValues = getFilter()?.filterValue || []
+  const [filterValues, setFilterValues] = useState(getFilter()?.filterValue || [])
 
   return (
-    <Select label="Giá trị filter" isDisabled={!filterValues.length}
-      defaultSelectedKeys={[detail.filterValueId]}
-      isRequired
-      onSelectionChange={value => setDetail(onSelectionChange(details, detail.id, { filterValueId: value.values().next().value }, detail.id))}>
-      {
-        filterValues.map(item => <SelectItem key={item.id}>{item.value}</SelectItem>)
-      }
-    </Select>
+    <>
+      <Select label="Giá trị filter"
+        selectedKeys={[detail.filterValueId]}
+        isRequired
+        isDisabled={!getFilter() || !getFilter().id}
+        onSelectionChange={value => {
+          if (value.values().next().value !== "new") {
+            setDetail(onSelectionChange(details, detail.id, { filterValueId: value.values().next().value }, detail.id))
+          }
+        }
+        }>
+        <SelectItem
+          textValue="Thêm mới"
+          key="new" onClick={() => {
+            newFilterValueModal.onOpen()
+          }}>
+          <div className="font-bold w-full flex justify-between">
+            Thêm
+          </div>
+        </SelectItem>
+
+        {
+          filterValues.map(item => <SelectItem key={item.id}>{item.value}</SelectItem>)
+        }
+      </Select>
+      <Modal
+        scrollBehavior="inside"
+        size="xl"
+        isOpen={newFilterValueModal.isOpen} onOpenChange={newFilterValueModal.onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">Filter mới</ModalHeader>
+              <ModalBody>
+                <NewFilterValue
+                  filterId={getFilter().id}
+                  filterValues={filterValues}
+                  setFilterValues={setFilterValues}
+                  categoryId={categoryId}
+                  subCategoryId={subCategoryId}
+                  brandId={brandId}
+                  callback={(value) => {
+                    setDetail(onSelectionChange(details, detail.id, { filterValueId: value }, detail.id))
+                    onClose()
+                  }} />
+                <ModalFooter>
+                  <Button color="danger" variant="light" onPress={onClose}>
+                    Đóng
+                  </Button>
+                </ModalFooter>
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    </>
   )
 }
 

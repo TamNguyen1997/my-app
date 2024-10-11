@@ -6,7 +6,7 @@ import queryString from 'query-string';
 export async function POST(req) {
   try {
     let filter = await req.json()
-    let filterValueJson = filter["filterValue"]
+    let filterValueJson = filter["filterValue"] || []
     delete filter["filterValue"];
     const createdFilter = await db.filter.create({ data: filter })
     for (let filterValue of filterValueJson) {
@@ -45,6 +45,7 @@ export async function POST(req) {
 
     return NextResponse.json(createdFilter, { status: 200 })
   } catch (e) {
+    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }
@@ -53,7 +54,7 @@ export async function GET(req) {
   const { query } = queryString.parseUrl(req.url);
   let condition = {}
 
-  if (query.categoryId) {
+  if (query.categoryIds) {
     condition.filterValue = condition.filterValue || {}
     condition.filterValue = Object.assign(condition.filterValue, {
       some: {
@@ -62,10 +63,14 @@ export async function GET(req) {
             category: {
               OR: [
                 {
-                  slug: query.categoryId,
+                  slug: {
+                    in: query.categoryIds
+                  },
                 },
                 {
-                  id: query.categoryId
+                  id: {
+                    in: query.categoryIds
+                  }
                 }
               ]
             }
@@ -100,7 +105,6 @@ export async function GET(req) {
   if (query.active) {
     condition.active = query.active === "true"
   }
-
 
   try {
     let result = await db.filter.findMany({

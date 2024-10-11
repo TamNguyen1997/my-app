@@ -61,6 +61,22 @@ export async function GET(req) {
       }
     }
 
+    if (query.search) {
+
+      condition.OR = [
+        {
+          slug: {
+            search: `${query.search.trim().replaceAll(" ", " & ")}:*`
+          }
+        },
+        {
+          title: {
+            search: `${query.search.trim().replaceAll(" ", " & ")}:*`
+          }
+        }
+      ]
+    }
+
     const result = await db.blog.findMany({
       where: condition,
       take: size,

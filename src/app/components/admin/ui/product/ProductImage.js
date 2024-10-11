@@ -22,10 +22,10 @@ const ProductImage = ({ product }) => {
       toast.error("Không thể thêm hình, đã đạt tối đa 6 hình")
     } else {
       if (images.find(item => item.id === value.id)) {
-        toast.error("Đã chọn ảnh này")
+        setImages(images.filter(item => item.id !== value.id))
+        toast.warning("Đã loại ảnh này")
       } else {
         setImages([...images, value])
-        onOpenChange()
       }
     }
   }
@@ -66,7 +66,9 @@ const ProductImage = ({ product }) => {
             <>
               <ModalHeader className="flex flex-col gap-1">Chọn hình ảnh</ModalHeader>
               <ModalBody>
-                <ImageCms disableAdd={true} onImageClick={selectImage} disableDelete={true} />
+                <ImageCms
+                  onImageClick={selectImage}
+                  highlights={images} />
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>

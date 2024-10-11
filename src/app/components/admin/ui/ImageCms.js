@@ -4,11 +4,10 @@ import { useState } from 'react'
 import "./ImageCms.css"
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Textarea, useDisclosure, Tabs, Tab, SelectItem, Select } from '@nextui-org/react'
 import Dropzone from 'react-dropzone'
-import { redirect } from 'next/navigation'
 import ImagePicker from './ImagePicker'
 import BannerScheduler from './BannerScheduler'
 
-const ImageCms = ({ onImageClick }) => {
+const ImageCms = ({ onImageClick, highlights }) => {
   const [reload, setReload] = useState(false)
 
   const [selectedTab, setSelectedTab] = useState("Gallery")
@@ -125,7 +124,7 @@ const ImageCms = ({ onImageClick }) => {
             </Modal>
           </div>
 
-          <ImagePicker onImageClick={onImageClick} reload={reload} />
+          <ImagePicker onImageClick={onImageClick} reload={reload} highlights={highlights} />
         </Tab>
         <Tab key="Draggable Gallery" title="Quản lý banner">
           <BannerScheduler />

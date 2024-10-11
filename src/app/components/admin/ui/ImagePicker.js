@@ -5,11 +5,12 @@ import "./ImageCms.css"
 import { Input, Select, SelectItem } from '@nextui-org/react'
 import { X } from 'lucide-react'
 
-const ImagePicker = ({ disableSearch, onImageClick, disableDelete, reload }) => {
+const ImagePicker = ({ disableSearch, onImageClick, disableDelete, reload, highlights }) => {
   const [images, setImages] = useState([])
   const [type, setType] = useState(new Set([]))
   const [name, setName] = useState()
   const [refresh, setRefresh] = useState(false)
+  const [highlightImages, setHighlightImages] = useState(highlights || [])
 
   useEffect(() => {
     const typeValue = type.values().next().value
@@ -68,12 +69,12 @@ const ImagePicker = ({ disableSearch, onImageClick, disableDelete, reload }) => 
 
       <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-[30px]">
         {
-          images?.map?.((img) => (
+          images?.map((img) => (
             <div key={img.id} className={`
                   group relative flex flex-col rounded hover:opacity-70 cursor-pointer
                   shadow-[0px_2px_10px_rgba(0,0,0,0.15)] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)]
                   hover:-translate-y-2.5 hover:scale-[1.02]
-                  transition duration-400
+                  transition duration-400 ${highlightImages.map(item => item.id).includes(img.id) && "border-green-400 border-large"}
                 `}>
               <img
                 src={`${process.env.NEXT_PUBLIC_FILE_PATH + img.path}`}

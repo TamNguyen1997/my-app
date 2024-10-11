@@ -61,6 +61,7 @@ export async function POST(req, { params }) {
     const result = await db.$transaction(async tx => {
       const filterValue = await tx.filter_value.create({
         data: {
+          id: data.id,
           value: data.value,
           slug: data.slug,
           filterId: params.id,

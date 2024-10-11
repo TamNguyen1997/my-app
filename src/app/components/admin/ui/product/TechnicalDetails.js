@@ -67,7 +67,7 @@ const TechnicalDetails = ({ product }) => {
       </div>
       <div>
         {
-          technicalDetails.map((item, i) => <div className="flex gap-2" key={i}>
+          technicalDetails.map((item, i) => <div className="flex gap-2 pt-2" key={i}>
             <Input
               labelPlacement="outside"
               label="Filter ID"

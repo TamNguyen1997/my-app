@@ -10,8 +10,6 @@ const NewFilterValue = ({ filterId, filterValues, setFilterValues, categoryId, s
     formState: { errors },
   } = useForm()
 
-  console.log(filterValues)
-
   const onSave = async (data) => {
     const res = await fetch(`/api/filters/${filterId}/filter-values`, {
       method: "POST", body: JSON.stringify({

@@ -315,7 +315,16 @@ const SaleDetails = ({ product }) => {
   )
 }
 
-const FilterValueSelect = ({ detail, getFilter, setDetail, onSelectionChange, details, categoryId, subCategoryId, brandId }) => {
+const FilterValueSelect = ({
+  detail,
+  getFilter,
+  setDetail,
+  onSelectionChange,
+  details,
+  categoryId,
+  subCategoryId,
+  brandId
+}) => {
   const newFilterValueModal = useDisclosure()
 
   const [filterValues, setFilterValues] = useState(getFilter()?.filterValue || [])

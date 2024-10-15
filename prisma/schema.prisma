@@ -152,7 +152,7 @@ model filter_value {
   id       String  @id @default(dbgenerated("gen_random_uuid()"))
   value    String  @default("")
   slug     String?
-  filter   filter? @relation(fields: [filterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  filter   filter  @relation(fields: [filterId], references: [id])
   filterId String  @map("filter_id")
 
   createdAt DateTime @default(now()) @map("created_at")

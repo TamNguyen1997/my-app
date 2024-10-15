@@ -14,12 +14,6 @@ import {
 
 const items = [
   {
-    id: "homepage",
-    name: "Homepage",
-    icon: <HomeIcon />,
-    link: "/",
-  },
-  {
     id: "gallery",
     name: "Gallery",
     icon: <Image />,

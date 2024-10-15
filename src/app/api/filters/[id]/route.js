@@ -63,7 +63,6 @@ const process = async (req, tx, params) => {
     await tx.filter_value.update({
       where: { id: filterValueId },
       data: {
-        filterId: filter.id,
         value: filterValue.value,
         slug: filterValue.slug,
         active: filterValue.active,

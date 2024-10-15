@@ -37,6 +37,7 @@ const Category = () => {
   const [selectedCate, setSelectedCate] = useState({})
   const [condition, setCondition] = useState({})
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const [categoryId, setCategoryId] = useState(selectedCate.id)
 
   const imageModal = useDisclosure()
 
@@ -78,6 +79,7 @@ const Category = () => {
       toast.promise(
         fetch(`/api/categories/${selectedCate.id}`, {
           method: "PUT", body: JSON.stringify({
+            id: categoryId,
             highlight: selectedCate.highlight,
             showOnHeader: selectedCate.showOnHeader,
             name: selectedCate.name,
@@ -128,6 +130,7 @@ const Category = () => {
 
   const openModal = (category) => {
     setSelectedCate(category)
+    setCategoryId(category.id)
     onOpen()
   }
 
@@ -273,6 +276,12 @@ const Category = () => {
               <>
                 <ModalHeader className="flex flex-col gap-1">Chi tiết category</ModalHeader>
                 <ModalBody>
+                  <Input
+                    type="text"
+                    label="ID Category"
+                    defaultValue={categoryId}
+                    onValueChange={(value) => setCategoryId(value)}
+                    labelPlacement="outside" isRequired />
                   <Input
                     type="text"
                     label="Category"

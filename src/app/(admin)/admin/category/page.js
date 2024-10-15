@@ -56,12 +56,13 @@ const Category = () => {
     let filteredCondition = { ...condition }
     Object.keys(filteredCondition).forEach(key => filteredCondition[key] === undefined && delete filteredCondition[key])
     const queryString = new URLSearchParams(filteredCondition).toString()
-    fetch(`/api/categories/?size=${rowsPerPage}&page=${page}&${queryString}&includeImage=true`).then(async res => {
-      const data = await res.json()
-      setCategories(data.result)
-      setTotal(data.total)
-      setLoadingState("idle")
-    })
+    fetch(`/api/categories/?size=${rowsPerPage}&page=${page}&${queryString}&includeImage=true&includeParentCategory=true`)
+      .then(async res => {
+        const data = await res.json()
+        setCategories(data.result)
+        setTotal(data.total)
+        setLoadingState("idle")
+      })
 
     fetch(`/api/categories/?size=10000&page=1&type=CATE`).then(async res => {
       const data = await res.json()
@@ -163,6 +164,8 @@ const Category = () => {
         return <div className="relative flex items-center">
           <CustomSwitch category={category} columnKey={columnKey} />
         </div>
+      case "cate":
+        return category[columnKey]?.name
       case "actions":
         return (
           <div className="relative flex items-center gap-2">
@@ -225,7 +228,7 @@ const Category = () => {
       <div className="flex flex-col gap-2">
         <div className="border-default-200">
           <Table
-            aria-label="Tất cả sản phẩm"
+            aria-label="Tất cả Category"
             bottomContent={
               loadingState === "loading" ? null :
                 <div className="flex w-full justify-center">
@@ -243,6 +246,7 @@ const Category = () => {
               <TableColumn key="name" textValue="name">Tên</TableColumn>
               <TableColumn key="slug" textValue="slug">Slug</TableColumn>
               <TableColumn key="type" textValue="type">Loại</TableColumn>
+              <TableColumn key="cate" textValue="cate">Category</TableColumn>
               <TableColumn key="active" textValue="active">Active</TableColumn>
               <TableColumn key="highlight" textValue="highlight">Nổi bật</TableColumn>
               <TableColumn key="actions" textValue="actions"></TableColumn>

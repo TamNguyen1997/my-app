@@ -47,6 +47,10 @@ export async function GET(req) {
     include.image = query.includeImage === 'true'
   }
 
+  if (query.includeParentCategory) {
+    include.cate = query.includeParentCategory === 'true'
+  }
+
   if (query.showOnHeader) {
     condition.showOnHeader = query.showOnHeader === 'true'
   }

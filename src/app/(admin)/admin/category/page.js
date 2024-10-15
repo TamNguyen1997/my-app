@@ -44,6 +44,8 @@ const Category = () => {
   const [total, setTotal] = useState(0)
   const [loadingState, setLoadingState] = useState("loading")
 
+  const [allCategories, setAllCategories] = useState([])
+
   const pages = useMemo(() => {
     return total ? Math.ceil(total / rowsPerPage) : 0;
   }, [total, rowsPerPage]);
@@ -58,6 +60,11 @@ const Category = () => {
       setCategories(data.result)
       setTotal(data.total)
       setLoadingState("idle")
+    })
+
+    fetch(`/api/categories/?size=10000&page=1&type=CATE`).then(async res => {
+      const data = await res.json()
+      setAllCategories(data.result)
     })
   }
   useEffect(() => {
@@ -337,7 +344,7 @@ const Category = () => {
                           setSelectedCate(Object.assign({}, selectedCate, { cateId: value.values().next().value }))}
                       >
                         {
-                          categories.map((category) => (
+                          allCategories.map((category) => (
                             <SelectItem key={category.id}>
                               {category.name}
                             </SelectItem>

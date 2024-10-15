@@ -1,6 +1,5 @@
 import { db } from '@/app/db';
 import { NextResponse } from 'next/server';
-import { json } from 'stream/consumers';
 
 export async function DELETE(req, { params }) {
   try {
@@ -18,11 +17,11 @@ export async function GET(req, { params }) {
   }
 }
 
-export async function PUT(req) {
+export async function PUT(req, { params }) {
 
   try {
     await db.$transaction(async tx => {
-      await process(req, tx)
+      await process(req, tx, params)
     })
 
     return NextResponse.json({ message: "Update successfully" }, { status: 200 })
@@ -32,13 +31,15 @@ export async function PUT(req) {
   }
 }
 
-const process = async (req, tx) => {
+const process = async (req, tx, params) => {
   let filter = await req.json()
   let filterValueJson = new Set(filter["filterValue"].filter(item => item.createdAt))
   let newFilterValueJson = filter["filterValue"].filter(item => !item.createdAt)
 
-  await tx.filter.update({
-    where: { id: filter.id }, data: {
+  await tx.filter.updateMany({
+    where: { id: params.id },
+    data: {
+      id: filter.id,
       name: filter.name,
       active: filter.active
     }
@@ -62,6 +63,7 @@ const process = async (req, tx) => {
     await tx.filter_value.update({
       where: { id: filterValueId },
       data: {
+        filterId: filter.id,
         value: filterValue.value,
         slug: filterValue.slug,
         active: filterValue.active,
@@ -108,7 +110,7 @@ const process = async (req, tx) => {
         value: filterValue.value,
         slug: filterValue.slug,
         active: filterValue.active,
-        filterId: filterValue.filterId
+        filterId: filter.id,
       }
     })
 

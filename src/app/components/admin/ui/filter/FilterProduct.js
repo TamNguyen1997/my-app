@@ -15,7 +15,7 @@ import { Trash2 } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
 import { v4 } from "uuid";
 
-const FilterProduct = ({ categories, brands, subCategories, filter, setFilter }) => {
+const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, filterId }) => {
 
   const tableHeaders = [
     {
@@ -85,7 +85,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
       const body = await res.json()
       window.location.replace(`/admin/filter/edit/${body.id}`)
     } else {
-      res = await fetch(`/api/filters/${filter.id}`, {
+      res = await fetch(`/api/filters/${filterId}`, {
         method: "PUT",
         body: JSON.stringify({
           ...filter,
@@ -95,7 +95,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
     }
 
     if (res.ok) {
-      toast.success("Đã cập nhật")
+      window.location.replace(`/admin/filter/edit/${filter.id}`)
     } else {
       toast.error("Không thể cập nhật")
     }

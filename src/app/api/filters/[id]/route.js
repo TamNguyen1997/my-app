@@ -106,6 +106,7 @@ const process = async (req, tx, params) => {
     delete filterValue["subCategories"]
     await tx.filter_value.create({
       data: {
+        id: filterValueId,
         value: filterValue.value,
         slug: filterValue.slug,
         active: filterValue.active,

@@ -8,6 +8,14 @@ export async function DELETE(req, { params }) {
   }
 
   try {
+    if (await db.category.findFirst({ where: { cateId: params.slug } })) {
+      return NextResponse.json({ message: `Cần xóa sub cate của ${params.slug} trước` }, { status: 400 })
+    }
+
+    if (await db.category_on_filter_value.findFirst({ where: { category: { id: params.slug } } })) {
+      return NextResponse.json({ message: `Cần xóa filter của ${params.slug} trước` }, { status: 400 })
+    }
+
     await db.category.deleteMany({ where: { cateId: params.slug } })
     return NextResponse.json(await db.category.delete({ where: { id: params.slug } }))
   } catch (e) {
@@ -49,7 +57,7 @@ export async function PUT(req, { params }) {
   delete body.subcates
   try {
 
-    return NextResponse.json(await db.category.update({
+    return NextResponse.json(await db.category.updateMany({
       where: { id: params.slug },
       data: body
     }))

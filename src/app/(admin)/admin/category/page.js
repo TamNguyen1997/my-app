@@ -110,7 +110,7 @@ const Category = () => {
       )
     } else {
       toast.promise(
-        fetch('/api/categories/', { method: "POST", body: JSON.stringify(selectedCate) }).then(async (res) => {
+        fetch('/api/categories/', { method: "POST", body: JSON.stringify(Object.assign(selectedCate, { id: categoryId })) }).then(async (res) => {
           getCategories()
           if (!res.ok) {
             throw new Error((await res.json()).message)
@@ -285,7 +285,7 @@ const Category = () => {
                     label="ID Category"
                     defaultValue={categoryId}
                     onValueChange={(value) => setCategoryId(value)}
-                    labelPlacement="outside" isRequired />
+                    labelPlacement="outside" />
                   <Input
                     type="text"
                     label="Category"

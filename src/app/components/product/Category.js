@@ -171,36 +171,6 @@ const Category = ({ params, productFilter }) => {
             <Button color="primary" onClick={filter}>Tìm</Button>
           </div>
         </div>
-        {/* 
-        <div className="pt-4">
-          <Dropdown className="pt-4">
-            <DropdownTrigger>
-              <Button
-                variant="bordered">
-                {
-                  selectedFilters.size ? FILTER_TYPE[selectedFilters.values().next().value].name : "Sắp xếp"
-                }
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu
-              aria-label="Example with disabled actions"
-              variant="light"
-              selectionMode="single"
-              selectedKeys={selectedFilters}
-              onSelectionChange={onFilterSelect}>
-              {
-                Object.keys(FILTER_TYPE).map(key =>
-                  <DropdownItem textValue="item" key={key}>
-                    {
-                      FILTER_TYPE[key].name
-                    }
-                  </DropdownItem>
-                )
-              }
-            </DropdownMenu>
-          </Dropdown>
-        </div> */}
-
 
         {
           !isLoading && !data.length ?

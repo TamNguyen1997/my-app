@@ -8,35 +8,41 @@ export async function POST(req) {
     let filter = await req.json()
     let filterValueJson = filter["filterValue"] || []
     delete filter["filterValue"];
+    if (await db.filter.findFirst({ where: { id: filter.id } })) {
+      return NextResponse.json({ message: "ID của filter đã tổn tại" }, { status: 400 })
+    }
     const createdFilter = await db.filter.create({ data: filter })
-    for (let filterValue of filterValueJson) {
-      const filterValueId = filterValue.id
 
-      let brandOnFilterValues = filterValue["brands"].map(item => ({
-        filterValueId: filterValueId,
-        brandId: item
-      }))
+    await db.$transaction(async tx => {
+      for (let filterValue of filterValueJson) {
+        const filterValueId = filterValue.id
 
-      let categoryOnFilterValues = [
-        ...Array.from(new Set(filterValue["categories"])),
-        ...Array.from(new Set(filterValue["subCategories"]))]
-        .map(item => ({
-          categoryId: item,
-          filterValueId: filterValueId
+        let brandOnFilterValues = filterValue["brands"].map(item => ({
+          filterValueId: filterValueId,
+          brandId: item
         }))
 
-      delete filterValue["brands"]
-      delete filterValue["categories"]
-      delete filterValue["subCategories"]
-      await db.filter_value.create({ data: filterValue })
+        let categoryOnFilterValues = [
+          ...Array.from(new Set(filterValue["categories"])),
+          ...Array.from(new Set(filterValue["subCategories"]))]
+          .map(item => ({
+            categoryId: item,
+            filterValueId: filterValueId
+          }))
 
-      await db.brand_on_filter_value.createMany({
-        data: brandOnFilterValues
-      })
-      await db.category_on_filter_value.createMany({
-        data: categoryOnFilterValues
-      })
-    }
+        delete filterValue["brands"]
+        delete filterValue["categories"]
+        delete filterValue["subCategories"]
+        await tx.filter_value.create({ data: filterValue })
+
+        await tx.brand_on_filter_value.createMany({
+          data: brandOnFilterValues
+        })
+        await tx.category_on_filter_value.createMany({
+          data: categoryOnFilterValues
+        })
+      }
+    })
 
     return NextResponse.json(createdFilter, { status: 200 })
   } catch (e) {

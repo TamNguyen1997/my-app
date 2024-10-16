@@ -82,8 +82,13 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
           filterValue: filterValues
         })
       })
-      const body = await res.json()
-      window.location.replace(`/admin/filter/edit/${body.id}`)
+      if (res.ok) {
+        const body = await res.json()
+        window.location.replace(`/admin/filter/edit/${body.id}`)
+      } else {
+        const body = await res.json()
+        toast.error(body.message)
+      }
     } else {
       res = await fetch(`/api/filters/${filterId}`, {
         method: "PUT",

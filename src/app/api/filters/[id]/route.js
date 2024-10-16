@@ -3,6 +3,12 @@ import { NextResponse } from 'next/server';
 
 export async function DELETE(req, { params }) {
   try {
+    await db.$transaction(async tx => {
+      await tx.category_on_filter_value.deleteMany({ where: { filterValue: { filterId: params.id } } })
+      await tx.brand_on_filter_value.deleteMany({ where: { filterValue: { filterId: params.id } } })
+      await tx.filter_value.deleteMany({ where: { filterId: params.id } })
+      await tx.filter.delete({ where: { id: params.id } })
+    })
     return NextResponse.json(await db.filter.delete({ where: { id: params.id } }))
   } catch (e) {
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })

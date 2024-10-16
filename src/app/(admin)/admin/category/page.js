@@ -17,6 +17,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import slugify from "slugify"
 
 import { ToastContainer, toast } from 'react-toastify';
+import { v4 } from "uuid";
 
 const rowsPerPage = 15;
 
@@ -80,7 +81,7 @@ const Category = () => {
       toast.promise(
         fetch(`/api/categories/${selectedCate.id}`, {
           method: "PUT", body: JSON.stringify({
-            id: categoryId,
+            id: categoryId || v4(),
             highlight: selectedCate.highlight,
             showOnHeader: selectedCate.showOnHeader,
             name: selectedCate.name,
@@ -110,7 +111,7 @@ const Category = () => {
       )
     } else {
       toast.promise(
-        fetch('/api/categories/', { method: "POST", body: JSON.stringify(Object.assign(selectedCate, { id: categoryId })) }).then(async (res) => {
+        fetch('/api/categories/', { method: "POST", body: JSON.stringify(Object.assign(selectedCate, { id: categoryId || v4() })) }).then(async (res) => {
           getCategories()
           if (!res.ok) {
             throw new Error((await res.json()).message)

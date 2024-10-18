@@ -25,7 +25,7 @@ const NewFilterValue = ({ filterId, filterValues, setFilterValues, categoryId, s
         callback(data.id)
       }
     } else {
-      console(res.status)
+      console.log(res.status)
     }
   }
 

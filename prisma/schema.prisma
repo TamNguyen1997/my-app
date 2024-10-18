@@ -14,7 +14,7 @@ datasource db {
 }
 
 model product {
-  id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id       String  @id @default(dbgenerated("gen_random_uuid()"))
   name     String
   slug     String
   imageAlt String? @map("image_alt")
@@ -52,7 +52,7 @@ model product {
 
   componentParts  product[]           @relation("componentParts")
   product         product?            @relation("componentParts", fields: [productId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  productId       String?             @db.Uuid
+  productId       String?
   filterOnProduct filter_on_product[]
 
   metaTitle        String?
@@ -72,7 +72,7 @@ enum product_type {
 }
 
 model product_on_image {
-  productId String  @db.Uuid
+  productId String
   product   product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   imageId String @db.Uuid
@@ -86,7 +86,7 @@ model product_on_image {
 model technical_detail {
   id        String  @id @default(dbgenerated("gen_random_uuid()"))
   product   product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId String  @map("product_id") @db.Uuid
+  productId String  @map("product_id")
 
   filter        filter?       @relation(fields: [filterId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   filterId      String?       @map("filter_id")
@@ -106,7 +106,7 @@ enum sale_detail_type {
 model sale_detail {
   id        String           @id @default(dbgenerated("gen_random_uuid()"))
   product   product          @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId String           @map("product_id") @db.Uuid
+  productId String           @map("product_id")
   value     String?
   price     Int
   type      sale_detail_type @default(TEXT)
@@ -187,8 +187,8 @@ enum filter_type {
 model filter_on_product {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   product   product? @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  productId String?  @db.Uuid
-  filterId  String?  @db.Uuid
+  productId String?
+  filterId  String?
 
   @@unique([filterId, productId])
   @@index([filterId])
@@ -267,7 +267,7 @@ enum SHIPPING_STATUS {
 
 model product_on_order {
   product      product      @relation(fields: [productId], references: [id])
-  productId    String       @map("product_id") @db.Uuid
+  productId    String       @map("product_id")
   order        order        @relation(fields: [orderId], references: [id])
   orderId      String       @map("order_id") @db.Uuid
   quantity     Int          @default(0)

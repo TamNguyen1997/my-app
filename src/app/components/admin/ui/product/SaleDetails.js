@@ -178,6 +178,16 @@ const SaleDetails = ({ product }) => {
   return (
     <>
       <ToastContainer />
+      {(!product.categoryId || !product.subCateId || !product.brandId) && <div>
+        <ul className="list-disc text-red-400 list-inside">
+          <li>
+            Sản phẩm phải có category và subcategory mới có thể thêm mới giá trị filter
+          </li>
+          <li>
+            Sản phẩm phải có thương hiệu mới có thể thêm mới giá trị filter
+          </li>
+        </ul>
+      </div>}
       <div className="p-2">
         <Button color="default" variant="ghost" size="sm" className="float-right" onPress={addEmptySaleDetail}>Thêm thông số</Button>
       </div>
@@ -334,7 +344,7 @@ const FilterValueSelect = ({
       <Select label="Giá trị filter"
         selectedKeys={[detail.filterValueId]}
         isRequired
-        isDisabled={!getFilter() || !getFilter().id}
+        isDisabled={!getFilter() || !getFilter().id || !categoryId || !subCategoryId || !brandId}
         onSelectionChange={value => {
           if (value.values().next().value !== "new") {
             setDetail(onSelectionChange(details, detail.id, { filterValueId: value.values().next().value }, detail.id))

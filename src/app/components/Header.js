@@ -190,7 +190,7 @@ const BRANDS = [
   {
     id: 1,
     slug: "thuong-hieu-rubbermaid",
-    name: "Rubbermaid",
+    name: "Rubbermaid_Dụng cụ làm vệ sinh",
     image: {
       path: "/brand/Rubbermaid.png"
     },
@@ -198,7 +198,7 @@ const BRANDS = [
   {
     id: 2,
     slug: "thuong-hieu-ghibli",
-    name: "Ghibli",
+    name: "Ghibli&Wirbel_Máy vệ sinh công nghiệp",
     image: {
       path: "/brand/Logo-Ghibli.png"
     },
@@ -206,33 +206,33 @@ const BRANDS = [
   {
     id: 3,
     slug: "thuong-hieu-moerman",
-    name: "Moerman",
+    name: "Moerman_Dụng cụ vệ sinh kính",
     image: {
       path: "/brand/Logo-Moerman.png"
     }
   },
   {
     id: 4,
-    slug: "thuong-hieu-kimberly-clark",
-    name: "Kimberly-Clark",
+    slug: "thuong-hieu-mapa",
+    name: "Mapa_Găng tay bảo hộ",
     image: {
-      path: "/brand/Logo-Kimberly-Clark.png"
+      path: "/brand/Logo-Mapa.png"
     },
   },
   {
     id: 5,
     slug: "thuong-hieu-kleen-tex",
-    name: "Kleen-tex",
+    name: "Kleen Tex_Thảm trải sản/sảnh",
     image: {
       path: "/brand/KLEEN-TEX.png"
     },
   },
   {
     id: 6,
-    slug: "thuong-hieu-mapa",
-    name: "Mapa",
+    slug: "thuong-hieu-kimberly-clark",
+    name: "Kimberly Clark_Khăn giấy/vệ sinh",
     image: {
-      path: "/brand/Logo-Mapa.png"
+      path: "/brand/Logo-Kimberly-Clark.png"
     },
   },
 

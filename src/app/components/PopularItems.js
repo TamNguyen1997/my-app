@@ -61,7 +61,7 @@ const brandDescription = {
     description: `Kimberly-Clark Corporation - tập đoàn chuyên sản xuất hàng hóa tiêu dùng, đặc biệt là các sản phẩm về Giấy. 
     Thành lập năm 1872 với hơn 140 năm hoạt động, khăn giấy cao cấp Kimberly-Clark luôn là tiện ích cho mọi gia đình.`,
   },
-  "GHIBLI & WIRBEL": {
+  "GHIBLI&WIRBEL": {
     logo: "/brand/Logo-Ghibli.png",
     slug: "thuong-hieu-ghibli",
     description: `Ghibli & Wirbel, nhà sản xuất thiết bị làm sạch thành lập năm 1968 tại Ý. 
@@ -77,7 +77,7 @@ export default function PopularItems() {
   const [ghibliProducts, setGhibliProducts] = useState([]);
   const [kleenTexProducts, setKleenTexProducts] = useState([]);
   const [kimberlyProducts, setKimberlyProducts] = useState([]);
-  const [selectedBrand, setSelectedBrand] = useState("GHIBLI & WIRBEL");
+  const [selectedBrand, setSelectedBrand] = useState("RUBBERMAID");
 
   const [brandProducts, setBrandProducts] = useState([]);
 
@@ -98,24 +98,24 @@ export default function PopularItems() {
       fetch(`/api/brands/thuong-hieu-rubbermaid/products/?active=true`)
         .then((res) => res.json())
         .then((json) => {
-          setRubberMaidProducts(json.products);
+          setRubberMaidProducts(json.products || []);
           setBrandProducts(json.products);
         }),
       fetch(`/api/brands/thuong-hieu-moerman/products/?active=true`)
         .then((res) => res.json())
-        .then((json) => setMoermanProducts(json.products)),
+        .then((json) => setMoermanProducts(json.products || [])),
       fetch(`/api/brands/thuong-hieu-mapa/products/?active=true`)
         .then((res) => res.json())
-        .then((json) => setMapaProducts(json.products)),
+        .then((json) => setMapaProducts(json.products || [])),
       fetch(`/api/brands/thuong-hieu-ghibli/products/?active=true`)
         .then((res) => res.json())
-        .then((json) => setGhibliProducts(json.products)),
+        .then((json) => setGhibliProducts(json.products || [])),
       fetch(`/api/brands/thuong-hieu-kimberly-clark/products/?active=true`)
         .then((res) => res.json())
-        .then((json) => setKimberlyProducts(json.products)),
+        .then((json) => setKimberlyProducts(json.products || [])),
       fetch(`/api/brands/thuong-hieu-kleen-tex/products/?active=true`)
         .then((res) => res.json())
-        .then((json) => setKleenTexProducts(json.products)),
+        .then((json) => setKleenTexProducts(json.products || [])),
       fetch(`/api/categories/?highlight=true&size=3&page=1&includeImage=true`)
         .then((res) => res.json())
         .then((json) => setHighlightCates(json.result)),
@@ -127,8 +127,7 @@ export default function PopularItems() {
     Promise.all(
       highlightCates.map((cate) =>
         fetch(
-          `/api/products/?size=${10}&page=${1}&categoryId=${
-            cate.id
+          `/api/products/?size=${10}&page=${1}&categoryId=${cate.id
           }&active=true&productType=PRODUCT&includeCate=true`
         )
           .then((res) => res.json())
@@ -158,18 +157,6 @@ export default function PopularItems() {
           <Button
             radius="none"
             onClick={() => {
-              setSelectedBrand("GHIBLI & WIRBEL");
-              setBrandProducts(ghibliProducts);
-            }}
-            className={`${getSelectedColor(
-              "GHIBLI & WIRBEL"
-            )} text-white text-medium font-bold border-r hover:bg-slate-800`}
-          >
-            GHIBLI & WIRBEL
-          </Button>
-          <Button
-            radius="none"
-            onClick={() => {
               setSelectedBrand("RUBBERMAID");
               setBrandProducts(rubberMaidProducts);
             }}
@@ -182,14 +169,14 @@ export default function PopularItems() {
           <Button
             radius="none"
             onClick={() => {
-              setSelectedBrand("KIMBERLY-CLARK PROFESSIONAL");
-              setBrandProducts(kimberlyProducts);
+              setSelectedBrand("GHIBLI&WIRBEL");
+              setBrandProducts(ghibliProducts);
             }}
             className={`${getSelectedColor(
-              "KIMBERLY-CLARK PROFESSIONAL"
-            )} text-white text-medium font-bold hover:bg-slate-800 border-r border-white`}
+              "GHIBLI&WIRBEL"
+            )} text-white text-medium font-bold border-r hover:bg-slate-800`}
           >
-            KIMBERLY-CLARK
+            GHIBLI&WIRBEL
           </Button>
           <Button
             radius="none"
@@ -206,6 +193,18 @@ export default function PopularItems() {
           <Button
             radius="none"
             onClick={() => {
+              setSelectedBrand("MAPA");
+              setBrandProducts(mapaProducts);
+            }}
+            className={`${getSelectedColor(
+              "MAPA"
+            )} text-white text-medium font-bold hover:bg-slate-800 border-r border-white`}
+          >
+            MAPA
+          </Button>
+          <Button
+            radius="none"
+            onClick={() => {
               setSelectedBrand("KLEEN-TEX");
               setBrandProducts(kleenTexProducts);
             }}
@@ -218,14 +217,14 @@ export default function PopularItems() {
           <Button
             radius="none"
             onClick={() => {
-              setSelectedBrand("MAPA");
-              setBrandProducts(mapaProducts);
+              setSelectedBrand("KIMBERLY-CLARK PROFESSIONAL");
+              setBrandProducts(kimberlyProducts);
             }}
             className={`${getSelectedColor(
-              "MAPA"
+              "KIMBERLY-CLARK PROFESSIONAL"
             )} text-white text-medium font-bold hover:bg-slate-800 border-r border-white`}
           >
-            MAPA
+            KIMBERLY-CLARK
           </Button>
         </div>
 
@@ -354,7 +353,7 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
           <div className="bg-[#FFD400] shadow-lg rounded-md w-full h-[365px]">
             <div className="flex mx-auto">
               {brandDescription[selectedBrand] &&
-              brandDescription[selectedBrand].logo ? (
+                brandDescription[selectedBrand].logo ? (
                 <Link
                   className="mx-auto max-h-full"
                   href={`/${brandDescription[selectedBrand].slug}`}

@@ -69,7 +69,7 @@ const items = [
   },
   {
     id: "history",
-    name: "History",
+    name: "Import/Export",
     icon: <History />,
     link: "/admin/history",
   },

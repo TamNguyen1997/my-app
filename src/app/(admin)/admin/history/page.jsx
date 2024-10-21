@@ -13,7 +13,7 @@ import { DownloadIcon, UploadIcon } from "lucide-react";
 
 const History = () => {
   const inputRef = useRef(null);
-  const [type, setType] = useState();
+  const [type, setType] = useState("product");
   const [refreshData, setRefreshData] = useState(false);
   const [total, setTotal] = useState([]);
   const [ranges, setRanges] = useState([]);
@@ -102,8 +102,6 @@ const History = () => {
   };
 
   const handleExport = async () => {
-    // window.location.href = `/api/export-excel?start=${startPage}&end=${endPage}&limit=${limit}`;
-
     if (!selectedRange) {
       toast.error(EXPORT_MESSAGE.SELECT_RANGE_ERROR);
       return;

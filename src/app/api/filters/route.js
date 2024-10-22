@@ -55,6 +55,14 @@ export async function GET(req) {
   const { query } = queryString.parseUrl(req.url);
   let condition = {}
 
+  let size = 1000000
+  let page = 1
+
+  if (query.size && query.page) {
+    page = parseInt(query.page) || 1
+    size = parseInt(query.size) || 10
+  }
+
   if (query.categoryIds) {
     condition.filterValue = condition.filterValue || {}
     condition.filterValue = Object.assign(condition.filterValue, {
@@ -117,14 +125,16 @@ export async function GET(req) {
       where: condition,
       include: {
         filterValue: true
-      }
+      },
+      skip: (page - 1) * size,
+      take: size
     })
 
-    result.forEach(async (filter, i) => {
+    for (let i = 0; i < result.length; i++) {
       const categoryCount = await db.category_on_filter_value.count({
         where: {
           filterValue: {
-            filterId: filter.id
+            filterId: result[i].id
           },
           category: {
             type: cate_type.CATE
@@ -135,7 +145,7 @@ export async function GET(req) {
       const subCategoryCount = await db.category_on_filter_value.count({
         where: {
           filterValue: {
-            filterId: filter.id
+            filterId: result[i].id
           },
           category: {
             type: cate_type.SUB_CATE
@@ -146,7 +156,7 @@ export async function GET(req) {
       const brandCount = await db.brand_on_filter_value.count({
         where: {
           filterValue: {
-            filterId: filter.id
+            filterId: result[i].id
           },
         }
       })
@@ -155,7 +165,7 @@ export async function GET(req) {
       result[i].categoryCount = categoryCount || 0
       result[i].brandCount = brandCount || 0
       result[i].subCategoryCount = subCategoryCount || 0
-    })
+    }
 
     return NextResponse.json({
       result, total: await db.filter.count({ where: condition })

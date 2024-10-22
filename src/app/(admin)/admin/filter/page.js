@@ -51,7 +51,7 @@ const Filter = () => {
 
   useEffect(() => {
     getFilter()
-  }, [])
+  }, [page])
 
   const getFilter = async () => {
     setLoadingState("loading")
@@ -61,7 +61,7 @@ const Filter = () => {
 
     await fetch(`/api/filters/?size=${rowsPerPage}&page=${page}&${queryString}`).then(res => res.json()).then(json => {
       setFilters(json.result)
-      setTotal(json.count)
+      setTotal(json.total)
     })
     setLoadingState("idle")
   }

@@ -360,14 +360,6 @@ const HeaderItems = ({ setHoveredCate, menuRef, setMenuVisible, menuVisible }) =
         >
           KHĂN GIẤY/GIẤY VỆ SINH
         </Link>
-        <Link href={`/dich-vu`}
-          className={`
-                hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
-                text-center capitalize
-              `}
-        >
-          DỊCH VỤ
-        </Link>
       </div>
     </div>
   </>

@@ -131,18 +131,19 @@ export async function GET(req) {
     })
 
     for (let i = 0; i < result.length; i++) {
-      const categoryCount = await db.category_on_filter_value.count({
+      const categoryCount = await db.category_on_filter_value.findMany({
         where: {
           filterValue: {
             filterId: result[i].id
           },
           category: {
             type: cate_type.CATE
-          }
-        }
+          },
+        },
+        distinct: ["categoryId"]
       })
 
-      const subCategoryCount = await db.category_on_filter_value.count({
+      const subCategoryCount = await db.category_on_filter_value.findMany({
         where: {
           filterValue: {
             filterId: result[i].id
@@ -150,21 +151,23 @@ export async function GET(req) {
           category: {
             type: cate_type.SUB_CATE
           }
-        }
+        },
+        distinct: ["categoryId"]
       })
 
-      const brandCount = await db.brand_on_filter_value.count({
+      const brandCount = await db.brand_on_filter_value.findMany({
         where: {
           filterValue: {
             filterId: result[i].id
           },
-        }
+        },
+        distinct: ["brandId"]
       })
 
 
-      result[i].categoryCount = categoryCount || 0
-      result[i].brandCount = brandCount || 0
-      result[i].subCategoryCount = subCategoryCount || 0
+      result[i].categoryCount = categoryCount.length || 0
+      result[i].brandCount = brandCount.length || 0
+      result[i].subCategoryCount = subCategoryCount.length || 0
     }
 
     return NextResponse.json({

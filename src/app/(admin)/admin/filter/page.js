@@ -62,6 +62,9 @@ const Filter = () => {
     await fetch(`/api/filters/?size=${rowsPerPage}&page=${page}&${queryString}`).then(res => res.json()).then(json => {
       setFilters(json.result)
       setTotal(json.total)
+      if (Math.ceil(json.total / rowsPerPage) < page) {
+        setPage(Math.ceil(json.total / rowsPerPage))
+      }
     })
     setLoadingState("idle")
   }

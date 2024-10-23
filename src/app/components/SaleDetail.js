@@ -114,7 +114,7 @@ const SaleDetail = ({ saleDetails, product }) => {
       <div className="flex flex-col gap-3">
         <div className="flex gap-2 flex-wrap">
           {
-            saleDetails.filter(item => !item.saleDetailId && item.filterValueId).map(detail => {
+            saleDetails.filter(item => !item.saleDetailId && item.filterValueId && item.filterValue).map(detail => {
               return <div key={detail.id} className="flex flex-col gap-1">
                 {
                   detail.type === "COLOR" ?
@@ -131,7 +131,7 @@ const SaleDetail = ({ saleDetails, product }) => {
         </div>
         <div>
           {
-            getSecondaryDetails()
+            getSecondaryDetails().filter(item => !item.saleDetailId && item.filterValueId && item.filterValue)
               .map(sDetail => {
                 {/* if (sDetail.type === "COLOR") {
                           return <div className={getColor(sDetail, selectedSecondaryDetail.id)}

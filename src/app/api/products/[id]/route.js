@@ -43,12 +43,16 @@ export async function GET(req, { params }) {
       condition = { slug: params.id }
     }
 
-    return NextResponse.json(await db.product.findFirst(
+    const result = await db.product.findFirst(
       {
         where: condition,
         include: include
       }
-    ))
+    )
+    if (result) {
+      return NextResponse.json(result)
+    }
+    return NextResponse.json({ message: "Product not found" }, { status: 404 })
   } catch (e) {
     console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })

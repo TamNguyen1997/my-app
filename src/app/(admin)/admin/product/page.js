@@ -189,6 +189,13 @@ const ProductCms = () => {
           >
             <TableHeader>
               <TableColumn
+                key="id"
+                textValue="ID sản phẩm"
+                aria-label="ID sản phẩm"
+              >
+                ID
+              </TableColumn>
+              <TableColumn
                 key="name"
                 textValue="Tên sản phẩm"
                 aria-label="Tên sản phẩm"

@@ -1,5 +1,6 @@
 import {
   ArrowRightLeft,
+  ClipboardList,
   Contact,
   Filter,
   History,
@@ -54,6 +55,12 @@ const items = [
     name: "Category",
     icon: <Layers />,
     link: "/admin/category",
+  },
+  {
+    id: "brand",
+    name: "Thương hiệu",
+    icon: <ClipboardList />,
+    link: "/admin/brand",
   },
   {
     id: "order",

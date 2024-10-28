@@ -7,9 +7,9 @@ export async function DELETE(req, { params }) {
 
     const image = await db.image.findFirst({ where: { id: params.id } });
 
-    if (!image) return NextResponse.json({ message: "Image not found" }, { status: 4004 });
+    if (!image) return NextResponse.json({ message: "Không tìm thấy hình" }, { status: 4004 });
 
-    const blogs = await db.blog.findFirst({ where: { thumbnail: { contains: `/${params.image}.` } } });
+    const blogs = await db.blog.findFirst({ where: { thumbnail: image.thumbnail } });
     if (blogs != null) {
       return NextResponse.json({ message: `Không thể xóa. Hình này đang được dùng ở blog ${blogs.slug}` }, { status: 400 });
     }
@@ -46,6 +46,7 @@ export async function DELETE(req, { params }) {
     }
     return NextResponse.json({ message: "Image not found" }, { status: 400 });
   } catch (e) {
+    await db.image.deleteMany({ where: { id: params.id } });
     return NextResponse.json({ message: "Something went wrong ", error: e }, { status: 400 });
   }
 }

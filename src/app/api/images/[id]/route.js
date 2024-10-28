@@ -10,10 +10,33 @@ export async function DELETE(req, { params }) {
     if (!image) return NextResponse.json({ message: "Image not found" }, { status: 4004 });
 
     const blogs = await db.blog.findFirst({ where: { thumbnail: { contains: `/${params.image}.` } } });
+    if (blogs != null) {
+      return NextResponse.json({ message: `Không thể xóa. Hình này đang được dùng ở blog ${blogs.slug}` }, { status: 400 });
+    }
+    const banner = await db.banner.findFirst({ where: { imageId: params.id } });
+
+    if (banner != null) {
+      return NextResponse.json({ message: `Không thể xóa. Hình này đang được dùng làm banner` }, { status: 400 });
+    }
+    const productOnImage = await db.product_on_image.findFirst({ where: { imageId: params.id }, include: { product: true } });
+
+    if (productOnImage != null) {
+      return NextResponse.json(
+        { message: `Không thể xóa. Hình này đang được dùng làm ở sản phẩm ${productOnImage.product?.slug}` },
+        { status: 400 });
+    }
+    const category = await db.category.findFirst({ where: { imageId: params.id } });
+    if (category != null) {
+      return NextResponse.json(
+        { message: `Không thể xóa. Hình này đang được dùng làm ở category/subcategory ${category.slug}` },
+        { status: 400 });
+    }
     const products = await db.product.findFirst({ where: { imageId: params.id } });
 
-    if (blogs != null || products != null) {
-      return NextResponse.json({ message: "Can't delete image" }, { status: 400 });
+    if (products != null) {
+      return NextResponse.json(
+        { message: `Không thể xóa. Hình này đang được dùng làm ở sản phẩm ${products?.slug}` },
+        { status: 400 });
     }
 
     if (image != null) {

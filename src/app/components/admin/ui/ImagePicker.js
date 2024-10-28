@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import "./ImageCms.css"
 import { Input, Select, SelectItem } from '@nextui-org/react'
 import { X } from 'lucide-react'
+import { toast, ToastContainer } from 'react-toastify'
 
 const ImagePicker = ({ disableSearch, onImageClick, disableDelete, reload, highlights }) => {
   const [images, setImages] = useState([])
@@ -20,14 +21,20 @@ const ImagePicker = ({ disableSearch, onImageClick, disableDelete, reload, highl
   }, [type, name, refresh, reload])
 
   const deleteImage = async (image) => {
-    await fetch(`/api/images/${image.id}`, {
+    const res = await fetch(`/api/images/${image.id}`, {
       method: 'DELETE'
     })
-    setRefresh(true)
+    if (res.ok) {
+      setRefresh(true)
+    } else {
+      const json = await res.json()
+      toast.error(json.message, { containerId: "image-picker" })
+    }
   }
 
   return (
     <div>
+      <ToastContainer containerId="image-picker" />
       <div className='flex w-full flex-wrap md:flex-nowrap gap-4 py-5'>
         {
           disableSearch ? null : (
@@ -80,7 +87,10 @@ const ImagePicker = ({ disableSearch, onImageClick, disableDelete, reload, highl
                 src={`${process.env.NEXT_PUBLIC_FILE_PATH + img.path}`}
                 alt={img.alt}
                 className="aspect-[16/10] object-cover rounded-t shrink-0"
-                onClick={() => onImageClick(img)}
+                onClick={() => {
+                  setHighlightImages([...highlightImages, img])
+                  onImageClick(img)
+                }}
               />
               {
                 disableDelete ? null : (

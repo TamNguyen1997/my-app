@@ -116,7 +116,7 @@ export default function PopularItems() {
       fetch(`/api/brands/thuong-hieu-kleen-tex/products/?active=true`)
         .then((res) => res.json())
         .then((json) => setKleenTexProducts(json.products || [])),
-      fetch(`/api/categories/?highlight=true&size=3&page=1&includeImage=true`)
+      fetch(`/api/categories/?highlight=true&size=3&page=1&includeImage=true&active=true`)
         .then((res) => res.json())
         .then((json) => setHighlightCates(json.result)),
     ]).then(() => {

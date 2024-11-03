@@ -57,23 +57,24 @@ const Category = () => {
     let filteredCondition = { ...condition }
     Object.keys(filteredCondition).forEach(key => filteredCondition[key] === undefined && delete filteredCondition[key])
     const queryString = new URLSearchParams(filteredCondition).toString()
-    fetch(`/api/categories/?size=${rowsPerPage}&page=${page}&${queryString}&includeImage=true&includeParentCategory=true`)
+    fetch(`/api/categories/?size=${rowsPerPage}&page=1&${queryString}&includeImage=true&includeParentCategory=true`)
       .then(async res => {
         const data = await res.json()
         setCategories(data.result)
         setTotal(data.total)
         setLoadingState("idle")
+        setPage(1)
       })
-
+  }
+  useEffect(() => {
     fetch(`/api/categories/?size=10000&page=1&type=CATE`).then(async res => {
       const data = await res.json()
       setAllCategories(data.result)
     })
-  }
+  }, [])
   useEffect(() => {
     getCategories()
   }, [page, condition])
-
 
   const onSubmit = (e) => {
     e.preventDefault()
@@ -428,6 +429,6 @@ const CustomSwitch = ({ category, columnKey }) => {
   if (columnKey === "highlight" && category.type === "SUB_CATE") {
     return ""
   }
-  return <Switch isSelected={cate[columnKey]} onValueChange={(value) => quickUpdate(cate, { [columnKey]: value }, setCate)}></Switch>
+  return <Switch defaultSelected={cate[columnKey]} onValueChange={(value) => quickUpdate(cate, { [columnKey]: value }, setCate)}></Switch>
 }
 export default Category;

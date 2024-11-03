@@ -37,7 +37,6 @@ const Brand = ({ params, productFilter }) => {
     setIsLoading(false)
   }
 
-  console.log(filterIds)
   const filter = () => {
     let range = ""
     if (JSON.stringify(value) !== JSON.stringify([0, 100000000])) {

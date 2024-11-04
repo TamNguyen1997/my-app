@@ -4,6 +4,7 @@ import { NextResponse } from "next/server"
 import { history_status } from "@prisma/client"
 import { IMPORT_MESSAGE } from "@/constants/message"
 import slugify from "slugify"
+import { v4 } from "uuid"
 
 // export const config = {
 //   api: {
@@ -63,7 +64,6 @@ async function validateImportSaleDetail(productId) {
 
 async function importProduct(worksheet) {
   const requiredColumnIndexes = {
-    productId: 0,
     name: 1,
     categoryId: 2,
     subCategoryId: 3,
@@ -87,7 +87,7 @@ async function importProduct(worksheet) {
       )
     }
 
-    const productId = rowData[requiredColumnIndexes.productId]
+    const productId = rowData[requiredColumnIndexes.productId] || v4()
     const name = rowData[requiredColumnIndexes.name]
     const categoryId = rowData[requiredColumnIndexes.categoryId]
     const subCategoryId = rowData[requiredColumnIndexes.subCategoryId]
@@ -97,16 +97,6 @@ async function importProduct(worksheet) {
     if (!isAllRequiredData) {
       throw new Error(
         `"Line ${index + 1}": ${IMPORT_MESSAGE.MISSING_REQUIRED_DATA}`
-      )
-    }
-    if (
-      !isValidUUID(productId) ||
-      !isValidUUID(categoryId) ||
-      !isValidUUID(subCategoryId) ||
-      !isValidUUID(brandId)
-    ) {
-      throw new Error(
-        `"Line ${index + 1}": ${IMPORT_MESSAGE.INVALID_UUID_FORMAT}`
       )
     }
 
@@ -209,7 +199,6 @@ async function importTechnicalDetail(worksheet) {
     const filterValueId = rowData[requiredColumnIndexes.filterValueId]
 
     if (
-      !isValidUUID(productId) ||
       !isValidUUID(filterId) ||
       !isValidUUID(filterValueId)
     ) {
@@ -305,12 +294,6 @@ async function importSaleDetail(worksheet) {
     const price = rowData[requiredColumnIndexes.price]
     const showPrice = rowData[requiredColumnIndexes.showPrice]
     const inStock = rowData[requiredColumnIndexes.inStock]
-
-    if (!isValidUUID(productId)) {
-      throw new Error(
-        `"Line ${index + 1}": ${IMPORT_MESSAGE.INVALID_UUID_FORMAT}`
-      )
-    }
 
     const { isProductValid } = await validateImportSaleDetail(productId)
 

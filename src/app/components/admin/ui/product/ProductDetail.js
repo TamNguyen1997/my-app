@@ -64,7 +64,6 @@ const ProductDetail = ({
           <Input
             type="text"
             label="Tên sản phẩm"
-            labelPlacement="outside"
             aria-label="Tên sản phẩm"
             value={product.name}
             isRequired
@@ -73,7 +72,6 @@ const ProductDetail = ({
           <Input
             type="text"
             label="Slug"
-            labelPlacement="outside"
             aria-label="Slug"
             value={product.slug}
             isRequired
@@ -90,7 +88,6 @@ const ProductDetail = ({
           <Input
             type="number"
             label="Khối lượng (g)"
-            labelPlacement="outside"
             aria-label="Khối lượng"
             value={product.weight}
             min={0}
@@ -100,7 +97,6 @@ const ProductDetail = ({
           <Input
             type="number"
             label="Chiều dài (cm)"
-            labelPlacement="outside"
             aria-label="Chiều dài"
             value={product.length}
             min={0}
@@ -110,7 +106,6 @@ const ProductDetail = ({
           <Input
             type="number"
             label="Chiều rộng (cm)"
-            labelPlacement="outside"
             aria-label="Chiều rộng"
             value={product.width}
             min={0}
@@ -120,7 +115,6 @@ const ProductDetail = ({
           <Input
             type="number"
             label="Chiều cao (cm)"
-            labelPlacement="outside"
             aria-label="Chiều cao"
             value={product.height}
             min={0}
@@ -168,21 +162,36 @@ const ProductDetail = ({
           </Select>
 
         </div>
+        <div className="grid grid-cols-2 gap-3">
+
+        </div>
         <div className='grid grid-cols-2 gap-3'>
           <div className="flex flex-col gap-3">
+            <Input
+              type="text"
+              label="Meta title"
+              aria-label="Meta title"
+              value={product.metaTitle}
+              onValueChange={(value) => setProduct(Object.assign({}, product, { metaTitle: value }))}
+            />
+            <Input
+              type="text"
+              label="Meta description"
+              aria-label="Meta description"
+              value={product.metaDescription}
+              onValueChange={(value) => setProduct(Object.assign({}, product, { metaDescription: value }))}
+            />
             {
               product.createdAt && product.updatedAt &&
               <div className="flex gap-2">
                 <DatePicker
                   label="Ngày tạo"
-                  labelPlacement="outside"
                   defaultValue={getDateString(product.createdAt)}
                   isReadOnly
                   aria-label="Ngày tạo"
                 />
                 <DatePicker
                   label="Ngày sửa đổi gần nhất"
-                  labelPlacement="outside"
                   defaultValue={getDateString(product.updatedAt)}
                   isReadOnly
                   aria-label="Ngày sửa đổi gần nhất"
@@ -192,12 +201,10 @@ const ProductDetail = ({
             <Input type="text"
               aria-label="Hình ảnh thumbnail"
               label="Hình ảnh thumbnail"
-              labelPlacement="outside"
               value={product.image?.name} isDisabled />
             <Input type="text"
               aria-label="Alt"
               label="Alt"
-              labelPlacement="outside"
               onValueChange={(value) => setProduct(Object.assign({}, product, { imageAlt: value }))}
               defaultValue={product?.imageAlt} />
             <div>

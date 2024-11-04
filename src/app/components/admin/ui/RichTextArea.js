@@ -962,7 +962,7 @@ const BlogToolBar = ({ editor }) => {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Chèn hình ảnh
+                Chèn Link
               </ModalHeader>
               <ModalBody>
                 <Input

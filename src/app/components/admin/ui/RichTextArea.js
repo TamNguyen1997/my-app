@@ -1,3 +1,5 @@
+"use client"
+
 import { EditorContent } from "@tiptap/react";
 import ImageCms from "@/components/admin/ui/ImageCms";
 import "./Tiptap.css";
@@ -69,6 +71,7 @@ import {
 } from "react-icons/tb";
 
 const RichTextEditor = ({ editor }) => {
+  const [fontSize, setFontSize] = useState(16)
   return (
     <div className="border border-t-0 rounded-lg">
       <div className="sticky top-0 translate-x-[-1px] bg-white w-[calc(100%_+_2px)] z-[20]">
@@ -78,11 +81,11 @@ const RichTextEditor = ({ editor }) => {
 
           `}
         >
-          <BlogToolBar editor={editor} />
+          <BlogToolBar editor={editor} fontSize={fontSize} setFontSize={setFontSize} />
         </div>
       </div>
       <div className="h-full w-full min-h-44 p-3 border rounded-b-lg bg-white">
-        <EditorContent editor={editor} />
+        <EditorContent editor={editor} onClick={() => setFontSize(editor.getAttributes("textStyle").fontSize || 16)} />
       </div>
     </div>
   );
@@ -101,7 +104,7 @@ const TEXT_COLOR = {
   "#FFBF00": "bg-[#FFBF00]",
 };
 
-const BlogToolBar = ({ editor }) => {
+const BlogToolBar = ({ editor, fontSize, setFontSize }) => {
   const iconClassName =
     "border w-6 h-6 justify-items-center items-center bg-white border";
   const imageModal = useDisclosure();
@@ -174,6 +177,11 @@ const BlogToolBar = ({ editor }) => {
   const handleFontChange = (font) => {
     setSelectedFont(font);
     editor.chain().focus().setFontFamily(font).run();
+  };
+
+  const handleFontSizeChange = (size) => {
+    editor.commands.setFontSize(size);
+    setFontSize(size)
   };
 
   const handleReplace = () => {
@@ -538,7 +546,7 @@ const BlogToolBar = ({ editor }) => {
           </Tooltip>
           <PopoverContent>
             <div className="px-1 py-2">
-              <div className="text-small font-bold pb-2">Insert table</div>
+              <div className="text-small font-bold pb-2">Chèn bảng</div>
               <div className="text-tiny">
                 <Input
                   labelPlacement="outside"
@@ -696,64 +704,6 @@ const BlogToolBar = ({ editor }) => {
         {/* ----------------------------------------------- */}
 
         <div className="pr-5"></div>
-        {/* <div className="flex flex-wrap [&>div]:ml-0.5">
-          <div
-            className={`border w-10 rounded-large h-6`}
-            style={{
-              background: selectedBackgroundColor,
-            }}
-          ></div>{" "}
-          <Tooltip showArrow content="Background color">
-            <div
-              className={`${iconClassName}`}
-              onClick={() =>
-                setShowBackgroundColorPick(!showBackgroundColorPick)
-              }
-              data-dropdown-toggle="dropdown"
-            >
-              <Pipette />
-              {showBackgroundColorPick ? (
-                <div
-                  className="w-28 divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 absolute z-10"
-                  id="dropdown"
-                >
-                  <ul
-                    className="py-2 text-sm flex flex-col gap-4 text-center items-center m-auto"
-                    aria-labelledby="dropdownDefaultButton"
-                  >
-                    <div className="items-center text-center m-auto">
-                      <div className="flex flex-wrap pl-[6px]">
-                        {Object.keys(TEXT_COLOR).map((key) => (
-                          <div
-                            className={`w-5 h-5 border-2 hover:opacity-25 cursor-pointer`}
-                            style={{
-                              background: key,
-                            }}
-                            key={key}
-                            onClick={() => {
-                              changeBackgroundColor(key);
-                            }}
-                          ></div>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="text-center items-center">
-                      <button
-                        onClick={() => backgroundColorModal.onOpen()}
-                        className="border-3 rounded-md"
-                      >
-                        Chọn màu
-                      </button>
-                    </div>
-                  </ul>
-                </div>
-              ) : (
-                ""
-              )}
-            </div>
-          </Tooltip>
-        </div> */}
-
         <Popover placement="bottom" showArrow={true}>
           <Tooltip showArrow content="Replace">
             <div>
@@ -917,7 +867,16 @@ const BlogToolBar = ({ editor }) => {
             ))}
           </select>
         </Tooltip>
+
+        <Tooltip showArrow content="Font size">
+          <input
+            className="h-8 mt-[6px] ml-[2px] text-[14px] p-1 border rounded w-16"
+            type="number" value={fontSize}
+            onChange={e => handleFontSizeChange(e.target.value)}
+          />
+        </Tooltip>
       </div>
+
       <div className="w-1/4"></div>
       <Modal
         isOpen={imageModal.isOpen}

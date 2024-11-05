@@ -25,6 +25,7 @@ import Link from "@tiptap/extension-link";
 import Blockquote from "@tiptap/extension-blockquote";
 import Youtube from "@tiptap/extension-youtube";
 import { EmojiReplacer } from "@/components/admin/ui/extensions/EmojiReplacer";
+import { FontSize } from "@/components/admin/ui/extensions/FontSize";
 /* ----------------------------------------------- */
 import FontFamily from "@tiptap/extension-font-family";
 import IndentOutdent from "@/components/admin/ui/extensions/IndentOutdent";
@@ -88,6 +89,7 @@ const editorConfig = (content) => {
         types: ["textStyle"],
       }),
       IndentOutdent,
+      FontSize
     ],
     content: content || "<br><br><br><br><br><br><br>",
   };

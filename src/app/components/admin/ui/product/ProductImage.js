@@ -1,4 +1,4 @@
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react"
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spinner, useDisclosure } from "@nextui-org/react"
 import ImageCms from "../ImageCms"
 import { useEffect, useState } from "react"
 import { ToastContainer, toast } from 'react-toastify';
@@ -6,6 +6,7 @@ import { X } from "lucide-react";
 
 const ProductImage = ({ product }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const [isLoading, setIsLoading] = useState(true)
 
   const [images, setImages] = useState([])
 
@@ -13,6 +14,7 @@ const ProductImage = ({ product }) => {
     if (product.id) {
       fetch(`/api/products/${product.id}/images`).then(res => res.json()).then(json => {
         setImages(json.map(item => item.image))
+        setIsLoading(false)
       })
     }
   }, [product])
@@ -38,6 +40,8 @@ const ProductImage = ({ product }) => {
       toast.error("Không thể lưu hình ảnh")
     }
   }
+
+  if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />
 
   return (
     <>

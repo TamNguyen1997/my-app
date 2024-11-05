@@ -120,7 +120,6 @@ export async function GET(req) {
       productIds.push(...intersection)
     }
 
-    console.log(productIds)
     if (productIds.length) {
       condition.id = {
         in: productIds

@@ -61,14 +61,17 @@ const ProductDetail = ({
       <ToastContainer />
       <div className="flex flex-col gap-3">
         <div className="flex gap-2">
-          <Input
-            type="text"
-            label="Tên sản phẩm"
-            aria-label="Tên sản phẩm"
-            value={product.name}
-            isRequired
-            onValueChange={(value) => setProduct(Object.assign({}, product, { name: value, slug: slugify(value, { locale: "vi" }).toLowerCase() }))}
-          />
+          <div className="w-full">
+            <Input
+              type="text"
+              label="Tên sản phẩm"
+              aria-label="Tên sản phẩm"
+              value={product.name}
+              isRequired
+              onValueChange={(value) => setProduct(Object.assign({}, product, { name: value, slug: slugify(value, { locale: "vi" }).toLowerCase() }))}
+            />
+            {!product.name && <p className="text-red-600 text-small">Bạn điền tên sản phẩm</p>}
+          </div>
           <Input
             type="text"
             label="Slug"
@@ -123,34 +126,40 @@ const ProductDetail = ({
           />
         </div>
         <div className="flex gap-2">
-          <Select
-            label="Category"
-            aria-label="Category"
-            selectedKeys={new Set([product.categoryId || ""])}
-            isRequired
-            onSelectionChange={(value) =>
-              setProduct(Object.assign({}, product, { categoryId: value.size ? value.values().next().value : null, subCateId: null }))}
-          >
-            {categories.map(category => <SelectItem key={category.id}>{category.name}</SelectItem>)}
-          </Select>
-          <Select
-            label="Sub category"
-            aria-label="Sub category"
-            isDisabled={getSubCate().length === 0}
-            selectedKeys={new Set([product.subCateId || ""])}
-            isRequired
-            onSelectionChange={(value) =>
-              setProduct(Object.assign({}, product, { subCateId: value.size ? value.values().next().value : null }))
-            }
-          >
-            {
-              getSubCate().map((subCategory) => (
-                <SelectItem key={subCategory.id}>
-                  {subCategory.name}
-                </SelectItem>
-              ))
-            }
-          </Select>
+          <div className="w-full">
+            <Select
+              label="Category"
+              aria-label="Category"
+              selectedKeys={new Set([product.categoryId || ""])}
+              isRequired
+              onSelectionChange={(value) =>
+                setProduct(Object.assign({}, product, { categoryId: value.size ? value.values().next().value : null, subCateId: null }))}
+            >
+              {categories.map(category => <SelectItem key={category.id}>{category.name}</SelectItem>)}
+            </Select>
+            {!product.categoryId && <p className="text-red-600 text-small">Bạn cần chọn category</p>}
+          </div>
+          <div className="w-full">
+            <Select
+              label="Sub category"
+              aria-label="Sub category"
+              isDisabled={getSubCate().length === 0}
+              selectedKeys={new Set([product.subCateId || ""])}
+              isRequired
+              onSelectionChange={(value) =>
+                setProduct(Object.assign({}, product, { subCateId: value.size ? value.values().next().value : null }))
+              }
+            >
+              {
+                getSubCate().map((subCategory) => (
+                  <SelectItem key={subCategory.id}>
+                    {subCategory.name}
+                  </SelectItem>
+                ))
+              }
+            </Select>
+            {!product.subCateId && <p className="text-red-600 text-small">Bạn cần chọn subcategory</p>}
+          </div>
           <Select
             label="Thương hiệu"
             aria-label="Thương hiệu"
@@ -228,7 +237,7 @@ const ProductDetail = ({
         <RichTextEditor editor={editor} />
       </div>
       <div className="py-2">
-        <Button color="primary" onClick={onSave}>Lưu</Button>
+        <Button color="primary" onClick={onSave} isDisabled={!product.categoryId || !product.subCateId || !product.name}>Lưu</Button>
       </div>
 
       <Modal

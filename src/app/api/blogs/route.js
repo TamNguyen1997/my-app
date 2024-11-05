@@ -6,7 +6,7 @@ import crypto from "crypto";
 export async function POST(req) {
   try {
     const body = await req.json()
-    const blogId = crypto.randomBytes(6).toString("hex")
+    const blogId = crypto.randomBytes(3).toString("hex")
     if (body.id) return NextResponse.json(await db.blog.update({ where: { id: body.id }, data: body }))
 
     return NextResponse.json(await db.blog.create({

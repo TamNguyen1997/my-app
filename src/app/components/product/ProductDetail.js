@@ -37,7 +37,7 @@ export default ({ id }) => {
   }
 
   return (
-    <div>
+    <>
       <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${product.subCate?.slug}/${id}`} />
       <div className="bg-[#ffed00] py-2.5">
         <div className="container">
@@ -99,6 +99,6 @@ export default ({ id }) => {
           <ProductDetailTabs product={product} />
         </motion.div>
       </div>
-    </div>
+    </>
   );
 };

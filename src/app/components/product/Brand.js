@@ -162,7 +162,7 @@ const Brand = ({ params, productFilter }) => {
               }
             </div>
         }
-      </div >
+      </div>
     </>
   );
 };

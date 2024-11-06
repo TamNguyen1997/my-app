@@ -84,7 +84,7 @@ const Category = ({ params, productFilter }) => {
       <div
         className="flex flex-col items-center 
         bg-[image:var(--image-url)] bg-no-repeat bg-center bg-cover
-        justify-center min-w-screen lg:h-96 md:h-72 h-32"
+        justify-center xl:h-96 lg:h-72 md:h-60 h-32"
         style={{
           '--image-url': `url(${category.image ? process.env.NEXT_PUBLIC_FILE_PATH + category.image.path : ""})`,
           backgroundSize: "100% 100%"

@@ -47,20 +47,11 @@ export async function GET(req) {
 
     const headers = [
       "ID SP",
-      "SKU",
       "Tên",
-      "URL SP",
       "ID Cate",
       "ID sub-cate",
-      "ID filter",
-      "ID giá trị filter",
-      "SL tồn kho",
-      "Trạng thái active",
-      "Giá thường",
-      "Giá giảm",
-      "Giá liên hệ",
-      "Ngày tạo",
-      "Ngày update",
+      "ID thương hiệu",
+      "Trạng thái active"
     ];
 
     console.log(result)

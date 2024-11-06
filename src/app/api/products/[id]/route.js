@@ -1,8 +1,6 @@
 import { db } from '@/app/db';
 import { NextResponse } from 'next/server';
 import queryString from 'query-string';
-import { parse } from 'uuid';
-
 
 export async function GET(req, { params }) {
   if (!params.id) {
@@ -36,11 +34,11 @@ export async function GET(req, { params }) {
       }
     }
 
-    try {
-      parse(params.id)
-      condition = { id: params.id }
-    } catch (e) {
-      condition = { slug: params.id }
+    condition = {
+      OR: [
+        { id: params.id },
+        { slug: params.id }
+      ]
     }
 
     const result = await db.product.findFirst(

@@ -4,13 +4,7 @@ import { NextResponse } from "next/server"
 import { history_status } from "@prisma/client"
 import { IMPORT_MESSAGE } from "@/constants/message"
 import slugify from "slugify"
-import { v4 } from "uuid"
-
-// export const config = {
-//   api: {
-//     bodyParser: false,
-//   },
-// }
+import crypto from "crypto";
 
 function isValidUUID(uuid) {
   return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
@@ -71,102 +65,104 @@ async function importProduct(worksheet) {
     active: 7,
   }
 
-  for (const [index, row] of worksheet.entries()) {
-    const rowData = Object.values(row)
+  await db.$transaction(async tx => {
+    for (const [index, row] of worksheet.entries()) {
+      const rowData = Object.values(row)
 
-    const isAllRequiredData = Object.values(requiredColumnIndexes).every(
-      (colIndex) =>
-        rowData[colIndex] !== undefined &&
-        rowData[colIndex] !== null &&
-        rowData[colIndex] !== ""
-    )
-
-    if (!isAllRequiredData) {
-      throw new Error(
-        `"Line ${index + 1}": ${IMPORT_MESSAGE.MISSING_REQUIRED_DATA}`
+      const isAllRequiredData = Object.values(requiredColumnIndexes).every(
+        (colIndex) =>
+          rowData[colIndex] !== undefined &&
+          rowData[colIndex] !== null &&
+          rowData[colIndex] !== ""
       )
-    }
 
-    const productId = rowData[requiredColumnIndexes.productId] || v4()
-    const name = rowData[requiredColumnIndexes.name]
-    const categoryId = rowData[requiredColumnIndexes.categoryId]
-    const subCategoryId = rowData[requiredColumnIndexes.subCategoryId]
-    const brandId = rowData[requiredColumnIndexes.brandId]
-    const active = rowData[requiredColumnIndexes.active]
-
-    if (!isAllRequiredData) {
-      throw new Error(
-        `"Line ${index + 1}": ${IMPORT_MESSAGE.MISSING_REQUIRED_DATA}`
-      )
-    }
-
-    const { isCateValid, isSubCateValid, isBrandValid } = await validateProduct(
-      categoryId,
-      subCategoryId,
-      brandId
-    )
-
-    if (!isCateValid) {
-      throw new Error(
-        `"Line ${index + 1}": ${IMPORT_MESSAGE.CATEGORY_NOT_FOUND}`
-      )
-    }
-
-    if (!isSubCateValid) {
-      throw new Error(
-        `"Line ${index + 1}": ${IMPORT_MESSAGE.SUB_CATEGORY_NOT_FOUND}`
-      )
-    }
-
-    if (!isBrandValid) {
-      throw new Error(`"Line ${index + 1}": ${IMPORT_MESSAGE.BRAND_NOT_FOUND}`)
-    }
-
-    const slug = slugify(name, { locale: 'vi' }).toLowerCase()
-
-    const isExisting = await db.product.findUnique({
-      where: { id: productId },
-    })
-
-    const metaTitle = rowData[5]
-    const metaDescription = rowData[6]
-
-    const dataObj = {
-      name: name,
-      slug: slug,
-      metaTitle: metaTitle || null,
-      metaDescription: metaDescription || null,
-      active: active === "T",
-      category: {
-        connect: { id: categoryId },
-      },
-      subCate: {
-        connect: { id: subCategoryId },
-      },
-      brand: {
-        connect: { id: brandId },
-      },
-    }
-
-    try {
-      if (isExisting) {
-        await db.product.update({
-          where: { id: productId },
-          data: dataObj,
-        })
-      } else {
-        await db.product.create({
-          data: {
-            id: productId,
-            ...dataObj,
-          },
-        })
+      if (!isAllRequiredData) {
+        throw new Error(
+          `"Line ${index + 1}": ${IMPORT_MESSAGE.MISSING_REQUIRED_DATA}`
+        )
       }
-    } catch (error) {
-      console.log(error)
-      throw new Error(IMPORT_MESSAGE.DATABASE_ERROR)
+
+      const productId = rowData[requiredColumnIndexes.productId] || crypto.randomBytes(3).toString("hex")
+      const name = rowData[requiredColumnIndexes.name]
+      const categoryId = rowData[requiredColumnIndexes.categoryId]
+      const subCategoryId = rowData[requiredColumnIndexes.subCategoryId]
+      const brandId = rowData[requiredColumnIndexes.brandId]
+      const active = rowData[requiredColumnIndexes.active]
+
+      if (!isAllRequiredData) {
+        throw new Error(
+          `"Line ${index + 1}": ${IMPORT_MESSAGE.MISSING_REQUIRED_DATA}`
+        )
+      }
+
+      const { isCateValid, isSubCateValid, isBrandValid } = await validateProduct(
+        categoryId,
+        subCategoryId,
+        brandId
+      )
+
+      if (!isCateValid) {
+        throw new Error(
+          `"Line ${index + 1}": ${IMPORT_MESSAGE.CATEGORY_NOT_FOUND}`
+        )
+      }
+
+      if (!isSubCateValid) {
+        throw new Error(
+          `"Line ${index + 1}": ${IMPORT_MESSAGE.SUB_CATEGORY_NOT_FOUND}`
+        )
+      }
+
+      if (!isBrandValid) {
+        throw new Error(`"Line ${index + 1}": ${IMPORT_MESSAGE.BRAND_NOT_FOUND}`)
+      }
+
+      const slug = slugify(name, { locale: 'vi' }).toLowerCase()
+
+      const isExisting = await tx.product.findUnique({
+        where: { id: productId },
+      })
+
+      const metaTitle = rowData[5]
+      const metaDescription = rowData[6]
+
+      const dataObj = {
+        name: name,
+        slug: slug,
+        metaTitle: metaTitle || null,
+        metaDescription: metaDescription || null,
+        active: active === "T",
+        category: {
+          connect: { id: categoryId },
+        },
+        subCate: {
+          connect: { id: subCategoryId },
+        },
+        brand: {
+          connect: { id: brandId },
+        },
+      }
+
+      try {
+        if (isExisting) {
+          await tx.product.update({
+            where: { id: productId },
+            data: dataObj,
+          })
+        } else {
+          await tx.product.create({
+            data: {
+              id: productId,
+              ...dataObj,
+            },
+          })
+        }
+      } catch (error) {
+        console.log(error)
+        throw new Error(IMPORT_MESSAGE.DATABASE_ERROR)
+      }
     }
-  }
+  })
 
   return { success: true }
 }

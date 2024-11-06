@@ -1,16 +1,21 @@
 import { db } from '@/app/db';
 import { NextResponse } from 'next/server';
 import queryString from 'query-string';
+import crypto from "crypto";
 
 export async function POST(req) {
   try {
-    const body = await req.json()
+    let body = await req.json()
     delete body.image
     delete body.technicalDetails
     delete body.technical_detail
     delete body.saleDetails
     delete body.category
     delete body.subCategory
+
+    if (!body.id) {
+      body.id = crypto.randomBytes(3).toString("hex")
+    }
     const product = await db.product.create(
       {
         data: body

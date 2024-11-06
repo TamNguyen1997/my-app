@@ -67,28 +67,11 @@ export async function GET(req) {
 
     const data = result.map((el) => ({
       "ID SP": el.id,
-      SKU: el.sku || "N/A",
       Tên: el.name || "N/A",
-      "URL SP": el.slug || "N/A",
       "ID Cate": el.categoryId || "N/A",
       "ID sub-cate": el.subCateId || "N/A",
-      "ID filter":
-        el.technical_detail.length > 0
-          ? el.technical_detail[0].filterId
-          : "N/A",
-      "ID giá trị filter":
-        el.technical_detail.length > 0
-          ? el.technical_detail[0].filterValueId
-          : "N/A",
-      "SL tồn kho": el.saleDetails.inStock || 0,
-      "Trạng thái active": el.active ? "T" : "F",
-      "Giá thường": el.saleDetails.length > 0 ? el.saleDetails[0].price : "N/A",
-      "Giá giảm":
-        el.saleDetails.length > 0 ? el.saleDetails[0].promotionalPrice : "N/A",
-      "Giá liên hệ":
-        el.saleDetails.length > 0 ? el.saleDetails[0].promotionalPrice : "N/A",
-      "Ngày tạo": new Date(el.createdAt).toLocaleDateString(),
-      "Ngày update": new Date(el.updatedAt).toLocaleDateString(),
+      "ID thương hiệu": el.brandId || "N/A",
+      "Trạng thái active": el.active ? "T" : "F"
     }));
 
     const workbook = XLSX.utils.book_new();

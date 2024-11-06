@@ -56,8 +56,12 @@ export async function PUT(req, { params }) {
   delete body.image
   delete body.subcates
   try {
-    if (body.id !== params.slug && await db.category.findFirst({ where: { cateId: params.slug } })) {
+    const subCate = await db.category.findFirst({ where: { cateId: params.slug } })
+    if (body.id !== params.slug && subCate) {
       return NextResponse.json({ message: "Không thể sửa ID do liên kết với sub cate" }, { status: 400 })
+    }
+    if (body.id === params.slug) {
+      delete body.id
     }
     return NextResponse.json(await db.category.updateMany({
       where: { id: params.slug },

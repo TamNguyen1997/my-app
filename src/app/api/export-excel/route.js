@@ -25,6 +25,7 @@ export async function GET(req) {
         slug: true,
         categoryId: true,
         subCateId: true,
+        brandId: true,
         active: true,
         saleDetails: {
           select: {

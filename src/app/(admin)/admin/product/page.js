@@ -15,12 +15,16 @@ import {
   Select,
   SelectItem,
   Link,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
 } from "@nextui-org/react"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { EditIcon, Search, Trash2 } from "lucide-react"
 import { toast, ToastContainer } from "react-toastify"
 
-const rowsPerPage = 10
+
 
 const quickUpdateProduct = async (product, value) => {
   await fetch(`/api/products/${product.id}`, {
@@ -34,13 +38,14 @@ const ProductCms = () => {
 
   const [condition, setCondition] = useState({})
   const [total, setTotal] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
 
   const [page, setPage] = useState(1)
   const [products, setProducts] = useState([])
 
   useEffect(() => {
     getProduct()
-  }, [page])
+  }, [page, rowsPerPage])
 
   const getProduct = async () => {
     setLoadingState("loading")
@@ -132,12 +137,12 @@ const ProductCms = () => {
       <div className="flex flex-col gap-2 border-r min-h-full p-2">
         <div className="flex gap-3 w-1/2">
           <Input
-            label="Slug"
-            aria-label="slug"
+            label="ID/Tên"
+            aria-label="ID/Tên"
             labelPlacement="outside"
-            value={condition.slug}
+            value={condition.id_name}
             onValueChange={(value) => {
-              onConditionChange({ slug: value })
+              onConditionChange({ id_name: value })
               if (value.length > 2) getProduct()
             }}
           />
@@ -174,15 +179,35 @@ const ProductCms = () => {
             loadingState={loadingState}
             bottomContent={
               loadingState === "loading" ? null : (
-                <div className="flex w-full justify-center">
-                  <Pagination
-                    isCompact
-                    showControls
-                    showShadow
-                    page={page}
-                    total={pages}
-                    onChange={(page) => setPage(page)}
-                  />
+                <div className="w-full flex">
+                  <Dropdown>
+                    <DropdownTrigger>
+                      <Button
+                        variant="bordered"
+                      >
+                        {rowsPerPage}
+                      </Button>
+                    </DropdownTrigger>
+                    <DropdownMenu
+                      aria-label="Action event example"
+                      onAction={(key) => setRowsPerPage(key)}
+                    >
+                      <DropdownItem key="10">10</DropdownItem>
+                      <DropdownItem key="20">20</DropdownItem>
+                      <DropdownItem key="50">50</DropdownItem>
+                      <DropdownItem key="100">100</DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
+                  <div className="flex w-full justify-center">
+                    <Pagination
+                      isCompact
+                      showControls
+                      showShadow
+                      page={page}
+                      total={pages}
+                      onChange={(page) => setPage(page)}
+                    />
+                  </div>
                 </div>
               )
             }

@@ -54,6 +54,22 @@ export async function GET(req) {
     if (query.active) {
       condition.active = query.active === 'true'
     }
+    if (query.id_name) {
+      condition = Object.assign(condition, {
+        OR: [
+          {
+            name: {
+              search: `${query.id_name.trim().replaceAll(" ", " & ")}:*`
+            }
+          },
+          {
+            id: {
+              search: `${query.id_name.trim().replaceAll(" ", " & ")}:*`
+            }
+          }
+        ]
+      })
+    }
     if (query.name) {
       condition.name = {
         search: `${query.name.trim().replaceAll(" ", " & ")}:*`

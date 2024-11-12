@@ -68,7 +68,12 @@ const ProductDetail = ({
               aria-label="Tên sản phẩm"
               value={product.name}
               isRequired
-              onValueChange={(value) => setProduct(Object.assign({}, product, { name: value, slug: slugify(value, { locale: "vi" }).toLowerCase() }))}
+              onValueChange={(value) => {
+                setProduct(Object.assign({}, product, { name: value }))
+                if (!product.slug) {
+                  setProduct(Object.assign({}, product, { slug: slugify(value, { locale: "vi" }).toLowerCase() }))
+                }
+              }}
             />
             {!product.name && <p className="text-red-600 text-small">Bạn điền tên sản phẩm</p>}
           </div>

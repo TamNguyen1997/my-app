@@ -21,10 +21,8 @@ import {
   DropdownItem,
 } from "@nextui-org/react"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { EditIcon, Search, Trash2 } from "lucide-react"
+import { EditIcon, Plus, Search, Trash2 } from "lucide-react"
 import { toast, ToastContainer } from "react-toastify"
-
-
 
 const quickUpdateProduct = async (product, value) => {
   await fetch(`/api/products/${product.id}`, {
@@ -39,6 +37,7 @@ const ProductCms = () => {
   const [condition, setCondition] = useState({})
   const [total, setTotal] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [selectedKeys, setSelectedKeys] = useState([])
 
   const [page, setPage] = useState(1)
   const [products, setProducts] = useState([])
@@ -69,6 +68,26 @@ const ProductCms = () => {
   const pages = useMemo(() => {
     return total ? Math.ceil(total / rowsPerPage) : 0
   }, [total, rowsPerPage])
+
+  const deleteMany = async () => {
+    const productsToDelete = selectedKeys === 'all' ? products : [...selectedKeys]
+    console.log(productsToDelete)
+    await Promise
+      .all(productsToDelete.map(item => fetch(`/api/products/${item.id}`, { method: "DELETE" })))
+      .then(response => {
+        response.forEach(async res => {
+          if (res.ok) {
+            toast.success(`Đã xóa sản phẩm`)
+          } else {
+            const body = await res.json()
+            toast.error(`${body.message}`)
+          }
+        })
+      })
+
+    setSelectedKeys([])
+    getProduct()
+  }
 
   const deleteProduct = async (id) => {
     const res = await fetch(`/api/products/${id}`, { method: "DELETE" })
@@ -167,9 +186,19 @@ const ProductCms = () => {
             <SelectItem key="true">Active</SelectItem>
             <SelectItem key="false">Inactive</SelectItem>
           </Select>
-          <div className="items-end flex min-h-full">
+          <div className="items-end flex min-h-full gap-2">
             <Button onClick={getProduct} color="primary">
               <Search />
+            </Button>
+
+            <Link href="/admin/product/edit/new" >
+              <Button color="primary">
+                <Plus />
+              </Button>
+            </Link>
+
+            <Button color="danger" onClick={deleteMany}>
+              <Trash2 />
             </Button>
           </div>
         </div>
@@ -177,6 +206,9 @@ const ProductCms = () => {
           <Table
             aria-label="Tất cả sản phẩm"
             loadingState={loadingState}
+            selectionMode="multiple"
+            onSelectionChange={setSelectedKeys}
+            selectedKeys={selectedKeys}
             bottomContent={
               loadingState === "loading" ? null : (
                 <div className="w-full flex">
@@ -189,7 +221,6 @@ const ProductCms = () => {
                       </Button>
                     </DropdownTrigger>
                     <DropdownMenu
-                      aria-label="Action event example"
                       onAction={(key) => setRowsPerPage(key)}
                     >
                       <DropdownItem key="10">10</DropdownItem>

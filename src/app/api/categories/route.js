@@ -20,6 +20,27 @@ export async function GET(req) {
       search: `${query.slug.trim().replaceAll(" ", " & ")}:*`
     }
   }
+  if (query.id_name_slug) {
+    condition = Object.assign(condition, {
+      OR: [
+        {
+          slug: {
+            search: `${query.id_name_slug.trim().replaceAll(" ", " & ")}:*`
+          }
+        },
+        {
+          name: {
+            search: `${query.id_name_slug.trim().replaceAll(" ", " & ")}:*`
+          }
+        },
+        {
+          id: {
+            search: `${query.id_name_slug.trim().replaceAll(" ", " & ")}:*`
+          }
+        }
+      ]
+    })
+  }
 
   if (query.name) {
     condition.name = {

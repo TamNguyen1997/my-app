@@ -2,7 +2,7 @@
 
 import ImageCms from "@/app/components/admin/ui/ImageCms";
 import {
-  Button, Input,
+  Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Input,
   Modal, ModalBody,
   ModalContent, ModalFooter,
   ModalHeader, Pagination, Select, SelectItem, Spinner,
@@ -18,8 +18,6 @@ import slugify from "slugify"
 
 import { ToastContainer, toast } from 'react-toastify';
 import { v4 } from "uuid";
-
-const rowsPerPage = 15;
 
 const quickUpdate = async (category, value, setCategory) => {
   const res = await fetch(`/api/categories/${category.id}`, { method: "PUT", body: JSON.stringify(value) })
@@ -39,6 +37,7 @@ const Category = () => {
   const [condition, setCondition] = useState({})
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [categoryId, setCategoryId] = useState(selectedCate.id)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
 
   const imageModal = useDisclosure()
 
@@ -74,7 +73,7 @@ const Category = () => {
   }, [])
   useEffect(() => {
     getCategories()
-  }, [page, condition])
+  }, [page, condition, rowsPerPage])
 
   const onSubmit = (e) => {
     e.preventDefault()
@@ -192,15 +191,10 @@ const Category = () => {
   return (
     <div className="flex flex-col gap-10">
       <div className="flex gap-3 w-2/3">
-        <Input label="Tên category" className="pt-2"
-          aria-label="Tên category" labelPlacement="outside" defaultValue={condition.name}
+        <Input label="ID/Tên category/Slug" className="pt-2"
+          aria-label="ID/Tên category/Slug" labelPlacement="outside" defaultValue={condition.name}
           onValueChange={(value) => {
-            if (value.length > 2 || !value.length) setCondition(Object.assign({}, condition, { name: value }))
-          }}
-        />
-        <Input label="Slug" aria-label="slug" labelPlacement="outside" value={condition.slug} className="pt-2"
-          onValueChange={(value) => {
-            if (value.length > 2 || !value.length) setCondition(Object.assign({}, condition, { slug: value }))
+            if (value.length > 2 || !value.length) setCondition(Object.assign({}, condition, { id_name_slug: value }))
           }}
         />
         <Select
@@ -233,15 +227,34 @@ const Category = () => {
             aria-label="Tất cả Category"
             bottomContent={
               loadingState === "loading" ? null :
-                <div className="flex w-full justify-center">
-                  <Pagination
-                    isCompact
-                    showControls
-                    showShadow
-                    page={page}
-                    total={pages}
-                    onChange={(page) => setPage(page)}
-                  />
+                <div className="w-full flex">
+                  <Dropdown>
+                    <DropdownTrigger>
+                      <Button
+                        variant="bordered"
+                      >
+                        {rowsPerPage}
+                      </Button>
+                    </DropdownTrigger>
+                    <DropdownMenu
+                      onAction={(key) => setRowsPerPage(key)}
+                    >
+                      <DropdownItem key="10">10</DropdownItem>
+                      <DropdownItem key="20">20</DropdownItem>
+                      <DropdownItem key="50">50</DropdownItem>
+                      <DropdownItem key="100">100</DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
+                  <div className="flex w-full justify-center">
+                    <Pagination
+                      isCompact
+                      showControls
+                      showShadow
+                      page={page}
+                      total={pages}
+                      onChange={(page) => setPage(page)}
+                    />
+                  </div>
                 </div>
             }>
             <TableHeader>

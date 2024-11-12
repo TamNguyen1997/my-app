@@ -6,12 +6,6 @@ import { IMPORT_MESSAGE } from "@/constants/message"
 import slugify from "slugify"
 import crypto from "crypto";
 
-function isValidUUID(uuid) {
-  return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
-    uuid
-  )
-}
-
 async function validateProduct(cateId, subCateId, brandId) {
   const [cate, subCate, brand] = await Promise.all([
     db.category.findUnique({ where: { id: cateId } }),
@@ -194,15 +188,6 @@ async function importTechnicalDetail(worksheet) {
     const filterId = rowData[requiredColumnIndexes.filterId]
     const filterValueId = rowData[requiredColumnIndexes.filterValueId]
 
-    if (
-      !isValidUUID(filterId) ||
-      !isValidUUID(filterValueId)
-    ) {
-      throw new Error(
-        `"Line ${index + 1}": ${IMPORT_MESSAGE.INVALID_UUID_FORMAT}`
-      )
-    }
-
     const { isProductValid, isFilterValid, isFilterValueValid } =
       await validateImportTechnicalDetail(productId, filterId, filterValueId)
 
@@ -303,12 +288,6 @@ async function importSaleDetail(worksheet) {
     const filterValueId = rowData[6]
 
     if (filterId) {
-      if (!isValidUUID(filterId)) {
-        throw new Error(
-          `"Line ${index + 1}": ${IMPORT_MESSAGE.INVALID_UUID_FORMAT}`
-        )
-      }
-
       const filter = await db.filter.findUnique({
         where: { id: filterId },
       })
@@ -321,11 +300,6 @@ async function importSaleDetail(worksheet) {
     }
 
     if (filterValueId) {
-      if (!isValidUUID(filterValueId)) {
-        throw new Error(
-          `"Line ${index + 1}": ${IMPORT_MESSAGE.INVALID_UUID_FORMAT}`
-        )
-      }
       const filterValue = await db.filter_value.findUnique({
         where: { id: filterValueId },
       })

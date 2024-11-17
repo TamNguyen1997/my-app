@@ -205,6 +205,20 @@ const BlogToolBar = ({ editor, fontSize, setFontSize }) => {
     }
   };
 
+  const [images, setImages] = useState([])
+
+  const selectImage = (value) => {
+    if (images.length >= 6) {
+      alert("Không thể thêm hình, đã đạt tối đa 6 hình")
+    } else {
+      if (images.find(item => item.id === value.id)) {
+        setImages(images.filter(item => item.id !== value.id))
+      } else {
+        setImages([...images, value])
+      }
+    }
+  }
+
   return (
     <div className="p-3 flex gap-1 flex-wrap">
       <div className="flex flex-wrap [&>div]:mt-1.5 [&>div]:ml-0.5">
@@ -893,7 +907,14 @@ const BlogToolBar = ({ editor, fontSize, setFontSize }) => {
               <ModalBody>
                 <ImageCms
                   disableAdd
-                  onImageClick={(image) => {
+                  onImageClick={selectImage}
+                  highlights={images}
+                  disableDelete
+                />
+              </ModalBody>
+              <ModalFooter>
+                <Button color="primary" onPress={() => {
+                  images.forEach(image => {
                     editor
                       .chain()
                       .focus()
@@ -901,14 +922,18 @@ const BlogToolBar = ({ editor, fontSize, setFontSize }) => {
                         src: `${process.env.NEXT_PUBLIC_FILE_PATH + image.path}`,
                         caption: image.description
                       })
-                      .run();
-                    onClose();
-                  }}
-                  disableDelete
-                />
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
+                      .insertContent('<br>')
+                      .run()
+                  })
+
+                  onClose();
+                }}>
+                  Chọn
+                </Button>
+                <Button color="danger" onPress={() => {
+                  setImages([])
+                  onClose()
+                }}>
                   Đóng
                 </Button>
               </ModalFooter>

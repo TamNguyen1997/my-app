@@ -1,24 +1,37 @@
 "use client"
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import "./ImageCms.css"
-import { Input, Select, SelectItem } from '@nextui-org/react'
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Input, Pagination, Select, SelectItem, Spinner } from '@nextui-org/react'
 import { X } from 'lucide-react'
 import { toast, ToastContainer } from 'react-toastify'
 
-const ImagePicker = ({ disableSearch, onImageClick, disableDelete, reload, highlights }) => {
+const ImagePicker = ({ onImageClick, disableDelete, reload, highlights }) => {
   const [images, setImages] = useState([])
   const [type, setType] = useState(new Set([]))
   const [name, setName] = useState()
   const [refresh, setRefresh] = useState(false)
   const [highlightImages, setHighlightImages] = useState(highlights || [])
 
+  const [size, setSize] = useState(10)
+  const [page, setPage] = useState(1)
+  const [total, setTotal] = useState(0)
+
+  const [isLoading, setIsLoading] = useState(true)
+
+  const pages = useMemo(() => {
+    return total ? Math.ceil(total / size) : 0
+  }, [total, size])
+
   useEffect(() => {
     const typeValue = type.values().next().value
-    fetch(`/api/images/?name=${name}&type=${typeValue}`).then(async res => {
-      setImages(await res.json())
+    fetch(`/api/images/?name=${name}&type=${typeValue}&size=${size}&page=${page}`).then(async res => {
+      const json = await res.json()
+      setImages(json.result || [])
+      setTotal(json.total || json.total)
+      setIsLoading(false)
     })
-  }, [type, name, refresh, reload])
+  }, [type, name, refresh, reload, size, page])
 
   const deleteImage = async (image) => {
     const res = await fetch(`/api/images/${image.id}`, {
@@ -32,48 +45,74 @@ const ImagePicker = ({ disableSearch, onImageClick, disableDelete, reload, highl
     }
   }
 
+  if (isLoading) return <Spinner className="flex m-auto pt-10 w-full h-full" />
   return (
     <div>
       <ToastContainer containerId="image-picker" />
       <div className='flex w-full flex-wrap md:flex-nowrap gap-4 py-5'>
-        {
-          disableSearch ? null : (
-            <div className='flex gap-3 w-1/2'>
-              <Input
-                className="w-52"
-                type="text"
-                aria-label="Images"
-                placeholder="Tìm kiếm ảnh"
-                value={name}
-                isClearable
-                onValueChange={(value) => {
-                  setName(value)
-                }}
-              >
-              </Input>
-              <Select
-                aria-label='Loại'
-                className="w-52"
-                defaultSelectedKeys={type}
-                onSelectionChange={(value) => {
-                  setType(value)
-                }}
-              >
-                <SelectItem key="PRODUCT">
-                  Sản phẩm
-                </SelectItem>
-                <SelectItem key="BANNER">
-                  Banner
-                </SelectItem>
-                <SelectItem key="BLOG">
-                  Blog
-                </SelectItem>
-              </Select>
-            </div>
-          )
-        }
+        <div className='flex gap-3 w-1/2'>
+          <Input
+            className="w-52"
+            type="text"
+            aria-label="Images"
+            placeholder="Tìm kiếm ảnh"
+            value={name}
+            isClearable
+            onValueChange={(value) => {
+              setName(value)
+            }}
+          >
+          </Input>
+          <Select
+            aria-label='Loại'
+            className="w-52"
+            defaultSelectedKeys={type}
+            onSelectionChange={(value) => {
+              setType(value)
+            }}
+          >
+            <SelectItem key="PRODUCT">
+              Sản phẩm
+            </SelectItem>
+            <SelectItem key="BANNER">
+              Banner
+            </SelectItem>
+            <SelectItem key="BLOG">
+              Blog
+            </SelectItem>
+          </Select>
+        </div>
       </div>
 
+      <div className="w-full flex pb-3">
+        <Dropdown>
+          <DropdownTrigger>
+            <Button
+              variant="bordered"
+            >
+              {size}
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu
+            onAction={(key) => setSize(key)}
+          >
+            <DropdownItem key="10">10</DropdownItem>
+            <DropdownItem key="20">20</DropdownItem>
+            <DropdownItem key="50">50</DropdownItem>
+            <DropdownItem key="100">100</DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+        <div className="flex w-full justify-center">
+          <Pagination
+            isCompact
+            showControls
+            showShadow
+            page={page}
+            total={pages}
+            onChange={(page) => setPage(page)}
+          />
+        </div>
+      </div>
       <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-[30px]">
         {
           images?.map((img) => (

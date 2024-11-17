@@ -39,14 +39,29 @@ export async function DELETE(req, { params }) {
         { status: 400 });
     }
 
-    if (image != null) {
-      await db.image.delete({ where: { id: image.id } })
-      await fs.unlink(`./public${image.path}`);
-      return NextResponse.json({ message: "Delete success" });
+    try {
+      if (image != null) {
+        await db.image.delete({ where: { id: image.id } })
+        await fs.unlink(`./public${image.path}`);
+        return NextResponse.json({ message: "Delete success" });
+      }
+    } catch (e) {
+      await db.image.deleteMany({ where: { id: params.id } });
     }
     return NextResponse.json({ message: "Image not found" }, { status: 400 });
   } catch (e) {
-    await db.image.deleteMany({ where: { id: params.id } });
     return NextResponse.json({ message: "Something went wrong ", error: e }, { status: 400 });
+  }
+}
+
+export async function PUT(req, { params }) {
+  try {
+    const body = await req.json()
+    console.log("?>>>????")
+    console.log(body)
+    await db.image.update({ where: { id: params.id }, data: body });
+    return NextResponse.json({ message: "Cập nhật thành công" });
+  } catch (e) {
+    return NextResponse.json({ message: "Không thể cập nhật" }, { status: 400 });
   }
 }

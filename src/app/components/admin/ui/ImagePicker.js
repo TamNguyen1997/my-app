@@ -2,12 +2,17 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import "./ImageCms.css"
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Input, Pagination, Select, SelectItem, Spinner } from '@nextui-org/react'
-import { X } from 'lucide-react'
+import {
+  Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger,
+  Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader,
+  Pagination, Select, SelectItem, Spinner, Textarea, useDisclosure
+} from '@nextui-org/react'
+import { EditIcon, X } from 'lucide-react'
 import { toast, ToastContainer } from 'react-toastify'
 
 const ImagePicker = ({ onImageClick, disableDelete, reload, highlights }) => {
   const [images, setImages] = useState([])
+  const [selectedImage, setSelectedImage] = useState()
   const [type, setType] = useState(new Set([]))
   const [name, setName] = useState()
   const [refresh, setRefresh] = useState(false)
@@ -18,6 +23,7 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights }) => {
   const [total, setTotal] = useState(0)
 
   const [isLoading, setIsLoading] = useState(true)
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const pages = useMemo(() => {
     return total ? Math.ceil(total / size) : 0
@@ -40,6 +46,26 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights }) => {
     })
     if (res.ok) {
       setRefresh(true)
+    } else {
+      const json = await res.json()
+      toast.error(json.message, { containerId: "image-picker" })
+    }
+  }
+
+  const editImage = async (e) => {
+    e.preventDefault()
+    const res = await fetch(`/api/images/${selectedImage.id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        name: selectedImage.name,
+        type: selectedImage.type,
+        description: selectedImage.description,
+      })
+    })
+    if (res.ok) {
+      setRefresh(!refresh)
+      onOpenChange()
+      toast.success("Cập nhật thành công", { containerId: "image-picker" })
     } else {
       const json = await res.json()
       toast.error(json.message, { containerId: "image-picker" })
@@ -134,7 +160,19 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights }) => {
               />
               {
                 disableDelete ? null : (
-                  <span className="absolute -top-2.5 -right-2.5 hidden group-hover:block animate-vote bg-red-500 rounded-full hover:bg-red-700" onClick={() => deleteImage(img)}><X color="#FFFFFF" /></span>
+                  <>
+                    <span
+                      className="absolute -top-2.5 -right-2.5 hidden group-hover:block animate-vote bg-red-500 rounded-full hover:bg-red-700"
+                      onClick={() => deleteImage(img)}><X color="#FFFFFF" /></span>
+                    <span
+                      className="absolute -top-2.5 right-5 hidden group-hover:block bg-green-500 rounded-md hover:bg-green-700"
+                      onClick={() => {
+                        setSelectedImage(img)
+                        onOpen()
+                      }}>
+                      <EditIcon color="#FFFFFF" />
+                    </span>
+                  </>
                 )
               }
               <div className="grow bg-white text-center rounded-b p-5">
@@ -144,6 +182,58 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights }) => {
           ))
         }
       </div>
+
+      <Modal
+        size="lg"
+        isOpen={isOpen} onOpenChange={onOpenChange}>
+        <form onSubmit={editImage}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">Chỉnh sửa hình ảnh</ModalHeader>
+                <ModalBody>
+                  <Input aria-label="Tên ảnh"
+                    label="Tên ảnh"
+                    value={selectedImage.name}
+                    onValueChange={value => setSelectedImage(Object.assign({}, selectedImage, { name: value }))}
+                    isRequired
+                  />
+                  <Select
+                    label="Loại hình"
+                    defaultSelectedKeys={[selectedImage.type]}
+                    onSelectionChange={(value) => {
+                      setSelectedImage(Object.assign({}, selectedImage, { type: value.values().next().value }))
+                    }}
+                    isRequired
+                  >
+                    <SelectItem key="PRODUCT">
+                      Sản phẩm
+                    </SelectItem>
+                    <SelectItem key="BLOG">
+                      Blog
+                    </SelectItem>
+                    <SelectItem key="BANNER">
+                      Banner
+                    </SelectItem>
+
+                  </Select>
+                  <Textarea aria-label="Mô tả" label="Mô tả"
+                    value={selectedImage.description}
+                    onValueChange={value => setSelectedImage(Object.assign({}, selectedImage, { description: value }))} />
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="primary" type='submit'>
+                    Lưu
+                  </Button>
+                  <Button color="danger" variant="light" onPress={onClose}>
+                    Close
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </form>
+      </Modal>
     </div>
   )
 }

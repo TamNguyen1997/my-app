@@ -30,6 +30,7 @@ import { FontSize } from "@/components/admin/ui/extensions/FontSize";
 import FontFamily from "@tiptap/extension-font-family";
 import IndentOutdent from "@/components/admin/ui/extensions/IndentOutdent";
 import ButtonNode from "@/components/admin/ui/extensions/ButtonNode";
+import { Figure } from "@/components/admin/ui/extensions/ImageWithCaption";
 // import BackgroundColor from "@/components/admin/ui/extensions/BackgroundColor";
 
 const editorConfig = (content) => {
@@ -89,7 +90,8 @@ const editorConfig = (content) => {
         types: ["textStyle"],
       }),
       IndentOutdent,
-      FontSize
+      FontSize,
+      Figure
     ],
     content: content || "<br><br><br><br><br><br><br>",
   };

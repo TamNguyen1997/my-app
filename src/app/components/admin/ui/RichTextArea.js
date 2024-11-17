@@ -897,10 +897,9 @@ const BlogToolBar = ({ editor, fontSize, setFontSize }) => {
                     editor
                       .chain()
                       .focus()
-                      .setImage({
-                        src: `${process.env.NEXT_PUBLIC_FILE_PATH + image.path
-                          }`,
-                        alt: image.description
+                      .setFigure({
+                        src: `${process.env.NEXT_PUBLIC_FILE_PATH + image.path}`,
+                        caption: image.description
                       })
                       .run();
                     onClose();

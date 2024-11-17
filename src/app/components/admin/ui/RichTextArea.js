@@ -900,6 +900,7 @@ const BlogToolBar = ({ editor, fontSize, setFontSize }) => {
                       .setImage({
                         src: `${process.env.NEXT_PUBLIC_FILE_PATH + image.path
                           }`,
+                        alt: image.description
                       })
                       .run();
                     onClose();

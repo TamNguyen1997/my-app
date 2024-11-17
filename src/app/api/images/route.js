@@ -15,7 +15,10 @@ export async function GET(req) {
   }
 
   try {
-    return NextResponse.json(await db.image.findMany({ where: condition }))
+    return NextResponse.json(await db.image.findMany({
+      where: condition,
+      orderBy: { createdAt: 'desc' }
+    }))
 
   } catch (e) {
     return NextResponse.json([])

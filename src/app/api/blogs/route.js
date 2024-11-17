@@ -62,7 +62,6 @@ export async function GET(req) {
     }
 
     if (query.search) {
-
       condition.OR = [
         {
           slug: {
@@ -77,10 +76,25 @@ export async function GET(req) {
       ]
     }
 
+    let orderBy = {}
+
+    if (query.orderBy) {
+      switch (orderBy) {
+        case 'createdAt:asc':
+          orderBy = { createdAt: 'asc' }
+          break;
+        case 'createdAt:desc':
+        default:
+          orderBy = { createdAt: 'desc' }
+          break;
+      }
+    }
+
     const result = await db.blog.findMany({
       where: condition,
       take: size,
-      skip: (page - 1) * size
+      skip: (page - 1) * size,
+      orderBy: orderBy
     })
     return NextResponse.json({
       result,

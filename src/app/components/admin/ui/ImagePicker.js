@@ -24,6 +24,7 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights }) => {
   }, [total, size])
 
   useEffect(() => {
+    setIsLoading(true)
     const typeValue = type.values().next().value
     fetch(`/api/images/?name=${name}&type=${typeValue}&size=${size}&page=${page}`).then(async res => {
       const json = await res.json()

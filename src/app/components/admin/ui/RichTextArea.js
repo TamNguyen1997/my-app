@@ -126,6 +126,7 @@ const BlogToolBar = ({ editor, fontSize, setFontSize }) => {
   const [searchText, setSearchText] = useState("");
   const [replaceText, setReplaceText] = useState("");
   const [buttonText, setButtonText] = useState("");
+  const [images, setImages] = useState([])
 
   if (!editor) {
     return <></>;
@@ -204,8 +205,6 @@ const BlogToolBar = ({ editor, fontSize, setFontSize }) => {
       editor.chain().focus().insertButton(buttonText).run();
     }
   };
-
-  const [images, setImages] = useState([])
 
   const selectImage = (value) => {
     if (images.length >= 6) {

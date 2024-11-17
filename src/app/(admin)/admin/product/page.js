@@ -71,7 +71,7 @@ const ProductCms = () => {
 
   const deleteMany = async () => {
     const productsToDelete = selectedKeys === 'all' ? products : [...selectedKeys]
-    console.log(productsToDelete)
+
     await Promise
       .all(productsToDelete.map(item => fetch(`/api/products/${item.id}`, { method: "DELETE" })))
       .then(response => {

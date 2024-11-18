@@ -154,7 +154,11 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights }) => {
                 alt={img.alt}
                 className="aspect-[16/10] object-cover rounded-t shrink-0"
                 onClick={() => {
-                  setHighlightImages([...highlightImages, img])
+                  if (highlightImages.find(item => item.id === img.id)) {
+                    setHighlightImages(highlightImages.filter(item => item.id !== img.id))
+                  } else {
+                    setHighlightImages([...highlightImages, img])
+                  }
                   onImageClick(img)
                 }}
               />

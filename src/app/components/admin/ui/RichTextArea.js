@@ -919,6 +919,7 @@ const BlogToolBar = ({ editor, fontSize, setFontSize }) => {
                       .focus()
                       .setFigure({
                         src: `${process.env.NEXT_PUBLIC_FILE_PATH + image.path}`,
+                        alt: image.description,
                         caption: image.description
                       })
                       .insertContent('<br>')

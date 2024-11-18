@@ -68,7 +68,6 @@ export const Figure = Node.create({
   addCommands() {
     return {
       setFigure: ({ caption, ...attrs }) => ({ chain }) => {
-        console.log(caption)
         return chain()
           .insertContent({
             type: this.name,

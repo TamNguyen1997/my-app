@@ -49,7 +49,8 @@ const HistoryList = ({ refreshData, onGetTotal }) => {
   useEffect(() => {
     fetchImportHistory();
 
-    return () => { };
+    return () => {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, refreshData]);
 
   function convertIsoToLocalTime(isoString) {

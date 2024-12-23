@@ -6,5 +6,5 @@ export const metadata = {
 }
 
 export default function Page() {
-  return (<StaticBlog slut="chinh-sach-bao-mat" />)
+  return (<StaticBlog slug="chinh-sach-bao-mat" />)
 }

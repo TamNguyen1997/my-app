@@ -18,6 +18,9 @@ const nextConfig = {
   },
   experimental: {
     missingSuspenseWithCSRBailout: false,
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
   },
   matcher: "/",
   async headers() {

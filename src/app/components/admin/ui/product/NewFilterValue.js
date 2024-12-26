@@ -1,8 +1,8 @@
-import { Button, Input, Switch } from "@nextui-org/react"
+import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Switch, useDisclosure } from "@nextui-org/react"
 import { useForm } from "react-hook-form"
 import { v4 } from "uuid"
 
-const NewFilterValue = ({ filterId, filterValues, setFilterValues, categoryId, subCategoryId, brandId, callback }) => {
+const NewFilterValue = ({ filterId, filters, setFilters, categoryId, subCategoryId, brandId, callback }) => {
 
   const {
     register,
@@ -20,8 +20,14 @@ const NewFilterValue = ({ filterId, filterValues, setFilterValues, categoryId, s
       })
     })
     if (res.ok) {
-      if (filterValues && setFilterValues) {
-        setFilterValues([...filterValues, data])
+      if (setFilters) {
+        let newFilters = filters
+        newFilters.forEach(item => {
+          if (item.id === filterId) {
+            item.filterValue = [data, ...(item.filterValue || [])]
+          }
+        })
+        setFilters(newFilters)
         callback(data.id)
       }
     } else {
@@ -79,4 +85,81 @@ const NewFilterValue = ({ filterId, filterValues, setFilterValues, categoryId, s
   </>
 }
 
-export default NewFilterValue
+const FilterValueSelect = ({
+  detail,
+  getFilter,
+  filters,
+  setFilters,
+  onSelectionChange,
+  categoryId,
+  subCategoryId,
+  brandId
+}) => {
+  const newFilterValueModal = useDisclosure()
+
+  return (
+    <>
+      <Input
+        label="Giá trị filter ID"
+        value={detail.filterValueId}
+        isDisabled={!getFilter() || !getFilter().id || !categoryId || !brandId || !subCategoryId}
+        readOnly
+      />
+      <Select label="Giá trị filter"
+        isDisabled={!getFilter() || !getFilter().id || !categoryId || !brandId || !subCategoryId}
+        selectedKeys={[detail.filterValueId]}
+        onSelectionChange={value => {
+          if (value.values().next().value !== "new") {
+            onSelectionChange({ filterValueId: value.values().next().value }, detail.id)
+          }
+        }}
+      >
+        <SelectItem
+          textValue="Thêm mới"
+          key="new" onClick={() => {
+            newFilterValueModal.onOpen()
+          }}>
+          <div className="font-bold w-full flex justify-between">
+            Thêm
+          </div>
+        </SelectItem>
+        {
+          getFilter()?.filterValue?.map(item => <SelectItem key={item.id}>{item.value}</SelectItem>)
+        }
+      </Select>
+
+      <Modal
+        scrollBehavior="inside"
+        size="xl"
+        isOpen={newFilterValueModal.isOpen} onOpenChange={newFilterValueModal.onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">Filter mới</ModalHeader>
+              <ModalBody>
+                <NewFilterValue
+                  filterId={getFilter().id}
+                  filters={filters}
+                  setFilters={setFilters}
+                  categoryId={categoryId}
+                  subCategoryId={subCategoryId}
+                  brandId={brandId}
+                  callback={(value) => {
+                    onSelectionChange({ filterValueId: value }, detail.id)
+                    onClose()
+                  }} />
+                <ModalFooter>
+                  <Button color="danger" variant="light" onPress={onClose}>
+                    Đóng
+                  </Button>
+                </ModalFooter>
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    </>
+  )
+}
+
+export { FilterValueSelect }

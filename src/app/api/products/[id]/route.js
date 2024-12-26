@@ -1,15 +1,11 @@
 import { db } from '@/app/db';
 import { NextResponse } from 'next/server';
-import queryString from 'query-string';
 
 export async function GET(req, { params }) {
   if (!params.id) {
     return NextResponse.json({ message: `Resource not found ${params.id}` }, { status: 400 })
   }
   try {
-    const { query } = queryString.parseUrl(req.url);
-    const { searchParams } = new URL(req.url);
-
     let condition = {}
     let include = {
       technical_detail: {
@@ -18,20 +14,12 @@ export async function GET(req, { params }) {
           filter: true
         }
       },
-      saleDetails: searchParams && searchParams.get("includeSale") !== "undefined" && searchParams.get("includeSale") !== null,
+      saleDetails: true,
       image: true,
       category: true,
       subCate: true,
+      product_on_image: true,
       brand: true
-    }
-
-    if (query.includeSale === "true") {
-      include.saleDetails = {
-        include: {
-          filterValue: true,
-          filter: true
-        }
-      }
     }
 
     condition = {

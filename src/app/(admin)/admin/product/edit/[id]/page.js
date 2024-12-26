@@ -4,14 +4,15 @@ import {
   Button,
   Card, CardBody, Spinner, Tab, Tabs,
 } from "@nextui-org/react"
-import { useEffect, useState } from "react"
+import { createContext, useEffect, useState } from "react"
 import SaleDetails from "@/app/components/admin/ui/product/SaleDetails";
 import TechnicalDetails from "@/app/components/admin/ui/product/TechnicalDetails";
 import ProductDetail from "@/app/components/admin/ui/product/ProductDetail";
-import ComponentPartDetails from "@/app/components/admin/ui/product/ComponentPartDetails";
 import ProductImage from "@/app/components/admin/ui/product/ProductImage";
 import { useParams } from "next/navigation";
+import { product_type } from "@prisma/client";
 
+export const ProductContext = createContext();
 
 const ProductCms = () => {
   const { id } = useParams()
@@ -21,10 +22,10 @@ const ProductCms = () => {
   const [categories, setCategories] = useState([])
   const [subCategories, setSubCategories] = useState([])
   const [brands, setBrands] = useState([])
+  const [filters, setFilters] = useState([])
 
   useEffect(() => {
     getProduct()
-
   }, [id])
 
   const getProduct = async () => {
@@ -32,11 +33,12 @@ const ProductCms = () => {
     await Promise.all([
       fetch('/api/categories?type=CATE').then(res => res.json()).then(json => setCategories(json.result)),
       fetch('/api/brands').then(res => res.json()).then(setBrands),
-      fetch('/api/categories?type=SUB_CATE').then(res => res.json()).then(json => setSubCategories(json.result))
+      fetch('/api/categories?type=SUB_CATE').then(res => res.json()).then(json => setSubCategories(json.result)),
+      fetch(`/api/filters/`).then(res => res.json()).then(json => setFilters(json.result))
     ])
 
     if (id && id !== 'new') {
-      await fetch(`/api/products/${id}`).then(res => res.json()).then(setProduct)
+      await fetch(`/api/products/${id}?includeSale=true`).then(res => res.json()).then(setProduct)
     }
     setIsLoading(false)
   }
@@ -48,55 +50,85 @@ const ProductCms = () => {
     }
   }
 
+  const onSave = async () => {
+    const res = await fetch(`/api/products/v2`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          product: {
+            id: product.id,
+            name: product.name,
+            slug: product.slug || slugify(body.product.name, { locale: 'vi' }).toLowerCase(),
+            imageAlt: product.imageAlt,
+            imageId: product.imageId,
+            active: product.active || true,
+            highlight: product.highlight || false,
+            description: product.description,
+            categoryId: product.categoryId,
+            subCateId: product.subCateId,
+            quantity: product.quantity,
+            brandId: product.brandId,
+            productType: product.productType || product_type.PRODUCT,
+            width: product.width || 0,
+            length: product.length || 0,
+            height: product.height || 0,
+            weight: product.weight || 0,
+            productId: product.productId,
+            metaTitle: product.metaTitle,
+            metaDescription: product.metaDescription,
+          },
+          saleDetails: product.saleDetails,
+          productOnImages: product.product_on_image,
+          technicalDetails: product.technical_detail
+        })
+      })
+    if (res.ok) {
+      const body = await res.json()
+      window.location.replace(`/admin/product/edit/${body.id}`)
+    } else {
+
+    }
+  }
+
   if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />
   return (
     <>
-      <Tabs disabledKeys={product.id ? [] : ["description", "image", "technical", "component", "sale"]}>
-        <Tab title="Thông tin chung">
-          <Card>
-            <CardBody>
-              <ProductDetail
-                categories={categories}
-                product={product}
-                setProduct={setProduct}
-                brands={brands}
-                subCategories={subCategories}
-              />
-            </CardBody>
-          </Card>
-        </Tab>
-        <Tab title="Hình ảnh" key="image">
-          <Card>
-            <CardBody>
-              <ProductImage product={product} />
-            </CardBody>
-          </Card>
-        </Tab>
-        {/* <Tab title="Phụ kiện" key="component">
-          <Card>
-            <CardBody>
-              <ComponentPartDetails productId={product.id} categories={categories} subCategories={subCategories} />
-            </CardBody>
-          </Card>
-        </Tab> */}
-        <Tab title="Thông số kĩ thuật" key="technical">
-          <Card>
-            <CardBody>
-              <TechnicalDetails product={product} />
-            </CardBody>
-          </Card>
-        </Tab>
-        <Tab title="Thông số bán hàng" key="sale">
-          <Card>
-            <CardBody>
-              <SaleDetails product={product} />
-            </CardBody>
-          </Card>
-        </Tab>
-      </Tabs>
+      <ProductContext.Provider value={{ product, setProduct, categories, brands, subCategories, filters, setFilters }}>
+        <Tabs>
+          <Tab title="Thông tin chung">
+            <Card>
+              <CardBody>
+                <ProductDetail />
+              </CardBody>
+            </Card>
+          </Tab>
+          <Tab title="Hình ảnh" key="image">
+            <Card>
+              <CardBody>
+                <ProductImage />
+              </CardBody>
+            </Card>
+          </Tab>
+          <Tab title="Thông số kĩ thuật" key="technical">
+            <Card>
+              <CardBody>
+                <TechnicalDetails />
+              </CardBody>
+            </Card>
+          </Tab>
+          <Tab title="Thông số bán hàng" key="sale">
+            <Card>
+              <CardBody>
+                <SaleDetails />
+              </CardBody>
+            </Card>
+          </Tab>
+        </Tabs>
+      </ProductContext.Provider>
 
-      <div className="flex float-right">
-        <Button onClick={() => deleteProduct()} color="danger">Xoá sản phẩm</Button>
+      <div className="pt-4 float-right sticky bottom-0">
+        <Button onClick={onSave} color="primary">Lưu</Button>
+        <Button onClick={deleteProduct} color="danger">Xoá sản phẩm</Button>
       </div>
     </>
   )

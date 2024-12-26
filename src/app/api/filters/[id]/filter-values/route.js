@@ -1,5 +1,5 @@
 import { db } from '@/app/db';
-import { cate_type } from '@prisma/client';
+import { cate_type, Prisma } from '@prisma/client';
 import { NextResponse } from 'next/server';
 import queryString from 'query-string';
 
@@ -94,6 +94,10 @@ export async function POST(req, { params }) {
         })
       }
       return filterValue
+    }, {
+      maxWait: 5000, // default: 2000
+      timeout: 10000, // default: 5000
+      isolationLevel: Prisma.TransactionIsolationLevel.Serializable, // optional, default defined by database configuration
     })
 
     return NextResponse.json(result)

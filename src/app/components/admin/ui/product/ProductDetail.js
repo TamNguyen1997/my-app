@@ -1,20 +1,19 @@
 import { Button, DatePicker, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Switch, useDisclosure } from "@nextui-org/react"
 import slugify from "slugify"
 import ImageCms from "../ImageCms"
-import { useCallback } from "react"
-import { ToastContainer, toast } from 'react-toastify';
+import { useCallback, useContext } from "react"
 import { useEditor } from "@tiptap/react";
 import { editorConfig } from "@/lib/editor";
 import { parseDate } from "@internationalized/date";
 import RichTextEditor from "../RichTextArea";
+import { ProductContext } from "../../../../(admin)/admin/product/edit/[id]/page"
 
 const getDateString = (isoDate) =>
   parseDate(new Date(isoDate).toISOString().split("T")[0]);
 
-const ProductDetail = ({
-  categories, product, setProduct,
-  brands, subCategories }) => {
+const ProductDetail = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const { categories, brands, subCategories, product, setProduct } = useContext(ProductContext)
 
   const editor = useEditor(editorConfig(product.description))
 
@@ -27,38 +26,8 @@ const ProductDetail = ({
     return product.categoryId ? subCategories.filter(item => item.cateId === product.categoryId) : subCategories
   }, [product])
 
-  const onSave = async () => {
-    let productToUpdate = { ...product, description: editor.getHTML() }
-    delete productToUpdate.image
-    delete productToUpdate.subCategory
-    delete productToUpdate.brand
-    delete productToUpdate.category
-    delete productToUpdate.subCate
-
-    if (!product.id) {
-      const createRes = await fetch(`/api/products/`, { method: "POST", body: JSON.stringify(productToUpdate) })
-      if (createRes.ok) {
-        toast.success("Đã lưu")
-        window.location.replace('/admin/product/edit/' + (await createRes.json()).id)
-      } else {
-        toast.error("Không thể lưu")
-      }
-    } else {
-
-      const res = await fetch(`/api/products/${product.id}`, { method: "PUT", body: JSON.stringify(productToUpdate) })
-      if (res.ok) {
-        toast.success("Đã lưu")
-      } else {
-        toast.error("Không thể lưu")
-      }
-      setProduct(await res.json())
-    }
-
-  }
-
   return (
     <>
-      <ToastContainer />
       <div className="flex flex-col gap-3">
         <div className="flex gap-2">
           <div className="w-full">
@@ -69,10 +38,11 @@ const ProductDetail = ({
               value={product.name}
               isRequired
               onValueChange={(value) => {
-                setProduct(Object.assign({}, product, { name: value }))
-                if (!product.slug) {
-                  setProduct(Object.assign({}, product, { slug: slugify(value, { locale: "vi" }).toLowerCase() }))
+                let newValue = { ...product, name: value }
+                if (!product.createdAt) {
+                  newValue = { ...newValue, slug: slugify(value, { locale: "vi" }).toLowerCase() }
                 }
+                setProduct({ ...newValue, name: value })
               }}
             />
             {!product.name && <p className="text-red-600 text-small">Bạn điền tên sản phẩm</p>}
@@ -240,9 +210,6 @@ const ProductDetail = ({
           </div>
         </div>
         <RichTextEditor editor={editor} />
-      </div>
-      <div className="py-2">
-        <Button color="primary" onClick={onSave} isDisabled={!product.categoryId || !product.subCateId || !product.name}>Lưu</Button>
       </div>
 
       <Modal

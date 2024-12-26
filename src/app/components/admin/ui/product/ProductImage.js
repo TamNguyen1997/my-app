@@ -1,64 +1,44 @@
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spinner, useDisclosure } from "@nextui-org/react"
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react"
 import ImageCms from "../ImageCms"
-import { useEffect, useState } from "react"
+import { useContext, useState } from "react"
 import { ToastContainer, toast } from 'react-toastify';
 import { X } from "lucide-react";
+import { ProductContext } from "../../../../(admin)/admin/product/edit/[id]/page"
 
-const ProductImage = ({ product }) => {
+const ProductImage = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const [isLoading, setIsLoading] = useState(true)
-
-  const [images, setImages] = useState([])
-
-  useEffect(() => {
-    if (product.id) {
-      fetch(`/api/products/${product.id}/images`).then(res => res.json()).then(json => {
-        setImages(json.map(item => item.image))
-        setIsLoading(false)
-      })
-    }
-  }, [product])
+  const { product, setProduct } = useContext(ProductContext)
 
   const selectImage = (value) => {
-    if (images.length >= 6) {
+    let newImages = product.product_on_image
+    if (newImages.length >= 6) {
       toast.error("Không thể thêm hình, đã đạt tối đa 6 hình")
     } else {
-      if (images.find(item => item.id === value.id)) {
-        setImages(images.filter(item => item.id !== value.id))
+      if (newImages.find(item => item.id === value.id)) {
+        newImages = newImages.filter(item => item.id !== value.id)
         toast.warning("Đã loại ảnh này")
       } else {
-        setImages([...images, value])
+        newImages = [...newImages, { imageId: value.id }]
       }
     }
+    setProduct({ ...product, product_on_image: newImages })
   }
-
-  const onSave = async () => {
-    const res = await fetch(`/api/products/${product.id}/images`, { method: "POST", body: JSON.stringify({ images: images }) })
-    if (res.ok) {
-      toast.success("Đã lưu hình ảnh")
-    } else {
-      toast.error("Không thể lưu hình ảnh")
-    }
-  }
-
-  if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />
-
+  console.log(product.product_on_image)
   return (
     <>
       <ToastContainer />
       <div className="gap-3 p-5">
         <div className="flex flex-wrap gap-2">
           {
-            images.map((item, i) => <ImageItem key={i}
+            product.product_on_image?.map((item, i) => <ImageItem key={i}
               deleteItem={(item) => {
-                setImages(images.filter(img => img.id != item.id))
+                setProduct({ ...product, product_on_image: product.product_on_image.filter(img => img.imageId != item.id) })
               }}
               onClick={() => { }} img={item} />)
           }
         </div>
         <div className="flex flex-row gap-2 px-3 py-4 justify-end">
           <Button color="primary" onClick={onOpen} className="w-24">Chọn ảnh</Button>
-          <Button color="primary" onClick={onSave} className="w-24">Lưu</Button>
         </div>
       </div>
 
@@ -72,7 +52,7 @@ const ProductImage = ({ product }) => {
               <ModalBody>
                 <ImageCms
                   onImageClick={selectImage}
-                  highlights={images} />
+                  highlights={product.product_on_image} />
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>

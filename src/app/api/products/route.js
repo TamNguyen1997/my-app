@@ -176,10 +176,12 @@ export async function GET(req) {
       where: condition,
       include: {
         saleDetails: true,
+        technical_detail: true,
         image: true,
         category: true,
         subCate: true,
-        brand: true
+        brand: true,
+        product_on_image: true
       },
       orderBy: [
         {

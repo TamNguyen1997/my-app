@@ -76,11 +76,11 @@ async function importProduct(worksheet) {
         )
       }
 
-      const productId = rowData[requiredColumnIndexes.productId] || crypto.randomBytes(3).toString("hex")
+      const productId = rowData[requiredColumnIndexes.productId].toString() || crypto.randomBytes(3).toString("hex")
       const name = rowData[requiredColumnIndexes.name]
-      const categoryId = rowData[requiredColumnIndexes.categoryId]
-      const subCategoryId = rowData[requiredColumnIndexes.subCategoryId]
-      const brandId = rowData[requiredColumnIndexes.brandId]
+      const categoryId = rowData[requiredColumnIndexes.categoryId].toString()
+      const subCategoryId = rowData[requiredColumnIndexes.subCategoryId].toString()
+      const brandId = rowData[requiredColumnIndexes.brandId].toString()
       const active = rowData[requiredColumnIndexes.active]
 
       if (!isAllRequiredData) {
@@ -184,9 +184,9 @@ async function importTechnicalDetail(worksheet) {
       )
     }
 
-    const productId = rowData[requiredColumnIndexes.productId]
-    const filterId = rowData[requiredColumnIndexes.filterId]
-    const filterValueId = rowData[requiredColumnIndexes.filterValueId]
+    const productId = rowData[requiredColumnIndexes.productId].toString()
+    const filterId = rowData[requiredColumnIndexes.filterId].toString()
+    const filterValueId = rowData[requiredColumnIndexes.filterValueId].toString()
 
     const { isProductValid, isFilterValid, isFilterValueValid } =
       await validateImportTechnicalDetail(productId, filterId, filterValueId)
@@ -270,8 +270,8 @@ async function importSaleDetail(worksheet) {
       )
     }
 
-    const productId = rowData[requiredColumnIndexes.productId]
-    const sku = rowData[requiredColumnIndexes.sku]
+    const productId = rowData[requiredColumnIndexes.productId].toString()
+    const sku = rowData[requiredColumnIndexes.sku].toString()
     const price = rowData[requiredColumnIndexes.price]
     const showPrice = rowData[requiredColumnIndexes.showPrice]
     const inStock = rowData[requiredColumnIndexes.inStock]

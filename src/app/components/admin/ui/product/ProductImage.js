@@ -23,7 +23,7 @@ const ProductImage = () => {
     }
     setProduct({ ...product, product_on_image: newImages })
   }
-  console.log(product.product_on_image)
+
   return (
     <>
       <ToastContainer />
@@ -32,7 +32,7 @@ const ProductImage = () => {
           {
             product.product_on_image?.map((item, i) => <ImageItem key={i}
               deleteItem={(item) => {
-                setProduct({ ...product, product_on_image: product.product_on_image.filter(img => img.imageId != item.id) })
+                setProduct({ ...product, product_on_image: product.product_on_image.filter(img => img.imageId !== item.imageId) })
               }}
               onClick={() => { }} img={item} />)
           }

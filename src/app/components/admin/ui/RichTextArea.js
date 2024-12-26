@@ -893,7 +893,10 @@ const BlogToolBar = ({ editor, fontSize, setFontSize }) => {
       <div className="w-1/4"></div>
       <Modal
         isOpen={imageModal.isOpen}
-        onOpenChange={imageModal.onOpenChange}
+        onOpenChange={() => {
+          imageModal.onOpenChange()
+          setImages([])
+        }}
         size="full"
         scrollBehavior="inside"
       >

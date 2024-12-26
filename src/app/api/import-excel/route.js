@@ -335,9 +335,11 @@ async function importSaleDetail(worksheet) {
     }
 
     try {
-      await db.sale_detail.create({
-        data: dataObj,
-      })
+      if (await db.sale_detail.findUnique({ where: { sku: dataObj.sku } })) {
+        await db.sale_detail.update({ where: { sku: dataObj.sku }, data: dataObj })
+      } else {
+        await db.sale_detail.create({ data: dataObj })
+      }
     } catch (error) {
       console.log(error)
       throw new Error(IMPORT_MESSAGE.DATABASE_ERROR)

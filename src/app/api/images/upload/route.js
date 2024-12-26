@@ -9,6 +9,13 @@ const typeToDirs = {
   "BLOG": "/gallery/blog",
 }
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
+  },
+}
 export async function POST(req) {
   try {
     const formData = await req.formData();

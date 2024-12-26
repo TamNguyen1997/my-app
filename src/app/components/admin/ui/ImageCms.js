@@ -60,10 +60,14 @@ const ImageCms = ({ onImageClick, highlights }) => {
                       <ModalHeader>Upload ảnh</ModalHeader>
                       <div className='grid grid-cols-2 gap-5'>
                         <Dropzone
+                          maxSize={10000000}
                           maxFiles={1}
                           multiple={false}
                           accept="image/*"
-                          onDrop={acceptedFiles => setImage(acceptedFiles)}
+                          onDropRejected={(rejectedFiles) => {
+                            alert("File quá lớn")
+                          }}
+                          onDropAccepted={acceptedFiles => setImage(acceptedFiles)}
                         >
                           {({ getRootProps, getInputProps }) => (
                             <section className="container">

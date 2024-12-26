@@ -9,7 +9,7 @@ export async function DELETE(req, { params }) {
 
     if (!image) return NextResponse.json({ message: "Không tìm thấy hình" }, { status: 4004 });
 
-    const blogs = await db.blog.findFirst({ where: { thumbnail: image.thumbnail } });
+    const blogs = await db.blog.findFirst({ where: { thumbnail: image.path } });
     if (blogs != null) {
       return NextResponse.json({ message: `Không thể xóa. Hình này đang được dùng ở blog ${blogs.slug}` }, { status: 400 });
     }

@@ -20,12 +20,6 @@ export async function POST(req) {
     let name = formData.get("name");
     let slug = convertStringToSlug(name);
 
-    let oldImage = await db.image.findMany({ where: { slug: slug, type: imageType } })
-
-    if (oldImage[0] != null) {
-      return NextResponse.json({ message: "Name already exists " }, { status: 400 });
-    }
-
     if (!(imageType in image_type)) {
       return NextResponse.json({ message: "Image type incorrect" }, { status: 400 });
     }
@@ -40,10 +34,11 @@ export async function POST(req) {
     const filePath = `${dir}/${slug}.${extension}`;
 
     await save(formData, filePath);
-    fs.writeFile(`./public${filePath}`, buffer);
+    fs.writeFile(`./public${filePath}`, buffer, { encoding: 'utf8', flag: 'w' });
 
     return NextResponse.json({ message: "Upload success" });
   } catch (e) {
+    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 });
   }
 }
@@ -53,17 +48,32 @@ async function save(formData, path) {
   let name = formData.get("name");
   let slug = convertStringToSlug(name);
 
-  await db.image.create({
-    data: {
-      path: path,
-      name: name,
-      slug: slug,
-      alt: formData.get("alt"),
-      description: formData.get("description"),
-      type: formData.get("type"),
-      active: formData.get("active") ?? true
-    }
-  })
+  if (await db.image.findUnique({ where: { slug_type: { slug: slug, type: formData.get("type") } } })) {
+    await db.image.update({
+      where: { slug_type: { slug: slug, type: formData.get("type") } },
+      data: {
+        path: path,
+        name: name,
+        slug: slug,
+        alt: formData.get("alt"),
+        description: formData.get("description"),
+        type: formData.get("type"),
+        active: formData.get("active") ?? true
+      }
+    })
+  } else {
+    await db.image.create({
+      data: {
+        path: path,
+        name: name,
+        slug: slug,
+        alt: formData.get("alt"),
+        description: formData.get("description"),
+        type: formData.get("type"),
+        active: formData.get("active") ?? true
+      }
+    })
+  }
 }
 
 function convertStringToSlug(str) {

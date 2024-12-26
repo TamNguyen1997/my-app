@@ -2,10 +2,12 @@
 
 import { useState } from 'react'
 import "./ImageCms.css"
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Textarea, useDisclosure, Tabs, Tab, SelectItem, Select } from '@nextui-org/react'
-import Dropzone from 'react-dropzone'
+import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Textarea, useDisclosure, Tabs, Tab, SelectItem, Select, Spinner } from '@nextui-org/react'
+import Dropzone, { ErrorCode } from 'react-dropzone'
 import ImagePicker from './ImagePicker'
 import BannerScheduler from './BannerScheduler'
+import { image_type } from '@prisma/client'
+import { ToastContainer, toast } from 'react-toastify';
 
 const ImageCms = ({ onImageClick, highlights }) => {
   const [reload, setReload] = useState(false)
@@ -14,36 +16,47 @@ const ImageCms = ({ onImageClick, highlights }) => {
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
-  const [uploadImage, setUploadImage] = useState()
-  const [imageDescription, setImageDescription] = useState("")
-  const [imageName, setImageName] = useState("")
-  const [imageType, setImageType] = useState(new Set(["PRODUCT"]))
+  const [imageFiles, setImageFiles] = useState([])
+  const [isUploading, setIsUploading] = useState(false)
 
-  const upload = () => {
-    const formData = new FormData()
-    formData.append('file', uploadImage)
-    formData.append('description', imageDescription)
-    formData.append('name', imageName)
-    formData.append('alt', "alt")
-    formData.append('type', imageType.values().next().value)
+  const upload = async () => {
+    setIsUploading(true)
+    const results = await Promise.all(imageFiles.map(item => {
+      const formData = new FormData()
+      formData.append('file', item.file)
+      formData.append('description', item.description)
+      formData.append('name', item.fileName)
+      formData.append('alt', item.description)
+      formData.append('type', item.type)
 
-    fetch('/api/images/upload', {
-      method: 'POST',
-      body: formData
-    }).then(() => {
-      setReload(true)
-      onOpenChange()
-    })
+      return fetch('/api/images/upload', {
+        method: 'POST',
+        body: formData
+      })
+    }))
+    const successNumber = results.filter(response => response.ok).length
+    const failNumber = results.filter(response => !response.ok).length
+
+    console.log(successNumber)
+    console.log(failNumber)
+    successNumber > 0 && toast.success(`Đã upload thành công ${successNumber} hình`, { containerId: "ImageCms" })
+    failNumber > 0 && toast.error(`Upload không thành công ${failNumber} hình`, { containerId: "ImageCms" })
+
+    setIsUploading(false)
+    setImageFiles([])
+    setReload(true)
+    onOpenChange()
   }
 
-  const setImage = (files) => {
-    const file = files[0]
-    setUploadImage(file)
-    setImageName(file.name)
+  const updateImages = (index, value) => {
+    let newImages = imageFiles
+    newImages[index] = { ...imageFiles[index], ...value }
+    setImageFiles(newImages)
   }
 
   return (
     <div className="border shadow-md p-5">
+      <ToastContainer containerId="ImageCms" />
       <Tabs aria-label="Gallery" selectedKey={selectedTab} onSelectionChange={setSelectedTab}>
         <Tab key="Gallery" title="Gallery">
           <div className='flex w-full flex-wrap md:flex-nowrap gap-4 py-5'>
@@ -51,23 +64,38 @@ const ImageCms = ({ onImageClick, highlights }) => {
           </div>
           <div>
             <Modal
-              size="3xl" scrollBehavior="inside"
+              size="full" scrollBehavior="inside"
               isOpen={isOpen} onOpenChange={onOpenChange}>
               <ModalContent>
                 {(onClose) => (
                   <>
-                    <ModalBody>
-                      <ModalHeader>Upload ảnh</ModalHeader>
-                      <div className='grid grid-cols-2 gap-5'>
+                    {isUploading ? <Spinner className="flex m-auto pt-10 w-full h-full" /> :
+                      <ModalBody>
+                        <ModalHeader>Upload ảnh</ModalHeader>
                         <Dropzone
                           maxSize={10000000}
-                          maxFiles={1}
-                          multiple={false}
+                          maxFiles={5}
+                          multiple={true}
                           accept="image/*"
-                          onDropRejected={(rejectedFiles) => {
-                            alert("File quá lớn")
+                          onDropRejected={(fileRejections) => {
+                            if (fileRejections.length > 5) {
+                              alert(`Tối đa 5 file`)
+                              return
+                            }
+                            fileRejections.forEach((rejection, i) => {
+                              switch (rejection.errors[0].code) {
+                                case ErrorCode.FileInvalidType: {
+                                  alert(`File ${i + 1} không hợp lệ thứ`)
+                                  break
+                                }
+                                case ErrorCode.FileTooLarge: {
+                                  alert(`File ${i + 1} không quá lớn`)
+                                  break
+                                }
+                              }
+                            })
                           }}
-                          onDropAccepted={acceptedFiles => setImage(acceptedFiles)}
+                          onDropAccepted={acceptedFiles => setImageFiles(acceptedFiles.map(file => { return { file: file, fileName: file.name, type: image_type.PRODUCT } }))}
                         >
                           {({ getRootProps, getInputProps }) => (
                             <section className="container">
@@ -79,41 +107,44 @@ const ImageCms = ({ onImageClick, highlights }) => {
                             </section>
                           )}
                         </Dropzone>
-                        <div className='flex flex-col gap-3'>
-                          <Input aria-label="Tên ảnh" label="Tên ảnh" value={imageName} onValueChange={setImageName} isRequired></Input>
-                          <Select
-                            label="Loại hình"
-                            defaultSelectedKeys={imageType}
-                            onSelectionChange={setImageType}
-                            isRequired
-                          >
-                            <SelectItem key="PRODUCT">
-                              Sản phẩm
-                            </SelectItem>
-                            <SelectItem key="BLOG">
-                              Blog
-                            </SelectItem>
-                            <SelectItem key="BANNER">
-                              Banner
-                            </SelectItem>
+                        <div>
+                          {
+                            imageFiles.map((img, i) =>
+                              <div className='grid grid-cols-2 gap-5 w-4/5 m-auto py-3 border-b' key={i}>
+                                <span>
+                                  <img className='max-h-60 m-auto' src={URL.createObjectURL(img.file)} />
+                                </span>
+                                <span className='flex flex-col gap-3'>
+                                  <Input aria-label="Tên ảnh" label="Tên ảnh"
+                                    defaultValue={img.fileName}
+                                    onValueChange={value => updateImages(i, { fileName: value })}
+                                    isRequired />
+                                  <Select
+                                    label="Loại hình"
+                                    defaultSelectedKeys={[img.type]}
+                                    onSelectionChange={value => updateImages(i, { type: value.values().next().value })}
+                                    isRequired
+                                  >
+                                    <SelectItem key="PRODUCT">
+                                      Sản phẩm
+                                    </SelectItem>
+                                    <SelectItem key="BLOG">
+                                      Blog
+                                    </SelectItem>
+                                    <SelectItem key="BANNER">
+                                      Banner
+                                    </SelectItem>
 
-                          </Select>
-                          <Textarea aria-label="Mô tả" label="Mô tả" value={imageDescription} onValueChange={setImageDescription}></Textarea>
+                                  </Select>
+                                  <Textarea aria-label="Mô tả" label="Mô tả"
+                                    defaultValue={img.description}
+                                    onValueChange={value => updateImages(i, { description: value })} />
+                                </span>
+                              </div>
+                            )
+                          }
                         </div>
-                      </div>
-                      <div className='pr-4'>
-                        {
-                          uploadImage ?
-
-                            <img
-                              width="100%"
-                              height="100%"
-                              src={URL.createObjectURL(uploadImage)}
-                            />
-                            : null
-                        }
-                      </div>
-                    </ModalBody>
+                      </ModalBody>}
                     <ModalFooter>
                       <Button color="primary" variant="solid" onPress={upload}>
                         Lưu

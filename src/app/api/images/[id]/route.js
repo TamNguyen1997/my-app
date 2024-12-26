@@ -57,8 +57,6 @@ export async function DELETE(req, { params }) {
 export async function PUT(req, { params }) {
   try {
     const body = await req.json()
-    console.log("?>>>????")
-    console.log(body)
     await db.image.update({ where: { id: params.id }, data: body });
     return NextResponse.json({ message: "Cập nhật thành công" });
   } catch (e) {

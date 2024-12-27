@@ -37,8 +37,6 @@ const ImageCms = ({ onImageClick, highlights }) => {
     const successNumber = results.filter(response => response.ok).length
     const failNumber = results.filter(response => !response.ok).length
 
-    console.log(successNumber)
-    console.log(failNumber)
     successNumber > 0 && toast.success(`Đã upload thành công ${successNumber} hình`, { containerId: "ImageCms" })
     failNumber > 0 && toast.error(`Upload không thành công ${failNumber} hình`, { containerId: "ImageCms" })
 

@@ -18,7 +18,9 @@ export async function GET(req, { params }) {
       image: true,
       category: true,
       subCate: true,
-      product_on_image: true,
+      product_on_image: {
+        include: { image: true }
+      },
       brand: true
     }
 

@@ -8,33 +8,35 @@ import { ProductContext } from "../../../../(admin)/admin/product/edit/[id]/page
 const ProductImage = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const { product, setProduct } = useContext(ProductContext)
+  const [images, setImages] = useState(product.product_on_image || [])
 
   const selectImage = (value) => {
+    console.log(value)
     let newImages = product.product_on_image
     if (newImages.length >= 6) {
       toast.error("Không thể thêm hình, đã đạt tối đa 6 hình")
     } else {
-      if (newImages.find(item => item.id === value.id)) {
-        newImages = newImages.filter(item => item.id !== value.id)
+      if (newImages.find(item => item.imageId === value.id)) {
+        newImages = newImages.filter(item => item.imageId !== value.id)
         toast.warning("Đã loại ảnh này")
       } else {
-        newImages = [...newImages, { imageId: value.id }]
+        newImages = [...newImages, { imageId: value.id, image: value, productId: product.id }]
       }
     }
-    setProduct({ ...product, product_on_image: newImages })
+    let newProduct = { ...product, ...{ product_on_image: newImages } }
+    newProduct.product_on_image = newImages
+    setImages(newImages)
+    setProduct(newProduct)
   }
-
   return (
     <>
       <ToastContainer />
       <div className="gap-3 p-5">
         <div className="flex flex-wrap gap-2">
           {
-            product.product_on_image?.map((item, i) => <ImageItem key={i}
-              deleteItem={(item) => {
-                setProduct({ ...product, product_on_image: product.product_on_image.filter(img => img.imageId !== item.imageId) })
-              }}
-              onClick={() => { }} img={item} />)
+            images?.map((item, i) => <ImageItem key={i}
+              deleteItem={selectImage}
+              onClick={() => { }} img={item.image} />)
           }
         </div>
         <div className="flex flex-row gap-2 px-3 py-4 justify-end">
@@ -52,7 +54,7 @@ const ProductImage = () => {
               <ModalBody>
                 <ImageCms
                   onImageClick={selectImage}
-                  highlights={product.product_on_image} />
+                  highlights={images} />
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
@@ -68,6 +70,7 @@ const ProductImage = () => {
 }
 
 const ImageItem = ({ img, onClick, deleteItem }) => {
+  console.log(img)
   return <>
     <div className={`
                   w-40 h-40
@@ -77,8 +80,8 @@ const ImageItem = ({ img, onClick, deleteItem }) => {
                   transition duration-400
                 `}>
       <img
-        src={`${process.env.NEXT_PUBLIC_FILE_PATH + img.path}`}
-        alt={img.alt}
+        src={`${process.env.NEXT_PUBLIC_FILE_PATH + img?.path}`}
+        alt={img?.alt}
         className="aspect-auto object-cover rounded-t shrink-0"
         onClick={() => onClick(img)} />
 

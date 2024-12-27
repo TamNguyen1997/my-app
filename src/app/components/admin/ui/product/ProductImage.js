@@ -29,9 +29,23 @@ const ProductImage = () => {
   }
 
   const onUploadSuccess = async (uploads) => {
-    uploads?.forEach(async upload => {
-      selectImage(await upload.json())
-    })
+    let newImages = product.product_on_image
+    uploads.forEach(value => {
+      if (newImages.length >= 6) {
+        toast.error("Không thể thêm hình, đã đạt tối đa 6 hình")
+      } else {
+        if (newImages.find(item => item.imageId === value.id)) {
+          newImages = newImages.filter(item => item.imageId !== value.id)
+          toast.warning("Đã loại ảnh này")
+        } else {
+          newImages = [...newImages, { imageId: value.id, image: value, productId: product.id }]
+        }
+      }
+    });
+    let newProduct = { ...product, ...{ product_on_image: newImages } }
+    newProduct.product_on_image = newImages
+    setImages(newImages)
+    setProduct(newProduct)
     onOpenChange()
   }
 

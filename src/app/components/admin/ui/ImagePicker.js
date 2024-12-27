@@ -76,7 +76,6 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights }) => {
     }
   }
 
-  if (isLoading) return <Spinner className="flex m-auto pt-10 w-full h-full" />
   return (
     <div>
       <ToastContainer containerId="image-picker" />
@@ -144,7 +143,7 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights }) => {
           />
         </div>
       </div>
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-[30px]">
+      {isLoading ? <Spinner className="flex m-auto pt-10 w-full h-full" /> : <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-[30px]">
         {
           images?.map((img) => (
             <div key={img.id} className={`
@@ -191,7 +190,7 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights }) => {
             </div>
           ))
         }
-      </div>
+      </div>}
 
       <Modal
         size="lg"

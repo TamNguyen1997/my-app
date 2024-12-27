@@ -44,7 +44,8 @@ const ImageCms = ({ onImageClick, highlights, onUploadSuccess }) => {
     setImageFiles([])
     setReload(true)
     if (onUploadSuccess) {
-      onUploadSuccess(successUploads)
+      const result = await Promise.all(successUploads.map(upload => upload.json()))
+      onUploadSuccess(result)
     }
     onOpenChange()
   }

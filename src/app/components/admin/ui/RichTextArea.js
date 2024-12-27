@@ -130,14 +130,13 @@ const BlogToolBar = ({ editor, fontSize, setFontSize }) => {
 
   const onUploadSuccess = async (uploads) => {
     uploads?.forEach(async upload => {
-      const img = await upload.json()
       editor
         .chain()
         .focus()
         .setFigure({
-          src: `${process.env.NEXT_PUBLIC_FILE_PATH + img.path}`,
-          alt: img.description,
-          caption: img.description
+          src: `${process.env.NEXT_PUBLIC_FILE_PATH + upload.path}`,
+          alt: upload.description,
+          caption: upload.description
         })
         .insertContent('<br>')
         .run()

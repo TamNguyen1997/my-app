@@ -91,6 +91,27 @@ export async function GET(req) {
     }
 
     const result = await db.blog.findMany({
+      select: {
+        id: true,
+        blogId: true,
+        title: true,
+        slug: true,
+        thumbnail: true,
+        altThumb: true,
+        metaTitle: true,
+        metaDescription: true,
+        keyword: true,
+        active: true,
+        activeFrom: true,
+        description: true,
+        author: true,
+        summary: true,
+        createdAt: true,
+        updatedAt: true,
+        type: true,
+        blogCategory: true,
+        blogSubCategory: true,
+      },
       where: condition,
       take: size,
       skip: (page - 1) * size,

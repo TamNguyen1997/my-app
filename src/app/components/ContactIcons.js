@@ -5,7 +5,7 @@ import { ChevronUp, Phone } from "lucide-react"
 
 const ContactIcons = () => {
   return (<>
-    <div className="fixed bottom-0 px-5 right-0">
+    <div className="fixed bottom-0 px-5 right-0 z-50">
       <ul>
         <li>
           <Link href="https://www.facebook.com/vesinhsaoviet/?ref=embed_page" isExternal>

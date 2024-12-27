@@ -9,7 +9,7 @@ import BannerScheduler from './BannerScheduler'
 import { image_type } from '@prisma/client'
 import { ToastContainer, toast } from 'react-toastify';
 
-const ImageCms = ({ onImageClick, highlights }) => {
+const ImageCms = ({ onImageClick, highlights, onUploadSuccess }) => {
   const [reload, setReload] = useState(false)
 
   const [selectedTab, setSelectedTab] = useState("Gallery")
@@ -34,15 +34,18 @@ const ImageCms = ({ onImageClick, highlights }) => {
         body: formData
       })
     }))
-    const successNumber = results.filter(response => response.ok).length
-    const failNumber = results.filter(response => !response.ok).length
+    const successUploads = results.filter(response => response.ok)
+    const failUploads = results.filter(response => !response.ok)
 
-    successNumber > 0 && toast.success(`Đã upload thành công ${successNumber} hình`, { containerId: "ImageCms" })
-    failNumber > 0 && toast.error(`Upload không thành công ${failNumber} hình`, { containerId: "ImageCms" })
+    successUploads.length > 0 && toast.success(`Đã upload thành công ${successUploads.length} hình`, { containerId: "ImageCms" })
+    failUploads.length > 0 && toast.error(`Upload không thành công ${failUploads.length} hình`, { containerId: "ImageCms" })
 
     setIsUploading(false)
     setImageFiles([])
     setReload(true)
+    if (onUploadSuccess) {
+      onUploadSuccess(successUploads)
+    }
     onOpenChange()
   }
 

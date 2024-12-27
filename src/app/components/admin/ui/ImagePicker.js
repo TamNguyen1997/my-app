@@ -43,15 +43,17 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights }) => {
   }, [type, name, refresh, reload, size, page])
 
   const deleteImage = async (image) => {
+    setIsLoading(true)
     const res = await fetch(`/api/images/${image.id}`, {
       method: 'DELETE'
     })
     if (res.ok) {
-      setRefresh(true)
+      setRefresh(!refresh)
     } else {
       const json = await res.json()
       toast.error(json.message, { containerId: "image-picker" })
     }
+    setIsLoading(false)
   }
 
   const editImage = async (e) => {

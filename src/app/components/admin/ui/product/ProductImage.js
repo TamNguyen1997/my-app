@@ -27,6 +27,14 @@ const ProductImage = () => {
     setImages(newImages)
     setProduct(newProduct)
   }
+
+  const onUploadSuccess = async (uploads) => {
+    uploads?.forEach(async upload => {
+      selectImage(await upload.json())
+    })
+    onOpenChange()
+  }
+
   return (
     <>
       <ToastContainer />
@@ -53,7 +61,9 @@ const ProductImage = () => {
               <ModalBody>
                 <ImageCms
                   onImageClick={selectImage}
-                  highlights={images} />
+                  highlights={images}
+                  onUploadSuccess={onUploadSuccess}
+                />
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>

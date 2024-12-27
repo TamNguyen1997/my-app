@@ -128,6 +128,24 @@ const BlogToolBar = ({ editor, fontSize, setFontSize }) => {
   const [buttonText, setButtonText] = useState("");
   const [images, setImages] = useState([])
 
+  const onUploadSuccess = async (uploads) => {
+    uploads?.forEach(async upload => {
+      const img = await upload.json()
+      editor
+        .chain()
+        .focus()
+        .setFigure({
+          src: `${process.env.NEXT_PUBLIC_FILE_PATH + img.path}`,
+          alt: img.description,
+          caption: img.description
+        })
+        .insertContent('<br>')
+        .run()
+    })
+
+    imageModal.onOpenChange()
+  }
+
   if (!editor) {
     return <></>;
   }
@@ -908,10 +926,9 @@ const BlogToolBar = ({ editor, fontSize, setFontSize }) => {
               </ModalHeader>
               <ModalBody>
                 <ImageCms
-                  disableAdd
                   onImageClick={selectImage}
                   highlights={images}
-                  disableDelete
+                  onUploadSuccess={onUploadSuccess}
                 />
               </ModalBody>
               <ModalFooter>
@@ -1049,46 +1066,6 @@ const BlogToolBar = ({ editor, fontSize, setFontSize }) => {
           )}
         </ModalContent>
       </Modal>
-      {/* ----------------------------------------------- */}
-      {/* <Modal
-        isOpen={backgroundColorModal.isOpen}
-        onOpenChange={backgroundColorModal.onOpenChange}
-      >
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                Chọn màu
-              </ModalHeader>
-              <ModalBody>
-                <ColorPicker
-                  width={456}
-                  height={228}
-                  color={backgroundColor}
-                  onChange={setBackgroundColor}
-                  hideHSV
-                  dark
-                />
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Đóng
-                </Button>
-                <Button
-                  color="primary"
-                  onPress={() => {
-                    changeBackgroundColor(color.hex);
-
-                    onClose();
-                  }}
-                >
-                  Chọn
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal> */}
     </div>
   );
 };

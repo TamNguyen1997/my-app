@@ -10,15 +10,16 @@ const typeToDirs = {
 }
 
 export async function POST(req) {
-  try {
-    const formData = await req.formData();
-    const file = formData.get("file");
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = new Uint8Array(arrayBuffer);
-    const imageType = formData.get("type");
+  const formData = await req.formData();
+  const file = formData.get("file");
+  const arrayBuffer = await file.arrayBuffer();
+  const buffer = new Uint8Array(arrayBuffer);
+  const imageType = formData.get("type");
 
-    let name = formData.get("name");
-    let slug = convertStringToSlug(name);
+  let name = formData.get("name");
+  let slug = convertStringToSlug(name);
+
+  try {
 
     if (!(imageType in image_type)) {
       return NextResponse.json({ message: "Image type incorrect" }, { status: 400 });
@@ -33,12 +34,12 @@ export async function POST(req) {
     const dir = typeToDirs[imageType]
     const filePath = `${dir}/${slug}.${extension}`;
 
-    await save(formData, filePath);
+    const result = await save(formData, filePath);
     fs.writeFile(`./public${filePath}`, buffer, { encoding: 'utf8', flag: 'w' });
 
-    return NextResponse.json({ message: "Upload success" });
+    return NextResponse.json(result);
   } catch (e) {
-    console.log(e)
+    await db.image.deleteMany({ where: { slug_type: { slug: slug, type: formData.get("type") } } })
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 });
   }
 }
@@ -49,7 +50,7 @@ async function save(formData, path) {
   let slug = convertStringToSlug(name);
 
   if (await db.image.findUnique({ where: { slug_type: { slug: slug, type: formData.get("type") } } })) {
-    await db.image.update({
+    return await db.image.update({
       where: { slug_type: { slug: slug, type: formData.get("type") } },
       data: {
         path: path,
@@ -62,7 +63,7 @@ async function save(formData, path) {
       }
     })
   } else {
-    await db.image.create({
+    return await db.image.create({
       data: {
         path: path,
         name: name,

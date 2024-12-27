@@ -53,7 +53,7 @@ const BlogOverview = ({ activeCategory, activeTag }) => {
       setBlogs([...blogs, ...json.result])
       setCategory(blogCategories.find(item => item.id === activeCategory))
     })
-  }, [activeCategory, activeTag])
+  }, [activeCategory, activeTag, page])
 
   return (
     <>

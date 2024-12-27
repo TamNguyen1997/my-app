@@ -11,7 +11,6 @@ const ProductImage = () => {
   const [images, setImages] = useState(product.product_on_image || [])
 
   const selectImage = (value) => {
-    console.log(value)
     let newImages = product.product_on_image
     if (newImages.length >= 6) {
       toast.error("Không thể thêm hình, đã đạt tối đa 6 hình")
@@ -70,7 +69,6 @@ const ProductImage = () => {
 }
 
 const ImageItem = ({ img, onClick, deleteItem }) => {
-  console.log(img)
   return <>
     <div className={`
                   w-40 h-40

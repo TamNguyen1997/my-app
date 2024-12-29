@@ -7,7 +7,8 @@ import CartProvider from '@/context/CartProvider'
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="vi">
+      <meta name="robots" content="noindex,nofollow" />
       <body className='font-roboto'>
         <CartProvider>
           <Header />

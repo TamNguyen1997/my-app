@@ -182,14 +182,14 @@ const ComponentPartDetails = ({ productId, categories, subCategories }) => {
       })
     }
 
-    await fetch(`/api/products/${productToUpdate.id}/technical-details`, {
-      method: "POST",
-      body: JSON.stringify({
-        row: JSON.stringify(technicalRows),
-        column: JSON.stringify(technicalColumns),
-        productId: productToUpdate.id
-      })
-    })
+    // await fetch(`/api/products/${productToUpdate.id}/technical-details`, {
+    //   method: "POST",
+    //   body: JSON.stringify({
+    //     row: JSON.stringify(technicalRows),
+    //     column: JSON.stringify(technicalColumns),
+    //     productId: productToUpdate.id
+    //   })
+    // })
     setReload(true)
   }
 

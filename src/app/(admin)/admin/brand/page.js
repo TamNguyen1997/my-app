@@ -1,0 +1,57 @@
+"use client"
+import {
+  Spinner,
+  Table, TableBody,
+  TableCell, TableColumn,
+  TableHeader, TableRow,
+} from "@nextui-org/react";
+import { useEffect, useState } from "react";
+
+const Category = () => {
+
+  const [brands, setBrands] = useState([])
+  const [loadingState, setLoadingState] = useState('loading')
+
+  const getBrands = () => {
+    setLoadingState("loading")
+    fetch(`/api/brands`)
+      .then(async res => {
+        const data = await res.json()
+        setBrands(data)
+        setLoadingState("idle")
+      })
+  }
+  useEffect(() => {
+    getBrands()
+  }, [])
+  return (
+    <div className="flex flex-col gap-10">
+      <div className="flex flex-col gap-2">
+        <div className="border-default-200">
+          <Table
+            aria-label="Tất cả thương hiệu">
+            <TableHeader>
+              <TableColumn key="id" textValue="id">ID</TableColumn>
+              <TableColumn key="slug" textValue="slug">Slug</TableColumn>
+              <TableColumn key="name" textValue="name">Tên thương hiệu</TableColumn>
+            </TableHeader>
+            <TableBody
+              items={brands}
+              isLoading={loadingState === 'loading'}
+              emptyContent={"Không có thương hiệu nào"}
+              loadingState={loadingState}
+              loadingContent={<Spinner label="Loading..." />}>
+              {(item) => (
+                <TableRow key={item.id}>
+                  {(columnKey) => <TableCell>{item[columnKey]}</TableCell>}
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Category;

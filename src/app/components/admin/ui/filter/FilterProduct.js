@@ -9,19 +9,18 @@ import {
   Link,
   Switch,
   Select, SelectItem,
-  Chip,
   Button
 } from "@nextui-org/react"
 import { Trash2 } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
 import { v4 } from "uuid";
 
-const FilterProduct = ({ categories, brands, subCategories, filter, setFilter }) => {
+const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, filterId }) => {
 
   const tableHeaders = [
     {
       key: "id",
-      title: "ID thuộc tính"
+      title: "ID giá trị filter"
     },
     {
       key: "value",
@@ -58,7 +57,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
   ];
 
   const onCellValueChange = (valueId, value) => {
-    let filterToUpdate = { ...filter }
+    let filterToUpdate = structuredClone({ ...filter })
     filterToUpdate.filterValue?.forEach(filterValue => filterValue.id === valueId ? Object.assign(filterValue, value) : filterValue)
     setFilter(filterToUpdate)
   }
@@ -83,10 +82,15 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
           filterValue: filterValues
         })
       })
-      const body = await res.json()
-      window.location.replace(`/admin/filter/edit/${body.id}`)
+      if (res.ok) {
+        const body = await res.json()
+        window.location.replace(`/admin/filter/edit/${body.id}`)
+      } else {
+        const body = await res.json()
+        toast.error(body.message)
+      }
     } else {
-      res = await fetch(`/api/filters/${filter.id}`, {
+      res = await fetch(`/api/filters/${filterId}`, {
         method: "PUT",
         body: JSON.stringify({
           ...filter,
@@ -96,7 +100,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
     }
 
     if (res.ok) {
-      toast.success("Đã cập nhật")
+      window.location.replace(`/admin/filter/edit/${filter.id}`)
     } else {
       toast.error("Không thể cập nhật")
     }
@@ -169,14 +173,39 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
             aria-label={columnKey}
             selectionMode="multiple"
             labelPlacement="outside"
-            value={cellValue}
-            onSelectionChange={(value) => onCellValueChange(filterValue?.id, { [columnKey]: Array.from(value).map(item => { return { id: item } }) })}
-            defaultSelectedKeys={new Set(filterValue[columnKey] ? filterValue[columnKey].map(v => v.id) : [])}
-            className="max-w-xs"
+            isMultiline
+            onSelectionChange={(value) => {
+              if (Array.from(value)?.includes("all")) return;
+              onCellValueChange(filterValue?.id, { [columnKey]: Array.from(value).map(item => ({ id: item })) })
+            }}
+            selectedKeys={
+              (filterValue[columnKey] ? filterValue[columnKey].map(v => v.id) : [])
+            }
+            className={`${columnKey === "brands" ? "min-w-[140px]" : "min-w-[200px] max-w-[200px]"}`}
           >
+            <SelectItem textValue="All" key="all" onClick={() => {
+              if (selectionList[columnKey]?.length === filterValue[columnKey]?.length) {
+                onCellValueChange(filterValue?.id, { [columnKey]: [] });
+              } else {
+                onCellValueChange(filterValue?.id, { [columnKey]: selectionList[columnKey].map(item => ({ id: item.id })) });
+              }
+            }}>
+              <div className="font-bold w-full flex justify-between">
+                All
+                {
+                  selectionList[columnKey]?.length === filterValue[columnKey]?.length ?
+                    <span className="absolute top-1/2 -translate-y-1/2 right-2 text-inherit w-3 h-3 flex-shrink-0">
+                      <svg viewBox="0 0 17 18">
+                        <polyline fill="none" points="1 9 7 14 15 4" stroke="currentColor" strokeDasharray="22" strokeDashoffset="44" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" style={{ transition: "stroke-dashoffset 200ms" }}></polyline>
+                      </svg>
+                    </span>
+                    : ""
+                }
+              </div>
+            </SelectItem>
             {
               selectionList[columnKey].map((item) =>
-                <SelectItem key={item.id}>
+                <SelectItem textValue={item.name} title={item.name} key={item.id}>
                   {item.name}
                 </SelectItem>
               )
@@ -189,6 +218,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
             aria-label={columnKey}
             defaultValue={cellValue}
             onValueChange={(value) => onCellValueChange(filterValue?.id, { [columnKey]: value })}
+            className="min-w-[80px]"
           />
         );
     }
@@ -200,10 +230,10 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
       <div className="flex flex-col gap-2 min-h-full">
         <div className="px-1 py-2 border-default-200">
           <Table
-            aria-label="Tất cả sản phẩm"
+            aria-label="Thêm giá trị filter"
             bottomContent={
               <Button color="default" variant="ghost" onClick={() => addNewFilterValue()}>
-                Thêm thuộc tính
+                Thêm giá trị filter
               </Button>
             }
           >
@@ -226,12 +256,11 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter })
             </TableHeader>
             <TableBody
               items={filter.filterValue || []}
-              // isLoading={loadingState === "loading"}
               emptyContent={"Không có giá trị filter nào"}
               loadingContent={<Spinner label="Loading..." />}>
               {(item) => (
                 <TableRow key={item.id}>
-                  {(columnKey) => <TableCell className="max-w-8">{renderCell(item, columnKey)}</TableCell>}
+                  {(columnKey) => <TableCell className="px-1.5 last:pr-0">{renderCell(item, columnKey)}</TableCell>}
                 </TableRow>
               )}
             </TableBody>

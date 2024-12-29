@@ -1,48 +1,46 @@
 import { db } from '@/app/db';
 import { NextResponse } from 'next/server';
-import queryString from 'query-string';
-import { parse } from 'uuid';
-
 
 export async function GET(req, { params }) {
   if (!params.id) {
     return NextResponse.json({ message: `Resource not found ${params.id}` }, { status: 400 })
   }
   try {
-    const { query } = queryString.parseUrl(req.url);
-    const { searchParams } = new URL(req.url);
-
     let condition = {}
     let include = {
-      technical_detail: query.includeTechnical === "true",
-      saleDetails: searchParams && searchParams.get("includeSale") !== "undefined" && searchParams.get("includeSale") !== null,
+      technical_detail: {
+        include: {
+          filterValue: true,
+          filter: true
+        }
+      },
+      saleDetails: true,
       image: true,
       category: true,
       subCate: true,
+      product_on_image: {
+        include: { image: true }
+      },
       brand: true
     }
 
-    if (query.includeSale === "true") {
-      include.saleDetails = {
-        include: {
-          childSaleDetails: true
-        }
-      }
+    condition = {
+      OR: [
+        { id: params.id },
+        { slug: params.id }
+      ]
     }
 
-    try {
-      parse(params.id)
-      condition = { id: params.id }
-    } catch (e) {
-      condition = { slug: params.id }
-    }
-
-    return NextResponse.json(await db.product.findFirst(
+    const result = await db.product.findFirst(
       {
         where: condition,
         include: include
       }
-    ))
+    )
+    if (result) {
+      return NextResponse.json(result)
+    }
+    return NextResponse.json({ message: "Product not found" }, { status: 404 })
   } catch (e) {
     console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
@@ -76,9 +74,28 @@ export async function DELETE(req, { params }) {
   }
 
   try {
-    await db.technical_detail.deleteMany({ where: { productId: params.id } })
-    return NextResponse.json(await db.product.delete({ where: { id: params.id } }))
+    await db.$transaction(async tx => {
+      await tx.technical_detail.deleteMany({ where: { productId: params.id } })
+      await tx.sale_detail.deleteMany({
+        where: {
+          productId: params.id,
+          NOT: [
+            {
+              saleDetailId: null
+            }
+          ]
+        }
+      })
+      await tx.sale_detail.deleteMany({
+        where: {
+          productId: params.id
+        }
+      })
+      await tx.product.delete({ where: { id: params.id } })
+    })
+    return NextResponse.json({ message: "Success" })
   } catch (e) {
-    return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
+    console.log(e)
+    return NextResponse.json({ message: "Sản phẩm đã đặt hàng", error: e }, { status: 400 })
   }
 }

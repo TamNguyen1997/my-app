@@ -1,16 +1,21 @@
 import { db } from '@/app/db';
 import { NextResponse } from 'next/server';
 import queryString from 'query-string';
+import crypto from "crypto";
 
 export async function POST(req) {
   try {
-    const body = await req.json()
+    let body = await req.json()
     delete body.image
     delete body.technicalDetails
     delete body.technical_detail
     delete body.saleDetails
     delete body.category
     delete body.subCategory
+
+    if (!body.id) {
+      body.id = crypto.randomBytes(3).toString("hex")
+    }
     const product = await db.product.create(
       {
         data: body
@@ -49,6 +54,22 @@ export async function GET(req) {
     if (query.active) {
       condition.active = query.active === 'true'
     }
+    if (query.id_name) {
+      condition = Object.assign(condition, {
+        OR: [
+          {
+            name: {
+              search: `${query.id_name.trim().replaceAll(" ", " & ")}:*`
+            }
+          },
+          {
+            id: {
+              search: `${query.id_name.trim().replaceAll(" ", " & ")}:*`
+            }
+          }
+        ]
+      })
+    }
     if (query.name) {
       condition.name = {
         search: `${query.name.trim().replaceAll(" ", " & ")}:*`
@@ -65,23 +86,64 @@ export async function GET(req) {
         slug: query.brandId
       }
     }
+    let productIds = []
 
-    let filterId = []
+    if (query.productId) {
+      productIds.push(query.productId)
+    }
     if (query.filterId) {
-      filterId = (await db.filter.findMany({
+      const saleDetails = await db.sale_detail.findMany({
         where: {
-          slug: {
-            in: Array.isArray(query.filterId) ? query.filterId : [query.filterId]
-          }
+          OR: [
+            {
+              filterValueId: {
+                in: query.filterId
+              }
+            }, {
+              filterValue: {
+                slug: {
+                  in: query.filterId
+                }
+              }
+            }
+          ]
         }
-      })).map(item => item.id)
+      })
+      const saleDetailProductIds = saleDetails.map(item => item.productId)
 
-      condition.filterOnProduct = {
-        some: {
-          filterId: {
-            in: filterId
-          }
+      const technicalDetails = await db.technical_detail.findMany({
+        where: {
+          OR: [
+            {
+              filterValueId: {
+                in: query.filterId
+              }
+            },
+            {
+              filterValue: {
+                slug: {
+                  in: query.filterId
+                }
+              }
+            }
+          ]
         }
+      })
+
+      const technicalDetailsProductIds = technicalDetails.map(item => item.productId)
+
+      const intersection = Array.from(new Set([...saleDetailProductIds, ...technicalDetailsProductIds]))
+
+
+      if (!intersection.length) {
+        return NextResponse.json({ result: [], total: 0 })
+      }
+      productIds.push(...intersection)
+    }
+
+    if (productIds.length) {
+      condition.id = {
+        in: productIds
       }
     }
 
@@ -107,24 +169,21 @@ export async function GET(req) {
     if (query.productType) {
       condition.productType = query.productType
     }
-    if (query.productId) {
-      condition.productId = query.productId
-    }
   }
 
   try {
     const result = await db.product.findMany({
       where: condition,
       include: {
-        saleDetails: {
-          include: {
-            childSaleDetails: true
-          }
-        },
+        saleDetails: true,
+        technical_detail: true,
         image: true,
         category: true,
         subCate: true,
-        brand: true
+        brand: true,
+        product_on_image: {
+          include: { image: true }
+        }
       },
       orderBy: [
         {

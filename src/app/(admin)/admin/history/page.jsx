@@ -13,7 +13,7 @@ import { DownloadIcon, UploadIcon } from "lucide-react";
 
 const History = () => {
   const inputRef = useRef(null);
-  const [type, setType] = useState();
+  const [type, setType] = useState("product");
   const [refreshData, setRefreshData] = useState(false);
   const [total, setTotal] = useState([]);
   const [ranges, setRanges] = useState([]);
@@ -102,8 +102,6 @@ const History = () => {
   };
 
   const handleExport = async () => {
-    // window.location.href = `/api/export-excel?start=${startPage}&end=${endPage}&limit=${limit}`;
-
     if (!selectedRange) {
       toast.error(EXPORT_MESSAGE.SELECT_RANGE_ERROR);
       return;
@@ -166,12 +164,13 @@ const History = () => {
             <Select
               label="Loại"
               labelPlacement="outside"
+              disallowEmptySelection
+              defaultSelectedKeys={["product"]}
               onSelectionChange={(value) => {
                 setType(value.values().next().value);
               }}
               className="!m-0 w-60"
             >
-              <SelectItem key="category">Danh mục</SelectItem>
               <SelectItem key="product">Sản phẩm</SelectItem>
               <SelectItem key="technical_detail">Thông số kỹ thuật</SelectItem>
               <SelectItem key="sale_detail">Thông số bán hàng</SelectItem>

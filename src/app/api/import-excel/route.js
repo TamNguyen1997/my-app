@@ -3,18 +3,8 @@ import { db } from "@/app/db"
 import { NextResponse } from "next/server"
 import { history_status } from "@prisma/client"
 import { IMPORT_MESSAGE } from "@/constants/message"
-
-// export const config = {
-//   api: {
-//     bodyParser: false,
-//   },
-// }
-
-function isValidUUID(uuid) {
-  return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
-    uuid
-  )
-}
+import slugify from "slugify"
+import crypto from "crypto";
 
 async function validateProduct(cateId, subCateId, brandId) {
   const [cate, subCate, brand] = await Promise.all([
@@ -62,7 +52,6 @@ async function validateImportSaleDetail(productId) {
 
 async function importProduct(worksheet) {
   const requiredColumnIndexes = {
-    productId: 0,
     name: 1,
     categoryId: 2,
     subCategoryId: 3,
@@ -70,116 +59,104 @@ async function importProduct(worksheet) {
     active: 7,
   }
 
-  for (const [index, row] of worksheet.entries()) {
-    const rowData = Object.values(row)
+  await db.$transaction(async tx => {
+    for (const [index, row] of worksheet.entries()) {
+      const rowData = Object.values(row)
 
-    const isAllRequiredData = Object.values(requiredColumnIndexes).every(
-      (colIndex) =>
-        rowData[colIndex] !== undefined &&
-        rowData[colIndex] !== null &&
-        rowData[colIndex] !== ""
-    )
-
-    if (!isAllRequiredData) {
-      throw new Error(
-        `"Line ${index + 1}": ${IMPORT_MESSAGE.MISSING_REQUIRED_DATA}`
+      const isAllRequiredData = Object.values(requiredColumnIndexes).every(
+        (colIndex) =>
+          rowData[colIndex] !== undefined &&
+          rowData[colIndex] !== null &&
+          rowData[colIndex] !== ""
       )
-    }
 
-    const productId = rowData[requiredColumnIndexes.productId]
-    const name = rowData[requiredColumnIndexes.name]
-    const categoryId = rowData[requiredColumnIndexes.categoryId]
-    const subCategoryId = rowData[requiredColumnIndexes.subCategoryId]
-    const brandId = rowData[requiredColumnIndexes.brandId]
-    const active = rowData[requiredColumnIndexes.active]
-
-    if (!isAllRequiredData) {
-      throw new Error(
-        `"Line ${index + 1}": ${IMPORT_MESSAGE.MISSING_REQUIRED_DATA}`
-      )
-    }
-    if (
-      !isValidUUID(productId) ||
-      !isValidUUID(categoryId) ||
-      !isValidUUID(subCategoryId) ||
-      !isValidUUID(brandId)
-    ) {
-      throw new Error(
-        `"Line ${index + 1}": ${IMPORT_MESSAGE.INVALID_UUID_FORMAT}`
-      )
-    }
-
-    const { isCateValid, isSubCateValid, isBrandValid } = await validateProduct(
-      categoryId,
-      subCategoryId,
-      brandId
-    )
-
-    if (!isCateValid) {
-      throw new Error(
-        `"Line ${index + 1}": ${IMPORT_MESSAGE.CATEGORY_NOT_FOUND}`
-      )
-    }
-
-    if (!isSubCateValid) {
-      throw new Error(
-        `"Line ${index + 1}": ${IMPORT_MESSAGE.SUB_CATEGORY_NOT_FOUND}`
-      )
-    }
-
-    if (!isBrandValid) {
-      throw new Error(`"Line ${index + 1}": ${IMPORT_MESSAGE.BRAND_NOT_FOUND}`)
-    }
-
-    const slug = name
-      .toString()
-      .toLowerCase()
-      .trim()
-      .replace(/[\s\W-]+/g, "-")
-
-    const isExisting = await db.product.findUnique({
-      where: { id: productId },
-    })
-
-    const metaTitle = rowData[5]
-    const metaDescription = rowData[6]
-
-    const dataObj = {
-      name: name,
-      slug: slug,
-      metaTitle: metaTitle || null,
-      metaDescription: metaDescription || null,
-      active: active === "T",
-      category: {
-        connect: { id: categoryId },
-      },
-      subCate: {
-        connect: { id: subCategoryId },
-      },
-      brand: {
-        connect: { id: brandId },
-      },
-    }
-
-    try {
-      if (isExisting) {
-        await db.product.update({
-          where: { id: productId },
-          data: dataObj,
-        })
-      } else {
-        await db.product.create({
-          data: {
-            id: productId,
-            ...dataObj,
-          },
-        })
+      if (!isAllRequiredData) {
+        throw new Error(
+          `"Line ${index + 1}": ${IMPORT_MESSAGE.MISSING_REQUIRED_DATA}`
+        )
       }
-    } catch (error) {
-      console.log(error)
-      throw new Error(IMPORT_MESSAGE.DATABASE_ERROR)
+
+      const productId = rowData[requiredColumnIndexes.productId].toString() || crypto.randomBytes(3).toString("hex")
+      const name = rowData[requiredColumnIndexes.name]
+      const categoryId = rowData[requiredColumnIndexes.categoryId].toString()
+      const subCategoryId = rowData[requiredColumnIndexes.subCategoryId].toString()
+      const brandId = rowData[requiredColumnIndexes.brandId].toString()
+      const active = rowData[requiredColumnIndexes.active]
+
+      if (!isAllRequiredData) {
+        throw new Error(
+          `"Line ${index + 1}": ${IMPORT_MESSAGE.MISSING_REQUIRED_DATA}`
+        )
+      }
+
+      const { isCateValid, isSubCateValid, isBrandValid } = await validateProduct(
+        categoryId,
+        subCategoryId,
+        brandId
+      )
+
+      if (!isCateValid) {
+        throw new Error(
+          `"Line ${index + 1}": ${IMPORT_MESSAGE.CATEGORY_NOT_FOUND}`
+        )
+      }
+
+      if (!isSubCateValid) {
+        throw new Error(
+          `"Line ${index + 1}": ${IMPORT_MESSAGE.SUB_CATEGORY_NOT_FOUND}`
+        )
+      }
+
+      if (!isBrandValid) {
+        throw new Error(`"Line ${index + 1}": ${IMPORT_MESSAGE.BRAND_NOT_FOUND}`)
+      }
+
+      const slug = slugify(name, { locale: 'vi' }).toLowerCase()
+
+      const isExisting = await tx.product.findUnique({
+        where: { id: productId },
+      })
+
+      const metaTitle = rowData[5]
+      const metaDescription = rowData[6]
+
+      const dataObj = {
+        name: name,
+        slug: slug,
+        metaTitle: metaTitle || null,
+        metaDescription: metaDescription || null,
+        active: active === "T",
+        category: {
+          connect: { id: categoryId },
+        },
+        subCate: {
+          connect: { id: subCategoryId },
+        },
+        brand: {
+          connect: { id: brandId },
+        },
+      }
+
+      try {
+        if (isExisting) {
+          await tx.product.update({
+            where: { id: productId },
+            data: dataObj,
+          })
+        } else {
+          await tx.product.create({
+            data: {
+              id: productId,
+              ...dataObj,
+            },
+          })
+        }
+      } catch (error) {
+        console.log(error)
+        throw new Error(IMPORT_MESSAGE.DATABASE_ERROR)
+      }
     }
-  }
+  })
 
   return { success: true }
 }
@@ -207,19 +184,9 @@ async function importTechnicalDetail(worksheet) {
       )
     }
 
-    const productId = rowData[requiredColumnIndexes.productId]
-    const filterId = rowData[requiredColumnIndexes.filterId]
-    const filterValueId = rowData[requiredColumnIndexes.filterValueId]
-
-    if (
-      !isValidUUID(productId) ||
-      !isValidUUID(filterId) ||
-      !isValidUUID(filterValueId)
-    ) {
-      throw new Error(
-        `"Line ${index + 1}": ${IMPORT_MESSAGE.INVALID_UUID_FORMAT}`
-      )
-    }
+    const productId = rowData[requiredColumnIndexes.productId].toString()
+    const filterId = rowData[requiredColumnIndexes.filterId].toString()
+    const filterValueId = rowData[requiredColumnIndexes.filterValueId].toString()
 
     const { isProductValid, isFilterValid, isFilterValueValid } =
       await validateImportTechnicalDetail(productId, filterId, filterValueId)
@@ -303,17 +270,11 @@ async function importSaleDetail(worksheet) {
       )
     }
 
-    const productId = rowData[requiredColumnIndexes.productId]
-    const sku = rowData[requiredColumnIndexes.sku]
+    const productId = rowData[requiredColumnIndexes.productId].toString()
+    const sku = rowData[requiredColumnIndexes.sku].toString()
     const price = rowData[requiredColumnIndexes.price]
     const showPrice = rowData[requiredColumnIndexes.showPrice]
     const inStock = rowData[requiredColumnIndexes.inStock]
-
-    if (!isValidUUID(productId)) {
-      throw new Error(
-        `"Line ${index + 1}": ${IMPORT_MESSAGE.INVALID_UUID_FORMAT}`
-      )
-    }
 
     const { isProductValid } = await validateImportSaleDetail(productId)
 
@@ -327,12 +288,6 @@ async function importSaleDetail(worksheet) {
     const filterValueId = rowData[6]
 
     if (filterId) {
-      if (!isValidUUID(filterId)) {
-        throw new Error(
-          `"Line ${index + 1}": ${IMPORT_MESSAGE.INVALID_UUID_FORMAT}`
-        )
-      }
-
       const filter = await db.filter.findUnique({
         where: { id: filterId },
       })
@@ -345,11 +300,6 @@ async function importSaleDetail(worksheet) {
     }
 
     if (filterValueId) {
-      if (!isValidUUID(filterValueId)) {
-        throw new Error(
-          `"Line ${index + 1}": ${IMPORT_MESSAGE.INVALID_UUID_FORMAT}`
-        )
-      }
       const filterValue = await db.filter_value.findUnique({
         where: { id: filterValueId },
       })
@@ -385,9 +335,11 @@ async function importSaleDetail(worksheet) {
     }
 
     try {
-      await db.sale_detail.create({
-        data: dataObj,
-      })
+      if (await db.sale_detail.findUnique({ where: { sku: dataObj.sku } })) {
+        await db.sale_detail.update({ where: { sku: dataObj.sku }, data: dataObj })
+      } else {
+        await db.sale_detail.create({ data: dataObj })
+      }
     } catch (error) {
       console.log(error)
       throw new Error(IMPORT_MESSAGE.DATABASE_ERROR)

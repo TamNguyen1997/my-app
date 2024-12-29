@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/app/db';
 import queryString from 'query-string';
+import { cate_type } from '@prisma/client';
 
 export async function GET(req) {
   let condition = {}
@@ -19,6 +20,27 @@ export async function GET(req) {
       search: `${query.slug.trim().replaceAll(" ", " & ")}:*`
     }
   }
+  if (query.id_name_slug) {
+    condition = Object.assign(condition, {
+      OR: [
+        {
+          slug: {
+            search: `${query.id_name_slug.trim().replaceAll(" ", " & ")}:*`
+          }
+        },
+        {
+          name: {
+            search: `${query.id_name_slug.trim().replaceAll(" ", " & ")}:*`
+          }
+        },
+        {
+          id: {
+            search: `${query.id_name_slug.trim().replaceAll(" ", " & ")}:*`
+          }
+        }
+      ]
+    })
+  }
 
   if (query.name) {
     condition.name = {
@@ -28,6 +50,10 @@ export async function GET(req) {
 
   if (query.type) {
     condition.type = query.type
+  }
+
+  if (query.active) {
+    condition.active = query.active === "true"
   }
 
   if (query.includeSubCate) {
@@ -40,6 +66,10 @@ export async function GET(req) {
 
   if (query.includeImage) {
     include.image = query.includeImage === 'true'
+  }
+
+  if (query.includeParentCategory) {
+    include.cate = query.includeParentCategory === 'true'
   }
 
   if (query.showOnHeader) {
@@ -73,6 +103,18 @@ export async function POST(req) {
   let body = await req.json()
   delete body.image
   delete body.subCategory
+
+  const highlightedCates = await db.category.findMany({
+    where: {
+      highlight: true,
+      type: cate_type.CATE
+    }
+  })
+
+  if (highlightedCates.length === 3 && body.highlight) {
+    return NextResponse.json({ message: "Tối đa 3 category nổi bật" }, { status: 400 })
+  }
+
   return NextResponse.json(await db.category.create(
     {
       data: body

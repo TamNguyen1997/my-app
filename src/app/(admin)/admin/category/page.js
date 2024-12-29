@@ -2,7 +2,7 @@
 
 import ImageCms from "@/app/components/admin/ui/ImageCms";
 import {
-  Button, Input,
+  Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Input,
   Modal, ModalBody,
   ModalContent, ModalFooter,
   ModalHeader, Pagination, Select, SelectItem, Spinner,
@@ -17,14 +17,27 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import slugify from "slugify"
 
 import { ToastContainer, toast } from 'react-toastify';
+import { v4 } from "uuid";
 
-const rowsPerPage = 15;
+const quickUpdate = async (category, value, setCategory) => {
+  const res = await fetch(`/api/categories/${category.id}`, { method: "PUT", body: JSON.stringify(value) })
+  if (res.ok) {
+    toast.success("Đã cập nhật")
+    if (setCategory) {
+      setCategory(await res.json())
+    }
+  } else {
+    toast.error(`Không thể cập nhật: ${(await res.json()).message}`)
+  }
+}
 
 const Category = () => {
   const [categories, setCategories] = useState([])
   const [selectedCate, setSelectedCate] = useState({})
   const [condition, setCondition] = useState({})
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const [categoryId, setCategoryId] = useState(selectedCate.id)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
 
   const imageModal = useDisclosure()
 
@@ -43,24 +56,24 @@ const Category = () => {
     let filteredCondition = { ...condition }
     Object.keys(filteredCondition).forEach(key => filteredCondition[key] === undefined && delete filteredCondition[key])
     const queryString = new URLSearchParams(filteredCondition).toString()
-    fetch(`/api/categories/?size=${rowsPerPage}&page=${page}&${queryString}&includeImage=true`).then(async res => {
-      const data = await res.json()
-      setCategories(data.result)
-      setTotal(data.total)
-      setLoadingState("idle")
-    })
+    fetch(`/api/categories/?size=${rowsPerPage}&page=1&${queryString}&includeImage=true&includeParentCategory=true`)
+      .then(async res => {
+        const data = await res.json()
+        setCategories(data.result)
+        setTotal(data.total)
+        setLoadingState("idle")
+        setPage(1)
+      })
   }
-
   useEffect(() => {
-    fetch(`/api/categories/?size=${10000}&page=${page}&type=CATE&includeImage=true`).then(async res => {
+    fetch(`/api/categories/?size=10000&page=1&type=CATE`).then(async res => {
       const data = await res.json()
       setAllCategories(data.result)
     })
   }, [])
   useEffect(() => {
     getCategories()
-  }, [page, condition])
-
+  }, [page, condition, rowsPerPage])
 
   const onSubmit = (e) => {
     e.preventDefault()
@@ -68,13 +81,17 @@ const Category = () => {
       toast.promise(
         fetch(`/api/categories/${selectedCate.id}`, {
           method: "PUT", body: JSON.stringify({
+            id: categoryId || v4(),
             highlight: selectedCate.highlight,
             showOnHeader: selectedCate.showOnHeader,
             name: selectedCate.name,
             slug: selectedCate.slug,
             type: selectedCate.type,
             cateId: selectedCate.cateId,
-            imageId: selectedCate.imageId
+            imageId: selectedCate.imageId,
+            metaDescription: selectedCate.metaDescription,
+            metaTitle: selectedCate.metaTitle,
+            active: selectedCate.active
           })
         }).then(async (res) => {
           getCategories()
@@ -87,14 +104,14 @@ const Category = () => {
           success: 'Đã chỉnh sửa category',
           error: {
             render({ data }) {
-              return data.message
+              return `Không thể cập nhật: ${data.message}`
             }
           }
         }
       )
     } else {
       toast.promise(
-        fetch('/api/categories/', { method: "POST", body: JSON.stringify(selectedCate) }).then(async (res) => {
+        fetch('/api/categories/', { method: "POST", body: JSON.stringify(Object.assign(selectedCate, { id: categoryId || v4() })) }).then(async (res) => {
           getCategories()
           if (!res.ok) {
             throw new Error((await res.json()).message)
@@ -105,7 +122,7 @@ const Category = () => {
           success: 'Đã tạo category',
           error: {
             render({ data }) {
-              return data.message
+              return `Không thể cập nhật: ${data.message}`
             }
           }
         }
@@ -115,6 +132,7 @@ const Category = () => {
 
   const openModal = (category) => {
     setSelectedCate(category)
+    setCategoryId(category.id)
     onOpen()
   }
 
@@ -138,27 +156,17 @@ const Category = () => {
     )
   }
 
-  const quickUpdate = async (category, value) => {
-    const res = await fetch(`/api/categories/${category.id}`, { method: "PUT", body: JSON.stringify(value) })
-    if (res.ok) {
-      toast.success("Đã cập nhật")
-    } else {
-      toast.error("Không thể cập nhật")
-    }
-  }
-
   const renderCell = useCallback((category, columnKey) => {
     const cellValue = category[columnKey]
 
     switch (columnKey) {
       case "highlight":
+      case "active":
         return <div className="relative flex items-center">
-          <Switch defaultSelected={category.highlight} onValueChange={(value) => quickUpdate(category, { highlight: value })}></Switch>
+          <CustomSwitch category={category} columnKey={columnKey} />
         </div>
-      case "showOnHeader":
-        return <div className="relative flex items-center">
-          <Switch defaultSelected={category.showOnHeader} onValueChange={(value) => quickUpdate(category, { showOnHeader: value })}></Switch>
-        </div>
+      case "cate":
+        return category[columnKey]?.name
       case "actions":
         return (
           <div className="relative flex items-center gap-2">
@@ -180,18 +188,13 @@ const Category = () => {
     onOpen()
   }
 
-  console.log(selectedCate)
   return (
     <div className="flex flex-col gap-10">
-      <div className="flex gap-3 w-1/2">
-        <Input label="Tên category" aria-label="Tên category" labelPlacement="outside" defaultValue={condition.name}
+      <div className="flex gap-3 w-2/3">
+        <Input label="ID/Tên category/Slug" className="pt-2"
+          aria-label="ID/Tên category/Slug" labelPlacement="outside" defaultValue={condition.name}
           onValueChange={(value) => {
-            if (value.length > 2 || !value.length) setCondition(Object.assign({}, condition, { name: value }))
-          }}
-        />
-        <Input label="Slug" aria-label="slug" labelPlacement="outside" value={condition.slug}
-          onValueChange={(value) => {
-            if (value.length > 2 || !value.length) setCondition(Object.assign({}, condition, { slug: value }))
+            if (value.length > 2 || !value.length) setCondition(Object.assign({}, condition, { id_name_slug: value }))
           }}
         />
         <Select
@@ -207,6 +210,13 @@ const Category = () => {
             SUB_CATE
           </SelectItem>
         </Select>
+
+        <Switch className="pt-6  w-full"
+          onValueChange={(value) => setCondition(Object.assign({}, condition, { active: value }))}>Active</Switch>
+        <Switch className="pt-6 w-full"
+          onValueChange={(value) => setCondition(Object.assign({}, condition, { highlight: value }))}>
+          Nổi bật
+        </Switch>
         <div className="items-end flex min-h-full">
           <Button onClick={getCategories} color="primary"><Search /></Button>
         </div>
@@ -214,24 +224,45 @@ const Category = () => {
       <div className="flex flex-col gap-2">
         <div className="border-default-200">
           <Table
-            aria-label="Tất cả sản phẩm"
+            aria-label="Tất cả Category"
             bottomContent={
               loadingState === "loading" ? null :
-                <div className="flex w-full justify-center">
-                  <Pagination
-                    isCompact
-                    showControls
-                    showShadow
-                    page={page}
-                    total={pages}
-                    onChange={(page) => setPage(page)}
-                  />
+                <div className="w-full flex">
+                  <Dropdown>
+                    <DropdownTrigger>
+                      <Button
+                        variant="bordered"
+                      >
+                        {rowsPerPage}
+                      </Button>
+                    </DropdownTrigger>
+                    <DropdownMenu
+                      onAction={(key) => setRowsPerPage(key)}
+                    >
+                      <DropdownItem key="10">10</DropdownItem>
+                      <DropdownItem key="20">20</DropdownItem>
+                      <DropdownItem key="50">50</DropdownItem>
+                      <DropdownItem key="100">100</DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
+                  <div className="flex w-full justify-center">
+                    <Pagination
+                      isCompact
+                      showControls
+                      showShadow
+                      page={page}
+                      total={pages}
+                      onChange={(page) => setPage(page)}
+                    />
+                  </div>
                 </div>
             }>
             <TableHeader>
               <TableColumn key="name" textValue="name">Tên</TableColumn>
               <TableColumn key="slug" textValue="slug">Slug</TableColumn>
               <TableColumn key="type" textValue="type">Loại</TableColumn>
+              <TableColumn key="cate" textValue="cate">Category</TableColumn>
+              <TableColumn key="active" textValue="active">Active</TableColumn>
               <TableColumn key="highlight" textValue="highlight">Nổi bật</TableColumn>
               <TableColumn key="actions" textValue="actions"></TableColumn>
             </TableHeader>
@@ -254,110 +285,130 @@ const Category = () => {
         </div>
       </div>
 
-      <div>
-        <Modal
-          scrollBehavior="inside"
-          size="2xl"
-          isOpen={isOpen} onOpenChange={onOpenChange}>
-          <form onSubmit={onSubmit}>
-            <ModalContent>
-              {(onClose) => (
-                <>
-                  <ModalHeader className="flex flex-col gap-1">Chi tiết category</ModalHeader>
-                  <ModalBody>
-                    <Input
-                      type="text"
-                      label="Category"
-                      defaultValue={selectedCate.name}
-                      onValueChange={(value) => setSelectedCate(Object.assign(
-                        {},
-                        selectedCate,
-                        { name: value, slug: slugify(value, { locale: 'vi' }).toLowerCase() }))}
-                      labelPlacement="outside" isRequired />
-                    <Input
-                      type="text"
-                      label="Slug"
-                      value={selectedCate.slug}
-                      onValueChange={(value) => setSelectedCate(Object.assign(
-                        {},
-                        selectedCate,
-                        { slug: slugify(value, { locale: 'vi' }).toLowerCase() }))}
-                      labelPlacement="outside" isRequired />
-                    <div className="grid grid-cols-3">
-                      <Switch defaultSelected={selectedCate.highlight} onValueChange={(value) => setSelectedCate(Object.assign(
-                        {},
-                        selectedCate,
-                        { highlight: value }))}>Nổi bật</Switch>
-                      {/* <Switch defaultSelected={selectedCate.showOnHeader}
-                        onValueChange={(value) => setSelectedCate(Object.assign(
-                          {},
-                          selectedCate,
-                          { showOnHeader: value }))}>Hiện trên header</Switch> */}
-                      <Input type="number" lable="Thứ tự trên header" value={selectedCate.headerOrder || 0}
-                        onValueChange={(value) => setSelectedCate(Object.assign(
-                          {},
-                          selectedCate,
-                          { headerOrder: parseInt(value) }))} />
-                    </div>
-                    <Select label="Loại"
-                      defaultSelectedKeys={new Set([selectedCate.type || "CATE"])}
-                      onSelectionChange={(value) =>
-                        setSelectedCate(Object.assign({}, selectedCate, { type: value.values().next().value }))}>
-                      <SelectItem key="CATE">
-                        Category
-                      </SelectItem>
-                      <SelectItem key="SUB_CATE">
-                        Sub category
-                      </SelectItem>
-                    </Select>
-                    {
-                      selectedCate.type === "SUB_CATE" ?
-                        <Select
-                          label="Category"
-                          labelPlacement="outside"
-                          defaultSelectedKeys={new Set([selectedCate.cateId])}
-                          onSelectionChange={(value) =>
-                            setSelectedCate(Object.assign({}, selectedCate, { cateId: value.values().next().value }))}
-                        >
-                          {
-                            categories.map((category) => (
-                              <SelectItem key={category.id}>
-                                {category.name}
-                              </SelectItem>
-                            ))
-                          }
-                        </Select> :
+      <Modal
+        scrollBehavior="inside"
+        size="5xl"
+        isOpen={isOpen} onOpenChange={onOpenChange}>
+        <form onSubmit={onSubmit}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">Chi tiết category</ModalHeader>
+                <ModalBody>
+                  <Input
+                    type="text"
+                    label="ID Category"
+                    defaultValue={categoryId}
+                    onValueChange={(value) => setCategoryId(value)}
+                    labelPlacement="outside" />
+                  <Input
+                    type="text"
+                    label="Category"
+                    defaultValue={selectedCate.name}
+                    onValueChange={(value) => setSelectedCate(Object.assign(
+                      {},
+                      selectedCate,
+                      { name: value, slug: slugify(value, { locale: 'vi' }).toLowerCase() }))}
+                    labelPlacement="outside" isRequired />
+                  <Input
+                    type="text"
+                    label="Slug"
+                    value={selectedCate.slug}
+                    onValueChange={(value) => setSelectedCate(Object.assign(
+                      {},
+                      selectedCate,
+                      { slug: slugify(value, { locale: 'vi' }).toLowerCase() }))}
+                    labelPlacement="outside" isRequired />
+                  <Input
+                    type="text"
+                    label="Meta title"
+                    value={selectedCate.metaTitle || ""}
+                    onValueChange={(value) => setSelectedCate(Object.assign(
+                      {},
+                      selectedCate,
+                      { metaTitle: value }))}
+                    labelPlacement="outside"
+                  />
+                  <Input
+                    type="text"
+                    label="Meta description"
+                    value={selectedCate.metaDescription || ""}
+                    onValueChange={(value) => setSelectedCate(Object.assign(
+                      {},
+                      selectedCate,
+                      { metaDescription: value }))}
+                    labelPlacement="outside"
+                  />
+                  <div className="flex gap-5">
 
-                        ""
+                    <Switch defaultSelected={selectedCate.highlight} onValueChange={(value) => setSelectedCate(Object.assign(
+                      {},
+                      selectedCate,
+                      { highlight: value }))}>Nổi bật</Switch>
+                    <Switch defaultSelected={selectedCate.active} onValueChange={(value) => setSelectedCate(Object.assign(
+                      {},
+                      selectedCate,
+                      { active: value }))}>Active</Switch>
+                  </div>
+
+                  <Select label="Loại"
+                    defaultSelectedKeys={new Set([selectedCate.type || "CATE"])}
+                    onSelectionChange={(value) =>
+                      setSelectedCate(Object.assign({}, selectedCate, { type: value.values().next().value }))}>
+                    <SelectItem key="CATE">
+                      Category
+                    </SelectItem>
+                    <SelectItem key="SUB_CATE">
+                      Sub category
+                    </SelectItem>
+                  </Select>
+                  {
+                    selectedCate.type === "SUB_CATE" ?
+                      <Select
+                        label="Category"
+                        labelPlacement="outside"
+                        defaultSelectedKeys={new Set([selectedCate.cateId])}
+                        onSelectionChange={(value) =>
+                          setSelectedCate(Object.assign({}, selectedCate, { cateId: value.values().next().value }))}
+                      >
+                        {
+                          allCategories.map((category) => (
+                            <SelectItem key={category.id}>
+                              {category.name}
+                            </SelectItem>
+                          ))
+                        }
+                      </Select> :
+                      ""
+                  }
+                  <div>
+                    <Button color="primary" onClick={imageModal.onOpen}>Chọn hình</Button>
+                  </div>
+                  <div className="m-auto w-2/3">
+                    {
+                      selectedCate.imageId ?
+                        <img
+                          className="w-full h-full"
+                          src={`${process.env.NEXT_PUBLIC_FILE_PATH + selectedCate?.image?.path}`}
+                        />
+                        : <></>
                     }
-                    <div>
-                      <Button color="primary" onClick={imageModal.onOpen}>Chọn hình</Button>
-                    </div>
-                    <div className="m-auto w-2/3">
-                      {
-                        selectedCate.imageId ?
-                          <img
-                            className="w-full h-full"
-                            src={`${process.env.NEXT_PUBLIC_FILE_PATH + selectedCate?.image?.path}`}
-                          />
-                          : <></>
-                      }
-                    </div>
-                  </ModalBody>
-                  <ModalFooter>
-                    <Button color="primary" type="submit" onPress={onClose}>
-                      Lưu
-                    </Button>
-                    <Button color="danger" variant="light" onPress={onClose}>
-                      Đóng
-                    </Button>
-                  </ModalFooter>
-                </>
-              )}
-            </ModalContent>
-          </form>
-        </Modal>
-      </div>
+                  </div>
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="primary" type="submit">
+                    Lưu
+                  </Button>
+                  <Button color="danger" variant="light" onPress={onClose}>
+                    Đóng
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </form>
+      </Modal>
+
       <Modal
         scrollBehavior="inside"
         size="full"
@@ -385,4 +436,12 @@ const Category = () => {
     </div>
   );
 };
+
+const CustomSwitch = ({ category, columnKey }) => {
+  const [cate, setCate] = useState(category)
+  if (columnKey === "highlight" && category.type === "SUB_CATE") {
+    return ""
+  }
+  return <Switch defaultSelected={cate[columnKey]} onValueChange={(value) => quickUpdate(cate, { [columnKey]: value }, setCate)}></Switch>
+}
 export default Category;

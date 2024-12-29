@@ -15,11 +15,14 @@ import {
   Select,
   SelectItem,
   Link,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
 } from "@nextui-org/react"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { EditIcon, Search, Trash2 } from "lucide-react"
-
-const rowsPerPage = 10
+import { EditIcon, Plus, Search, Trash2 } from "lucide-react"
+import { toast, ToastContainer } from "react-toastify"
 
 const quickUpdateProduct = async (product, value) => {
   await fetch(`/api/products/${product.id}`, {
@@ -33,13 +36,15 @@ const ProductCms = () => {
 
   const [condition, setCondition] = useState({})
   const [total, setTotal] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [selectedKeys, setSelectedKeys] = useState([])
 
   const [page, setPage] = useState(1)
   const [products, setProducts] = useState([])
 
   useEffect(() => {
     getProduct()
-  }, [page])
+  }, [page, rowsPerPage])
 
   const getProduct = async () => {
     setLoadingState("loading")
@@ -64,8 +69,34 @@ const ProductCms = () => {
     return total ? Math.ceil(total / rowsPerPage) : 0
   }, [total, rowsPerPage])
 
-  const deleteProduct = (id) => {
-    fetch(`/api/products/${id}`, { method: "DELETE" }).then(() => getProduct())
+  const deleteMany = async () => {
+    const productsToDelete = selectedKeys === 'all' ? products : [...selectedKeys]
+
+    await Promise
+      .all(productsToDelete.map(item => fetch(`/api/products/${item.id}`, { method: "DELETE" })))
+      .then(response => {
+        response.forEach(async res => {
+          if (res.ok) {
+            toast.success(`Đã xóa sản phẩm`)
+          } else {
+            const body = await res.json()
+            toast.error(`${body.message}`)
+          }
+        })
+      })
+
+    setSelectedKeys([])
+    getProduct()
+  }
+
+  const deleteProduct = async (id) => {
+    const res = await fetch(`/api/products/${id}`, { method: "DELETE" })
+    if (res.ok) {
+      getProduct()
+    } else {
+      const body = await res.json()
+      toast.error(body.message)
+    }
   }
 
   const renderCell = useCallback((product, columnKey) => {
@@ -121,15 +152,16 @@ const ProductCms = () => {
 
   return (
     <>
+      <ToastContainer />
       <div className="flex flex-col gap-2 border-r min-h-full p-2">
         <div className="flex gap-3 w-1/2">
           <Input
-            label="Slug"
-            aria-label="slug"
+            label="ID/Tên"
+            aria-label="ID/Tên"
             labelPlacement="outside"
-            value={condition.slug}
+            value={condition.id_name}
             onValueChange={(value) => {
-              onConditionChange({ slug: value })
+              onConditionChange({ id_name: value })
               if (value.length > 2) getProduct()
             }}
           />
@@ -154,9 +186,19 @@ const ProductCms = () => {
             <SelectItem key="true">Active</SelectItem>
             <SelectItem key="false">Inactive</SelectItem>
           </Select>
-          <div className="items-end flex min-h-full">
+          <div className="items-end flex min-h-full gap-2">
             <Button onClick={getProduct} color="primary">
               <Search />
+            </Button>
+
+            <Link href="/admin/product/edit/new" >
+              <Button color="primary">
+                <Plus />
+              </Button>
+            </Link>
+
+            <Button color="danger" onClick={deleteMany}>
+              <Trash2 />
             </Button>
           </div>
         </div>
@@ -164,22 +206,51 @@ const ProductCms = () => {
           <Table
             aria-label="Tất cả sản phẩm"
             loadingState={loadingState}
+            selectionMode="multiple"
+            onSelectionChange={setSelectedKeys}
+            selectedKeys={selectedKeys}
             bottomContent={
               loadingState === "loading" ? null : (
-                <div className="flex w-full justify-center">
-                  <Pagination
-                    isCompact
-                    showControls
-                    showShadow
-                    page={page}
-                    total={pages}
-                    onChange={(page) => setPage(page)}
-                  />
+                <div className="w-full flex">
+                  <Dropdown>
+                    <DropdownTrigger>
+                      <Button
+                        variant="bordered"
+                      >
+                        {rowsPerPage}
+                      </Button>
+                    </DropdownTrigger>
+                    <DropdownMenu
+                      onAction={(key) => setRowsPerPage(key)}
+                    >
+                      <DropdownItem key="10">10</DropdownItem>
+                      <DropdownItem key="20">20</DropdownItem>
+                      <DropdownItem key="50">50</DropdownItem>
+                      <DropdownItem key="100">100</DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
+                  <div className="flex w-full justify-center">
+                    <Pagination
+                      isCompact
+                      showControls
+                      showShadow
+                      page={page}
+                      total={pages}
+                      onChange={(page) => setPage(page)}
+                    />
+                  </div>
                 </div>
               )
             }
           >
             <TableHeader>
+              <TableColumn
+                key="id"
+                textValue="ID sản phẩm"
+                aria-label="ID sản phẩm"
+              >
+                ID
+              </TableColumn>
               <TableColumn
                 key="name"
                 textValue="Tên sản phẩm"

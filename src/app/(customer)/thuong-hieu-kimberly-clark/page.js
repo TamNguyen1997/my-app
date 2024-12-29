@@ -6,5 +6,5 @@ export const metadata = {
 }
 
 export default function Page() {
-  return (<BrandPage brand="thuong-hieu-kimberly-clark" />)
+  return (<BrandPage brand="thuong-hieu-kimberly-clark" bg="bg-[url(/brand/banner/1440_290_Banner_Kimberly.png)]" />)
 }

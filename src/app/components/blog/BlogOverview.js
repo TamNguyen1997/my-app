@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "@nextui-org/react";
+import { Button, Link } from "@nextui-org/react";
 import BlogCarousel from "./BlogCarousel";
 import TopBlogs from "./TopBlogs";
 import BlogItem from "./BlogItem";
@@ -49,11 +49,11 @@ const BlogOverview = ({ activeCategory, activeTag }) => {
   const [page, setPage] = useState(1)
 
   useEffect(() => {
-    fetch(`/api/blogs?blogCategory=${activeCategory}&blogSubCategory=${activeTag || ""}&excludeSupport=true&active=true&size=10&page=${page}`).then(res => res.json()).then(json => {
-      setBlogs(json.result)
+    fetch(`/api/blogs?blogCategory=${activeCategory}&blogSubCategory=${activeTag || ""}&activeDate=true&excludeSupport=true&active=true&size=10&page=${page}&orderBy=createdAt:desc`).then(res => res.json()).then(json => {
+      setBlogs([...blogs, ...json.result])
       setCategory(blogCategories.find(item => item.id === activeCategory))
     })
-  }, [activeCategory, activeTag])
+  }, [activeCategory, activeTag, page])
 
   return (
     <>
@@ -133,14 +133,13 @@ const BlogOverview = ({ activeCategory, activeTag }) => {
                 }
               </div>
 
-              <Link
-                href=""
-                className="flex justify-center items-center font-semibold w-[181px] h-[43px] rounded-[30px] text-black
-                border border-black hover:bg-[#FFD400] transition mx-auto"
+              <Button
+                className="flex justify-center items-center font-semibold w-[181px] h-[43px] rounded-[30px] text-black bg-white
+                border border-black hover:bg-[#FFD400] transition mx-auto text-large"
                 onClick={() => setPage(page + 1)}
               >
                 Xem thêm
-              </Link>
+              </Button>
             </div>
           </motion.div>
         </div>

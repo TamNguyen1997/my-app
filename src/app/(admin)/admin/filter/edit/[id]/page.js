@@ -43,12 +43,12 @@ const Filter = () => {
   return (
     <>
       <div className="flex flex-col gap-3">
-        <h2 className="font-bold">THUỘC TÍNH</h2>
+        <h2 className="font-bold">FILTER</h2>
         <div className="flex flex-col space-y-4 border rounded-2xl shadow-sm max-w-[444px] p-3 pb-5">
           <Input
             type="text"
-            label="ID thuộc tính"
-            value={filter.id}
+            label="ID filter"
+            defaultValue={filter.id}
             labelPlacement="outside-left"
             isRequired
             className="[&_label]:grow"
@@ -57,8 +57,8 @@ const Filter = () => {
 
           <Input
             type="text"
-            label="Tên thuộc tính"
-            value={filter.name}
+            label="Tên filter"
+            defaultValue={filter.name}
             labelPlacement="outside-left"
             isRequired
             className="[&_label]:grow"
@@ -74,11 +74,17 @@ const Filter = () => {
           </Switch>
         </div>
 
-        <h2 className="font-bold mt-10">GIÁ TRỊ THUỘC TÍNH</h2>
+        <h2 className="font-bold mt-10">GIÁ TRỊ FILTER</h2>
         {
           id ?
             <div className="-mt-2">
-              <FilterProduct filterId={id} categories={categories} subCategories={categories} brands={brands} filter={filter} setFilter={setFilter} />
+              <FilterProduct
+                filterId={id}
+                categories={categories.filter(item => item.type === "CATE")}
+                subCategories={categories.filter(item => item.type === "SUB_CATE")}
+                brands={brands}
+                filter={filter}
+                setFilter={setFilter} />
             </div> : ""
         }
       </div>

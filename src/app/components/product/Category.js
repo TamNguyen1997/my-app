@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from "react";
 import ProductCard from "@/components/product/ProductCard"
 import { getTotalPages } from "@/lib/pagination"
 import { useSearchParams } from "next/navigation";
-import { FILTER_TYPE } from "@/lib/filter";
 
 const rowsPerPage = 20;
 
@@ -14,16 +13,18 @@ const Category = ({ params, productFilter }) => {
   const [isLoading, setIsLoading] = useState(true)
   const [category, setCategory] = useState({ name: "" })
   const [value, setValue] = useState([0, 100000000])
-  const [selectedFilters, setSelectedFilters] = useState(new Set([]))
   const searchParams = useSearchParams()
   const [total, setTotal] = useState(0)
   const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"))
-  const [filters, setFilters] = useState({})
+  const [filters, setFilters] = useState([])
 
-  const [filterIds, setFilterIds] = useState({})
+  const [filterIds, setFilterIds] = useState([])
 
   useEffect(() => {
     getProduct()
+    fetch(`/api/filters/?categoryId=${params}&active=true`).then((res) => res.json()).then(json => {
+      setFilters(json.result.filter(item => item.filterValue.length))
+    })
   }, [params, productFilter]);
 
   const pages = useMemo(() => {
@@ -52,45 +53,29 @@ const Category = ({ params, productFilter }) => {
     if (JSON.stringify(value) !== JSON.stringify([0, 100000000])) {
       range += `range=${value.join('-')}`
     } else {
-      if (!Object.keys(filterIds).length) {
+      if (!filterIds.length) {
         window.location.replace(`/${category.slug}`)
         getProduct()
         return
       }
-      const ids = Object.values(filterIds).flat()
-      if (ids?.length === 1) {
-        window.location.replace(`/${category.slug}_${ids[0]}`)
+      if (filterIds.length === 1) {
+        window.location.replace(`/${category.slug}#${filterIds[0]}`)
         getProduct()
         return
       }
     }
-    let slugs = []
-    Object.keys(filterIds).forEach(key => {
-      if (filterIds[key]) slugs.push(...filterIds[key])
-    })
-    let params = []
+
+    let query = []
     if (range) {
-      params.push(range)
+      query.push(range)
     }
-    if (slugs.length) {
-      params.push(`filterId=${slugs.join("&filterId=")}`)
+    if (filterIds.length) {
+      query.push(`filterId=${filterIds.join("&filterId=")}`)
     }
-    window.location.replace(`/${category.slug}#${params.join("&")}`)
+    window.location.replace(`/${params}#${query.join("&")}`)
     getProduct()
   }
 
-  const onFilterSelect = (value) => {
-    setSelectedFilters(value)
-    if (!value.size) {
-      filter()
-      return
-    }
-
-    const productFilter = FILTER_TYPE[value.values().next().value]
-    if (!filter) return
-
-    setData(productFilter.filter(data))
-  }
 
   if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />
   return (
@@ -99,7 +84,7 @@ const Category = ({ params, productFilter }) => {
       <div
         className="flex flex-col items-center 
         bg-[image:var(--image-url)] bg-no-repeat bg-center bg-cover
-        justify-center min-w-screen h-72 md:h-52 sm:h-32"
+        justify-center xl:h-96 lg:h-72 md:h-60 h-32"
         style={{
           '--image-url': `url(${category.image ? process.env.NEXT_PUBLIC_FILE_PATH + category.image.path : ""})`,
           backgroundSize: "100% 100%"
@@ -108,22 +93,28 @@ const Category = ({ params, productFilter }) => {
       <div className="w-9/12 mx-auto pt-5">
         <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
           {
-            Object.keys(filters || {}).map((key, index) =>
+            filters.map((filter, index) =>
               <Select key={index}
-                label={FILTER_TYPE.find(item => item.id === key).label}
+                label={filter.name}
                 className="max-w-[200px]"
                 selectionMode="multiple"
                 labelPlacement="outside"
-                defaultSelectedKeys={new Set([filters[key].find(item => window.location.hash.includes(item.slug) || item.slug === productFilter)?.slug])}
+                defaultSelectedKeys={new Set([
+                  filter.filterValue.find(item => window.location.hash.includes(item.slug) || item.slug === productFilter)?.id])}
                 onSelectionChange={(value) => {
-                  let obj = {}
-                  obj[key] = [...value].filter(item => item)
-                  setFilterIds(Object.assign({}, filterIds, obj))
+                  const newValues = Array.from(value).filter(item => item)
+                  if (!newValues.length) {
+                    const temp = filterIds.filter(item => !filter.filterValue.map(item => item.id).includes(item))
+                    setFilterIds(temp)
+                  } else {
+                    const temp = filterIds.filter(item => !newValues.includes(item))
+                    setFilterIds([...newValues, ...temp])
+                  }
                 }}
               >
                 {
-                  filters[key].map((item, i) =>
-                    <SelectItem key={item.slug}>{item.name}</SelectItem>
+                  filter.filterValue.filter(item => item.slug).map((item, i) =>
+                    <SelectItem key={item.slug}>{item.value}</SelectItem>
                   )
                 }
               </Select>
@@ -180,36 +171,6 @@ const Category = ({ params, productFilter }) => {
             <Button color="primary" onClick={filter}>Tìm</Button>
           </div>
         </div>
-
-        <div className="pt-4">
-          <Dropdown className="pt-4">
-            <DropdownTrigger>
-              <Button
-                variant="bordered">
-                {
-                  selectedFilters.size ? FILTER_TYPE[selectedFilters.values().next().value].name : "Sắp xếp"
-                }
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu
-              aria-label="Example with disabled actions"
-              variant="light"
-              selectionMode="single"
-              selectedKeys={selectedFilters}
-              onSelectionChange={onFilterSelect}>
-              {
-                Object.keys(FILTER_TYPE).map(key =>
-                  <DropdownItem textValue="item" key={key}>
-                    {
-                      FILTER_TYPE[key].name
-                    }
-                  </DropdownItem>
-                )
-              }
-            </DropdownMenu>
-          </Dropdown>
-        </div>
-
 
         {
           !isLoading && !data.length ?

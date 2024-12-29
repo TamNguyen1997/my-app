@@ -1,42 +1,52 @@
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react"
 import ImageCms from "../ImageCms"
-import { useEffect, useState } from "react"
+import { useContext, useState } from "react"
 import { ToastContainer, toast } from 'react-toastify';
 import { X } from "lucide-react";
+import { ProductContext } from "../../../../(admin)/admin/product/edit/[id]/page"
 
-const ProductImage = ({ product }) => {
+const ProductImage = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-
-  const [images, setImages] = useState([])
-
-  useEffect(() => {
-    if (product.id) {
-      fetch(`/api/products/${product.id}/images`).then(res => res.json()).then(json => {
-        setImages(json.map(item => item.image))
-      })
-    }
-  }, [product])
+  const { product, setProduct } = useContext(ProductContext)
+  const [images, setImages] = useState(product.product_on_image || [])
 
   const selectImage = (value) => {
-    if (images.length >= 6) {
+    let newImages = product.product_on_image
+    if (newImages.length >= 6) {
       toast.error("Không thể thêm hình, đã đạt tối đa 6 hình")
     } else {
-      if (images.find(item => item.id === value.id)) {
-        toast.error("Đã chọn ảnh này")
+      if (newImages.find(item => item.imageId === value.id)) {
+        newImages = newImages.filter(item => item.imageId !== value.id)
+        toast.warning("Đã loại ảnh này")
       } else {
-        setImages([...images, value])
-        onOpenChange()
+        newImages = [...newImages, { imageId: value.id, image: value, productId: product.id }]
       }
     }
+    let newProduct = { ...product, ...{ product_on_image: newImages } }
+    newProduct.product_on_image = newImages
+    setImages(newImages)
+    setProduct(newProduct)
   }
 
-  const onSave = async () => {
-    const res = await fetch(`/api/products/${product.id}/images`, { method: "POST", body: JSON.stringify({ images: images }) })
-    if (res.ok) {
-      toast.success("Đã lưu hình ảnh")
-    } else {
-      toast.error("Không thể lưu hình ảnh")
-    }
+  const onUploadSuccess = async (uploads) => {
+    let newImages = product.product_on_image
+    uploads.forEach(value => {
+      if (newImages.length >= 6) {
+        toast.error("Không thể thêm hình, đã đạt tối đa 6 hình")
+      } else {
+        if (newImages.find(item => item.imageId === value.id)) {
+          newImages = newImages.filter(item => item.imageId !== value.id)
+          toast.warning("Đã loại ảnh này")
+        } else {
+          newImages = [...newImages, { imageId: value.id, image: value, productId: product.id }]
+        }
+      }
+    });
+    let newProduct = { ...product, ...{ product_on_image: newImages } }
+    newProduct.product_on_image = newImages
+    setImages(newImages)
+    setProduct(newProduct)
+    onOpenChange()
   }
 
   return (
@@ -45,16 +55,13 @@ const ProductImage = ({ product }) => {
       <div className="gap-3 p-5">
         <div className="flex flex-wrap gap-2">
           {
-            images.map((item, i) => <ImageItem key={i}
-              deleteItem={(item) => {
-                setImages(images.filter(img => img.id != item.id))
-              }}
-              onClick={() => { }} img={item} />)
+            images?.map((item, i) => <ImageItem key={i}
+              deleteItem={selectImage}
+              onClick={() => { }} img={item.image} />)
           }
         </div>
         <div className="flex flex-row gap-2 px-3 py-4 justify-end">
           <Button color="primary" onClick={onOpen} className="w-24">Chọn ảnh</Button>
-          <Button color="primary" onClick={onSave} className="w-24">Lưu</Button>
         </div>
       </div>
 
@@ -66,7 +73,11 @@ const ProductImage = ({ product }) => {
             <>
               <ModalHeader className="flex flex-col gap-1">Chọn hình ảnh</ModalHeader>
               <ModalBody>
-                <ImageCms disableAdd={true} onImageClick={selectImage} disableDelete={true} />
+                <ImageCms
+                  onImageClick={selectImage}
+                  highlights={images}
+                  onUploadSuccess={onUploadSuccess}
+                />
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
@@ -91,8 +102,8 @@ const ImageItem = ({ img, onClick, deleteItem }) => {
                   transition duration-400
                 `}>
       <img
-        src={`${process.env.NEXT_PUBLIC_FILE_PATH + img.path}`}
-        alt={img.alt}
+        src={`${process.env.NEXT_PUBLIC_FILE_PATH + img?.path}`}
+        alt={img?.alt}
         className="aspect-auto object-cover rounded-t shrink-0"
         onClick={() => onClick(img)} />
 

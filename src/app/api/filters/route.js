@@ -1,49 +1,52 @@
 import { db } from '@/app/db';
+import { cate_type } from '@prisma/client';
 import { NextResponse } from 'next/server';
 import queryString from 'query-string';
 
 export async function POST(req) {
   try {
     let filter = await req.json()
-    let filterValueJson = filter["filterValue"]
+    let filterValueJson = filter["filterValue"] || []
     delete filter["filterValue"];
-    const createdFilter = await db.filter.create({ data: filter })
-    for (let filterValue of filterValueJson) {
-      const filterValueId = filterValue.id
-      let brands = filterValue["brands"]
-      let categories = filterValue["categories"]
-      let subCategories = filterValue["subCategories"]
-      delete filterValue["brands"]
-      delete filterValue["categories"]
-      delete filterValue["subCategories"]
-      await db.filter_value.create({ data: filterValue })
-
-      await db.brand.updateMany({
-        where: {
-          id: {
-            in: brands.map(brand => brand)
-          }
-        }, data: { filter_valueId: filterValueId }
-      })
-      await db.category.updateMany({
-        where: {
-          id: {
-            in: categories.map(cate => cate)
-          }
-        }, data: { filterValueOnCategoryId: filterValueId }
-      })
-
-      await db.category.updateMany({
-        where: {
-          id: {
-            in: subCategories.map(subcate => subcate)
-          }
-        }, data: { filterValueOnSubCategoryId: filterValueId }
-      })
+    if (await db.filter.findFirst({ where: { id: filter.id } })) {
+      return NextResponse.json({ message: "ID của filter đã tổn tại" }, { status: 400 })
     }
+    const createdFilter = await db.filter.create({ data: filter })
+
+    await db.$transaction(async tx => {
+      for (let filterValue of filterValueJson) {
+        const filterValueId = filterValue.id
+
+        let brandOnFilterValues = filterValue["brands"].map(item => ({
+          filterValueId: filterValueId,
+          brandId: item
+        }))
+
+        let categoryOnFilterValues = [
+          ...Array.from(new Set(filterValue["categories"])),
+          ...Array.from(new Set(filterValue["subCategories"]))]
+          .map(item => ({
+            categoryId: item,
+            filterValueId: filterValueId
+          }))
+
+        delete filterValue["brands"]
+        delete filterValue["categories"]
+        delete filterValue["subCategories"]
+        await tx.filter_value.create({ data: filterValue })
+
+        await tx.brand_on_filter_value.createMany({
+          data: brandOnFilterValues
+        })
+        await tx.category_on_filter_value.createMany({
+          data: categoryOnFilterValues
+        })
+      }
+    })
 
     return NextResponse.json(createdFilter, { status: 200 })
   } catch (e) {
+    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }
@@ -52,20 +55,64 @@ export async function GET(req) {
   const { query } = queryString.parseUrl(req.url);
   let condition = {}
 
-  if (query) {
-    if (query.categoryId) {
-      const category = await db.category.findFirst({ where: { slug: query.categoryId } })
-      if (category) {
-        condition.categoryId = category.id
-      }
-    }
+  let size = 1000000
+  let page = 1
 
-    if (query.brandId) {
-      const brand = await db.brand.findFirst({ where: { slug: query.brandId } })
-      if (brand) {
-        condition.brandId = brand.id
+  if (query.size && query.page) {
+    page = parseInt(query.page) || 1
+    size = parseInt(query.size) || 10
+  }
+
+  if (query.categoryIds) {
+    condition.filterValue = condition.filterValue || {}
+    condition.filterValue = Object.assign(condition.filterValue, {
+      some: {
+        category_on_filter_value: {
+          every: {
+            category: {
+              OR: [
+                {
+                  slug: {
+                    in: query.categoryIds
+                  },
+                },
+                {
+                  id: {
+                    in: query.categoryIds
+                  }
+                }
+              ]
+            }
+          }
+        }
       }
-    }
+    })
+  }
+
+  if (query.brandId) {
+    condition.filterValue = condition.filterValue || {}
+    condition.filterValue = Object.assign(condition.filterValue, {
+      some: {
+        brand_on_filter_value: {
+          every: {
+            brand: {
+              OR: [
+                {
+                  slug: query.brandId,
+                },
+                {
+                  id: query.brandId
+                }
+              ]
+            }
+          }
+        }
+      }
+    })
+  }
+
+  if (query.active) {
+    condition.active = query.active === "true"
   }
 
   try {
@@ -78,28 +125,50 @@ export async function GET(req) {
       where: condition,
       include: {
         filterValue: true
-      }
+      },
+      skip: (page - 1) * size,
+      take: size
     })
 
-    result.forEach(async (filter, i) => {
-      const filterValues = (await db.filter_value.findMany({
-        where: { filterId: filter.id }, include: {
-          _count: {
-            select: { categories: true }
+    for (let i = 0; i < result.length; i++) {
+      const categoryCount = await db.category_on_filter_value.findMany({
+        where: {
+          filterValue: {
+            filterId: result[i].id
           },
-          _count: {
-            select: { subCategories: true }
+          category: {
+            type: cate_type.CATE
           },
-          _count: {
-            select: { brands: true }
+        },
+        distinct: ["categoryId"]
+      })
+
+      const subCategoryCount = await db.category_on_filter_value.findMany({
+        where: {
+          filterValue: {
+            filterId: result[i].id
+          },
+          category: {
+            type: cate_type.SUB_CATE
           }
-        }
-      }))
+        },
+        distinct: ["categoryId"]
+      })
 
-      result[i].categoryCount = filterValues.reduce((acc, val) => acc + val._count?.categories, 0) || 0
-      result[i].brandCount = filterValues.reduce((acc, val) => acc + val._count?.brands, 0) || 0
-      result[i].subCategoryCount = filterValues.reduce((acc, val) => acc + val._count?.subCategories, 0) || 0
-    })
+      const brandCount = await db.brand_on_filter_value.findMany({
+        where: {
+          filterValue: {
+            filterId: result[i].id
+          },
+        },
+        distinct: ["brandId"]
+      })
+
+
+      result[i].categoryCount = categoryCount.length || 0
+      result[i].brandCount = brandCount.length || 0
+      result[i].subCategoryCount = subCategoryCount.length || 0
+    }
 
     return NextResponse.json({
       result, total: await db.filter.count({ where: condition })

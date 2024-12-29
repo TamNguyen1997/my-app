@@ -1,22 +1,37 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/app/db';
+import queryString from 'query-string';
 
 export async function GET(req) {
-  const { searchParams } = new URL(req.url);
+  const { query } = queryString.parseUrl(req.url);
+
+  let page = 1
+  let size = 10
 
   let condition = {}
 
-  if (searchParams.get("type") && searchParams.get("type") !== "undefined") {
-    condition.type = searchParams.get("type")
+  if (query) {
+    page = parseInt(query.page) || 1
+    size = parseInt(query.size) || 10
+  }
+  if (query.type && query.type !== "undefined") {
+    condition.type = query.type
   }
 
-  if (searchParams.get("name") && searchParams.get("name") !== "undefined") {
-    condition.name = { search: `${searchParams.get("name")}:*` }
+  if (query.name && query.name !== "undefined") {
+    condition.name = { search: `${query.name}:*` }
   }
 
   try {
-    return NextResponse.json(await db.image.findMany({ where: condition }))
-
+    return NextResponse.json({
+      result: await db.image.findMany({
+        where: condition,
+        take: size,
+        skip: (page - 1) * size,
+        orderBy: { createdAt: 'desc' }
+      }),
+      total: await db.image.count({ where: condition })
+    })
   } catch (e) {
     return NextResponse.json([])
   }

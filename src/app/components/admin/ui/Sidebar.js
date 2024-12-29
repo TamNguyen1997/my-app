@@ -3,6 +3,7 @@
 import { LOGIN_MESSAGE } from "@/constants/message";
 import {
   ArrowRightLeft,
+  ClipboardList,
   Contact,
   Filter,
   History,
@@ -21,12 +22,6 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const items = [
-  {
-    id: "homepage",
-    name: "Homepage",
-    icon: <HomeIcon />,
-    link: "/",
-  },
   {
     id: "gallery",
     name: "Gallery",
@@ -70,6 +65,12 @@ const items = [
     link: "/admin/category",
   },
   {
+    id: "brand",
+    name: "Thương hiệu",
+    icon: <ClipboardList />,
+    link: "/admin/brand",
+  },
+  {
     id: "order",
     name: "Đơn hàng",
     icon: <StickyNote />,
@@ -83,7 +84,7 @@ const items = [
   },
   {
     id: "history",
-    name: "History",
+    name: "Import/Export",
     icon: <History />,
     link: "/admin/history",
   },

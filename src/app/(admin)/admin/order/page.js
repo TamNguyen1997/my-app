@@ -41,6 +41,11 @@ const Order = () => {
     switch (columnKey) {
       case "total":
         return order.total + order.shippingFee
+      case "status":
+        return <div className="relative flex items-center gap-2">
+          <span className={`block w-4 h-4 ${order[columnKey] === "PENDING" ? "bg-[#E4A11B]" : "#14A44D"} rounded-full`}></span>
+          <p>{order[columnKey] === "PENDING" ? "Chưa thanh toán" : "Đã thanh toán"}</p>
+        </div>
       case "shippingOrderCreated":
         return (
           <div className="relative flex items-center gap-2">

@@ -70,10 +70,31 @@ const Order = () => {
       body: JSON.stringify(value)
     })
     if (res.ok) {
+      setOrder(await res.json())
       toast.success("Đã cập nhật")
     } else {
       toast.error("Không thể cập nhật")
     }
+  }
+
+  const getShippingStatusColor = (order) => {
+    if (order.shippingStatus === "SHIPPING") {
+      return "warning"
+    }
+    if (order.shippingStatus === "SHIPPED") {
+      return "success"
+    }
+    return "danger"
+  }
+
+  const getPaymentStatus = (order) => {
+    if (order.shippingStatus === "SHIPPING") {
+      return "warning"
+    }
+    if (order.shippingStatus === "SHIPPED") {
+      return "success"
+    }
+    return "danger"
   }
   return (
     <>
@@ -84,19 +105,26 @@ const Order = () => {
       </div>
       <form >
         <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+          <div class="flex items-center">
+            <hr class="flex-grow border-t border-gray-300" />
+            <span class="px-3 text-gray-500">
+              Đơn hàng
+            </span>
+            <hr class="flex-grow border-t border-gray-300" />
+          </div>
           <div className="space-y-2">
             <Input
               label="Tên khách hàng"
               aria-label="Tên khách hàng"
               value={order.name}
-              disabled
+              readOnly
             />
             <Input
               label="Số điện thoại"
               aria-label="Số điện thoại"
               type="phone"
               value={order.phone}
-              disabled
+              readOnly
             />
 
             <Input
@@ -104,59 +132,74 @@ const Order = () => {
               aria-label="Email"
               value={order.email}
               type="email"
-              disabled
+              readOnly
             />
             <Input
               label="Địa chỉ"
               aria-label="Địa chỉ"
               value={order.address}
-              disabled
+              readOnly
             />
             <div className="flex gap-2">
-              <Input label="Tỉnh/thành" value={province} disabled />
-              <Input label="Quận/huyện" value={district} disabled />
-              <Input label="Phường/xã" value={ward} disabled />
+              <Input label="Tỉnh/thành" value={province} readOnly />
+              <Input label="Quận/huyện" value={district} readOnly />
+              <Input label="Phường/xã" value={ward} readOnly />
             </div>
             <Textarea
               label="Ghi chú"
               aria-label="Ghi chú"
               value={order.note}
-              disabled
+              readOnly
             />
+            <div class="flex items-center pt-5">
+              <hr class="flex-grow border-t border-gray-300" />
+              <span class="px-3 text-gray-500">
+                Thông tin công ty
+              </span>
+              <hr class="flex-grow border-t border-gray-300" />
+            </div>
             <div className="flex gap-3">
               <Input label="Tên Công ty"
                 value={order.companyName}
-                disabled />
+                readOnly />
               <Input label="Mã số thuế"
                 value={order.companyTaxCode}
-                disabled />
+                readOnly />
               <Input label="Email nhận hóa đơn"
                 value={order.companyEmail}
-                disabled />
+                readOnly />
             </div>
             <div>
               <Input label="Địa chỉ công ty"
                 value={order.companyAddress}
-                disabled />
+                readOnly />
+            </div>
+            <div class="flex items-center pt-5">
+              <hr class="flex-grow border-t border-gray-300" />
+              <span class="px-3 text-gray-500">
+                Thông tin vận chuyển
+              </span>
+              <hr class="flex-grow border-t border-gray-300" />
             </div>
             <div className="flex gap-3">
               <Input label="Mã đơn hàng"
                 value={order.orderId}
-                disabled />
+                readOnly />
               <Input label="Phương thức thanh toán"
                 value={order.paymentMethod}
-                disabled />
+                readOnly />
               <Input label="Trạng thái thanh toán"
-                value={order.status}
-                disabled />
+                color={order.status === "PAID" ? "success" : "warning"}
+                value={order.status === "PAID" ? "Đã thanh toán" : "Chưa thanh toán"}
+                readOnly />
               <Input label="Số tiền chuyển khoản"
                 value={order.customerPayment}
                 type="number"
-                disabled />
+                readOnly />
               <Input label="Tổng tiền"
                 value={order.total}
                 type="number"
-                disabled />
+                readOnly />
             </div>
 
             <div className="flex gap-3">
@@ -170,6 +213,7 @@ const Order = () => {
                 value={order.shippingId}
                 disabled />
               <Select label="Trạng thái đơn hàng"
+                color={getShippingStatusColor(order)}
                 disallowEmptySelection
                 defaultSelectedKeys={new Set([order.shippingStatus || "WAITING"])}
                 onSelectionChange={(value) => quickUpdate({ shippingStatus: value.values().next().value })}>
@@ -185,6 +229,7 @@ const Order = () => {
               </Select>
               <Select label="Đã tạo đơn vận chuyển"
                 disallowEmptySelection
+                color={order.shippingOrderCreated && "success"}
                 selectedKeys={new Set([order.shippingOrderCreated ? "true" : "false"])}
                 onSelectionChange={(value) => quickUpdate({ shippingOrderCreated: value.values().next().value === "true" })}>
                 <SelectItem key="true">

@@ -1,89 +1,187 @@
 "use client"
 
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import "./ImageCms.css"
-import { Input, Select, SelectItem } from '@nextui-org/react'
-import { X } from 'lucide-react'
+import {
+  Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger,
+  Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader,
+  Pagination, Select, SelectItem, Spinner, Textarea, useDisclosure
+} from '@nextui-org/react'
+import { EditIcon, X } from 'lucide-react'
+import { toast, ToastContainer } from 'react-toastify'
+import { ProductContext } from '@/app/(admin)/admin/product/edit/[id]/page'
 
-const ImagePicker = ({ disableSearch, onImageClick, disableDelete, reload }) => {
+const ImagePicker = ({ onImageClick, disableDelete, reload, highlights }) => {
   const [images, setImages] = useState([])
+  const [selectedImage, setSelectedImage] = useState()
   const [type, setType] = useState(new Set([]))
   const [name, setName] = useState()
   const [refresh, setRefresh] = useState(false)
 
+  const [size, setSize] = useState(10)
+  const [page, setPage] = useState(1)
+  const [total, setTotal] = useState(0)
+
+  const [isLoading, setIsLoading] = useState(true)
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const { product, setProduct } = useContext(ProductContext) || {}
+
+  const pages = useMemo(() => {
+    return total ? Math.ceil(total / size) : 0
+  }, [total, size])
+
   useEffect(() => {
+    setIsLoading(true)
     const typeValue = type.values().next().value
-    fetch(`/api/images/?name=${name}&type=${typeValue}`).then(async res => {
-      setImages(await res.json())
+    fetch(`/api/images/?name=${name}&type=${typeValue}&size=${size}&page=${page}`).then(async res => {
+      const json = await res.json()
+      setImages(json.result || [])
+      setTotal(json.total || json.total)
+      setIsLoading(false)
     })
-  }, [type, name, refresh, reload])
+  }, [type, name, refresh, reload, size, page])
 
   const deleteImage = async (image) => {
-    await fetch(`/api/images/${image.id}`, {
+    setIsLoading(true)
+    const res = await fetch(`/api/images/${image.id}`, {
       method: 'DELETE'
     })
-    setRefresh(true)
+    if (res.ok) {
+      setRefresh(!refresh)
+    } else {
+      const json = await res.json()
+      toast.error(json.message, { containerId: "image-picker" })
+    }
+    setIsLoading(false)
+  }
+
+  const editImage = async (e) => {
+    e.preventDefault()
+    const res = await fetch(`/api/images/${selectedImage.id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        name: selectedImage.name,
+        type: selectedImage.type,
+        description: selectedImage.description,
+      })
+    })
+    if (res.ok) {
+      setRefresh(!refresh)
+      onOpenChange()
+      toast.success("Cập nhật thành công", { containerId: "image-picker" })
+    } else {
+      const json = await res.json()
+      toast.error(json.message, { containerId: "image-picker" })
+    }
   }
 
   return (
     <div>
+      <ToastContainer containerId="image-picker" />
       <div className='flex w-full flex-wrap md:flex-nowrap gap-4 py-5'>
-        {
-          disableSearch ? null : (
-            <div className='flex gap-3 w-1/2'>
-              <Input
-                className="w-52"
-                type="text"
-                aria-label="Images"
-                placeholder="Tìm kiếm ảnh"
-                value={name}
-                isClearable
-                onValueChange={(value) => {
-                  setName(value)
-                }}
-              >
-              </Input>
-              <Select
-                aria-label='Loại'
-                className="w-52"
-                defaultSelectedKeys={type}
-                onSelectionChange={(value) => {
-                  setType(value)
-                }}
-              >
-                <SelectItem key="PRODUCT">
-                  Sản phẩm
-                </SelectItem>
-                <SelectItem key="BANNER">
-                  Banner
-                </SelectItem>
-                <SelectItem key="BLOG">
-                  Blog
-                </SelectItem>
-              </Select>
-            </div>
-          )
-        }
+        <div className='flex gap-3 w-1/2'>
+          <Input
+            className="w-52"
+            type="text"
+            aria-label="Images"
+            placeholder="Tìm kiếm ảnh"
+            value={name}
+            isClearable
+            onValueChange={(value) => {
+              setName(value)
+            }}
+          >
+          </Input>
+          <Select
+            aria-label='Loại'
+            className="w-52"
+            defaultSelectedKeys={type}
+            onSelectionChange={(value) => {
+              setType(value)
+            }}
+          >
+            <SelectItem key="PRODUCT">
+              Sản phẩm
+            </SelectItem>
+            <SelectItem key="BANNER">
+              Banner
+            </SelectItem>
+            <SelectItem key="BLOG">
+              Blog
+            </SelectItem>
+          </Select>
+        </div>
       </div>
 
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-[30px]">
+      <div className="w-full flex pb-3">
+        <Dropdown>
+          <DropdownTrigger>
+            <Button
+              variant="bordered"
+            >
+              {size}
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu
+            onAction={(key) => setSize(key)}
+          >
+            <DropdownItem key="10">10</DropdownItem>
+            <DropdownItem key="20">20</DropdownItem>
+            <DropdownItem key="50">50</DropdownItem>
+            <DropdownItem key="100">100</DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+        <div className="flex w-full justify-center">
+          <Pagination
+            isCompact
+            showControls
+            showShadow
+            page={page}
+            total={pages}
+            onChange={(page) => setPage(page)}
+          />
+        </div>
+      </div>
+      {isLoading ? <Spinner className="flex m-auto pt-10 w-full h-full" /> : <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-[30px]">
         {
-          images?.map?.((img) => (
+          images?.map((img) => (
             <div key={img.id} className={`
                   group relative flex flex-col rounded hover:opacity-70 cursor-pointer
                   shadow-[0px_2px_10px_rgba(0,0,0,0.15)] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)]
                   hover:-translate-y-2.5 hover:scale-[1.02]
-                  transition duration-400
+                  transition duration-400 ${(product?.product_on_image?.map(item => item.imageId).includes(img.id) || (highlights?.map(item => item.id).includes(img.id))) && "border-green-400 border-large"}
                 `}>
               <img
                 src={`${process.env.NEXT_PUBLIC_FILE_PATH + img.path}`}
                 alt={img.alt}
                 className="aspect-[16/10] object-cover rounded-t shrink-0"
-                onClick={() => onImageClick(img)}
+                onClick={() => {
+                  onImageClick(img)
+                  if (!setProduct || !product) return
+
+                  if (product.product_on_image?.find(item => item.imageId === img.id)) {
+                    setProduct({ ...product, product_on_image: product.product_on_image?.filter(item => item.imageId !== img.id) })
+                  } else {
+                    setProduct({ ...product, product_on_image: [...(product.product_on_image || []), { imageId: img.id, productId: product.id }] })
+                  }
+                }}
               />
               {
                 disableDelete ? null : (
-                  <span className="absolute -top-2.5 -right-2.5 hidden group-hover:block animate-vote bg-red-500 rounded-full hover:bg-red-700" onClick={() => deleteImage(img)}><X color="#FFFFFF" /></span>
+                  <>
+                    <span
+                      className="absolute -top-2.5 -right-2.5 hidden group-hover:block animate-vote bg-red-500 rounded-full hover:bg-red-700"
+                      onClick={() => deleteImage(img)}><X color="#FFFFFF" /></span>
+                    <span
+                      className="absolute -top-2.5 right-5 hidden group-hover:block bg-green-500 rounded-md hover:bg-green-700"
+                      onClick={() => {
+                        setSelectedImage(img)
+                        onOpen()
+                      }}>
+                      <EditIcon color="#FFFFFF" />
+                    </span>
+                  </>
                 )
               }
               <div className="grow bg-white text-center rounded-b p-5">
@@ -92,7 +190,59 @@ const ImagePicker = ({ disableSearch, onImageClick, disableDelete, reload }) => 
             </div>
           ))
         }
-      </div>
+      </div>}
+
+      <Modal
+        size="lg"
+        isOpen={isOpen} onOpenChange={onOpenChange}>
+        <form onSubmit={editImage}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">Chỉnh sửa hình ảnh</ModalHeader>
+                <ModalBody>
+                  <Input aria-label="Tên ảnh"
+                    label="Tên ảnh"
+                    value={selectedImage.name}
+                    onValueChange={value => setSelectedImage(Object.assign({}, selectedImage, { name: value }))}
+                    isRequired
+                  />
+                  <Select
+                    label="Loại hình"
+                    defaultSelectedKeys={[selectedImage.type]}
+                    onSelectionChange={(value) => {
+                      setSelectedImage(Object.assign({}, selectedImage, { type: value.values().next().value }))
+                    }}
+                    isRequired
+                  >
+                    <SelectItem key="PRODUCT">
+                      Sản phẩm
+                    </SelectItem>
+                    <SelectItem key="BLOG">
+                      Blog
+                    </SelectItem>
+                    <SelectItem key="BANNER">
+                      Banner
+                    </SelectItem>
+
+                  </Select>
+                  <Textarea aria-label="Mô tả" label="Mô tả"
+                    value={selectedImage.description}
+                    onValueChange={value => setSelectedImage(Object.assign({}, selectedImage, { description: value }))} />
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="primary" type='submit'>
+                    Lưu
+                  </Button>
+                  <Button color="danger" variant="light" onPress={onClose}>
+                    Close
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </form>
+      </Modal>
     </div>
   )
 }

@@ -25,10 +25,12 @@ import Link from "@tiptap/extension-link";
 import Blockquote from "@tiptap/extension-blockquote";
 import Youtube from "@tiptap/extension-youtube";
 import { EmojiReplacer } from "@/components/admin/ui/extensions/EmojiReplacer";
+import { FontSize } from "@/components/admin/ui/extensions/FontSize";
 /* ----------------------------------------------- */
 import FontFamily from "@tiptap/extension-font-family";
 import IndentOutdent from "@/components/admin/ui/extensions/IndentOutdent";
 import ButtonNode from "@/components/admin/ui/extensions/ButtonNode";
+import { Figure } from "@/components/admin/ui/extensions/ImageWithCaption";
 // import BackgroundColor from "@/components/admin/ui/extensions/BackgroundColor";
 
 const editorConfig = (content) => {
@@ -73,9 +75,8 @@ const editorConfig = (content) => {
       }),
       Link.configure({
         protocols: ["http", "https"],
-      }),
-      Link.extend({
-        inclusive: false,
+        openOnClick: false,
+        autolink: true,
       }),
       Placeholder.configure({
         placeholder: "Nhập văn bản",
@@ -89,6 +90,8 @@ const editorConfig = (content) => {
         types: ["textStyle"],
       }),
       IndentOutdent,
+      FontSize,
+      Figure
     ],
     content: content || "<br><br><br><br><br><br><br>",
   };

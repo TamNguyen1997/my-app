@@ -25,6 +25,7 @@ export async function GET(req) {
         slug: true,
         categoryId: true,
         subCateId: true,
+        brandId: true,
         active: true,
         saleDetails: {
           select: {
@@ -47,48 +48,22 @@ export async function GET(req) {
 
     const headers = [
       "ID SP",
-      "SKU",
       "Tên",
-      "URL SP",
       "ID Cate",
       "ID sub-cate",
-      "ID thuộc tính",
-      "ID giá trị thuộc tính",
-      "SL tồn kho",
-      "Trạng thái active",
-      "Giá thường",
-      "Giá giảm",
-      "Giá liên hệ",
-      "Ngày tạo",
-      "Ngày update",
+      "ID thương hiệu",
+      "Trạng thái active"
     ];
 
     console.log(result)
 
     const data = result.map((el) => ({
       "ID SP": el.id,
-      SKU: el.sku || "N/A",
       Tên: el.name || "N/A",
-      "URL SP": el.slug || "N/A",
       "ID Cate": el.categoryId || "N/A",
       "ID sub-cate": el.subCateId || "N/A",
-      "ID thuộc tính":
-        el.technical_detail.length > 0
-          ? el.technical_detail[0].filterId
-          : "N/A",
-      "ID giá trị thuộc tính":
-        el.technical_detail.length > 0
-          ? el.technical_detail[0].filterValueId
-          : "N/A",
-      "SL tồn kho": el.saleDetails.inStock || 0,
-      "Trạng thái active": el.active ? "T" : "F",
-      "Giá thường": el.saleDetails.length > 0 ? el.saleDetails[0].price : "N/A",
-      "Giá giảm":
-        el.saleDetails.length > 0 ? el.saleDetails[0].promotionalPrice : "N/A",
-      "Giá liên hệ":
-        el.saleDetails.length > 0 ? el.saleDetails[0].promotionalPrice : "N/A",
-      "Ngày tạo": new Date(el.createdAt).toLocaleDateString(),
-      "Ngày update": new Date(el.updatedAt).toLocaleDateString(),
+      "ID thương hiệu": el.brandId || "N/A",
+      "Trạng thái active": el.active ? "T" : "F"
     }));
 
     const workbook = XLSX.utils.book_new();

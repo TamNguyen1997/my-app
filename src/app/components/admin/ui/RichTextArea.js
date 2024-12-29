@@ -1,3 +1,5 @@
+"use client"
+
 import { EditorContent } from "@tiptap/react";
 import ImageCms from "@/components/admin/ui/ImageCms";
 import "./Tiptap.css";
@@ -69,20 +71,21 @@ import {
 } from "react-icons/tb";
 
 const RichTextEditor = ({ editor }) => {
+  const [fontSize, setFontSize] = useState(16)
   return (
     <div className="border border-t-0 rounded-lg">
-      <div className="sticky top-0 translate-x-[-1px] bg-white w-[calc(100%_+_2px)] z-[1000]">
+      <div className="sticky top-0 translate-x-[-1px] bg-white w-[calc(100%_+_2px)] z-[20]">
         <div
           className={`
             relative border rounded-t-lg before:content-[''] before:absolute before:inset-0 before:bg-gray-100 before:z-[-1] before:rounded-t-lg
 
           `}
         >
-          <BlogToolBar editor={editor} />
+          <BlogToolBar editor={editor} fontSize={fontSize} setFontSize={setFontSize} />
         </div>
       </div>
       <div className="h-full w-full min-h-44 p-3 border rounded-b-lg bg-white">
-        <EditorContent editor={editor} />
+        <EditorContent editor={editor} onClick={() => setFontSize(editor.getAttributes("textStyle").fontSize || 16)} />
       </div>
     </div>
   );
@@ -101,7 +104,7 @@ const TEXT_COLOR = {
   "#FFBF00": "bg-[#FFBF00]",
 };
 
-const BlogToolBar = ({ editor }) => {
+const BlogToolBar = ({ editor, fontSize, setFontSize }) => {
   const iconClassName =
     "border w-6 h-6 justify-items-center items-center bg-white border";
   const imageModal = useDisclosure();
@@ -119,16 +122,28 @@ const BlogToolBar = ({ editor }) => {
 
   const [showColorPick, setShowColorPick] = useState(false);
 
-  // -----------------------------------------------
   const [selectedFont, setSelectedFont] = useState("Open Sans");
   const [searchText, setSearchText] = useState("");
   const [replaceText, setReplaceText] = useState("");
   const [buttonText, setButtonText] = useState("");
-  // const backgroundColorModal = useDisclosure();
-  // const [showBackgroundColorPick, setShowBackgroundColorPick] = useState(false);
-  // const [selectedBackgroundColor, setSelectedBackgroundColor] =
-  //   useState("#FFFFFF");
-  // const [backgroundColor, setBackgroundColor] = useColor("#FFFFFF");
+  const [images, setImages] = useState([])
+
+  const onUploadSuccess = async (uploads) => {
+    uploads?.forEach(async upload => {
+      editor
+        .chain()
+        .focus()
+        .setFigure({
+          src: `${process.env.NEXT_PUBLIC_FILE_PATH + upload.path}`,
+          alt: upload.description,
+          caption: upload.description
+        })
+        .insertContent('<br>')
+        .run()
+    })
+
+    imageModal.onOpenChange()
+  }
 
   if (!editor) {
     return <></>;
@@ -182,6 +197,11 @@ const BlogToolBar = ({ editor }) => {
     editor.chain().focus().setFontFamily(font).run();
   };
 
+  const handleFontSizeChange = (size) => {
+    editor.commands.setFontSize(size);
+    setFontSize(size)
+  };
+
   const handleReplace = () => {
     if (!searchText || !replaceText) return;
 
@@ -197,19 +217,23 @@ const BlogToolBar = ({ editor }) => {
     setReplaceText("");
   };
 
-  // const changeBackgroundColor = (color) => {
-  //   setSelectedBackgroundColor(color);
-
-  //   if (editor) {
-  //     editor.chain().focus().setBackgroundColor(color).run();
-  //   }
-  // };
-
   const handleAddButton = () => {
     if (editor) {
       editor.chain().focus().insertButton(buttonText).run();
     }
   };
+
+  const selectImage = (value) => {
+    if (images.length >= 6) {
+      alert("Không thể thêm hình, đã đạt tối đa 6 hình")
+    } else {
+      if (images.find(item => item.id === value.id)) {
+        setImages(images.filter(item => item.id !== value.id))
+      } else {
+        setImages([...images, value])
+      }
+    }
+  }
 
   return (
     <div className="p-3 flex gap-1 flex-wrap">
@@ -217,9 +241,8 @@ const BlogToolBar = ({ editor }) => {
         <Tooltip showArrow content="Bold (Ctrl + B)">
           <div
             title="bold"
-            className={`${iconClassName} ${
-              editor.isActive("bold") ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive("bold") ? "opacity-25" : ""
+              }`}
             onClick={(e) => {
               e.preventDefault();
               editor.chain().focus().toggleBold().run();
@@ -231,9 +254,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Italic (Ctrl + I)">
           <div
-            className={`${iconClassName} ${
-              editor.isActive("italic") ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive("italic") ? "opacity-25" : ""
+              }`}
             onClick={() => editor.chain().focus().toggleItalic().run()}
           >
             <RiItalic className="w-full h-full" />
@@ -242,9 +264,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Strikethrough (Ctrl + Shift + S)">
           <div
-            className={`${iconClassName} ${
-              editor.isActive("strike") ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive("strike") ? "opacity-25" : ""
+              }`}
             onClick={() => editor.chain().focus().toggleStrike().run()}
           >
             <RiStrikethrough className="w-full h-full" />
@@ -253,9 +274,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Underline (Ctrl + U)">
           <div
-            className={`${iconClassName} ${
-              editor.isActive("underline") ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive("underline") ? "opacity-25" : ""
+              }`}
             onClick={() => editor.chain().focus().setUnderline().run()}
           >
             <RiUnderline className="w-full h-full" />
@@ -264,9 +284,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Code (Ctrl + E)">
           <div
-            className={`${iconClassName} ${
-              editor.isActive("code") ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive("code") ? "opacity-25" : ""
+              }`}
             onClick={() => editor.chain().focus().toggleCode().run()}
           >
             <RiCodeSSlashLine className="w-full h-full" />
@@ -277,9 +296,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Heading 1 (Ctrl + Alt + 1)">
           <div
-            className={`${iconClassName} ${
-              editor.isActive("heading", { level: 1 }) ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive("heading", { level: 1 }) ? "opacity-25" : ""
+              }`}
             onClick={() =>
               editor.chain().focus().toggleHeading({ level: 1 }).run()
             }
@@ -290,9 +308,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Heading 2 (Ctrl + Alt + 2)">
           <div
-            className={`${iconClassName} ${
-              editor.isActive("heading", { level: 2 }) ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive("heading", { level: 2 }) ? "opacity-25" : ""
+              }`}
             onClick={() =>
               editor.chain().focus().toggleHeading({ level: 2 }).run()
             }
@@ -303,9 +320,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Heading 3 (Ctrl + Alt + 3)">
           <div
-            className={`${iconClassName} ${
-              editor.isActive("heading", { level: 3 }) ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive("heading", { level: 3 }) ? "opacity-25" : ""
+              }`}
             onClick={() =>
               editor.chain().focus().toggleHeading({ level: 3 }).run()
             }
@@ -316,9 +332,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Heading 4 (Ctrl + Alt + 4)">
           <div
-            className={`${iconClassName} ${
-              editor.isActive("heading", { level: 4 }) ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive("heading", { level: 4 }) ? "opacity-25" : ""
+              }`}
             onClick={() =>
               editor.chain().focus().toggleHeading({ level: 4 }).run()
             }
@@ -331,9 +346,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Ordered list (Ctrl + Alt + 7)">
           <div
-            className={`${iconClassName} ${
-              editor.isActive("orderedList") ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive("orderedList") ? "opacity-25" : ""
+              }`}
             onClick={() => editor.chain().focus().toggleOrderedList().run()}
           >
             <RiListOrdered className="w-full h-full" />
@@ -342,9 +356,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Bullet list (Ctrl + Alt + 8)">
           <div
-            className={`${iconClassName} ${
-              editor.isActive("bulletList") ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive("bulletList") ? "opacity-25" : ""
+              }`}
             onClick={() => editor.chain().focus().toggleBulletList().run()}
           >
             <RiListUnordered className="w-full h-full" />
@@ -353,9 +366,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Blockquote (Ctrl + Shift + B)">
           <div
-            className={`${iconClassName} ${
-              editor.isActive("bulletList") ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive("bulletList") ? "opacity-25" : ""
+              }`}
             onClick={() => editor.chain().focus().toggleBlockquote().run()}
           >
             <RiDoubleQuotesL className="w-full h-full" />
@@ -364,9 +376,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Left align (Ctrl + Shift + L)">
           <div
-            className={`${iconClassName} ${
-              editor.isActive({ textAlign: "left" }) ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive({ textAlign: "left" }) ? "opacity-25" : ""
+              }`}
             onClick={() => editor.chain().focus().setTextAlign("left").run()}
           >
             <RiAlignLeft className="w-full h-full" />
@@ -375,9 +386,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Center align (Ctrl + Shift + E)">
           <div
-            className={`${iconClassName} ${
-              editor.isActive({ textAlign: "center" }) ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive({ textAlign: "center" }) ? "opacity-25" : ""
+              }`}
             onClick={() => editor.chain().focus().setTextAlign("center").run()}
           >
             <RiAlignCenter className="w-full h-full" />
@@ -386,9 +396,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Right align (Ctrl + Shift + R)">
           <div
-            className={`${iconClassName} ${
-              editor.isActive({ textAlign: "right" }) ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive({ textAlign: "right" }) ? "opacity-25" : ""
+              }`}
             onClick={() => editor.chain().focus().setTextAlign("right").run()}
           >
             <RiAlignRight className="w-full h-full" />
@@ -397,9 +406,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Justify (Ctrl + Shift + J)">
           <div
-            className={`${iconClassName} ${
-              editor.isActive({ textAlign: "justify" }) ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive({ textAlign: "justify" }) ? "opacity-25" : ""
+              }`}
             onClick={() => editor.chain().focus().setTextAlign("justify").run()}
           >
             <RiAlignJustify className="w-full h-full" />
@@ -439,9 +447,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Highlight (Ctrl + Shift + H)">
           <div
-            className={`${iconClassName} ${
-              editor.isActive("highlight") ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive("highlight") ? "opacity-25" : ""
+              }`}
             onClick={() => editor.chain().focus().toggleHighlight().run()}
           >
             <LucideHighlighter className="w-full h-full" />
@@ -450,9 +457,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Subscript (Ctrl + ,)">
           <div
-            className={`${iconClassName} ${
-              editor.isActive("subscript") ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive("subscript") ? "opacity-25" : ""
+              }`}
             onClick={() => editor.chain().focus().toggleSubscript().run()}
           >
             <RiSubscript2 className="w-full h-full" />
@@ -461,9 +467,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Superscript (Ctrl + .)">
           <div
-            className={`${iconClassName} ${
-              editor.isActive("superscript") ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive("superscript") ? "opacity-25" : ""
+              }`}
             onClick={() => editor.chain().focus().toggleSuperscript().run()}
           >
             <RiSuperscript2 className="w-full h-full" />
@@ -474,9 +479,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Line checkbox">
           <div
-            className={`${iconClassName} ${
-              editor.isActive("taskList") ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive("taskList") ? "opacity-25" : ""
+              }`}
             onClick={() => editor.chain().focus().toggleTaskList().run()}
           >
             <RiCheckboxLine className="w-full h-full" />
@@ -485,9 +489,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Multiple checkbox">
           <div
-            className={`${iconClassName} ${
-              !editor.can().splitListItem("taskItem") ? "opacity-10" : ""
-            }`}
+            className={`${iconClassName} ${!editor.can().splitListItem("taskItem") ? "opacity-10" : ""
+              }`}
             onClick={() =>
               editor.can().splitListItem("taskItem")
                 ? editor.chain().focus().splitListItem("taskItem").run()
@@ -507,9 +510,8 @@ const BlogToolBar = ({ editor }) => {
         ></div>
         <Tooltip showArrow content="Text color">
           <div
-            className={`${iconClassName} ${
-              editor.isActive("italic") ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive("italic") ? "opacity-25" : ""
+              }`}
             onClick={() => setShowColorPick(!showColorPick)}
             data-dropdown-toggle="dropdown"
           >
@@ -564,9 +566,8 @@ const BlogToolBar = ({ editor }) => {
             <div>
               <PopoverTrigger>
                 <div
-                  className={`${iconClassName} ${
-                    editor.isActive("italic") ? "opacity-25" : ""
-                  }`}
+                  className={`${iconClassName} ${editor.isActive("italic") ? "opacity-25" : ""
+                    }`}
                 >
                   <RiTable3 className="w-full h-full" />
                 </div>
@@ -575,7 +576,7 @@ const BlogToolBar = ({ editor }) => {
           </Tooltip>
           <PopoverContent>
             <div className="px-1 py-2">
-              <div className="text-small font-bold pb-2">Insert table</div>
+              <div className="text-small font-bold pb-2">Chèn bảng</div>
               <div className="text-tiny">
                 <Input
                   labelPlacement="outside"
@@ -626,9 +627,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Delete table">
           <div
-            className={`${iconClassName} ${
-              editor.isActive("italic") ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive("italic") ? "opacity-25" : ""
+              }`}
             onClick={() => editor.chain().focus().deleteTable().run()}
           >
             <svg
@@ -652,9 +652,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Delete column">
           <div
-            className={`${iconClassName} ${
-              editor.isActive("italic") ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive("italic") ? "opacity-25" : ""
+              }`}
             onClick={() => editor.chain().focus().deleteColumn().run()}
           >
             <TbColumnRemove className="w-full h-full" />
@@ -663,9 +662,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Add column before">
           <div
-            className={`${iconClassName} ${
-              editor.isActive("italic") ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive("italic") ? "opacity-25" : ""
+              }`}
             onClick={() => editor.chain().focus().addColumnBefore().run()}
           >
             <TbColumnInsertRight className="w-full h-full" />
@@ -674,9 +672,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Add column after">
           <div
-            className={`${iconClassName} ${
-              editor.isActive("italic") ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive("italic") ? "opacity-25" : ""
+              }`}
             onClick={() => editor.chain().focus().addColumnAfter().run()}
           >
             <TbColumnInsertLeft className="w-full h-full" />
@@ -685,9 +682,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Add row before">
           <div
-            className={`${iconClassName} ${
-              editor.isActive("italic") ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive("italic") ? "opacity-25" : ""
+              }`}
             onClick={() => editor.chain().focus().addRowBefore().run()}
           >
             <TbRowInsertBottom className="w-full h-full" />
@@ -697,9 +693,8 @@ const BlogToolBar = ({ editor }) => {
         {/* ----------------------------------------------- */}
         <Tooltip showArrow content="Add row after">
           <div
-            className={`${iconClassName} ${
-              editor.isActive("italic") ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive("italic") ? "opacity-25" : ""
+              }`}
             onClick={() => editor.chain().focus().addRowAfter().run()}
           >
             <TbRowInsertTop className="w-full h-full" />
@@ -709,9 +704,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Delete row">
           <div
-            className={`${iconClassName} ${
-              editor.isActive("italic") ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive("italic") ? "opacity-25" : ""
+              }`}
             onClick={() => editor.chain().focus().deleteRow().run()}
           >
             <TbRowRemove className="w-full h-full" />
@@ -720,9 +714,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Merge cells">
           <div
-            className={`${iconClassName} ${
-              editor.isActive("italic") ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive("italic") ? "opacity-25" : ""
+              }`}
             onClick={() => editor.chain().focus().mergeCells().run()}
           >
             <TableCellsMerge className="w-full h-full" />
@@ -731,9 +724,8 @@ const BlogToolBar = ({ editor }) => {
 
         <Tooltip showArrow content="Split cell">
           <div
-            className={`${iconClassName} ${
-              editor.isActive("italic") ? "opacity-25" : ""
-            }`}
+            className={`${iconClassName} ${editor.isActive("italic") ? "opacity-25" : ""
+              }`}
             onClick={() => editor.chain().focus().splitCell().run()}
           >
             <TableCellsSplit className="w-full h-full" />
@@ -742,72 +734,13 @@ const BlogToolBar = ({ editor }) => {
         {/* ----------------------------------------------- */}
 
         <div className="pr-5"></div>
-        {/* <div className="flex flex-wrap [&>div]:ml-0.5">
-          <div
-            className={`border w-10 rounded-large h-6`}
-            style={{
-              background: selectedBackgroundColor,
-            }}
-          ></div>{" "}
-          <Tooltip showArrow content="Background color">
-            <div
-              className={`${iconClassName}`}
-              onClick={() =>
-                setShowBackgroundColorPick(!showBackgroundColorPick)
-              }
-              data-dropdown-toggle="dropdown"
-            >
-              <Pipette />
-              {showBackgroundColorPick ? (
-                <div
-                  className="w-28 divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 absolute z-10"
-                  id="dropdown"
-                >
-                  <ul
-                    className="py-2 text-sm flex flex-col gap-4 text-center items-center m-auto"
-                    aria-labelledby="dropdownDefaultButton"
-                  >
-                    <div className="items-center text-center m-auto">
-                      <div className="flex flex-wrap pl-[6px]">
-                        {Object.keys(TEXT_COLOR).map((key) => (
-                          <div
-                            className={`w-5 h-5 border-2 hover:opacity-25 cursor-pointer`}
-                            style={{
-                              background: key,
-                            }}
-                            key={key}
-                            onClick={() => {
-                              changeBackgroundColor(key);
-                            }}
-                          ></div>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="text-center items-center">
-                      <button
-                        onClick={() => backgroundColorModal.onOpen()}
-                        className="border-3 rounded-md"
-                      >
-                        Chọn màu
-                      </button>
-                    </div>
-                  </ul>
-                </div>
-              ) : (
-                ""
-              )}
-            </div>
-          </Tooltip>
-        </div> */}
-
         <Popover placement="bottom" showArrow={true}>
           <Tooltip showArrow content="Replace">
             <div>
               <PopoverTrigger>
                 <div
-                  className={`${iconClassName} ${
-                    editor.isActive("italic") ? "opacity-25" : ""
-                  }`}
+                  className={`${iconClassName} ${editor.isActive("italic") ? "opacity-25" : ""
+                    }`}
                 >
                   <RiFindReplaceLine className="w-full h-full" />
                 </div>
@@ -964,11 +897,23 @@ const BlogToolBar = ({ editor }) => {
             ))}
           </select>
         </Tooltip>
+
+        <Tooltip showArrow content="Font size">
+          <input
+            className="h-8 mt-[6px] ml-[2px] text-[14px] p-1 border rounded w-16"
+            type="number" value={fontSize}
+            onChange={e => handleFontSizeChange(e.target.value)}
+          />
+        </Tooltip>
       </div>
+
       <div className="w-1/4"></div>
       <Modal
         isOpen={imageModal.isOpen}
-        onOpenChange={imageModal.onOpenChange}
+        onOpenChange={() => {
+          imageModal.onOpenChange()
+          setImages([])
+        }}
         size="full"
         scrollBehavior="inside"
       >
@@ -980,24 +925,34 @@ const BlogToolBar = ({ editor }) => {
               </ModalHeader>
               <ModalBody>
                 <ImageCms
-                  disableAdd
-                  onImageClick={(image) => {
-                    editor
-                      .chain()
-                      .focus()
-                      .setImage({
-                        src: `${
-                          process.env.NEXT_PUBLIC_FILE_PATH + image.path
-                        }`,
-                      })
-                      .run();
-                    onClose();
-                  }}
-                  disableDelete
+                  onImageClick={selectImage}
+                  highlights={images}
+                  onUploadSuccess={onUploadSuccess}
                 />
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
+                <Button color="primary" onPress={() => {
+                  images.forEach(image => {
+                    editor
+                      .chain()
+                      .focus()
+                      .setFigure({
+                        src: `${process.env.NEXT_PUBLIC_FILE_PATH + image.path}`,
+                        alt: image.description,
+                        caption: image.description
+                      })
+                      .insertContent('<br>')
+                      .run()
+                  })
+
+                  onClose();
+                }}>
+                  Chọn
+                </Button>
+                <Button color="danger" onPress={() => {
+                  setImages([])
+                  onClose()
+                }}>
                   Đóng
                 </Button>
               </ModalFooter>
@@ -1010,7 +965,7 @@ const BlogToolBar = ({ editor }) => {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Chèn hình ảnh
+                Chèn Link
               </ModalHeader>
               <ModalBody>
                 <Input
@@ -1110,46 +1065,6 @@ const BlogToolBar = ({ editor }) => {
           )}
         </ModalContent>
       </Modal>
-      {/* ----------------------------------------------- */}
-      {/* <Modal
-        isOpen={backgroundColorModal.isOpen}
-        onOpenChange={backgroundColorModal.onOpenChange}
-      >
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                Chọn màu
-              </ModalHeader>
-              <ModalBody>
-                <ColorPicker
-                  width={456}
-                  height={228}
-                  color={backgroundColor}
-                  onChange={setBackgroundColor}
-                  hideHSV
-                  dark
-                />
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Đóng
-                </Button>
-                <Button
-                  color="primary"
-                  onPress={() => {
-                    changeBackgroundColor(color.hex);
-
-                    onClose();
-                  }}
-                >
-                  Chọn
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal> */}
     </div>
   );
 };

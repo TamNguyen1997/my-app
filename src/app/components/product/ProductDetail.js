@@ -12,22 +12,32 @@ export default ({ id }) => {
   const [product, setProduct] = useState({});
   const [images, setImages] = useState([]);
   useEffect(() => {
-    fetch(`/api/products/${id}?includeTechnical=true&includeSale=true`).then((res) => res.json()).then(product => {
-      setProduct(product)
-      if (product.id) {
-        fetch(`/api/products/${product.id}/images`).then((res) => res.json()).then((json) => {
-          setImages(json.map(item => process.env.NEXT_PUBLIC_FILE_PATH + item.image.path))
-        })
-      }
-    })
+    getProduct()
 
   }, [id])
+
+  const getProduct = async () => {
+
+    const res = await fetch(`/api/products/${id}?includeTechnical=true&includeSale=true`)
+    if (res.status === 404) {
+      window.location.replace("/not-found")
+    } else {
+      res.json().then(product => {
+        setProduct(product)
+        if (product.id) {
+          fetch(`/api/products/${product.id}/images`).then((res) => res.json()).then((json) => {
+            setImages(json.map(item => process.env.NEXT_PUBLIC_FILE_PATH + item.image.path))
+          })
+        }
+      })
+    }
+  }
   if (!product?.id) {
     return <Skeleton />
   }
 
   return (
-    <div>
+    <>
       <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${product.subCate?.slug}/${id}`} />
       <div className="bg-[#ffed00] py-2.5">
         <div className="container">
@@ -89,6 +99,6 @@ export default ({ id }) => {
           <ProductDetailTabs product={product} />
         </motion.div>
       </div>
-    </div>
+    </>
   );
 };

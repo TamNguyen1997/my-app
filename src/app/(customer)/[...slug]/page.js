@@ -21,7 +21,7 @@ export async function generateMetadata({ params }) {
 export default function Page({ params }) {
 
   if (params.slug.length === 1) {
-    const [slug, filter] = params.slug[0].split("_")
+    const [slug, filter] = params.slug[0].split("#")
     return <Category params={slug} productFilter={filter} />
   }
   return <ProductDetail id={params.slug[1]} />

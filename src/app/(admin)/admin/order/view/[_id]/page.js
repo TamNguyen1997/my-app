@@ -105,12 +105,12 @@ const Order = () => {
       </div>
       <form >
         <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
-          <div class="flex items-center">
-            <hr class="flex-grow border-t border-gray-300" />
-            <span class="px-3 text-gray-500">
+          <div className="flex items-center">
+            <hr className="flex-grow border-t border-gray-300" />
+            <span className="px-3 text-gray-500">
               Đơn hàng
             </span>
-            <hr class="flex-grow border-t border-gray-300" />
+            <hr className="flex-grow border-t border-gray-300" />
           </div>
           <div className="space-y-2">
             <Input
@@ -151,12 +151,12 @@ const Order = () => {
               value={order.note}
               readOnly
             />
-            <div class="flex items-center pt-5">
-              <hr class="flex-grow border-t border-gray-300" />
-              <span class="px-3 text-gray-500">
+            <div className="flex items-center pt-5">
+              <hr className="flex-grow border-t border-gray-300" />
+              <span className="px-3 text-gray-500">
                 Thông tin công ty
               </span>
-              <hr class="flex-grow border-t border-gray-300" />
+              <hr className="flex-grow border-t border-gray-300" />
             </div>
             <div className="flex gap-3">
               <Input label="Tên Công ty"
@@ -174,12 +174,12 @@ const Order = () => {
                 value={order.companyAddress}
                 readOnly />
             </div>
-            <div class="flex items-center pt-5">
-              <hr class="flex-grow border-t border-gray-300" />
-              <span class="px-3 text-gray-500">
+            <div className="flex items-center pt-5">
+              <hr className="flex-grow border-t border-gray-300" />
+              <span className="px-3 text-gray-500">
                 Thông tin vận chuyển
               </span>
-              <hr class="flex-grow border-t border-gray-300" />
+              <hr className="flex-grow border-t border-gray-300" />
             </div>
             <div className="flex gap-3">
               <Input label="Mã đơn hàng"
@@ -277,7 +277,7 @@ const Order = () => {
 
                     <div className="w-full min-w-0 flex-1 space-y-4 md:order-2 md:max-w-md">
                       <div>
-                        <p className="text-base font-medium text-gray-900 hover:underline dark:text-white">{item.saleDetail.product.name}</p>
+                        <p className="text-base font-medium text-gray-900 hover:underline dark:text-white">{item.saleDetail?.product.name}</p>
                         <p className="text-lg font-bold leading-tight text-red-600 dark:text-red-500">
                           {item.saleDetail?.price.toLocaleString()} đ</p>
                         <div className="text-[16px] flex opacity-80 pt-1">

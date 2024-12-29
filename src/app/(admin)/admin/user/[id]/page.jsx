@@ -190,8 +190,8 @@ const UserDetail = () => {
               color="warning"
             >
               {isChangingPassword
-                ? "Cancel Change Password"
-                : "Change Password"}
+                ? "Hủy"
+                : "Đổi mật khẩu"}
             </Button>
             {isChangingPassword && (
               <div>
@@ -260,7 +260,7 @@ const UserDetail = () => {
           </div>
 
           <Button color="success" type="submit" className="mt-4">
-            Update User
+            Cập nhật
           </Button>
         </form>
       </div>

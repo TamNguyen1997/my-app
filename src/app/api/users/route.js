@@ -1,6 +1,5 @@
 import { db } from "@/app/db";
 import { NextResponse } from "next/server";
-import queryString from "query-string";
 import CryptoJS from "crypto-js";
 import { USER_MESSAGE } from "@/constants/message";
 

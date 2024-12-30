@@ -146,7 +146,7 @@ const UserDetail = () => {
                   required: "Vui lòng điền email",
                   pattern: {
                     value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i,
-                    message: "Invalid email address",
+                    message: "Địa chỉ email không hợp lệ",
                   },
                 })}
                 status={errors.email ? "error" : "default"}
@@ -215,15 +215,15 @@ const UserDetail = () => {
 
                 <div className="mt-2">
                   <Input
-                    label="New Password"
-                    placeholder="Enter your new password"
+                    label="Password mới"
+                    placeholder="Vui lòng điền password mới"
                     type="password"
                     variant="bordered"
                     {...register("newPassword", {
-                      required: "Please enter your new password",
+                      required: "Vui lòng điền password mới",
                       minLength: {
                         value: 6,
-                        message: "Password must be at least 6 characters",
+                        message: "Password phải có ít nhất 6 kí tự",
                       },
                     })}
                     status={errors.newPassword ? "error" : "default"}

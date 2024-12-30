@@ -43,7 +43,6 @@ export async function POST(req) {
     );
 
     response.cookies.set("user", `${user.id}:${user.username}`, {
-      httpOnly: true,
       sameSite: "lax",
       maxAge: 60 * 60 * 24,
       path: "/",

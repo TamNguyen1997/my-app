@@ -134,7 +134,7 @@ const User = () => {
   useEffect(() => {
     fetchUsers();
 
-    return () => {};
+    return () => { };
   }, [page]);
 
   return (
@@ -255,14 +255,14 @@ const User = () => {
                     <UserCircle2 className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
                   }
                   label="Username"
-                  placeholder="Enter your username"
+                  placeholder="Vui lòng điền username"
                   variant="bordered"
                   {...register("username", {
-                    required: "Username is required",
+                    required: "Vui lòng điền username",
                     pattern: {
                       value: /^[a-zA-Z0-9]{4,12}$/,
                       message:
-                        "Username must be 4-12 characters long, alphanumeric only",
+                        "Username phải từ 4 tới 12 kí tự và chỉ có thể có chữ và số.",
                     },
                   })}
                   status={errors.username ? "error" : "default"}
@@ -283,7 +283,7 @@ const User = () => {
                     required: "Password is required",
                     minLength: {
                       value: 6,
-                      message: "Password must be at least 6 characters",
+                      message: "Password phải có ít nhất 6 kí tự",
                     },
                   })}
                   status={errors.password ? "error" : "default"}
@@ -296,14 +296,15 @@ const User = () => {
                   endContent={
                     <LockIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
                   }
-                  label="Confirm Password"
-                  placeholder="Confirm your password"
+                  label="Xác nhận password"
+                  placeholder="Vui lòng xác nhận password"
                   type="password"
                   variant="bordered"
+                  isRequired
                   {...register("confirmPassword", {
-                    required: "Please confirm your password",
+                    required: "Vui lòng xác nhận password",
                     validate: (value) =>
-                      value === password || "Passwords do not match",
+                      value === password || "Password không trùng",
                   })}
                   status={errors.confirmPassword ? "error" : "default"}
                 />
@@ -318,11 +319,12 @@ const User = () => {
                     <Mail className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
                   }
                   label="Email"
-                  placeholder="Enter your email"
+                  placeholder="Vui lòng điền email"
                   type="email"
                   variant="bordered"
+                  isRequired
                   {...register("email", {
-                    required: "Email is required",
+                    required: "Vui lòng điền email",
                     pattern: {
                       value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i,
                       message: "Invalid email address",
@@ -338,10 +340,11 @@ const User = () => {
                   endContent={
                     <UserSquare2Icon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
                   }
-                  label="Name"
-                  placeholder="Enter your name"
+                  label="Tên"
+                  placeholder="Vui lòng điền tên"
                   variant="bordered"
-                  {...register("name", { required: "Name is required" })}
+                  isRequired
+                  {...register("name", { required: "Vui lòng điền tên" })}
                   status={errors.name ? "error" : "default"}
                 />
                 {errors.name && (

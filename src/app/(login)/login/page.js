@@ -36,7 +36,6 @@ export default function Login() {
       }
     } catch (error) {
       toast.error(LOGIN_MESSAGE.LOGIN_FAILED);
-      console.error(error);
     }
   };
 

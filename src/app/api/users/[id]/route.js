@@ -59,16 +59,17 @@ export async function PUT(req, { params }) {
     }
 
     if (password && newPassword) {
-      const hashedPassword = CryptoJS.HmacSHA256(
+      const hashedPassword = password ? CryptoJS.HmacSHA256(
         password,
         PRIVATE_KEY
-      ).toString();
+      ).toString() : "";
 
       const user = await db.user.findUnique({
         where: { id },
       });
+      const [_, username] = userCookie.value.split(":");
 
-      if (!user || user.password !== hashedPassword) {
+      if (username !== 'admin' && (!user || user.password !== hashedPassword)) {
         return NextResponse.json(
           { message: USER_MESSAGE.INCORRECT_PASSWORD },
           { status: 400 }

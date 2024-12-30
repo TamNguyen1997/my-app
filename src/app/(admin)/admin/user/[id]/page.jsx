@@ -3,14 +3,22 @@
 import { USER_MESSAGE } from "@/constants/message";
 import { Button, Input, Switch } from "@nextui-org/react";
 import { useParams, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast, ToastContainer } from "react-toastify";
-
+import { getCookie } from 'cookies-next';
 const UserDetail = () => {
   const params = useParams();
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const router = useRouter();
+
+  const getUser = () => {
+    const [id, username] = getCookie("user")?.split(":")
+    return {
+      id,
+      username
+    }
+  }
 
   const {
     register,
@@ -142,6 +150,7 @@ const UserDetail = () => {
                 placeholder="Điền email"
                 type="email"
                 variant="bordered"
+                isRequired
                 {...register("email", {
                   required: "Vui lòng điền email",
                   pattern: {
@@ -158,6 +167,7 @@ const UserDetail = () => {
             </div>
             <div className="mt-2">
               <Input
+                isRequired
                 label="Tên"
                 placeholder="Vui lòng điền tên"
                 variant="bordered"
@@ -198,12 +208,13 @@ const UserDetail = () => {
                     label="Password"
                     placeholder="Vui lòng điền password"
                     type="password"
+                    isRequired={getUser().username !== 'admin'}
                     variant="bordered"
-                    {...register("password", {
+                    {...register("password", getUser().username === 'admin' ? {} : {
                       required: "Vui lòng điền password",
                       minLength: {
                         value: 6,
-                        message: "Password must be at least 6 characters",
+                        message: "Password phải có ít nhất 6 kí tự",
                       },
                     })}
                     status={errors.password ? "error" : "default"}
@@ -219,6 +230,7 @@ const UserDetail = () => {
                     placeholder="Vui lòng điền password mới"
                     type="password"
                     variant="bordered"
+                    isRequired
                     {...register("newPassword", {
                       required: "Vui lòng điền password mới",
                       minLength: {
@@ -235,15 +247,16 @@ const UserDetail = () => {
 
                 <div className="mt-2">
                   <Input
-                    label="Confirm New Password"
-                    placeholder="Confirm your new password"
+                    label="Xác nhận password"
+                    placeholder="Vui lòng xác nhận password"
                     type="password"
                     variant="bordered"
+                    isRequired
                     {...register("confirmNewPassword", {
-                      required: "Please confirm your password",
+                      required: "Vui lòng xác nhận password",
                       validate: (value) =>
                         value === watch("newPassword") ||
-                        "Passwords do not match",
+                        "Password không trùng",
                     })}
                     status={errors.confirmNewPassword ? "error" : "default"}
                   />

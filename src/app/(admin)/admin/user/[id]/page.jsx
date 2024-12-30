@@ -35,12 +35,10 @@ const UserDetail = () => {
     if (params.id) {
       try {
         const res = await fetch(params.id && `/api/users/${params.id}`);
-        console.log(res);
         if (!res.ok) {
           throw new Error("Failed to fetch user data");
         }
         const result = await res.json();
-        console.log(result);
         const { username, email, name, active } = result;
         reset({
           username,
@@ -141,11 +139,11 @@ const UserDetail = () => {
             <div className="mt-2">
               <Input
                 label="Email"
-                placeholder="Enter your email"
+                placeholder="Điền email"
                 type="email"
                 variant="bordered"
                 {...register("email", {
-                  required: "Email is required",
+                  required: "Vui lòng điền email",
                   pattern: {
                     value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i,
                     message: "Invalid email address",
@@ -160,10 +158,10 @@ const UserDetail = () => {
             </div>
             <div className="mt-2">
               <Input
-                label="Name"
-                placeholder="Enter your name"
+                label="Tên"
+                placeholder="Vui lòng điền tên"
                 variant="bordered"
-                {...register("name", { required: "Name is required" })}
+                {...register("name", { required: "Vui lòng điền tên" })}
                 status={errors.name ? "error" : "default"}
                 value={watch("name")}
               />
@@ -198,11 +196,11 @@ const UserDetail = () => {
                 <div className="mt-2">
                   <Input
                     label="Password"
-                    placeholder="Enter your password"
+                    placeholder="Vui lòng điền password"
                     type="password"
                     variant="bordered"
                     {...register("password", {
-                      required: "Password is required",
+                      required: "Vui lòng điền password",
                       minLength: {
                         value: 6,
                         message: "Password must be at least 6 characters",

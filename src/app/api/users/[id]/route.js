@@ -57,6 +57,22 @@ export async function PUT(req, { params }) {
         );
       }
     }
+    const [_, username] = userCookie.value.split(":");
+    if (!password && newPassword && username === 'admin') {
+
+      const user = await db.user.findUnique({
+        where: { id },
+      });
+
+      if (!user) {
+        return NextResponse.json(
+          { message: USER_MESSAGE.USER_NOT_FOUND },
+          { status: 400 }
+        );
+      }
+
+      body.password = CryptoJS.HmacSHA256(newPassword, PRIVATE_KEY).toString();
+    }
 
     if (password && newPassword) {
       const hashedPassword = password ? CryptoJS.HmacSHA256(
@@ -67,9 +83,8 @@ export async function PUT(req, { params }) {
       const user = await db.user.findUnique({
         where: { id },
       });
-      const [_, username] = userCookie.value.split(":");
 
-      if (username !== 'admin' && (!user || user.password !== hashedPassword)) {
+      if (!user || user.password !== hashedPassword) {
         return NextResponse.json(
           { message: USER_MESSAGE.INCORRECT_PASSWORD },
           { status: 400 }

@@ -45,6 +45,8 @@ const SaleDetail = ({ saleDetails, product }) => {
   }
 
   const getPrice = () => {
+    if (!selectedSecondaryDetail.showPrice) return ""
+    if (!selectedDetail.showPrice) return ""
     if (selectedSecondaryDetail.price) return selectedSecondaryDetail.price.toLocaleString()
     if (selectedDetail.price && !getSecondaryDetails().length) return selectedDetail.price.toLocaleString()
     if (!selectedSecondaryDetail.price && selectedDetail.price && getSecondaryDetails()) return ""

@@ -9,7 +9,7 @@ export async function generateMetadata({ params }) {
   }
 }
 
-export async function Page({ params }) {
+const News = ({ params }) => {
   return (
     <>
       <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/tin-tuc/${params._id}`} />
@@ -17,3 +17,5 @@ export async function Page({ params }) {
     </>
   )
 };
+
+export default News;

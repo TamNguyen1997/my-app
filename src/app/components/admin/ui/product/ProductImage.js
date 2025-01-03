@@ -12,8 +12,8 @@ const ProductImage = () => {
 
   const selectImage = (value) => {
     let newImages = product.product_on_image
-    if (newImages.length >= 6) {
-      toast.error("Không thể thêm hình, đã đạt tối đa 6 hình")
+    if (newImages.length >= 10) {
+      toast.error("Không thể thêm hình, đã đạt tối đa 10 hình")
     } else {
       if (newImages.find(item => item.imageId === value.id)) {
         newImages = newImages.filter(item => item.imageId !== value.id)
@@ -31,8 +31,8 @@ const ProductImage = () => {
   const onUploadSuccess = async (uploads) => {
     let newImages = product.product_on_image
     uploads.forEach(value => {
-      if (newImages.length >= 6) {
-        toast.error("Không thể thêm hình, đã đạt tối đa 6 hình")
+      if (newImages.length >= 10) {
+        toast.error("Không thể thêm hình, đã đạt tối đa 10 hình")
       } else {
         if (newImages.find(item => item.imageId === value.id)) {
           newImages = newImages.filter(item => item.imageId !== value.id)

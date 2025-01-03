@@ -9,7 +9,7 @@ import BannerScheduler from './BannerScheduler'
 import { image_type } from '@prisma/client'
 import { ToastContainer, toast } from 'react-toastify';
 
-const ImageCms = ({ onImageClick, highlights, onUploadSuccess }) => {
+const ImageCms = ({ onImageClick, highlights, onUploadSuccess, showHighlight = true }) => {
   const [reload, setReload] = useState(false)
 
   const [selectedTab, setSelectedTab] = useState("Gallery")
@@ -161,7 +161,7 @@ const ImageCms = ({ onImageClick, highlights, onUploadSuccess }) => {
             </Modal>
           </div>
 
-          <ImagePicker onImageClick={onImageClick} reload={reload} highlights={highlights} />
+          <ImagePicker onImageClick={onImageClick} reload={reload} highlights={highlights} showHighlight={showHighlight} />
         </Tab>
         <Tab key="Draggable Gallery" title="Quản lý banner">
           <BannerScheduler />

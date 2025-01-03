@@ -11,7 +11,7 @@ import { EditIcon, X } from 'lucide-react'
 import { toast, ToastContainer } from 'react-toastify'
 import { ProductContext } from '@/app/(admin)/admin/product/edit/[id]/page'
 
-const ImagePicker = ({ onImageClick, disableDelete, reload, highlights }) => {
+const ImagePicker = ({ onImageClick, disableDelete, reload, highlights, showHighlight = true }) => {
   const [images, setImages] = useState([])
   const [selectedImage, setSelectedImage] = useState()
   const [type, setType] = useState(new Set([]))
@@ -25,7 +25,7 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights }) => {
   const [isLoading, setIsLoading] = useState(true)
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const { product, setProduct } = useContext(ProductContext) || {}
+  const { product } = useContext(ProductContext) || {}
 
   const pages = useMemo(() => {
     return total ? Math.ceil(total / size) : 0
@@ -150,7 +150,8 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights }) => {
                   group relative flex flex-col rounded hover:opacity-70 cursor-pointer
                   shadow-[0px_2px_10px_rgba(0,0,0,0.15)] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)]
                   hover:-translate-y-2.5 hover:scale-[1.02]
-                  transition duration-400 ${(product?.product_on_image?.map(item => item.imageId).includes(img.id) || (highlights?.map(item => item.id).includes(img.id))) && "border-green-400 border-large"}
+                  transition duration-400 
+                  ${showHighlight && (product?.product_on_image?.map(item => item.imageId).includes(img.id) || (highlights?.map(item => item.id).includes(img.id))) && "border-green-400 border-large"}
                 `}>
               <img
                 src={`${process.env.NEXT_PUBLIC_FILE_PATH + img.path}`}
@@ -158,13 +159,6 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights }) => {
                 className="aspect-[16/10] object-cover rounded-t shrink-0"
                 onClick={() => {
                   onImageClick(img)
-                  if (!setProduct || !product) return
-
-                  if (product.product_on_image?.find(item => item.imageId === img.id)) {
-                    setProduct({ ...product, product_on_image: product.product_on_image?.filter(item => item.imageId !== img.id) })
-                  } else {
-                    setProduct({ ...product, product_on_image: [...(product.product_on_image || []), { imageId: img.id, productId: product.id }] })
-                  }
                 }}
               />
               {

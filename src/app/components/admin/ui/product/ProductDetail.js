@@ -1,7 +1,7 @@
 import { Button, DatePicker, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Switch, useDisclosure } from "@nextui-org/react"
 import slugify from "slugify"
 import ImageCms from "../ImageCms"
-import { useCallback, useContext } from "react"
+import { useCallback, useContext, useState } from "react"
 import { useEditor } from "@tiptap/react";
 import { editorConfig } from "@/lib/editor";
 import { parseDate } from "@internationalized/date";
@@ -14,11 +14,14 @@ const getDateString = (isoDate) =>
 const ProductDetail = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const { categories, brands, subCategories, product, setProduct } = useContext(ProductContext)
+  const [productImage, setProductImage] = useState(product.image || {})
 
   const editor = useEditor(editorConfig(product.description))
 
   const selectImage = (value) => {
-    setProduct(Object.assign({}, product, { imageId: value.id, image: value }))
+    const newProduct = { ...product, ...{ imageId: value.id, image: value } }
+    setProduct({ ...newProduct })
+    setProductImage(value)
     onOpenChange()
   }
 
@@ -185,12 +188,12 @@ const ProductDetail = () => {
             <Input type="text"
               aria-label="Hình ảnh thumbnail"
               label="Hình ảnh thumbnail"
-              value={product.image?.name} isDisabled />
+              value={productImage?.name} isDisabled />
             <Input type="text"
               aria-label="Alt"
               label="Alt"
               onValueChange={(value) => setProduct(Object.assign({}, product, { imageAlt: value }))}
-              defaultValue={product?.imageAlt} />
+              value={product?.imageAlt} />
             <div>
               <Button color="primary" onClick={onOpen} className="w-24 float-right">Chọn ảnh</Button>
             </div>
@@ -198,9 +201,9 @@ const ProductDetail = () => {
 
           <div>
             {
-              product.image ?
+              productImage?.id ?
                 <img
-                  src={`${process.env.NEXT_PUBLIC_FILE_PATH + product.image?.path}`}
+                  src={`${process.env.NEXT_PUBLIC_FILE_PATH + productImage?.path}`}
                   alt={`${product.imageAlt}`}
                   width="150"
                   height="100"
@@ -220,7 +223,7 @@ const ProductDetail = () => {
             <>
               <ModalHeader className="flex flex-col gap-1">Chọn hình ảnh</ModalHeader>
               <ModalBody>
-                <ImageCms disableAdd={true} onImageClick={selectImage} disableDelete={true} />
+                <ImageCms disableAdd={true} onImageClick={selectImage} highlights={[productImage]} showHighlight={false} />
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>

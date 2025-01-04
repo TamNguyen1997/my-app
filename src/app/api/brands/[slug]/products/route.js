@@ -92,6 +92,9 @@ export async function GET(req, { params }) {
         subCate: true,
         saleDetails: true,
         filterOnProduct: true
+      },
+      orderBy: {
+        createdAt: 'desc'
       }
     })
 

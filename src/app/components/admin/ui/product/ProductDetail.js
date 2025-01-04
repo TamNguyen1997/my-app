@@ -2,8 +2,6 @@ import { Button, DatePicker, Input, Modal, ModalBody, ModalContent, ModalFooter,
 import slugify from "slugify"
 import ImageCms from "../ImageCms"
 import { useCallback, useContext, useState } from "react"
-import { useEditor } from "@tiptap/react";
-import { editorConfig } from "@/lib/editor";
 import { parseDate } from "@internationalized/date";
 import RichTextEditor from "../RichTextArea";
 import { ProductContext } from "../../../../(admin)/admin/product/edit/[id]/page"
@@ -13,10 +11,8 @@ const getDateString = (isoDate) =>
 
 const ProductDetail = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const { categories, brands, subCategories, product, setProduct } = useContext(ProductContext)
+  const { categories, brands, subCategories, product, setProduct, editor } = useContext(ProductContext)
   const [productImage, setProductImage] = useState(product.image || {})
-
-  const editor = useEditor(editorConfig(product.description))
 
   const selectImage = (value) => {
     const newProduct = { ...product, ...{ imageId: value.id, image: value } }

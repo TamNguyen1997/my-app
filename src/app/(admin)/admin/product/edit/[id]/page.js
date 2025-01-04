@@ -11,6 +11,8 @@ import ProductDetail from "@/app/components/admin/ui/product/ProductDetail";
 import ProductImage from "@/app/components/admin/ui/product/ProductImage";
 import { useParams } from "next/navigation";
 import { product_type } from "@prisma/client";
+import { useEditor } from "@tiptap/react";
+import { editorConfig } from "@/lib/editor";
 
 export const ProductContext = createContext();
 
@@ -23,10 +25,13 @@ const ProductCms = () => {
   const [subCategories, setSubCategories] = useState([])
   const [brands, setBrands] = useState([])
   const [filters, setFilters] = useState([])
+  const editor = useEditor(editorConfig())
 
   useEffect(() => {
-    getProduct()
-  }, [id])
+    if (editor) {
+      getProduct()
+    }
+  }, [id, editor])
 
   const getProduct = async () => {
     setIsLoading(true)
@@ -38,7 +43,9 @@ const ProductCms = () => {
     ])
 
     if (id && id !== 'new') {
-      await fetch(`/api/products/${id}?includeSale=true`).then(res => res.json()).then(setProduct)
+      const res = await fetch(`/api/products/${id}?includeSale=true`).then(res => res.json())
+      setProduct(res)
+      editor.commands.setContent(res.description)
     }
     setIsLoading(false)
   }
@@ -63,7 +70,7 @@ const ProductCms = () => {
             imageId: product.imageId,
             active: product.active || true,
             highlight: product.highlight || false,
-            description: product.description,
+            description: editor.getHTML(),
             categoryId: product.categoryId,
             subCateId: product.subCateId,
             quantity: product.quantity,
@@ -91,9 +98,10 @@ const ProductCms = () => {
   }
 
   if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />
+
   return (
     <>
-      <ProductContext.Provider value={{ product, setProduct, categories, brands, subCategories, filters, setFilters }}>
+      <ProductContext.Provider value={{ product, setProduct, categories, brands, subCategories, filters, setFilters, editor }}>
         <Tabs>
           <Tab title="Thông tin chung">
             <Card>

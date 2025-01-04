@@ -119,7 +119,7 @@ const BlogForm = ({ blog, setBlog }) => {
               label="Meta title"
               aria-label="Meta title"
               {...register("metaTitle")}
-              defaultValue={blog?.metaDescription}
+              defaultValue={blog?.metaTitle}
             ></Input>
             <Input
               label="Meta description"

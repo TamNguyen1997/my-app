@@ -84,7 +84,7 @@ const RichTextEditor = ({ editor }) => {
           <BlogToolBar editor={editor} fontSize={fontSize} setFontSize={setFontSize} />
         </div>
       </div>
-      <div className="h-full w-full min-h-44 p-3 border rounded-b-lg bg-white">
+      <div className="p-3 border rounded-b-lg bg-white prose !max-w-full">
         <EditorContent editor={editor} onClick={() => setFontSize(editor.getAttributes("textStyle").fontSize || 16)} />
       </div>
     </div>

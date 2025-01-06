@@ -47,7 +47,7 @@ const CustomDot = ({
 		>
 			<img
 				src={Children.toArray(items)[index]} alt=""
-				className={`object-cover max-h-full mx-auto ${currentSlide === index ? "border-gray-400 border-large" : ""}`} />
+				className={`object-cover max-h-full mx-auto ${active ? "border-gray-400 border-large" : ""}`} />
 		</button>
 	);
 };

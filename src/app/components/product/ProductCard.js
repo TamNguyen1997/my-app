@@ -21,7 +21,7 @@ const ProductCard = ({ product }) => {
       <Link href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`}
         className="text-black border-gray-400 w-full grow">
         <div className="mx-auto border-b-medium w-[90%] py-3 h-full">
-          <p className="sm:text-base text-sm text-gray-700 line-clamp-3 font-roboto relative text-center [word-spacing:1.2px] sm:min-h-14">
+          <p className="sm:text-base text-[18px] text-gray-700 line-clamp-3 font-roboto relative text-center [word-spacing:1.2px] sm:min-h-14">
             {product.name}
           </p>
         </div>

@@ -19,6 +19,7 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
+  Snippet,
 } from "@nextui-org/react"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { EditIcon, Plus, Search, Trash2 } from "lucide-react"
@@ -141,6 +142,8 @@ const ProductCms = () => {
         return product.category?.name
       case "subcate":
         return product.subCate?.name
+      case "id":
+        return (<Snippet color="default" symbol="" className="!font-open_san !bg-white"><p className="!font-open_san">{cellValue}</p></Snippet>)
       default:
         return cellValue
     }
@@ -301,7 +304,7 @@ const ProductCms = () => {
               loadingContent={<Spinner label="Loading..." />}
             >
               {(item) => (
-                <TableRow key={item.id}>
+                <TableRow key={item.id} data-selected="false">
                   {(columnKey) => (
                     <TableCell>{renderCell(item, columnKey)}</TableCell>
                   )}

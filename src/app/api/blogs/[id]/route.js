@@ -7,10 +7,13 @@ const SUPPORT_SLUGS = ["ho-tro", "chinh-sach-bao-mat", "hop-tac-ban-hang", "chin
 export async function GET(req, { params }) {
   try {
     let result = await db.blog.findFirst({ where: { slug: params.id } })
-    if (!result && SUPPORT_SLUGS.includes(params.id)) {
-      result = await db.blog.create({ data: { slug: params.id, content: "<p></p>", title: params.id } })
-    } else {
-      return NextResponse.json({ message: "Blog not found" }, { status: 404 })
+    console.log(result)
+    if (!result) {
+      if (SUPPORT_SLUGS.includes(params.id)) {
+        result = await db.blog.create({ data: { slug: params.id, content: "<p></p>", title: params.id } })
+      } else {
+        return NextResponse.json({ message: "Blog not found" }, { status: 404 })
+      }
     }
     return NextResponse.json(result)
   } catch (e) {

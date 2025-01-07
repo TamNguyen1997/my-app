@@ -57,7 +57,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
   ];
 
   const onCellValueChange = (valueId, value) => {
-    let filterToUpdate = structuredClone({ ...filter })
+    let filterToUpdate = { ...filter }
     filterToUpdate.filterValue?.forEach(filterValue => filterValue.id === valueId ? Object.assign(filterValue, value) : filterValue)
     setFilter(filterToUpdate)
   }

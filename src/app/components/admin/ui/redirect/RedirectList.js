@@ -47,7 +47,7 @@ const RedirectList = () => {
     let filteredCondition = { ...condition }
     Object.keys(filteredCondition).forEach(key => filteredCondition[key] === undefined && delete filteredCondition[key])
     const queryString = new URLSearchParams(filteredCondition).toString()
-    await fetch(`/api/redirects/?size=${rowsPerPage}&page=${page}&${queryString}&includeImage=true`).then(async res => {
+    await fetch(`/api/redirects/?size=${rowsPerPage}&page=${page}&${queryString}`).then(async res => {
       const data = await res.json()
       setRedirects(formatRedirectList(data.redirects));
       setTotal(data.total || 0)
@@ -250,8 +250,8 @@ const RedirectList = () => {
         </div>
       </div>
 
-      <ToastContainer />
-    </div >
+      <ToastContainer containerId="RedirectList" />
+    </div>
   );
 };
 

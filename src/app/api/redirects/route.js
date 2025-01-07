@@ -1,6 +1,4 @@
 import { NextResponse } from 'next/server';
-import fsPromises from 'fs/promises';
-import path from 'path';
 import redirects from '@/app/redirects/redirects.json'
 import queryString from 'query-string';
 import { db } from '@/app/db';
@@ -14,6 +12,9 @@ export async function GET(req) {
     let redirectLists = Object.values(JSON.parse(data.redirect || "{}"))
     const { query } = queryString.parseUrl(req.url);
 
+    console.log("?????????????????")
+    console.log(redirectLists)
+    console.log(query)
     if (query.source) {
       redirectLists = redirectLists.filter(item => item.source?.includes(query.source))
     }
@@ -24,7 +25,7 @@ export async function GET(req) {
       redirectLists = redirectLists.filter(item => item.redirectType === query.redirectType)
     }
     if (query.active) {
-      redirectLists = redirectLists.filter(item => item.active === query.active === "true")
+      redirectLists = redirectLists.filter(item => item.active === (query.active === "true"))
     }
 
     if (query) {

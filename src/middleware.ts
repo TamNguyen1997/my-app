@@ -1,12 +1,13 @@
 import { NextResponse, NextRequest } from "next/server";
-import redirects from "@/app/redirects/redirects.json";
 
 type RedirectEntry = {
+  source: string,
+  redirectType: string,
   destination: string;
   permanent: boolean;
 };
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   try {
     const pathname = request.nextUrl.pathname;
 
@@ -41,12 +42,30 @@ export function middleware(request: NextRequest) {
     }
     // ---------------------------------------------------
 
-    const redirect = (redirects as Record<string, RedirectEntry>)[pathname];
-    if (redirect) {
-      const statusCode = redirect.permanent ? 308 : 307;
-      const url = request.nextUrl.clone();
-      url.pathname = redirect.destination;
-      return NextResponse.redirect(url, statusCode);
+    if (!pathname.includes("/api/")
+      && !pathname.includes("/_next/static/")
+      && !pathname.toLocaleLowerCase().endsWith(".svg")
+      && !pathname.toLocaleLowerCase().endsWith(".png")
+      && !pathname.toLocaleLowerCase().endsWith(".ico")
+      && !pathname.includes("/admin/")) {
+      console.log("??????????????")
+      console.log(pathname)
+      const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN}/api/redirects?active=true&size=10000&page=1`);
+      const { redirects } = await apiResponse.json();
+      console.log(redirects)
+      if (redirects && redirects.length) {
+        const match = redirects.find((r: RedirectEntry) =>
+          (r.redirectType === "REGEX" && r.source.includes(pathname)) ||
+          (r.redirectType === "EXACT" && r.source === pathname))
+        console.log("!!!!!!!!!!!!!!!!!")
+        console.log(match)
+        if (match) {
+          const statusCode = match.permanent ? 301 : 302;
+          const url = request.nextUrl.clone();
+          url.pathname = match.destination;
+          return NextResponse.redirect(url, statusCode);
+        }
+      }
     }
 
     // ---------------------------------------------------

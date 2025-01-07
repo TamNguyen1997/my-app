@@ -165,7 +165,7 @@ const RedirectList = () => {
       <div className="flex flex-col gap-2">
         <div className="border rounded-lg p-3 border-default-200">
           {!isLoading && redirects.map(redirect => (
-            <div className="flex gap-2 py-2">
+            <div className="flex gap-2 py-2" key={redirect.id}>
               <Input
                 aria-label="From"
                 label="From"

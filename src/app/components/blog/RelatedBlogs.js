@@ -5,7 +5,7 @@ const blogCategories = {
   "NEWS": "tin-tuc"
 }
 
-export default ({ relatedBlogs }) => {
+const RelatedBlogs = ({ relatedBlogs }) => {
   return (
     <>
       <div className="text-lg text-[#FFD300] leading-none font-semibold border-l-4 border-[#FFD300] pl-3 mb-4">BÀI VIẾT LIÊN QUAN</div>
@@ -40,3 +40,4 @@ export default ({ relatedBlogs }) => {
     </>
   )
 }
+export default RelatedBlogs

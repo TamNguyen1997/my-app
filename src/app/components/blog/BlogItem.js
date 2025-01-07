@@ -12,7 +12,7 @@ const blogCategories = {
   }
 }
 
-export default ({ noBorder = false, item, containerClass = "lg:grid-cols-[160px_auto]", textClass = "" }) => {
+const BlogItem = ({ noBorder = false, item, containerClass = "lg:grid-cols-[160px_auto]", textClass = "" }) => {
   return (
     <>
       <Link
@@ -49,3 +49,5 @@ export default ({ noBorder = false, item, containerClass = "lg:grid-cols-[160px_
     </>
   )
 }
+
+export default BlogItem

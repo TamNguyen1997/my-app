@@ -28,7 +28,7 @@ const responsive = {
 	}
 };
 
-export default ({ items }) => {
+const BlogCarousel = ({ items }) => {
 	return (
 		<Carousel
 			responsive={responsive}
@@ -86,3 +86,5 @@ export default ({ items }) => {
 		</Carousel>
 	)
 }
+
+export default BlogCarousel

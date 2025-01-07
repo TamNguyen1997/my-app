@@ -3,7 +3,7 @@ import { BlogContent } from "@/components/blog/BlogDetail"
 import { Spinner } from "@nextui-org/react"
 import { useEffect, useState } from "react"
 
-export default function StaticBlog({ slug }) {
+const StaticBlog = ({ slug }) => {
   const [blog, setBlog] = useState({ content: "" })
 
   useEffect(() => {
@@ -17,3 +17,5 @@ export default function StaticBlog({ slug }) {
     </div>
   </>)
 }
+
+export default StaticBlog

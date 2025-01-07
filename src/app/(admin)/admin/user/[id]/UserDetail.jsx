@@ -1,0 +1,282 @@
+"use client";
+
+import { USER_MESSAGE } from "@/constants/message";
+import { Button, Input, Switch } from "@nextui-org/react";
+import { useParams, useRouter } from "next/navigation";
+import React, { useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast, ToastContainer } from "react-toastify";
+import { getCookie } from 'cookies-next';
+const UserDetail = () => {
+  const params = useParams();
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const router = useRouter();
+
+  const getUser = () => {
+    const [id, username] = getCookie("user")?.split(":")
+    return {
+      id,
+      username
+    }
+  }
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+    watch,
+    setValue,
+  } = useForm({
+    defaultValues: {
+      username: "",
+      password: "",
+      newPassword: "",
+      confirmNewPassword: "",
+      email: "",
+      name: "",
+      active: false,
+    },
+  });
+
+  const fetchUserData = async () => {
+    if (params.id) {
+      try {
+        const res = await fetch(params.id && `/api/users/${params.id}`);
+        if (!res.ok) {
+          throw new Error("Failed to fetch user data");
+        }
+        const result = await res.json();
+        const { username, email, name, active } = result;
+        reset({
+          username,
+          email,
+          name,
+          active: active === true,
+        });
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, [params.id, reset]);
+
+  const onSubmit = async (data) => {
+    toast.info(USER_MESSAGE.USER_UPDATE_IN_PROGRESS);
+
+    const {
+      username,
+      email,
+      name,
+      active,
+      password,
+      newPassword,
+      confirmNewPassword,
+    } = data;
+
+    if (isChangingPassword) {
+      if (newPassword !== confirmNewPassword) {
+        toast.error(USER_MESSAGE.PASSWORD_MISMATCH);
+        return;
+      }
+    }
+
+    const payload = {
+      username,
+      email,
+      name,
+      active,
+      ...(isChangingPassword && { password, newPassword }),
+    };
+
+    try {
+      const res = await fetch(`/api/users/${params.id}`, {
+        method: "PUT",
+        body: JSON.stringify(payload),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+        if (isChangingPassword) {
+          toast.success(result.message || USER_MESSAGE.PASSWORD_CHANGE_SUCCESS);
+        } else {
+          toast.success(result.message || USER_MESSAGE.UPDATE_SUCCESS);
+        }
+        setTimeout(() => router.back(), 3000);
+      } else {
+        toast.error(result.message || USER_MESSAGE.UPDATE_FAILED);
+      }
+
+      reset();
+    } catch (error) {
+      toast.error(USER_MESSAGE.UPDATE_FAILED);
+      console.error(USER_MESSAGE.UPDATE_FAILED, error);
+    }
+  };
+
+  return (
+    <>
+      <ToastContainer />
+      <div className="flex justify-center items-center flex-col mt-20">
+        <h1 className="uppercase mb-4 text-[20px] font-bold">user profile</h1>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="w-full max-w-[500px]"
+        >
+          <div>
+            <div className="mt-2">
+              <Input
+                label="Username"
+                placeholder="Enter your username"
+                variant="bordered"
+                disabled
+                value={watch("username")}
+                className="opacity-50"
+              />
+              {errors.username && (
+                <p className="text-red-500">{errors.username.message}</p>
+              )}
+            </div>
+            <div className="mt-2">
+              <Input
+                label="Email"
+                placeholder="Điền email"
+                type="email"
+                variant="bordered"
+                isRequired
+                {...register("email", {
+                  required: "Vui lòng điền email",
+                  pattern: {
+                    value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i,
+                    message: "Địa chỉ email không hợp lệ",
+                  },
+                })}
+                status={errors.email ? "error" : "default"}
+                value={watch("email")}
+              />
+              {errors.email && (
+                <p className="text-red-500">{errors.email.message}</p>
+              )}
+            </div>
+            <div className="mt-2">
+              <Input
+                isRequired
+                label="Tên"
+                placeholder="Vui lòng điền tên"
+                variant="bordered"
+                {...register("name", { required: "Vui lòng điền tên" })}
+                status={errors.name ? "error" : "default"}
+                value={watch("name")}
+              />
+              {errors.name && (
+                <p className="text-red-500">{errors.name.message}</p>
+              )}
+            </div>
+            <div className="flex items-center justify-end gap-2 mt-2">
+              <label className="ml-2">Active</label>
+              <Switch
+                isSelected={watch("active")}
+                onValueChange={(isChecked) => {
+                  setValue("active", isChecked);
+                }}
+                color="success"
+              />
+            </div>
+          </div>
+
+          <div>
+            <Button
+              onClick={() => setIsChangingPassword(!isChangingPassword)}
+              className="mt-4"
+              color="warning"
+            >
+              {isChangingPassword
+                ? "Hủy"
+                : "Đổi mật khẩu"}
+            </Button>
+            {isChangingPassword && (
+              <div>
+                <div className="mt-2">
+                  <Input
+                    label="Password"
+                    placeholder="Vui lòng điền password"
+                    type="password"
+                    isRequired={getUser().username !== 'admin'}
+                    variant="bordered"
+                    {...register("password", getUser().username === 'admin' ? {} : {
+                      required: "Vui lòng điền password",
+                      minLength: {
+                        value: 6,
+                        message: "Password phải có ít nhất 6 kí tự",
+                      },
+                    })}
+                    status={errors.password ? "error" : "default"}
+                  />
+                  {errors.password && (
+                    <p className="text-red-500">{errors.password.message}</p>
+                  )}
+                </div>
+
+                <div className="mt-2">
+                  <Input
+                    label="Password mới"
+                    placeholder="Vui lòng điền password mới"
+                    type="password"
+                    variant="bordered"
+                    isRequired
+                    {...register("newPassword", {
+                      required: "Vui lòng điền password mới",
+                      minLength: {
+                        value: 6,
+                        message: "Password phải có ít nhất 6 kí tự",
+                      },
+                    })}
+                    status={errors.newPassword ? "error" : "default"}
+                  />
+                  {errors.newPassword && (
+                    <p className="text-red-500">{errors.newPassword.message}</p>
+                  )}
+                </div>
+
+                <div className="mt-2">
+                  <Input
+                    label="Xác nhận password"
+                    placeholder="Vui lòng xác nhận password"
+                    type="password"
+                    variant="bordered"
+                    isRequired
+                    {...register("confirmNewPassword", {
+                      required: "Vui lòng xác nhận password",
+                      validate: (value) =>
+                        value === watch("newPassword") ||
+                        "Password không trùng",
+                    })}
+                    status={errors.confirmNewPassword ? "error" : "default"}
+                  />
+                  {errors.confirmNewPassword && (
+                    <p className="text-red-500">
+                      {errors.confirmNewPassword.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <Button color="success" type="submit" className="mt-4">
+            Cập nhật
+          </Button>
+        </form>
+      </div>
+    </>
+  );
+};
+
+export default UserDetail;

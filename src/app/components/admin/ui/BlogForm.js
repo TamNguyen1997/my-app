@@ -166,7 +166,7 @@ const BlogForm = ({ blog, setBlog }) => {
               ></Input>
               <Select
                 label="Phân loại"
-                selectedKeys={new Set([blog.blogCategory])}
+                selectedKeys={new Set([blog.blogCategory || "INFORMATION"])}
                 onSelectionChange={(value) =>
                   setBlog(
                     Object.assign({}, blog, {
@@ -181,7 +181,7 @@ const BlogForm = ({ blog, setBlog }) => {
               </Select>
               <Select
                 label="Sub Category"
-                selectedKeys={new Set([blog.blogSubCategory])}
+                selectedKeys={new Set([blog.blogSubCategory || "TERMINOLOGY"])}
                 onSelectionChange={(value) =>
                   setBlog(
                     Object.assign({}, blog, {
@@ -228,7 +228,7 @@ const BlogForm = ({ blog, setBlog }) => {
                   Load bản chính
                 </Link>
                 <div className="float-right flex gap-3">
-                  <Link href={`/admin/blog/preview/${blog.slug}`} isExternal>
+                  <Link href={`/admin/blog/preview/${blog.slug}`} isExternal isDisabled={!blog.createAt}>
                     Preview
                   </Link>
                   <Button

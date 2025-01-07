@@ -9,7 +9,7 @@ import BannerScheduler from './BannerScheduler'
 import { image_type } from '@prisma/client'
 import { ToastContainer, toast } from 'react-toastify';
 
-const ImageCms = ({ onImageClick, highlights, onUploadSuccess, showHighlight = true }) => {
+const ImageCms = ({ onImageClick = () => { }, highlights, onUploadSuccess, showHighlight = true }) => {
   const [reload, setReload] = useState(false)
 
   const [selectedTab, setSelectedTab] = useState("Gallery")

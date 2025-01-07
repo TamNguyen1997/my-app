@@ -1,28 +1,14 @@
-"use client";
+import EditBlog from "./EditBlog"
 
-import BlogForm from "@/components/admin/ui/BlogForm";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+export async function generateMetadata() {
+  return {
+    title: "Dụng cụ vệ sinh Sao Việt - Admin blog",
+    description: "Dụng cụ vệ sinh Sao Việt - Admin blog",
+  }
+}
 
-const EditBlog = () => {
-  const { slug } = useParams();
-  const [blog, setBlog] = useState({});
-  const [loading, setLoading] = useState(true);
+const Page = () => {
+  return <EditBlog />
+}
 
-  useEffect(() => {
-    if (!slug || slug === "new") {
-      setLoading(false)
-      return;
-    }
-
-    fetch(`/api/blogs/${slug}`)
-      .then((res) => res.json())
-      .then(setBlog)
-      .then(() => setLoading(false));
-  }, [slug]);
-
-  if (loading) return <></>;
-  return <BlogForm blog={blog} setBlog={setBlog} />;
-};
-
-export default EditBlog;
+export default Page

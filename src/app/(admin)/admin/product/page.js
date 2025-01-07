@@ -7,10 +7,10 @@ export async function generateMetadata() {
   }
 }
 
-const Redirect = () => {
+const Page = () => {
   return <>
     <ProductCms />
   </>
 }
 
-export default Redirect
+export default Page

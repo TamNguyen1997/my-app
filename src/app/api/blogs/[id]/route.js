@@ -1,10 +1,13 @@
 import { db } from '@/app/db';
 import { NextResponse } from 'next/server';
 
+const SUPPORT_SLUGS = ["ho-tro", "chinh-sach-bao-mat", "hop-tac-ban-hang", "chinh-sach-doi-tra", "chinh-sach-bao-hanh",
+  "huong-dan-mua-hang", "hinh-thuc-thanh-toan", "hinh-thuc-van-chuyen", "doi-tac", "khach-hang"]
+
 export async function GET(req, { params }) {
   try {
     let result = await db.blog.findFirst({ where: { slug: params.id } })
-    if (!result) {
+    if (!result && SUPPORT_SLUGS.includes(params.id)) {
       result = await db.blog.create({ data: { slug: params.id, content: "<p></p>", title: params.id } })
     }
     return NextResponse.json(result)

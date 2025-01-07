@@ -2,7 +2,7 @@ import { BlogDetail } from "@/components/blog/BlogDetail"
 import { db } from '@/app/db';
 
 export async function generateMetadata({ params }) {
-  const result = await db.blog.findFirst({ where: { slug: params._id } })
+  const result = (await db.blog.findFirst({ where: { slug: params._id } })) || {}
   return {
     title: result?.title,
     description: result?.description,

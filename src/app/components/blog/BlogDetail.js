@@ -1,6 +1,6 @@
 "use client"
 
-import { BreadcrumbItem, Breadcrumbs, Link } from "@nextui-org/react";
+import { BreadcrumbItem, Breadcrumbs, Link, Spinner } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import parse from 'html-react-parser';
@@ -40,19 +40,26 @@ const BlogContent = ({ blog }) => {
   </>)
 }
 
-const BlogDetail = ({ slug, category }) => {
+const BlogDetail = ({ slug }) => {
   const [blog, setBlog] = useState({})
   const [relatedBlogs, setRelatedBlogs] = useState([])
-
+  const [isLoading, setIsLoading] = useState(true)
+  const getBlog = async () => {
+    setIsLoading(true)
+    const res = await fetch(`/api/blogs/${slug}`)
+    if (!res.ok) {
+      window.location.replace(`/not-found/blog`)
+    }
+    const json = await res.json()
+    setBlog(json)
+    fetch(`/api/blogs?blogCategory=${json.blogCategory}&size=4&page=1&excludeSupport=true&excludeSupport=true&active=true`).then(res => res.json()).then(json => setRelatedBlogs(json.result))
+    setIsLoading(false)
+  }
   useEffect(() => {
-    fetch(`/api/blogs/${slug}`).then(res => res.json()).then(json => {
-      setBlog(json)
-      fetch(`/api/blogs?blogCategory=${json.blogCategory}&size=4&page=1&excludeSupport=true&excludeSupport=true&active=true`).then(res => res.json()).then(json => setRelatedBlogs(json.result))
-    })
+    getBlog()
   }, [slug])
 
-  if (!blog.id) return <></>
-
+  if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />
   return (
     <div className="bg-[#f6f6f6] font-open_san">
       <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/blog/${slug}`} />

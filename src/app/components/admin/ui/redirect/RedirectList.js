@@ -75,7 +75,8 @@ const RedirectList = () => {
         id: v4(),
         source: "",
         destination: "",
-        permanent: true
+        permanent: true,
+        redirectType: "EXACT"
       }
     ])
   }
@@ -182,7 +183,7 @@ const RedirectList = () => {
                 label="Loại"
                 defaultSelectedKeys={[redirect.redirectType]}
                 onSelectionChange={(value) =>
-                  setCondition(Object.assign({}, condition, { redirectType: value.values().next().value }))}
+                  onCellValueChange(redirect.id, { redirectType: value.values().next().value })}
               >
                 <SelectItem key="EXACT">
                   EXACT
@@ -193,14 +194,14 @@ const RedirectList = () => {
               </Select>
               <Select
                 label="Redirect code"
-                defaultSelectedKeys={[redirect.permanent]}
+                defaultSelectedKeys={[redirect.permanent.toString()]}
                 onSelectionChange={(value) =>
-                  setCondition(Object.assign({}, condition, { permanent: value.values().next().value }))}
+                  onCellValueChange(redirect.id, { permanent: Boolean(value.values().next().value) })}
               >
-                <SelectItem key={true}>
+                <SelectItem key="true">
                   301
                 </SelectItem>
-                <SelectItem key={false}>
+                <SelectItem key="false">
                   302
                 </SelectItem>
               </Select>
@@ -250,7 +251,7 @@ const RedirectList = () => {
       </div>
 
       <ToastContainer />
-    </div>
+    </div >
   );
 };
 

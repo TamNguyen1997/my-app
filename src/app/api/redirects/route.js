@@ -3,13 +3,15 @@ import fsPromises from 'fs/promises';
 import path from 'path';
 import redirects from '@/app/redirects/redirects.json'
 import queryString from 'query-string';
+import { db } from '@/app/db';
 
 export async function GET(req) {
   let page = 1
   let size = 10
 
   try {
-    let redirectLists = Object.values(redirects)
+    const data = (await db.redirect.findFirst({})) || {}
+    let redirectLists = Object.values(JSON.parse(data.redirect || "{}"))
     const { query } = queryString.parseUrl(req.url);
 
     if (query.source) {
@@ -40,12 +42,11 @@ export async function GET(req) {
 
 export async function PUT(req) {
   try {
-    const dataFilePath = path.join(process.cwd(), 'src/app/redirects/redirects.json');
-
     const raw = await req.json()
 
     const updatedData = JSON.stringify(raw);
-    await fsPromises.writeFile(dataFilePath, updatedData);
+    await db.redirect.deleteMany({})
+    await db.redirect.create({ data: { redirect: updatedData } })
 
     return NextResponse.json({ mesage: "Success" }, { status: 200 })
   } catch (e) {

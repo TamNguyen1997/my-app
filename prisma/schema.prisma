@@ -473,17 +473,7 @@ enum category_type {
 }
 
 model redirect {
-  id   String @id @default(dbgenerated("gen_random_uuid()"))
-  from String
-  to   String
-
-  active       Boolean @default(true)
-  redirectCode Int     @default(301) @map("redirect_code")
-
-  redirectType redirect_type @default(EXACT) @map("redirect_type")
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  redirect String @id
 }
 
 enum redirect_type {

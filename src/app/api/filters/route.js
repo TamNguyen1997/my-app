@@ -115,6 +115,23 @@ export async function GET(req) {
     condition.active = query.active === "true"
   }
 
+  if (query.id_name) {
+    condition = Object.assign(condition, {
+      OR: [
+        {
+          name: {
+            search: `${query.id_name.trim().replaceAll(" ", " & ")}:*`
+          }
+        },
+        {
+          id: {
+            search: `${query.id_name.trim().replaceAll(" ", " & ")}:*`
+          }
+        }
+      ]
+    })
+  }
+
   try {
     let result = await db.filter.findMany({
       orderBy: [

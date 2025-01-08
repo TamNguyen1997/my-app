@@ -111,9 +111,9 @@ const Header = () => {
                       <Link href="/kien-thuc-hay">Kiến thức hay</Link>
                     </div>
                     <div className="items-center gap-10 hidden md:block">
-                      <Link href="tel:0902366617">
+                      <Link href="tel:0902802979">
                         <div className="flex items-center font-bold">
-                          Hotline: 090 236 6617
+                          Hotline: 090 280 2979
                         </div>
                       </Link>
                     </div>

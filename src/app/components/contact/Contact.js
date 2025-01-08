@@ -36,7 +36,7 @@ export default function Contact() {
                   Hotline
                 </span>
                 <span className="">
-                  090 236 6617
+                  090 280 2979
                 </span>
               </div>
             </div>

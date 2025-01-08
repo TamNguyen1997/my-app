@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import redirects from '@/app/redirects/redirects.json'
 import queryString from 'query-string';
 import { db } from '@/app/db';
 
@@ -12,9 +11,6 @@ export async function GET(req) {
     let redirectLists = Object.values(JSON.parse(data.redirect || "{}"))
     const { query } = queryString.parseUrl(req.url);
 
-    console.log("?????????????????")
-    console.log(redirectLists)
-    console.log(query)
     if (query.source) {
       redirectLists = redirectLists.filter(item => item.source?.includes(query.source))
     }
@@ -34,7 +30,7 @@ export async function GET(req) {
       redirectLists = redirectLists.splice((page - 1) * size, size)
     }
 
-    return NextResponse.json({ redirects: redirectLists, total: Object.values(redirects).length })
+    return NextResponse.json({ redirects: redirectLists, total: Object.values(redirectLists).length })
   } catch (e) {
     console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })

@@ -30,7 +30,7 @@ const Footer = () => {
             </div>
             <div className="flex gap-2">
               <PhoneCall className="text-[#FFD400]" size="24" />
-              <p>Hotline: 090 236 6617</p>
+              <p>Hotline: 090 280 2979</p>
             </div>
           </div>
         </div>

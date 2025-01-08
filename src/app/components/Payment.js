@@ -168,7 +168,7 @@ const Payment = () => {
                     <p className="text-gray-500">
                       <span className="font-bold">THÔNG TIN BẮT BUỘC:</span><br /><br />
                       Vui lòng liên hệ với chúng tôi qua emai: <Link href="mailto:info@saovietco.vn">info@saovietco.vn</Link><br /><br />
-                      hoặc điện thoại: <Link href="tel:0902366617">090 236 6617</Link> nếu quý khách đã thanh toán tiền hàng và chưa nhận được hóa đơn trong vòng 3 ngày kể
+                      hoặc điện thoại: <Link href="tel:0902802979">090 280 2979</Link> nếu quý khách đã thanh toán tiền hàng và chưa nhận được hóa đơn trong vòng 3 ngày kể
                       từ ngày thanh toán.<br /><br />
                     </p>
                     <Input

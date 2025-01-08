@@ -72,6 +72,7 @@ import {
 
 const RichTextEditor = ({ editor }) => {
   const [fontSize, setFontSize] = useState(16)
+  console.log(fontSize)
   return (
     <div className="border border-t-0 rounded-lg">
       <div className="sticky top-0 translate-x-[-1px] bg-white w-[calc(100%_+_2px)] z-[20]">
@@ -85,7 +86,21 @@ const RichTextEditor = ({ editor }) => {
         </div>
       </div>
       <div className="p-3 border rounded-b-lg bg-white prose !max-w-full">
-        <EditorContent editor={editor} onClick={() => setFontSize(editor.getAttributes("textStyle").fontSize || 16)} />
+        <EditorContent editor={editor} onClick={() => {
+          let size = 16
+          if (editor.isActive('heading', { level: 1 })) {
+            size = 40
+          } else if (editor.isActive('heading', { level: 2 })) {
+            size = 30
+          } else if (editor.isActive('heading', { level: 3 })) {
+            size = 20
+          } else if (editor.isActive('heading', { level: 4 })) {
+            size = 10
+          } else {
+            size = editor.getAttributes("textStyle").fontSize || 16
+          }
+          setFontSize(size)
+        }} />
       </div>
     </div>
   );

@@ -93,7 +93,7 @@ const editorConfig = (content) => {
       FontSize,
       Figure
     ],
-    content: content || "<br><br><br><br><br><br><br>",
+    content: content || "<p></p>",
   };
 };
 

@@ -1,6 +1,0 @@
-{
-    "/blog/post-old": {
-        "destination": "/blog/post-new",
-        "permanent": true
-    }
-}

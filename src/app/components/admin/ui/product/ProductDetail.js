@@ -208,7 +208,9 @@ const ProductDetail = () => {
             }
           </div>
         </div>
-        <RichTextEditor editor={editor} />
+        <div className="max-h-96">
+          <RichTextEditor editor={editor} />
+        </div>
       </div>
 
       <Modal

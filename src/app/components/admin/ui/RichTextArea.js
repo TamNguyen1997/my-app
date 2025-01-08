@@ -72,16 +72,13 @@ import {
 
 const RichTextEditor = ({ editor }) => {
   const [fontSize, setFontSize] = useState(16)
-  console.log(fontSize)
   return (
     <div className="border border-t-0 rounded-lg">
       <div className="sticky top-0 translate-x-[-1px] bg-white w-[calc(100%_+_2px)] z-[20]">
         <div
           className={`
             relative border rounded-t-lg before:content-[''] before:absolute before:inset-0 before:bg-gray-100 before:z-[-1] before:rounded-t-lg
-
-          `}
-        >
+          `}>
           <BlogToolBar editor={editor} fontSize={fontSize} setFontSize={setFontSize} />
         </div>
       </div>

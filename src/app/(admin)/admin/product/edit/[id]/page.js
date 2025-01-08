@@ -36,10 +36,10 @@ const ProductCms = () => {
   const getProduct = async () => {
     setIsLoading(true)
     await Promise.all([
-      fetch('/api/categories?type=CATE').then(res => res.json()).then(json => setCategories(json.result)),
+      fetch('/api/categories?type=CATE&size=10000&page=1').then(res => res.json()).then(json => setCategories(json.result)),
       fetch('/api/brands').then(res => res.json()).then(setBrands),
-      fetch('/api/categories?type=SUB_CATE').then(res => res.json()).then(json => setSubCategories(json.result)),
-      fetch(`/api/filters/`).then(res => res.json()).then(json => setFilters(json.result))
+      fetch('/api/categories?type=SUB_CATE&size=10000&page=1').then(res => res.json()).then(json => setSubCategories(json.result)),
+      fetch(`/api/filters/?size=10000&page=1`).then(res => res.json()).then(json => setFilters(json.result))
     ])
 
     if (id && id !== 'new') {

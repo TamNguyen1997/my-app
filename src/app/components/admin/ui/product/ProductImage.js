@@ -1,11 +1,17 @@
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react"
 import ImageCms from "../ImageCms"
-import { useContext, useState } from "react"
+import { useContext, useState, forwardRef, useRef, useTransition, useCallback } from "react"
 import { ToastContainer, toast } from 'react-toastify';
 import { X } from "lucide-react";
 import { ProductContext } from "../../../../(admin)/admin/product/edit/[id]/page"
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import update from "immutability-helper";
+import FlipMove from 'react-flip-move';
+import { useDrag, useDrop } from "react-dnd";
 
 const ProductImage = () => {
+  const [, startTransition] = useTransition();
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const { product, setProduct } = useContext(ProductContext)
   const [images, setImages] = useState(product.product_on_image || [])
@@ -49,17 +55,25 @@ const ProductImage = () => {
     onOpenChange()
   }
 
+  const moveRow = useCallback((dragIndex, hoverIndex) => {
+    startTransition(() => {
+      setImages((prevList) =>
+        update(prevList, {
+          $splice: [
+            [dragIndex, 1],
+            [hoverIndex, 0, prevList[dragIndex]]
+          ]
+        })
+      );
+    });
+  }, []);
+
   return (
     <>
       <ToastContainer />
       <div className="gap-3 p-5">
-        <div className="flex flex-wrap gap-2">
-          {
-            images?.map((item, i) => <ImageItem key={i}
-              deleteItem={selectImage}
-              onClick={() => { }} img={item.image} />)
-          }
-        </div>
+        <ImageDraggableList images={images} deleteItem={selectImage} moveRow={moveRow} />
+
         <div className="flex flex-row gap-2 px-3 py-4 justify-end">
           <Button color="primary" onClick={onOpen} className="w-24">Chọn ảnh</Button>
         </div>
@@ -92,15 +106,77 @@ const ProductImage = () => {
   )
 }
 
-const ImageItem = ({ img, onClick, deleteItem }) => {
+const ImageItem = ({ img, onClick, deleteItem, index, moveRow }) => {
+  const { id } = img;
+  const ref = useRef(null);
+
+  const [collectedProps, drop] = useDrop({
+
+    accept: "dnd-image",
+
+    collect(monitor) {
+      return {
+        handlerId: monitor.getHandlerId()
+      };
+    },
+
+    hover(item, monitor) {
+      if (!ref.current) {
+        return;
+      }
+      const dragIndex = item.index;
+      const hoverIndex = index;
+      if (dragIndex === hoverIndex) {
+        return;
+      }
+
+      const hoverBoundingRect = ref.current?.getBoundingClientRect();
+
+      const hoverMiddleY =
+        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+
+      const clientOffset = monitor.getClientOffset();
+
+      const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+
+      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+        return;
+      }
+      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+        return;
+      }
+      moveRow(dragIndex, hoverIndex);
+      item.index = hoverIndex;
+    }
+  });
+
+  const [collectedDragProps, drag] = useDrag({
+    type: "dnd-image",
+    item: () => {
+      return { id, index };
+    },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging()
+    })
+  });
+
+  const border = collectedDragProps.isDragging ? "1px solid green" : "";
+
+  drag(drop(ref));
+
   return <>
-    <div className={`
-                  w-40 h-40
-                  group relative flex flex-col rounded hover:opacity-70 cursor-pointer
-                  shadow-[0px_2px_10px_rgba(0,0,0,0.15)] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)]
-                  hover:scale-[1.02]
-                  transition duration-400
-                `}>
+    <div
+      ref={ref}
+      data-handler-id={collectedProps.handlerId}
+      className={`
+        w-40 h-40
+        group relative flex flex-col rounded hover:opacity-70 cursor-grab
+        shadow-[0px_2px_10px_rgba(0,0,0,0.15)] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)]
+        hover:scale-[1.02]
+        transition duration-400
+      `}
+      // style={{ border }}
+    >
       <img
         src={`${process.env.NEXT_PUBLIC_FILE_PATH + img?.path}`}
         alt={img?.alt}
@@ -111,6 +187,33 @@ const ImageItem = ({ img, onClick, deleteItem }) => {
       animate-vote bg-red-500 rounded-full hover:bg-red-700"
         onClick={() => deleteItem(img)}><X color="#FFFFFF" /></span>
     </div>
+  </>
+}
+
+const FunctionalDraggable = forwardRef((props, ref) => (
+  <div ref={ref}>
+    <ImageItem {...props} />
+  </div>
+));
+
+const ImageDraggableList = ({ images, deleteItem, moveRow }) => {
+  return <>
+    <DndProvider backend={HTML5Backend}>
+      <FlipMove className="flex flex-wrap gap-2">
+        {
+          images?.map((item, i) =>
+            <FunctionalDraggable
+              key={item.imageId}
+              index={i}
+              deleteItem={deleteItem}
+              onClick={() => { }}
+              img={item.image}
+              moveRow={moveRow}
+            />
+          )
+        }
+      </FlipMove>
+    </DndProvider>
   </>
 }
 

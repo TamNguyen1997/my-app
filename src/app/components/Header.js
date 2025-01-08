@@ -222,7 +222,7 @@ const BRANDS = [
   {
     id: 5,
     slug: "thuong-hieu-kleen-tex",
-    name: "Kleen Tex_Thảm trải sản/sảnh",
+    name: "Kleen-Tex_Thảm trải sản/sảnh",
     image: {
       path: "/brand/KLEEN-TEX.png"
     },

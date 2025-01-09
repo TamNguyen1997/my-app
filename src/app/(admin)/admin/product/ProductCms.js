@@ -20,10 +20,12 @@ import {
   DropdownMenu,
   DropdownItem,
   Snippet,
+  useDisclosure,
 } from "@nextui-org/react"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { EditIcon, Plus, Search, Trash2 } from "lucide-react"
 import { toast, ToastContainer } from "react-toastify"
+import DeleteConfirmation from "@/components/admin/ui/DeleteConfirmation"
 
 const quickUpdateProduct = async (product, value) => {
   await fetch(`/api/products/${product.id}`, {
@@ -42,6 +44,10 @@ const ProductCms = () => {
 
   const [page, setPage] = useState(1)
   const [products, setProducts] = useState([])
+  const [productIdToDelete, setProductIdToDelete] = useState()
+
+  const deleteConfirmationDisclosure = useDisclosure()
+  const deleteManyConfirmationDisclosure = useDisclosure()
 
   useEffect(() => {
     getProduct()
@@ -71,10 +77,10 @@ const ProductCms = () => {
   }, [total, rowsPerPage])
 
   const deleteMany = async () => {
-    const productsToDelete = selectedKeys === 'all' ? products : [...selectedKeys]
+    const productsToDelete = selectedKeys === 'all' ? products.map(item => item.id) : [...selectedKeys]
 
     await Promise
-      .all(productsToDelete.map(item => fetch(`/api/products/${item.id}`, { method: "DELETE" })))
+      .all(productsToDelete.map(id => fetch(`/api/products/${id}`, { method: "DELETE" })))
       .then(response => {
         response.forEach(async res => {
           if (res.ok) {
@@ -87,17 +93,22 @@ const ProductCms = () => {
       })
 
     setSelectedKeys([])
+    deleteManyConfirmationDisclosure.onClose()
     getProduct()
   }
 
-  const deleteProduct = async (id) => {
-    const res = await fetch(`/api/products/${id}`, { method: "DELETE" })
+  const deleteProduct = async () => {
+    if (!productIdToDelete) return
+    const res = await fetch(`/api/products/${productIdToDelete}`, { method: "DELETE" })
     if (res.ok) {
       getProduct()
+      deleteConfirmationDisclosure.onClose()
+      toast.success("Đã xóa sản phẩm")
     } else {
       const body = await res.json()
       toast.error(body.message)
     }
+    setProductIdToDelete()
   }
 
   const renderCell = useCallback((product, columnKey) => {
@@ -112,7 +123,10 @@ const ProductCms = () => {
               </Link>
             </span>
             <span className="text-lg text-danger cursor-pointer active:opacity-50 pl-5">
-              <Trash2 onClick={() => deleteProduct(product.id)} />
+              <Trash2 onClick={() => {
+                deleteConfirmationDisclosure.onOpen()
+                setProductIdToDelete(product.id)
+              }} />
             </span>
           </div>
         )
@@ -156,6 +170,8 @@ const ProductCms = () => {
   return (
     <>
       <ToastContainer />
+      <DeleteConfirmation disclosure={deleteConfirmationDisclosure} onDelete={deleteProduct} />
+      <DeleteConfirmation disclosure={deleteManyConfirmationDisclosure} onDelete={deleteMany} />
       <div className="flex flex-col gap-2 border-r min-h-full p-2">
         <div className="flex gap-3 w-1/2">
           <Input
@@ -200,7 +216,7 @@ const ProductCms = () => {
               </Button>
             </Link>
 
-            <Button color="danger" onClick={deleteMany}>
+            <Button color="danger" isDisabled={![...selectedKeys].length && selectedKeys !== 'all'} onClick={deleteManyConfirmationDisclosure.onOpen}>
               <Trash2 />
             </Button>
           </div>

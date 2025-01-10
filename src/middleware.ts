@@ -48,8 +48,7 @@ export async function middleware(request: NextRequest) {
       && !pathname.toLocaleLowerCase().endsWith(".png")
       && !pathname.toLocaleLowerCase().endsWith(".ico")
       && !pathname.includes("/admin/")) {
-      console.log("??????????????")
-      console.log(pathname)
+
       const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN}/api/redirects?active=true&size=10000&page=1`);
       const { redirects } = await apiResponse.json();
       console.log(redirects)
@@ -57,8 +56,6 @@ export async function middleware(request: NextRequest) {
         const match = redirects.find((r: RedirectEntry) =>
           (r.redirectType === "REGEX" && r.source.includes(pathname)) ||
           (r.redirectType === "EXACT" && r.source === pathname))
-        console.log("!!!!!!!!!!!!!!!!!")
-        console.log(match)
         if (match) {
           const statusCode = match.permanent ? 301 : 302;
           const url = request.nextUrl.clone();

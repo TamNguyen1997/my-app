@@ -944,14 +944,15 @@ const BlogToolBar = ({ editor, fontSize, setFontSize }) => {
               </ModalBody>
               <ModalFooter>
                 <Button color="primary" onPress={() => {
+                  console.log(images)
                   images.forEach(image => {
                     editor
                       .chain()
                       .focus()
                       .setFigure({
                         src: `${process.env.NEXT_PUBLIC_FILE_PATH + image.path}`,
-                        alt: image.description,
-                        caption: image.description
+                        alt: image.description || "",
+                        caption: image.description || ""
                       })
                       .insertContent('<br>')
                       .run()

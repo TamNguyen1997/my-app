@@ -57,7 +57,7 @@ async function save(formData, path) {
         name: name,
         slug: slug,
         alt: formData.get("alt"),
-        description: formData.get("description"),
+        description: formData.get("description") === "undefined" ? null : formData.get("description"),
         type: formData.get("type"),
         active: formData.get("active") ?? true
       }
@@ -69,7 +69,7 @@ async function save(formData, path) {
         name: name,
         slug: slug,
         alt: formData.get("alt"),
-        description: formData.get("description"),
+        description: formData.get("description") === "undefined" ? null : formData.get("description"),
         type: formData.get("type"),
         active: formData.get("active") ?? true
       }

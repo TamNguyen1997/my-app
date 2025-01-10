@@ -22,6 +22,13 @@ export default ({ selector }) => {
 		setMinLevel(min);
 	}, []);
 
+	const updateHtml = (heading) => {
+		const innerHTML = parse(heading.innerHTML)
+		if (innerHTML.props && innerHTML.props.style) {
+			innerHTML.props.style.color = undefined
+		}
+		return innerHTML
+	}
 	return (
 		<Accordion
 			defaultExpandedKeys={["1"]}
@@ -36,6 +43,7 @@ export default ({ selector }) => {
                     [&>h2]:font-semibold 
                     [&>h2>button>span]:-rotate-90
                     [&>h2>button>span]:data-[open=true]:rotate-90
+										[&>h2>button>span]:text-black
                     [&>h2>button>span>svg]:scale-[1.4]
                     [&>h2[data-open=true]>button]:pb-0.5
                     [&>h2>button]:transition-[padding]
@@ -49,11 +57,13 @@ export default ({ selector }) => {
 							key={heading.dataset.id}
 							data-id={heading.dataset.id}
 							className={`
+							text-black
                                 block w-full text-left p-[11px] first:pt-0
                                 [&_*]:leading-none
                                 ${+tagLevel > minLevel && "!font-normal"}
                             `}
 							style={{
+								color: !"#000000",
 								paddingLeft: (+tagLevel - 2) * 30 + "px"
 							}}
 							onClick={() => {
@@ -63,7 +73,7 @@ export default ({ selector }) => {
 								});
 							}}
 						>
-							{parse(heading.innerHTML)}
+							{updateHtml(heading)}
 						</button>
 					)
 				})}

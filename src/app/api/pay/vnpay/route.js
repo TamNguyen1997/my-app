@@ -23,7 +23,6 @@ export async function POST(req) {
     var vnpUrl = process.env.VNPAY_URL;
     var returnUrl = process.env.VNP_RETURN_URL;
 
-    console.log(process.env.VNP_HASH_SECRET)
     var date = new Date(new Date().toLocaleString('en', { timeZone: 'Asia/Ho_Chi_Minh' }));
     var expiration = new Date(new Date().toLocaleString('en', { timeZone: 'Asia/Ho_Chi_Minh' }));
     expiration.setHours(expiration.getHours() + 1);
@@ -48,7 +47,6 @@ export async function POST(req) {
     vnp_Params['vnp_TxnRef'] = orderId;
 
     vnp_Params = sortObject(vnp_Params);
-    console.log(vnp_Params)
 
     var querystring = require('qs');
     var signData = querystring.stringify(vnp_Params, { encode: true });

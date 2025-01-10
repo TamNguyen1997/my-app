@@ -51,7 +51,6 @@ export async function middleware(request: NextRequest) {
 
       const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN}/api/redirects?active=true&size=10000&page=1`);
       const { redirects } = await apiResponse.json();
-      console.log(redirects)
       if (redirects && redirects.length) {
         const match = redirects.find((r: RedirectEntry) =>
           (r.redirectType === "REGEX" && r.source.includes(pathname)) ||

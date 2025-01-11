@@ -168,80 +168,80 @@ async function importTechnicalDetail(worksheet) {
     filterValueId: 2,
   }
 
-  for (const [index, row] of worksheet.entries()) {
-    const rowData = Object.values(row)
+  await db.$transaction(async tx => {
+    for (const [index, row] of worksheet.entries()) {
+      const rowData = Object.values(row)
 
-    const isAllRequiredData = Object.values(requiredColumnIndexes).every(
-      (colIndex) =>
-        rowData[colIndex] !== undefined &&
-        rowData[colIndex] !== null &&
-        rowData[colIndex] !== ""
-    )
-
-    if (!isAllRequiredData) {
-      throw new Error(
-        `"Line ${index + 1}": ${IMPORT_MESSAGE.MISSING_REQUIRED_DATA}`
+      const isAllRequiredData = Object.values(requiredColumnIndexes).every(
+        (colIndex) =>
+          rowData[colIndex] !== undefined &&
+          rowData[colIndex] !== null &&
+          rowData[colIndex] !== ""
       )
-    }
 
-    const productId = rowData[requiredColumnIndexes.productId].toString()
-    const filterId = rowData[requiredColumnIndexes.filterId].toString()
-    const filterValueId = rowData[requiredColumnIndexes.filterValueId].toString()
+      if (!isAllRequiredData) {
+        throw new Error(
+          `"Line ${index + 1}": ${IMPORT_MESSAGE.MISSING_REQUIRED_DATA}`
+        )
+      }
 
-    const { isProductValid, isFilterValid, isFilterValueValid } =
-      await validateImportTechnicalDetail(productId, filterId, filterValueId)
+      const productId = rowData[requiredColumnIndexes.productId].toString()
+      const filterId = rowData[requiredColumnIndexes.filterId].toString()
+      const filterValueId = rowData[requiredColumnIndexes.filterValueId].toString()
 
-    if (!isProductValid) {
-      throw new Error(
-        `"Line ${index + 1}": ${IMPORT_MESSAGE.PRODUCT_NOT_FOUND}`
-      )
-    }
+      const { isProductValid, isFilterValid, isFilterValueValid } =
+        await validateImportTechnicalDetail(productId, filterId, filterValueId)
 
-    if (!isFilterValid) {
-      throw new Error(`"Line ${index + 1}": ${IMPORT_MESSAGE.FILTER_NOT_FOUND}`)
-    }
+      if (!isProductValid) {
+        throw new Error(
+          `"Line ${index + 1}": ${IMPORT_MESSAGE.PRODUCT_NOT_FOUND}`
+        )
+      }
 
-    if (!isFilterValueValid) {
-      throw new Error(
-        `"Line ${index + 1}": ${IMPORT_MESSAGE.FILTER_VALUE_NOT_FOUND}`
-      )
-    }
+      if (!isFilterValid) {
+        throw new Error(`"Line ${index + 1}": ${IMPORT_MESSAGE.FILTER_NOT_FOUND}`)
+      }
 
-    const existingRecord = await db.technical_detail.findFirst({
-      where: {
-        productId: productId,
-        filterId: filterId,
-        filterValueId: filterValueId,
-      },
-    })
+      if (!isFilterValueValid) {
+        throw new Error(
+          `"Line ${index + 1}": ${IMPORT_MESSAGE.FILTER_VALUE_NOT_FOUND}`
+        )
+      }
 
-    if (existingRecord) {
-      throw new Error(
-        `"Line ${index + 1}": ${IMPORT_MESSAGE.RECORD_ALREADY_EXISTS}`
-      )
-    }
-
-    const dataObj = {
-      product: {
-        connect: { id: productId },
-      },
-      filter: {
-        connect: { id: filterId },
-      },
-      filterValue: {
-        connect: { id: filterValueId },
-      },
-    }
-
-    try {
-      await db.technical_detail.create({
-        data: dataObj,
+      const existingRecord = await tx.technical_detail.findFirst({
+        where: {
+          productId: productId,
+          filterId: filterId,
+          filterValueId: filterValueId,
+        },
       })
-    } catch (error) {
-      console.log(error)
-      throw new Error(IMPORT_MESSAGE.DATABASE_ERROR)
+
+      if (existingRecord) {
+        continue
+      }
+
+      const dataObj = {
+        product: {
+          connect: { id: productId },
+        },
+        filter: {
+          connect: { id: filterId },
+        },
+        filterValue: {
+          connect: { id: filterValueId },
+        },
+      }
+
+      try {
+        await tx.technical_detail.create({
+          data: dataObj,
+        })
+      } catch (error) {
+        console.log(error)
+        throw new Error(IMPORT_MESSAGE.DATABASE_ERROR)
+      }
     }
-  }
+  })
 
   return { success: true }
 }

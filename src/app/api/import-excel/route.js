@@ -349,16 +349,12 @@ async function importSaleDetail(worksheet) {
   return { success: true }
 }
 
-async function saveImportHistory(data, method) {
-  const baseUrl = process.env.NEXT_PUBLIC_DOMAIN || "http://localhost:3000"
-  const response = await fetch(`${baseUrl}/api/history`, {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  })
-  return response.json()
+async function saveImportHistory(data) {
+  if (data.id) {
+    return await db.import_history.update({ where: { id: data.id }, data: data })
+  }
+  return await db.import_history.create({ data: data })
+
 }
 
 export async function POST(req) {
@@ -380,8 +376,7 @@ export async function POST(req) {
       {
         fileName,
         status,
-      },
-      "POST"
+      }
     )
 
     history_id = id
@@ -430,8 +425,7 @@ export async function POST(req) {
         fileName,
         status,
         id: history_id,
-      },
-      "PATCH"
+      }
     )
   }
 }

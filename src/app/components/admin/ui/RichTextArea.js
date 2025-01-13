@@ -72,6 +72,7 @@ import {
 
 const RichTextEditor = ({ editor }) => {
   const [fontSize, setFontSize] = useState(16)
+  const [fontFamily, setFontFamily] = useState("Open Sans")
   return (
     <div className="border border-t-0 rounded-lg">
       <div className="sticky top-0 translate-x-[-1px] bg-white w-[calc(100%_+_2px)] z-[20]">
@@ -79,12 +80,13 @@ const RichTextEditor = ({ editor }) => {
           className={`
             relative border rounded-t-lg before:content-[''] before:absolute before:inset-0 before:bg-gray-100 before:z-[-1] before:rounded-t-lg
           `}>
-          <BlogToolBar editor={editor} fontSize={fontSize} setFontSize={setFontSize} />
+          <BlogToolBar editor={editor} fontSize={fontSize} setFontSize={setFontSize} fontFamily={fontFamily} setFontFamily={setFontFamily} />
         </div>
       </div>
-      <div className="p-3 border rounded-b-lg bg-white prose !max-w-full">
+      <div className="p-3 border rounded-b-lg bg-white prose !max-w-full font-open_san">
         <EditorContent editor={editor} onClick={() => {
           let size = 16
+          let fFamily = editor.getAttributes("textStyle").fontFamily || "Open Sans"
           if (editor.isActive('heading', { level: 1 })) {
             size = 40
           } else if (editor.isActive('heading', { level: 2 })) {
@@ -96,6 +98,7 @@ const RichTextEditor = ({ editor }) => {
           } else {
             size = editor.getAttributes("textStyle").fontSize || 16
           }
+          setFontFamily(fFamily)
           setFontSize(size)
         }} />
       </div>
@@ -116,7 +119,7 @@ const TEXT_COLOR = {
   "#FFBF00": "bg-[#FFBF00]",
 };
 
-const BlogToolBar = ({ editor, fontSize, setFontSize }) => {
+const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily }) => {
   const iconClassName =
     "border w-6 h-6 justify-items-center items-center bg-white border";
   const imageModal = useDisclosure();
@@ -133,8 +136,6 @@ const BlogToolBar = ({ editor, fontSize, setFontSize }) => {
   });
 
   const [showColorPick, setShowColorPick] = useState(false);
-
-  const [selectedFont, setSelectedFont] = useState("Open Sans");
   const [searchText, setSearchText] = useState("");
   const [replaceText, setReplaceText] = useState("");
   const [buttonText, setButtonText] = useState("");
@@ -205,7 +206,7 @@ const BlogToolBar = ({ editor, fontSize, setFontSize }) => {
   ];
 
   const handleFontChange = (font) => {
-    setSelectedFont(font);
+    setFontFamily(font);
     editor.chain().focus().setFontFamily(font).run();
   };
 
@@ -898,7 +899,7 @@ const BlogToolBar = ({ editor, fontSize, setFontSize }) => {
       <div className="flex flex-wrap [&>div]:mt-1.5 [&>div]:ml-0.5 w-full">
         <Tooltip showArrow content="Choose font">
           <select
-            value={selectedFont}
+            value={fontFamily}
             onChange={(e) => handleFontChange(e.target.value)}
             className="w-max h-8 mt-[6px] ml-[2px] text-[14px] p-1 border rounded focus:outline-none"
           >

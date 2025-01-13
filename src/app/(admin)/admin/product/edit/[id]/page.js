@@ -25,7 +25,10 @@ const ProductCms = () => {
   const [subCategories, setSubCategories] = useState([])
   const [brands, setBrands] = useState([])
   const [filters, setFilters] = useState([])
-  const editor = useEditor(editorConfig())
+
+  const editor = useEditor(
+    editorConfig(),
+  )
 
   useEffect(() => {
     if (editor) {
@@ -58,6 +61,7 @@ const ProductCms = () => {
   }
 
   const onSave = async () => {
+    const newProductOnImage = product.product_on_image?.map((item, i) => ({ ...item, order: i })) || []
     const res = await fetch(`/api/products/v2`,
       {
         method: "POST",
@@ -85,7 +89,7 @@ const ProductCms = () => {
             metaDescription: product.metaDescription,
           },
           saleDetails: product.saleDetails,
-          productOnImages: product.product_on_image,
+          productOnImages: newProductOnImage,
           technicalDetails: product.technical_detail
         })
       })

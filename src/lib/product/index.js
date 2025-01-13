@@ -1,6 +1,6 @@
 const getPrice = (product) => {
   if (!product.saleDetails?.length) return null
-  const saleDetails = product.saleDetails.filter(item => item.showPrice === true)
+  const saleDetails = product.saleDetails.filter(item => item.showPrice === true && item.price > 0)
   if (!saleDetails.length) return null
 
   if (product.saleDetails.length === 1) return product.saleDetails[0].price.toLocaleString()?.replace(",", ".")

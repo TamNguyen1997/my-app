@@ -14,7 +14,12 @@ export async function GET(req, { params }) {
           filter: true
         }
       },
-      saleDetails: true,
+      saleDetails: {
+        include: {
+          filter: true,
+          filterValue: true
+        }
+      },
       image: true,
       category: true,
       subCate: true,

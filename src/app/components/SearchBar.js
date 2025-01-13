@@ -27,7 +27,7 @@ const SearchBar = () => {
       (key) =>
         filteredCondition[key] === undefined && delete filteredCondition[key]
     );
-    const queryString = new URLSearchParams({ slug: slugify(filteredCondition.slug) }).toString();
+    const queryString = new URLSearchParams({ slug: slugify(filteredCondition.slug || "") }).toString();
 
     fetch(`/api/categories/?size=${5}&page=${1}&${queryString}`).then(
       async (res) => {

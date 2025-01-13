@@ -1,7 +1,7 @@
 import { db } from '@/app/db';
 import { NextResponse } from 'next/server';
 import crypto from "crypto";
-import { Prisma, product_type, sale_detail_type } from "@prisma/client";
+import { product_type, sale_detail_type } from "@prisma/client";
 
 export async function POST(req) {
   try {
@@ -57,6 +57,7 @@ export async function POST(req) {
 
     const productOnImages = body.productOnImages?.map(item => {
       return {
+        order: item.order || 0,
         imageId: item.imageId,
         productId: body.product.id
       }

@@ -78,6 +78,11 @@ model product_on_image {
   imageId String @db.Uuid
   image   image  @relation(fields: [imageId], references: [id], onDelete: Cascade)
 
+  order Int @default(0)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
   @@id([imageId, productId])
   @@index([productId])
   @@index([imageId])
@@ -92,6 +97,9 @@ model technical_detail {
   filterId      String?       @map("filter_id")
   filterValue   filter_value? @relation(fields: [filterValueId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   filterValueId String?       @map("filter_value_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@index([productId])
   @@index([filterId])

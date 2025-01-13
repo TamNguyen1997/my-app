@@ -24,6 +24,9 @@ export async function GET(req, { params }) {
       category: true,
       subCate: true,
       product_on_image: {
+        orderBy: {
+          order: 'asc'
+        },
         include: { image: true }
       },
       brand: true

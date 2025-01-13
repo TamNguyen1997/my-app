@@ -1,6 +1,6 @@
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react"
 import ImageCms from "../ImageCms"
-import { useContext, useState, forwardRef, useRef, useTransition, useCallback } from "react"
+import { useContext, useState, forwardRef, useRef, useTransition, useCallback, useEffect } from "react"
 import { ToastContainer, toast } from 'react-toastify';
 import { X } from "lucide-react";
 import { ProductContext } from "../../../../(admin)/admin/product/edit/[id]/page"
@@ -28,11 +28,12 @@ const ProductImage = () => {
         newImages = [...newImages, { imageId: value.id, image: value, productId: product.id }]
       }
     }
-    let newProduct = { ...product, ...{ product_on_image: newImages } }
-    newProduct.product_on_image = newImages
     setImages(newImages)
-    setProduct(newProduct)
   }
+
+  useEffect(() => {
+    setProduct({ ...product, ...{ product_on_image: images.map((item, i) => ({ ...item, order: i })) } })
+  }, [images])
 
   const onUploadSuccess = async (uploads) => {
     let newImages = product.product_on_image
@@ -175,7 +176,7 @@ const ImageItem = ({ img, onClick, deleteItem, index, moveRow }) => {
         hover:scale-[1.02]
         transition duration-400
       `}
-      // style={{ border }}
+    // style={{ border }}
     >
       <img
         src={`${process.env.NEXT_PUBLIC_FILE_PATH + img?.path}`}

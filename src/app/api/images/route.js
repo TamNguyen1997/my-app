@@ -19,7 +19,10 @@ export async function GET(req) {
   }
 
   if (query.name && query.name !== "undefined") {
-    condition.name = { search: `${query.name}:*` }
+    condition.OR = [
+      { name: { search: `${query.name}:*` } },
+      { slug: { search: `${query.name}:*` } },
+    ]
   }
 
   try {

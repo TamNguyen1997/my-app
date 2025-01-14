@@ -64,8 +64,8 @@ const brandDescription = {
   "GHIBLI&WIRBEL": {
     logo: "/brand/Logo-Ghibli.png",
     slug: "thuong-hieu-ghibli",
-    description: `Ghibli & Wirbel, nhà sản xuất thiết bị làm sạch thành lập năm 1968 tại Ý. 
-    Với hơn 50 năm kinh nghiệm, Ghibli & Wirbel giờ đây đã là Công ty hàng đầu trong lĩnh vực máy móc làm vệ sinh tại Châu Âu.`,
+    description: `Ghibli, nhà sản xuất thiết bị làm sạch thành lập năm 1968 tại Ý. 
+    Với hơn 50 năm kinh nghiệm, Ghibli giờ đây đã là Công ty hàng đầu trong lĩnh vực máy móc làm vệ sinh tại Châu Âu.`,
   },
 };
 

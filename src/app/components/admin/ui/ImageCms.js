@@ -76,7 +76,7 @@ const ImageCms = ({ onImageClick = () => { }, highlights, onUploadSuccess, showH
                         <ModalHeader>Upload ảnh</ModalHeader>
                         <Dropzone
                           maxSize={10000000}
-                          maxFiles={5}
+                          maxFiles={10}
                           multiple={true}
                           accept="image/*"
                           onDropRejected={(fileRejections) => {

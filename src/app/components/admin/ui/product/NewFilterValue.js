@@ -93,10 +93,11 @@ const FilterValueSelect = ({
   onSelectionChange,
   categoryId,
   subCategoryId,
-  brandId
+  brandId,
+  product,
+  setProduct
 }) => {
   const newFilterValueModal = useDisclosure()
-
   return (
     <>
       <Input
@@ -110,7 +111,7 @@ const FilterValueSelect = ({
         selectedKeys={[detail.filterValueId]}
         onSelectionChange={value => {
           if (value.values().next().value !== "new") {
-            onSelectionChange({ filterValueId: value.values().next().value }, detail.id)
+            onSelectionChange({ filterValueId: value.values().next().value }, detail.id, product, setProduct)
           }
         }}
       >
@@ -145,7 +146,7 @@ const FilterValueSelect = ({
                   subCategoryId={subCategoryId}
                   brandId={brandId}
                   callback={(value) => {
-                    onSelectionChange({ filterValueId: value }, detail.id)
+                    onSelectionChange({ filterValueId: value }, detail.id, product, setProduct)
                     onClose()
                   }} />
                 <ModalFooter>

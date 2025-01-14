@@ -88,6 +88,7 @@ const SecondarySaleDetails = ({ saleDetail }) => {
                     detail={detail} getFilter={() =>
                       filters.find(filter => filter.id === product.saleDetails?.find(sale => detail.id === sale.id).filterId)
                     }
+                    filters={filters}
                     brandId={product.brandId}
                     categoryId={product.categoryId}
                     subCategoryId={product.subCateId}
@@ -211,7 +212,7 @@ const SaleDetails = () => {
                               <NewFilter filters={filters}
                                 setFilters={setFilters}
                                 callback={(value) => {
-                                  handleDetailChange(detail.id, { filterId: value })
+                                  handleDetailChange(detail.id, { filterId: value }, product, setProduct)
                                   onClose()
                                 }} />
                               <ModalFooter>
@@ -231,8 +232,10 @@ const SaleDetails = () => {
                       brandId={product.brandId}
                       categoryId={product.categoryId}
                       subCategoryId={product.subCateId}
+                      product={product}
+                      setProduct={setProduct}
                       onSelectionChange={(value, detailId) => handleDetailChange(detailId, { filterValueId: value.filterValueId }, product, setProduct)}
-                      filters={setFilters}
+                      filters={filters}
                       setFilters={setFilters}
                       details={product.saleDetails} />
                     <Input type="number"

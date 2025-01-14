@@ -26,32 +26,44 @@ const ProductCms = () => {
   const [brands, setBrands] = useState([])
   const [filters, setFilters] = useState([])
 
-  const editor = useEditor(
-    editorConfig(),
-  )
+  useEffect(() => {
+    const getFilters = async () => {
+      const res = await fetch(`/api/filters/?size=100000&page=1&categoryIds=${product.subCateId}&categoryIds=${product.categoryId}`)
+      if (res.ok) {
+        setFilters((await res.json()).result)
+      }
+      setIsLoading(false)
+    }
+
+    if (product.subCateId) {
+      getFilters()
+    }
+  }, [product.subCateId])
+
+  const editor = useEditor(editorConfig())
 
   useEffect(() => {
+    const getProduct = async () => {
+      setIsLoading(true)
+      await Promise.all([
+        fetch('/api/categories?type=CATE&size=10000&page=1').then(res => res.json()).then(json => setCategories(json.result)),
+        fetch('/api/brands').then(res => res.json()).then(setBrands),
+        fetch('/api/categories?type=SUB_CATE&size=10000&page=1').then(res => res.json()).then(json => setSubCategories(json.result)),
+      ])
+
+      if (id && id !== 'new') {
+        const res = await fetch(`/api/products/${id}?includeSale=true`).then(res => res.json())
+        setProduct(res)
+        editor.commands.setContent(res.description)
+      }
+      setIsLoading(false)
+    }
+
     if (editor) {
       getProduct()
     }
   }, [id, editor])
 
-  const getProduct = async () => {
-    setIsLoading(true)
-    await Promise.all([
-      fetch('/api/categories?type=CATE&size=10000&page=1').then(res => res.json()).then(json => setCategories(json.result)),
-      fetch('/api/brands').then(res => res.json()).then(setBrands),
-      fetch('/api/categories?type=SUB_CATE&size=10000&page=1').then(res => res.json()).then(json => setSubCategories(json.result)),
-      fetch(`/api/filters/?size=10000&page=1`).then(res => res.json()).then(json => setFilters(json.result))
-    ])
-
-    if (id && id !== 'new') {
-      const res = await fetch(`/api/products/${id}?includeSale=true`).then(res => res.json())
-      setProduct(res)
-      editor.commands.setContent(res.description)
-    }
-    setIsLoading(false)
-  }
 
   const deleteProduct = async () => {
     const res = await fetch(`/api/products/${id}`, { method: "DELETE" })
@@ -101,7 +113,7 @@ const ProductCms = () => {
     }
   }
 
-  if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />
+  if (isLoading || !product) return <Spinner className="w-full h-full m-auto p-12" />
 
   return (
     <>

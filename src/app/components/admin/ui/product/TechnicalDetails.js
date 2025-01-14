@@ -7,7 +7,7 @@ import { FilterValueSelect } from "./NewFilterValue"
 import { ProductContext } from "@/app/(admin)/admin/product/edit/[id]/page"
 
 const TechnicalDetails = () => {
-  let { product, filters, setFilters, setProduct } = useContext(ProductContext)
+  const { product, filters, setFilters, setProduct } = useContext(ProductContext)
   const [technicalDetails, setTechnicalDetails] = useState(product.technical_detail || [])
 
   const addDetail = () => {
@@ -109,6 +109,8 @@ const TechnicalDetails = () => {
               subCategoryId={product.subCateId}
               setFilters={setFilters}
               filters={filters}
+              product={product}
+              setProduct={setProduct}
               onSelectionChange={onSelectionChange} />
             <div className="relative flex items-center pt-5">
               <span className="text-lg text-danger cursor-pointer active:opacity-50 pl-5">

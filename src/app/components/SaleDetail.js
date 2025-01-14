@@ -45,11 +45,17 @@ const SaleDetail = ({ saleDetails, product }) => {
   }
 
   const getPrice = () => {
-    if (!selectedSecondaryDetail.showPrice) return ""
-    if (!selectedDetail.showPrice) return ""
-    if (selectedSecondaryDetail.price) return selectedSecondaryDetail.price.toLocaleString()
-    if (selectedDetail.price && !getSecondaryDetails().length) return selectedDetail.price.toLocaleString()
-    if (!selectedSecondaryDetail.price && selectedDetail.price && getSecondaryDetails()) return ""
+    if (selectedSecondaryDetail.price && selectedSecondaryDetail.showPrice) {
+      return selectedSecondaryDetail.promotionalPrice > 0 ?
+        selectedSecondaryDetail.promotionalPrice.toLocaleString() :
+        selectedSecondaryDetail.price.toLocaleString()
+    }
+
+    if (selectedDetail.price && !getSecondaryDetails().length && selectedDetail.showPrice) {
+      return selectedDetail.promotionalPrice > 0 ?
+        selectedDetail.promotionalPrice.toLocaleString() :
+        selectedDetail.price.toLocaleString()
+    }
 
     return ""
   }
@@ -116,7 +122,23 @@ const SaleDetail = ({ saleDetails, product }) => {
       <div className="flex flex-col gap-3">
         <div className="flex gap-2 flex-wrap">
           {
-            saleDetails.filter(item => !item.saleDetailId && item.filterValueId && item.filterValue).map(detail => {
+            saleDetails.length > 1 && saleDetails.filter(item => !item.saleDetailId && item.filterValueId && item.filterValue).map(detail => {
+              return <div key={detail.id} className="flex flex-col gap-1">
+                {
+                  detail.type === "COLOR" ?
+                    <div className={getColor(detail, selectedDetail.id)} onClick={() => onPrimarySelect(detail.id)}></div> :
+                    <Button color="default"
+                      variant={getVariant(detail.id, selectedDetail.id)}
+                      onPress={() => onPrimarySelect(detail.id)}
+                      value={detail.id}>{detail.filterValue.value}</Button>
+                }
+
+              </div>
+            })
+          }
+
+          {
+            saleDetails.length === 1 && saleDetails.map(detail => {
               return <div key={detail.id} className="flex flex-col gap-1">
                 {
                   detail.type === "COLOR" ?

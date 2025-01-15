@@ -47,14 +47,14 @@ const SaleDetail = ({ saleDetails, product }) => {
   const getPrice = () => {
     if (selectedSecondaryDetail.price && selectedSecondaryDetail.showPrice) {
       return selectedSecondaryDetail.promotionalPrice > 0 ?
-        selectedSecondaryDetail.promotionalPrice.toLocaleString() :
-        selectedSecondaryDetail.price.toLocaleString()
+        selectedSecondaryDetail.promotionalPrice.toLocaleString().replaceAll(",", ".") :
+        selectedSecondaryDetail.price.toLocaleString().replaceAll(",", ".")
     }
 
     if (selectedDetail.price && !getSecondaryDetails().length && selectedDetail.showPrice) {
       return selectedDetail.promotionalPrice > 0 ?
-        selectedDetail.promotionalPrice.toLocaleString() :
-        selectedDetail.price.toLocaleString()
+        selectedDetail.promotionalPrice.toLocaleString().replaceAll(",", ".") :
+        selectedDetail.price.toLocaleString().replaceAll(",", ".")
     }
 
     return ""

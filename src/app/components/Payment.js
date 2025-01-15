@@ -211,17 +211,17 @@ const Payment = () => {
             {
               getTotal() > 2000000 ? <>
                 <div>
-                  <p className="opacity-65 line-through">Phí vận chuyển: {shippingCost.toLocaleString()} đ</p>
+                  <p className="opacity-65 line-through">Phí vận chuyển: {shippingCost.toLocaleString().replaceAll(",", ".")} đ</p>
                   <p className="text-xs opacity-65">Miễn phí vận chuyển với đơn trên 2,000,000đ</p>
                 </div>
-                <p>Tổng: {(getTotal()).toLocaleString()} đ</p>
+                <p>Tổng: {(getTotal()).toLocaleString().replaceAll(",", ".")} đ</p>
               </> :
                 <>
                   <div>
-                    <p className="opacity-65">Phí vận chuyển: {shippingCost.toLocaleString()} đ</p>
+                    <p className="opacity-65">Phí vận chuyển: {shippingCost.toLocaleString().replaceAll(",", ".")} đ</p>
                     <p className="text-xs opacity-65">Miễn phí vận chuyển với đơn trên 2,000,000đ</p>
                   </div>
-                  <p>Tổng: {(shippingCost + getTotal()).toLocaleString()} đ</p>
+                  <p>Tổng: {(shippingCost + getTotal()).toLocaleString().replaceAll(",", ".")} đ</p>
                 </>
             }
 

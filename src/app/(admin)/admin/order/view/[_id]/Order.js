@@ -270,7 +270,7 @@ const Order = () => {
                       </div>
                       <div className="text-end md:order-4 md:w-32">
                         <p className="text-base font-bold text-gray-900 dark:text-white">
-                          {(parseInt(item.saleDetail?.price || "0") * item.quantity).toLocaleString()} đ
+                          {(parseInt(item.saleDetail?.price || "0") * item.quantity).toLocaleString().replaceAll(",", ".")} đ
                         </p>
                       </div>
                     </div>
@@ -279,7 +279,7 @@ const Order = () => {
                       <div>
                         <p className="text-base font-medium text-gray-900 hover:underline dark:text-white">{item.saleDetail?.product.name}</p>
                         <p className="text-lg font-bold leading-tight text-red-600 dark:text-red-500">
-                          {item.saleDetail?.price.toLocaleString()} đ</p>
+                          {item.saleDetail?.price.toLocaleString().replaceAll(",", ".")} đ</p>
                         <div className="text-[16px] flex opacity-80 pt-1">
                           <div className="pr-3">
                             {

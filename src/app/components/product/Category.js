@@ -26,7 +26,7 @@ const Category = ({ params, productFilter }) => {
     fetch(`/api/filters/?categoryId=${params}&active=true`).then((res) => res.json()).then(json => {
       setFilters(json.result.filter(item => item.filterValue.length))
     })
-  }, [params, productFilter]);
+  }, [params, productFilter, page]);
 
   const pages = useMemo(() => {
     return getTotalPages(total, rowsPerPage)
@@ -36,7 +36,7 @@ const Category = ({ params, productFilter }) => {
     setIsLoading(true)
     const hash = window.location.hash?.split('#')
     const getData = async () => {
-      await fetch(`/api/categories/${params}/products/?active=true&${window.location.hash ? hash[1] : `filterId=${productFilter || ""}`}`).then(async res => {
+      await fetch(`/api/categories/${params}/products/?active=true&page=${page}&${window.location.hash ? hash[1] : `filterId=${productFilter || ""}`}`).then(async res => {
         if (res.ok) {
           const body = await res.json()
           setCategory(body.category)

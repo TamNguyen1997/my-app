@@ -136,26 +136,10 @@ const SaleDetail = ({ saleDetails, product }) => {
               </div>
             })
           }
-
-          {
-            saleDetails.length === 1 && saleDetails.map(detail => {
-              return <div key={detail.id} className="flex flex-col gap-1">
-                {
-                  detail.type === "COLOR" ?
-                    <div className={getColor(detail, selectedDetail.id)} onClick={() => onPrimarySelect(detail.id)}></div> :
-                    <Button color="default"
-                      variant={getVariant(detail.id, selectedDetail.id)}
-                      onPress={() => onPrimarySelect(detail.id)}
-                      value={detail.id}>{detail.filterValue.value}</Button>
-                }
-
-              </div>
-            })
-          }
         </div>
         <div>
           {
-            getSecondaryDetails().filter(item => !item.saleDetailId && item.filterValueId && item.filterValue)
+            getSecondaryDetails().length > 1 && getSecondaryDetails().filter(item => !item.saleDetailId && item.filterValueId && item.filterValue)
               .map(sDetail => {
                 return <Button color="default"
                   key={sDetail.id}

@@ -37,7 +37,7 @@ const Payment = () => {
     if (res.ok) {
       return (await res.json()).order
     } else {
-      toast.error("Không thể đặt hàng")
+      toast.error("Không thể đặt hàng: " + (await res.json()).message)
     }
   }
 

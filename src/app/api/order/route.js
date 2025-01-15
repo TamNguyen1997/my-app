@@ -59,6 +59,9 @@ export async function POST(req) {
     const order = raw.order
     const products = raw.products
 
+    if (order.total <= 0) {
+      return NextResponse.json({ message: "Giá không hợp lệ" }, { status: 400 })
+    }
     return NextResponse.json({
       order: await db.order.create({
         data: {

@@ -57,9 +57,9 @@ const ProductDetail = () => {
         </div>
         <div className="flex gap-10">
           <Switch isSelected={product.active}
-            onValueChange={(value) => setProduct(Object.assign({}, product, { active: value }))}>{product.active ? "Active" : "Inactive"}</Switch>
+            onValueChange={(value) => setProduct({ ...product, active: value })}>{product.active ? "Active" : "Inactive"}</Switch>
           <Switch isSelected={product.highlight}
-            onValueChange={(value) => setProduct(Object.assign({}, product, { highlight: value }))}>{product.highlight ? "Nổi bật" : "Không nổi bật"}</Switch>
+            onValueChange={(value) => setProduct({ ...product, highlight: value })}>{product.highlight ? "Nổi bật" : "Không nổi bật"}</Switch>
         </div>
         <div className="flex gap-2">
           <Input

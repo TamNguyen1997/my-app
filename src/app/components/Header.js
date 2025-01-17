@@ -352,7 +352,7 @@ const HeaderItems = ({ setHoveredCate, menuRef, setMenuVisible, menuVisible }) =
         >
           THẢM TRẢI SÀN
         </Link>
-        <Link href={`/khan-giay-giay-ve-sinh`}
+        <Link href={`/khan-giay`}
           className={`
                 hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
                 text-center capitalize

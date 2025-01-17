@@ -40,7 +40,7 @@ export async function GET(req, { params }) {
     }
     if (query) {
       page = parseInt(query.page) || 1
-      size = parseInt(query.page) || 20
+      size = parseInt(query.size) || 20
     }
     if (query.brand) {
       const brandIds = (await db.brand.findMany({ where: { slug: { in: query.brand.split(',') } } })).map(brand => brand.id)

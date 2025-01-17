@@ -20,7 +20,7 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights, showHigh
 
   const [size, setSize] = useState(10)
   const [page, setPage] = useState(1)
-  const [total, setTotal] = useState(0)
+  const [total, setTotal] = useState(1)
 
   const [isLoading, setIsLoading] = useState(true)
   const { isOpen, onOpen, onOpenChange } = useDisclosure();

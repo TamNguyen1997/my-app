@@ -1,56 +1,50 @@
 "use client"
 
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Pagination, Select, SelectItem, Slider, Spinner } from "@nextui-org/react";
-import { useEffect, useMemo, useState } from "react";
-import ProductCard from "@/components/product/ProductCard"
-import { getTotalPages } from "@/lib/pagination"
-import { useSearchParams } from "next/navigation";
-import ErrorBoundary from "@/components/ErrorBoundary";
+import { useEffect, useState } from "react";
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, Select, SelectItem, Slider, Spinner } from "@nextui-org/react";
+import ProductCard from "@/components/product/ProductCard";
 
-const rowsPerPage = 20;
-
-const Category = ({ params, productFilter }) => {
+const Category = ({ category, productFilter }) => {
   const [data, setData] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-  const [category, setCategory] = useState({ name: "" })
+
   const [value, setValue] = useState([0, 100000000])
-  const searchParams = useSearchParams()
-  const [total, setTotal] = useState(1)
-  const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"))
+
+  const [groupedData, setGroupData] = useState({})
   const [filters, setFilters] = useState([])
 
-  const [filterIds, setFilterIds] = useState([])
+  const [selectedFilterValues, setSelectedFilterValues] = useState({})
 
   useEffect(() => {
     getProduct()
-    fetch(`/api/filters/?categoryId=${params}&active=true`).then((res) => res.json()).then(json => {
-      setFilters(json.result.filter(item => item.filterValue.length))
-    })
-  }, [params, productFilter, page]);
-
-  const pages = useMemo(() => {
-    return getTotalPages(total, rowsPerPage)
-  }, [total, rowsPerPage]);
-
-  const getProduct = () => {
-    setIsLoading(true)
-    const hash = window.location.hash?.split('#')
-    const getData = async () => {
-      await fetch(`/api/categories/${params}/products/?active=true&page=${page}&${window.location.hash ? hash[1] : `filterId=${productFilter || ""}`}`).then(async res => {
-        if (res.ok) {
-          const body = await res.json()
-          setCategory(body.category)
-          setData(body.products)
-          setTotal(body.total)
-        }
+    fetch(`/api/filters/?categoryId=${category.id}&active=true`).then((res) => res.json()).then(json => {
+      const result = json.result.filter(item => item.filterValue.length)
+      let temp = {}
+      result.forEach(item => {
+        temp[item.id] = []
       })
-      setIsLoading(false)
-    }
-    getData()
+      setSelectedFilterValues(temp)
+      setFilters(result)
+    })
+  }, [category, productFilter]);
+
+  const getProduct = async () => {
+    const hash = window.location.hash?.split('#')
+
+    await fetch(`/api/products/?active=true&page=1&size=1000&includeCate=true&categoryId=${category.id}&${hash && hash[1]?.includes("=") ? hash[1] : `filterId=${productFilter || ""}`}`).then(async res => {
+      if (res.ok) {
+        const body = await res.json()
+        setData(body.result)
+        setGroupData(Object.groupBy(body.result, (item) => item.subCateId))
+      }
+    })
+    setIsLoading(false)
   }
 
   const filter = () => {
     let range = ""
+    let filterIds = Object.values(selectedFilterValues).filter(item => item.length).flat()
+
     if (JSON.stringify(value) !== JSON.stringify([0, 100000000])) {
       range += `range=${value.join('-')}`
     } else {
@@ -59,13 +53,13 @@ const Category = ({ params, productFilter }) => {
         getProduct()
         return
       }
+
       if (filterIds.length === 1) {
         window.location.replace(`/${category.slug}#${filterIds[0]}`)
         getProduct()
         return
       }
     }
-
     let query = []
     if (range) {
       query.push(range)
@@ -73,26 +67,16 @@ const Category = ({ params, productFilter }) => {
     if (filterIds.length) {
       query.push(`filterId=${filterIds.join("&filterId=")}`)
     }
-    window.location.replace(`/${params}#${query.join("&")}`)
-    getProduct()
+    window.location.replace(`/${category.slug}#${query.join("&")}`)
   }
 
-
   if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />
+
   return (
     <>
-      <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${params}`} />
-      <ErrorBoundary>
-        <div
-          className="flex flex-col items-center 
-        bg-[image:var(--image-url)] bg-no-repeat bg-center bg-cover
-        justify-center xl:h-96 lg:h-72 md:h-60 h-32"
-          style={{
-            '--image-url': `url(${category.image ? process.env.NEXT_PUBLIC_FILE_PATH + category.image.path : ""})`,
-            backgroundSize: "100% 100%"
-          }} >
-        </div>
-        <div className="w-9/12 mx-auto pt-5">
+      <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${category.slug}`} />
+      <div className="sm:w-9/12 mx-auto ">
+        <div className="flex gap-2 pt-5 px-2">
           <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
             {
               filters.map((filter, index) =>
@@ -102,16 +86,9 @@ const Category = ({ params, productFilter }) => {
                   selectionMode="multiple"
                   labelPlacement="outside"
                   defaultSelectedKeys={new Set([
-                    filter.filterValue.find(item => window.location.hash.includes(item.slug) || item.slug === productFilter)?.id])}
+                    filter.filterValue.find(item => window.location.hash.includes(item.slug) || item.slug === productFilter)?.slug])}
                   onSelectionChange={(value) => {
-                    const newValues = Array.from(value).filter(item => item)
-                    if (!newValues.length) {
-                      const temp = filterIds.filter(item => !filter.filterValue.map(item => item.id).includes(item))
-                      setFilterIds(temp)
-                    } else {
-                      const temp = filterIds.filter(item => !newValues.includes(item))
-                      setFilterIds([...newValues, ...temp])
-                    }
+                    setSelectedFilterValues({ ...selectedFilterValues, [filter.id]: Array.from(value).filter(item => item) })
                   }}
                 >
                   {
@@ -173,34 +150,52 @@ const Category = ({ params, productFilter }) => {
               <Button color="primary" onClick={filter}>Tìm</Button>
             </div>
           </div>
-
-          {
-            !isLoading && !data.length ?
-              <p className="m-auto pt-4 text-lg opacity-55">Không tìm thấy sản phẩm nào.</p> :
-              <>
-                <div className="w-full my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
-                  {data.map((product) => (
-                    <div key={product.id} className="h-full hover:opacity-75">
-                      <ProductCard product={product} />
-                    </div>
-                  ))}
-                </div>
-                <div className="flex w-full justify-center">
-                  <Pagination
-                    isCompact
-                    showControls
-                    showShadow
-                    page={page}
-                    total={pages}
-                    onChange={(page) => setPage(page)}
-                  />
-                </div>
-              </>
-          }
         </div>
-      </ErrorBoundary>
+        {
+          !isLoading && !data.length ?
+            <p className="m-auto pt-4 text-lg opacity-55">Không tìm thấy sản phẩm nào.</p> :
+            <div className="w-full my-5 flex flex-col gap-4 p-2">
+              {
+                Object.keys(groupedData).map(key => <CategorySection products={groupedData[key]} key={key} />)
+              }
+            </div>
+        }
+      </div>
     </>
   );
 };
 
-export default Category
+const CategorySection = ({ products }) => {
+  return (
+    <div>
+      <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-2/3 md:w-1/3 h-[50px] m-auto shadow-md">
+        <div className="m-auto text-black font-bold md:text-xl">
+          {products[0].subCate?.name}
+        </div>
+      </div>
+
+      {
+        products.length ? <>
+          <div className="w-full my-5 grid grid-cols-[repeat(auto-fill,minmax(222px,1fr))] gap-4 p-2">
+            {products.map((product) => (
+              <div key={product.id} className="h-full hover:opacity-75 [&>div]:mx-auto">
+                <ProductCard product={product} />
+              </div>
+            ))}
+          </div>
+
+          <Link isExternal
+            href={`/${products[0].subCate?.slug}`}
+            className="flex justify-center items-center font-semibold w-[181px] text-black
+              h-[43px] rounded-[30px] border border-black hover:bg-[#FFD400] transition mx-auto"
+          >
+            Xem thêm
+          </Link>
+
+        </> : ""
+      }
+    </div>
+  )
+}
+
+export default Category;

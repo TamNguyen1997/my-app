@@ -4,11 +4,39 @@ import queryString from 'query-string';
 import { cate_type } from '@prisma/client';
 
 export async function GET(req) {
+  const { query } = queryString.parseUrl(req.url);
+
+  return await getCategories(query)
+}
+
+export async function POST(req) {
+  let body = await req.json()
+  delete body.image
+  delete body.subCategory
+
+  const highlightedCates = await db.category.findMany({
+    where: {
+      highlight: true,
+      type: cate_type.CATE
+    }
+  })
+
+  if (highlightedCates.length === 3 && body.highlight) {
+    return NextResponse.json({ message: "Tối đa 3 category nổi bật" }, { status: 400 })
+  }
+
+  return NextResponse.json(await db.category.create(
+    {
+      data: body
+    }
+  ))
+}
+
+const getCategories = async (query) => {
   let condition = {}
   let include = { image: true }
   let size = 10
   let page = 1
-  const { query } = queryString.parseUrl(req.url);
 
   if (query) {
     page = parseInt(query.page) || 1
@@ -99,25 +127,4 @@ export async function GET(req) {
   }
 }
 
-export async function POST(req) {
-  let body = await req.json()
-  delete body.image
-  delete body.subCategory
-
-  const highlightedCates = await db.category.findMany({
-    where: {
-      highlight: true,
-      type: cate_type.CATE
-    }
-  })
-
-  if (highlightedCates.length === 3 && body.highlight) {
-    return NextResponse.json({ message: "Tối đa 3 category nổi bật" }, { status: 400 })
-  }
-
-  return NextResponse.json(await db.category.create(
-    {
-      data: body
-    }
-  ))
-}
+export { getCategories }

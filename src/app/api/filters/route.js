@@ -53,6 +53,11 @@ export async function POST(req) {
 
 export async function GET(req) {
   const { query } = queryString.parseUrl(req.url);
+
+  return await getFilters(query)
+}
+
+const getFilters = async (query) => {
   let condition = {}
 
   let size = 1000000
@@ -195,3 +200,5 @@ export async function GET(req) {
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }
+
+export { getFilters }

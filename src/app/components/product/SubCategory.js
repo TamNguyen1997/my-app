@@ -1,17 +1,22 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, Select, SelectItem, Slider, Spinner } from "@nextui-org/react";
-import ProductCard from "@/components/product/ProductCard";
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Pagination, Select, SelectItem, Slider, Spinner } from "@nextui-org/react";
+import { useEffect, useMemo, useState } from "react";
+import ProductCard from "@/components/product/ProductCard"
+import { getTotalPages } from "@/lib/pagination"
+import { useSearchParams } from "next/navigation";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
-const Brand = ({ params, productFilter }) => {
+const rowsPerPage = 20;
+
+const SubCategory = ({ params, productFilter }) => {
   const [data, setData] = useState([])
-  const [brand, setBrand] = useState({ name: "" })
   const [isLoading, setIsLoading] = useState(true)
-
+  const [category, setCategory] = useState({ name: "" })
   const [value, setValue] = useState([0, 100000000])
-
-  const [groupedData, setGroupData] = useState({})
+  const searchParams = useSearchParams()
+  const [total, setTotal] = useState(1)
+  const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"))
   const [filters, setFilters] = useState([])
 
   const [filterIds, setFilterIds] = useState([])
@@ -21,20 +26,27 @@ const Brand = ({ params, productFilter }) => {
     fetch(`/api/filters/?categoryId=${params}&active=true`).then((res) => res.json()).then(json => {
       setFilters(json.result.filter(item => item.filterValue.length))
     })
-  }, [params, productFilter]);
+  }, [params, productFilter, page]);
 
-  const getProduct = async () => {
+  const pages = useMemo(() => {
+    return getTotalPages(total, rowsPerPage)
+  }, [total, rowsPerPage]);
+
+  const getProduct = () => {
+    setIsLoading(true)
     const hash = window.location.hash?.split('#')
-
-    fetch(`/api/brands/${params}`).then(res => res.json()).then(setBrand)
-    await fetch(`/api/products/?active=true&page=1&size=1000&includeCate=true&brandId=${params}&${hash && hash[1]?.includes("=") ? hash[1] : `filterId=${productFilter || ""}`}`).then(async res => {
-      if (res.ok) {
-        const body = await res.json()
-        setData(body.result)
-        setGroupData(Object.groupBy(body.result, (item) => item.categoryId))
-      }
-    })
-    setIsLoading(false)
+    const getData = async () => {
+      await fetch(`/api/categories/${params}/products/?active=true&page=${page}&${window.location.hash ? hash[1] : `filterId=${productFilter || ""}`}`).then(async res => {
+        if (res.ok) {
+          const body = await res.json()
+          setCategory(body.category)
+          setData(body.products)
+          setTotal(body.total)
+        }
+      })
+      setIsLoading(false)
+    }
+    getData()
   }
 
   const filter = () => {
@@ -43,17 +55,17 @@ const Brand = ({ params, productFilter }) => {
       range += `range=${value.join('-')}`
     } else {
       if (!filterIds.length) {
-        window.location.replace(`/${params}`)
+        window.location.replace(`/${category.slug}`)
         getProduct()
         return
       }
-
       if (filterIds.length === 1) {
-        window.location.replace(`/${params}#${filterIds[0]}`)
+        window.location.replace(`/${category.slug}#${filterIds[0]}`)
         getProduct()
         return
       }
     }
+
     let query = []
     if (range) {
       query.push(range)
@@ -65,13 +77,22 @@ const Brand = ({ params, productFilter }) => {
     getProduct()
   }
 
-  if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />
 
+  if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />
   return (
     <>
-      <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${brand.slug}`} />
-      <div className="sm:w-9/12 mx-auto ">
-        <div className="flex gap-2 pt-5 px-2">
+      <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${params}`} />
+      <ErrorBoundary>
+        <div
+          className="flex flex-col items-center 
+        bg-[image:var(--image-url)] bg-no-repeat bg-center bg-cover
+        justify-center xl:h-96 lg:h-72 md:h-60 h-32"
+          style={{
+            '--image-url': `url(${category.image ? process.env.NEXT_PUBLIC_FILE_PATH + category.image.path : ""})`,
+            backgroundSize: "100% 100%"
+          }} >
+        </div>
+        <div className="w-9/12 mx-auto pt-5">
           <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
             {
               filters.map((filter, index) =>
@@ -81,7 +102,7 @@ const Brand = ({ params, productFilter }) => {
                   selectionMode="multiple"
                   labelPlacement="outside"
                   defaultSelectedKeys={new Set([
-                    filter.filterValue.find(item => window.location.hash.includes(item.slug) || item.slug === productFilter)?.slug])}
+                    filter.filterValue.find(item => window.location.hash.includes(item.slug) || item.slug === productFilter)?.id])}
                   onSelectionChange={(value) => {
                     const newValues = Array.from(value).filter(item => item)
                     if (!newValues.length) {
@@ -152,52 +173,34 @@ const Brand = ({ params, productFilter }) => {
               <Button color="primary" onClick={filter}>Tìm</Button>
             </div>
           </div>
+
+          {
+            !isLoading && !data.length ?
+              <p className="m-auto pt-4 text-lg opacity-55">Không tìm thấy sản phẩm nào.</p> :
+              <>
+                <div className="w-full my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
+                  {data.map((product) => (
+                    <div key={product.id} className="h-full hover:opacity-75">
+                      <ProductCard product={product} />
+                    </div>
+                  ))}
+                </div>
+                <div className="flex w-full justify-center">
+                  <Pagination
+                    isCompact
+                    showControls
+                    showShadow
+                    page={page}
+                    total={pages}
+                    onChange={(page) => setPage(page)}
+                  />
+                </div>
+              </>
+          }
         </div>
-        {
-          !isLoading && !data.length ?
-            <p className="m-auto pt-4 text-lg opacity-55">Không tìm thấy sản phẩm nào.</p> :
-            <div className="w-full my-5 flex flex-col gap-4 p-2">
-              {
-                Object.keys(groupedData).map(key => <BrandSection products={groupedData[key]} key={key} />)
-              }
-            </div>
-        }
-      </div>
+      </ErrorBoundary>
     </>
   );
 };
 
-const BrandSection = ({ products }) => {
-  return (
-    <div>
-      <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-2/3 md:w-1/3 h-[50px] m-auto shadow-md">
-        <div className="m-auto text-black font-bold md:text-xl">
-          {products[0].category?.name}
-        </div>
-      </div>
-
-      {
-        products.length ? <>
-          <div className="w-full my-5 grid grid-cols-[repeat(auto-fill,minmax(222px,1fr))] gap-4 p-2">
-            {products.map((product) => (
-              <div key={product.id} className="h-full hover:opacity-75 [&>div]:mx-auto">
-                <ProductCard product={product} />
-              </div>
-            ))}
-          </div>
-
-          <Link isExternal
-            href={`/${products[0].category?.slug}`}
-            className="flex justify-center items-center font-semibold w-[181px] text-black
-              h-[43px] rounded-[30px] border border-black hover:bg-[#FFD400] transition mx-auto"
-          >
-            Xem thêm
-          </Link>
-
-        </> : ""
-      }
-    </div>
-  )
-}
-
-export default Brand;
+export default SubCategory

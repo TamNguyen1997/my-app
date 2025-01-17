@@ -1,6 +1,8 @@
 import ProductDetail from "@/app/components/product/ProductDetail";
+import SubCategory from "@/app/components/product/SubCategory";
 import Category from "@/app/components/product/Category";
 import { db } from '@/app/db';
+import { cate_type } from "@prisma/client";
 
 export async function generateMetadata({ params }) {
   if (params.slug.length === 1) {
@@ -18,11 +20,16 @@ export async function generateMetadata({ params }) {
   }
 }
 
-export default function Page({ params }) {
-
+const Page = async ({ params }) => {
   if (params.slug.length === 1) {
     const [slug, filter] = params.slug[0].split("#")
-    return <Category params={slug} productFilter={filter} />
+    const category = await db.category.findFirst({ where: { slug: slug } })
+    if (category?.type === cate_type.SUB_CATE) {
+      return <SubCategory params={slug} productFilter={filter} />
+    }
+    return <Category category={category} productFilter={filter} />
   }
   return <ProductDetail id={params.slug[1]} />
-};
+}
+
+export default Page;

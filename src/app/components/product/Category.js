@@ -68,7 +68,12 @@ const Category = ({ category, productFilter }) => {
     <>
       <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${category.slug}`} />
       <div className="sm:w-9/12 mx-auto ">
-        <div className="flex gap-2 pt-5 px-2">
+        <div className="flex w-full flex-wrap md:flex-nowrap gap-3 px-3 pt-2">
+          {
+            category.subcates.map(subcate => <Link key={subcate.id} href={`/${subcate.slug}`}><Button variant="ghost" color="default">{subcate.name}</Button></Link>)
+          }
+        </div>
+        <div className="flex gap-2 px-3">
           <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
             {
               filters.map((filter, index) =>

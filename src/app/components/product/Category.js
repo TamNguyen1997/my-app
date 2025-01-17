@@ -174,7 +174,7 @@ const CategorySection = ({ products }) => {
       {
         products.length ? <>
           <div className="w-full my-5 grid grid-cols-[repeat(auto-fill,minmax(222px,1fr))] gap-4 p-2">
-            {products.map((product) => (
+            {[...products].splice(0, 20).map((product) => (
               <div key={product.id} className="h-full hover:opacity-75 [&>div]:mx-auto">
                 <ProductCard product={product} />
               </div>

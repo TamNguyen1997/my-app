@@ -2,6 +2,7 @@ import { db } from '@/app/db';
 import { NextResponse } from 'next/server';
 import queryString from 'query-string';
 import crypto from "crypto";
+import slugify from 'slugify';
 
 export async function POST(req) {
   try {
@@ -55,21 +56,22 @@ export async function GET(req) {
       condition.active = query.active === 'true'
     }
     if (query.id_name) {
+      const idNameQuery = slugify(query.id_name, { locale: 'vi', replacement: " ", remove: /[*+~.()'"!:@]/g })
       condition = Object.assign(condition, {
         OR: [
           {
             name: {
-              search: `${query.id_name.trim().replaceAll(" ", " & ")}:*`
+              search: `${idNameQuery.trim().replaceAll(" ", " & ")}:*`
             }
           },
           {
             id: {
-              search: `${query.id_name.trim().replaceAll(" ", " & ")}:*`
+              search: `${idNameQuery.trim().replaceAll(" ", " & ")}:*`
             }
           },
           {
             slug: {
-              search: `${query.id_name.trim().replaceAll(" ", " & ")}:*`
+              search: `${idNameQuery.trim().replaceAll(" ", " & ")}:*`
             }
           }
         ]

@@ -14,20 +14,26 @@ const Brand = ({ params, productFilter }) => {
   const [groupedData, setGroupData] = useState({})
   const [filters, setFilters] = useState([])
 
-  const [filterIds, setFilterIds] = useState([])
+  const [selectedFilterValues, setSelectedFilterValues] = useState({})
 
   useEffect(() => {
     getProduct()
     fetch(`/api/filters/?categoryId=${params}&active=true`).then((res) => res.json()).then(json => {
-      setFilters(json.result.filter(item => item.filterValue.length))
+      const result = json.result.filter(item => item.filterValue.length)
+      let temp = {}
+      result.forEach(item => {
+        temp[item.id] = []
+      })
+      setSelectedFilterValues(temp)
+      setFilters(result)
     })
   }, [params, productFilter]);
 
   const getProduct = async () => {
     const hash = window.location.hash?.split('#')
 
-    fetch(`/api/brands/${params}`).then(res => res.json()).then(setBrand)
-    await fetch(`/api/products/?active=true&page=1&size=1000&includeCate=true&brandId=${params}&${hash && hash[1]?.includes("=") ? hash[1] : `filterId=${productFilter || ""}`}`).then(async res => {
+    await fetch(`/api/brands/${params}`).then(res => res.json()).then(setBrand)
+    await fetch(`/api/products/?active=true&page=1&size=1000&includeCate=true&brandId=${params}&${hash && hash[1]?.includes("=") ? hash[1] : `filterId=${productFilter || hash[1] || ""}`}`).then(async res => {
       if (res.ok) {
         const body = await res.json()
         setData(body.result)
@@ -39,24 +45,18 @@ const Brand = ({ params, productFilter }) => {
 
   const filter = () => {
     let range = ""
+    let filterIds = Object.values(selectedFilterValues).flat()
+
     if (JSON.stringify(value) !== JSON.stringify([0, 100000000])) {
       range += `range=${value.join('-')}`
-    } else {
-      if (!filterIds.length) {
-        window.location.replace(`/${params}`)
-        getProduct()
-        return
-      }
-
-      if (filterIds.length === 1) {
-        window.location.replace(`/${params}#${filterIds[0]}`)
-        getProduct()
-        return
-      }
     }
     let query = []
     if (range) {
       query.push(range)
+    } else if (filterIds.length === 1) {
+      window.location.replace(`/${params}#${filterIds[0]}`)
+      getProduct()
+      return
     }
     if (filterIds.length) {
       query.push(`filterId=${filterIds.join("&filterId=")}`)
@@ -83,14 +83,7 @@ const Brand = ({ params, productFilter }) => {
                   defaultSelectedKeys={new Set([
                     filter.filterValue.find(item => window.location.hash.includes(item.slug) || item.slug === productFilter)?.slug])}
                   onSelectionChange={(value) => {
-                    const newValues = Array.from(value).filter(item => item)
-                    if (!newValues.length) {
-                      const temp = filterIds.filter(item => !filter.filterValue.map(item => item.id).includes(item))
-                      setFilterIds(temp)
-                    } else {
-                      const temp = filterIds.filter(item => !newValues.includes(item))
-                      setFilterIds([...newValues, ...temp])
-                    }
+                    setSelectedFilterValues({ ...selectedFilterValues, [filter.id]: Array.from(value).filter(item => item) })
                   }}
                 >
                   {

@@ -74,20 +74,6 @@ const ProductCms = () => {
   }
 
   const onSave = async () => {
-    if (product.id !== id) {
-      const res = await fetch(`/api/products/v2/update-id`,
-        {
-          method: "PUT",
-          body: JSON.stringify({
-            oldId: id,
-            newId: product.id
-          })
-        })
-      if (!res.ok) {
-        toast.error("Không thể cập nhật ID sản phẩm", { containerId: "ProductDetailPage" })
-        return
-      }
-    }
     const newProductOnImage = product.product_on_image?.map((item, i) => ({ ...item, order: i })) || []
     const res = await fetch(`/api/products/v2`,
       {

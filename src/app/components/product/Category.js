@@ -31,7 +31,7 @@ const Category = ({ category, productFilter }) => {
   const getProduct = async () => {
     const hash = window.location.hash?.split('#')
 
-    await fetch(`/api/products/?active=true&page=1&size=1000&includeCate=true&categoryId=${category.id}&${hash && hash[1]?.includes("=") ? hash[1] : `filterId=${productFilter || ""}`}`).then(async res => {
+    await fetch(`/api/products/?active=true&page=1&size=1000&includeCate=true&categoryId=${category.id}&${hash && hash[1]?.includes("=") ? hash[1] : `filterId=${productFilter || hash[1] || ""}`}`).then(async res => {
       if (res.ok) {
         const body = await res.json()
         setData(body.result)
@@ -43,26 +43,18 @@ const Category = ({ category, productFilter }) => {
 
   const filter = () => {
     let range = ""
-    let filterIds = Object.values(selectedFilterValues).filter(item => item.length).flat()
+    let filterIds = Object.values(selectedFilterValues).flat()
 
     if (JSON.stringify(value) !== JSON.stringify([0, 100000000])) {
       range += `range=${value.join('-')}`
-    } else {
-      if (!filterIds.length) {
-        window.location.replace(`/${category.slug}`)
-        getProduct()
-        return
-      }
-
-      if (filterIds.length === 1) {
-        window.location.replace(`/${category.slug}#${filterIds[0]}`)
-        getProduct()
-        return
-      }
     }
     let query = []
     if (range) {
       query.push(range)
+    } else if (filterIds.length === 1) {
+      window.location.replace(`/${category.slug}#${filterIds[0]}`)
+      getProduct()
+      return
     }
     if (filterIds.length) {
       query.push(`filterId=${filterIds.join("&filterId=")}`)

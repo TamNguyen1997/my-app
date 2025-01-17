@@ -104,12 +104,12 @@ export async function GET(req) {
           OR: [
             {
               filterValueId: {
-                in: query.filterId
+                in: typeof query.filterId === 'string' ? [query.filterId] : query.filterId
               }
             }, {
               filterValue: {
                 slug: {
-                  in: query.filterId
+                  in: typeof query.filterId === 'string' ? [query.filterId] : query.filterId
                 }
               }
             }
@@ -123,13 +123,13 @@ export async function GET(req) {
           OR: [
             {
               filterValueId: {
-                in: query.filterId
+                in: typeof query.filterId === 'string' ? [query.filterId] : query.filterId
               }
             },
             {
               filterValue: {
                 slug: {
-                  in: query.filterId
+                  in: typeof query.filterId === 'string' ? [query.filterId] : query.filterId
                 }
               }
             }

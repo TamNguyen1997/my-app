@@ -34,7 +34,7 @@ const ProductDetail = () => {
             label="ID sản phẩm"
             aria-label="ID sản phẩm"
             value={product.id}
-            isRequired
+            isReadOnly
             onValueChange={(value) => {
               setProduct({ ...product, id: value })
             }}

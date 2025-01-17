@@ -66,6 +66,11 @@ export async function GET(req) {
             id: {
               search: `${query.id_name.trim().replaceAll(" ", " & ")}:*`
             }
+          },
+          {
+            slug: {
+              search: `${query.id_name.trim().replaceAll(" ", " & ")}:*`
+            }
           }
         ]
       })

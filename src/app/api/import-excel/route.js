@@ -76,13 +76,12 @@ async function importProduct(worksheet) {
         )
       }
 
-      const productId = rowData[requiredColumnIndexes.productId].toString() || crypto.randomBytes(3).toString("hex")
+      const productId = rowData[0].toString() || crypto.randomBytes(3).toString("hex")
       const name = rowData[requiredColumnIndexes.name]
       const categoryId = rowData[requiredColumnIndexes.categoryId].toString()
       const subCategoryId = rowData[requiredColumnIndexes.subCategoryId].toString()
       const brandId = rowData[requiredColumnIndexes.brandId].toString()
       const active = rowData[requiredColumnIndexes.active]
-
       if (!isAllRequiredData) {
         throw new Error(
           `"Line ${index + 1}": ${IMPORT_MESSAGE.MISSING_REQUIRED_DATA}`

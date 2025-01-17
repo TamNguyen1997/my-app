@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 const blogCategories = {
-  "INFORMATION": "blog",
+  "INFORMATION": "kien-thuc-hay",
   "NEWS": "tin-tuc"
 }
 

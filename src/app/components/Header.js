@@ -166,7 +166,7 @@ const Header = () => {
               {
                 hoveredCate && (
                   <div className="bg-white shadow-lg grow border rounded-br-lg">
-                    <div className="p-2 grid grid-rows-7 grid-flow-col">
+                    <div className="p-2 grid grid-rows-8 grid-flow-col">
                       {
                         hoveredCate.subcates?.map((subcate, i) => (
                           <Link key={i} className="p-1 hover:text-blue-500" href={`/${subcate.slug}`}>{subcate.name}</Link>

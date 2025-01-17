@@ -49,7 +49,7 @@ const ProductDetail = () => {
               onValueChange={(value) => {
                 let newValue = { ...product, name: value }
                 if (!product.createdAt) {
-                  newValue = { ...newValue, slug: slugify(value, { locale: "vi" }).toLowerCase() }
+                  newValue = { ...newValue, slug: slugify(value, { locale: "vi", remove: /[*+~.()'"!:@]/g }).toLowerCase() }
                 }
                 setProduct({ ...newValue, name: value })
               }}

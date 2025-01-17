@@ -308,7 +308,7 @@ const Category = () => {
                     onValueChange={(value) => setSelectedCate(Object.assign(
                       {},
                       selectedCate,
-                      { name: value, slug: slugify(value, { locale: 'vi' }).toLowerCase() }))}
+                      { name: value, slug: slugify(value, { locale: 'vi', remove: /[*+~.()'"!:@]/g }).toLowerCase() }))}
                     labelPlacement="outside" isRequired />
                   <Input
                     type="text"

@@ -15,7 +15,7 @@ const Category = ({ params, productFilter }) => {
   const [category, setCategory] = useState({ name: "" })
   const [value, setValue] = useState([0, 100000000])
   const searchParams = useSearchParams()
-  const [total, setTotal] = useState(0)
+  const [total, setTotal] = useState(1)
   const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"))
   const [filters, setFilters] = useState([])
 

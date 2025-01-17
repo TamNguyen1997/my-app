@@ -32,7 +32,7 @@ export async function POST(req) {
     const saleDetails = body.saleDetails?.map(item => {
       return {
         id: item.id,
-        productId: item.productId,
+        productId: productBody.id,
         value: item.value,
         price: item.price,
         type: item.type || sale_detail_type.TEXT,
@@ -49,7 +49,7 @@ export async function POST(req) {
     const technicalDetails = body.technicalDetails?.map(item => {
       return {
         id: item.id,
-        productId: item.productId,
+        productId: productBody.id,
         filterId: item.filterId,
         filterValueId: item.filterValueId,
       }
@@ -59,7 +59,7 @@ export async function POST(req) {
       return {
         order: item.order || 0,
         imageId: item.imageId,
-        productId: body.product.id
+        productId: productBody.id
       }
     })
     !body.product.id ?

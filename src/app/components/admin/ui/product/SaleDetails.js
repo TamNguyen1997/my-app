@@ -5,6 +5,7 @@ import { v4 } from "uuid"
 import NewFilter from "@/components/admin/ui/product/NewFilter"
 import { FilterValueSelect } from "./NewFilterValue"
 import { ProductContext } from "../../../../(admin)/admin/product/edit/[id]/page"
+import crypto from "crypto";
 
 const removeItem = (id, product, setProduct) => {
   setProduct({ ...product, saleDetails: product.saleDetails.filter(item => item.id !== id) })
@@ -146,7 +147,9 @@ const SaleDetails = () => {
   const newFilterModal = useDisclosure()
 
   const addEmptySaleDetail = () => {
-    const newSaleDetails = [...product.saleDetails, { id: v4(), productId: product.id, type: "TEXT" }]
+    const newSaleDetails = [...product.saleDetails,
+    { id: v4(), productId: product.id, type: "TEXT", price: 0, sku: crypto.randomBytes(3).toString("hex") }
+    ]
     setProduct({ ...product, saleDetails: newSaleDetails })
   }
 
@@ -270,7 +273,9 @@ const SaleDetails = () => {
                     </Checkbox>
                     <div className="flex text-center items-center">
                       <Button onClick={() => {
-                        const newSaleDetails = [...product.saleDetails, { id: v4(), type: "TEXT", saleDetailId: detail.id, productId: product.id }]
+                        const newSaleDetails = [...product.saleDetails,
+                        { id: v4(), type: "TEXT", saleDetailId: detail.id, productId: product.id, price: 0, sku: crypto.randomBytes(3).toString("hex") }
+                        ]
                         setProduct({ ...product, saleDetails: newSaleDetails })
                       }}>
                         Thêm

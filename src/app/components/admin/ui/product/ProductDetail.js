@@ -29,6 +29,16 @@ const ProductDetail = () => {
     <>
       <div className="flex flex-col gap-3">
         <div className="flex gap-2">
+          <Input
+            type="text"
+            label="ID sản phẩm"
+            aria-label="ID sản phẩm"
+            value={product.id}
+            isRequired
+            onValueChange={(value) => {
+              setProduct({ ...product, id: value })
+            }}
+          />
           <div className="w-full">
             <Input
               type="text"

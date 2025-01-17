@@ -13,6 +13,7 @@ import { useParams } from "next/navigation";
 import { product_type } from "@prisma/client";
 import { useEditor } from "@tiptap/react";
 import { editorConfig } from "@/lib/editor";
+import { toast, ToastContainer } from "react-toastify";
 
 export const ProductContext = createContext();
 
@@ -73,6 +74,20 @@ const ProductCms = () => {
   }
 
   const onSave = async () => {
+    if (product.id !== id) {
+      const res = await fetch(`/api/products/v2/update-id`,
+        {
+          method: "PUT",
+          body: JSON.stringify({
+            oldId: id,
+            newId: product.id
+          })
+        })
+      if (!res.ok) {
+        toast.error("Không thể cập nhật ID sản phẩm", { containerId: "ProductDetailPage" })
+        return
+      }
+    }
     const newProductOnImage = product.product_on_image?.map((item, i) => ({ ...item, order: i })) || []
     const res = await fetch(`/api/products/v2`,
       {
@@ -109,7 +124,7 @@ const ProductCms = () => {
       const body = await res.json()
       window.location.replace(`/admin/product/edit/${body.id}`)
     } else {
-
+      toast.error("Không thể cập nhật sản phẩm", { containerId: "ProductDetailPage" })
     }
   }
 
@@ -117,6 +132,7 @@ const ProductCms = () => {
 
   return (
     <>
+      <ToastContainer containerId="ProductDetailPage" />
       <ProductContext.Provider value={{ product, setProduct, categories, brands, subCategories, filters, setFilters, editor }}>
         <Tabs>
           <Tab title="Thông tin chung">

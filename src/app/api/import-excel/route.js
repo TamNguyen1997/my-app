@@ -76,7 +76,7 @@ async function importProduct(worksheet) {
         )
       }
 
-      const productId = rowData[0].toString() || crypto.randomBytes(3).toString("hex")
+      const productId = (rowData[0] || crypto.randomBytes(3).toString("hex")).toString()
       const name = rowData[requiredColumnIndexes.name]
       const categoryId = rowData[requiredColumnIndexes.categoryId].toString()
       const subCategoryId = rowData[requiredColumnIndexes.subCategoryId].toString()

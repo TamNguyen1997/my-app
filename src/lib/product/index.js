@@ -10,6 +10,8 @@ const getPrice = (product) => {
   const promotions = saleDetails.filter(item => item.promotionalPrice).map(item => item.promotionalPrice)
   const prices = saleDetails.map(item => item.price)
   const display = [...promotions, ...prices].sort()
+
+  if (display[0] === display[display.length - 1]) return display[0].toLocaleString().replaceAll(",", ".")
   return <>{`${display[0].toLocaleString().replaceAll(",", ".")} - ${Math.min(prices[prices.length - 1], promotions[promotions.length - 1] || prices[prices.length - 1]).toLocaleString().replaceAll(",", ".")}`} </>
 }
 

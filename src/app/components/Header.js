@@ -312,7 +312,7 @@ const HeaderItems = ({ setHoveredCate, menuRef, setMenuVisible, menuVisible }) =
         >
           XE LÀM VỆ SINH
         </Link>
-        <Link href={`/thung-dung-do-da-nang`}
+        <Link href={`/hop-thung-dung-do-da-nang`}
           className={`
                 hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
                 text-center capitalize
@@ -344,7 +344,7 @@ const HeaderItems = ({ setHoveredCate, menuRef, setMenuVisible, menuVisible }) =
         >
           GĂNG TAY BẢO HỘ
         </Link>
-        <Link href={`/tham-trai-san`}
+        <Link href={`/tham`}
           className={`
                 hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
                 text-center capitalize

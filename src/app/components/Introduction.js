@@ -10,7 +10,7 @@ const Introduction = () => {
           Một trong những công ty dẫn đầu trong lĩnh vực cung cấp máy móc, dụng cụ làm vệ sinh chuyên nghiệp và tư vấn các giải pháp làm sạch cho nhà đầu tư. Được thành lập từ năm 2005, chuyên phân phối chính hãng các thương hiệu:
         </div>
         <div className="grid grid-cols-3 w-3/5">
-          <img src="/brand/Logo-Ghibli.png" alt="Ghibli" width={175} height={70}></img>
+          <img src="/brand/Logo-Ghibli.svg" alt="Ghibli" width={175} height={70}></img>
           <img src="/brand/Rubbermaid.png" alt="Rubbermaid" width={175} height={70}></img>
           <img src="/brand/Logo-Kimberly-Clark.png" alt="Kimberly" width={175} height={70}></img>
           <img src="/brand/Logo-Moerman.png" alt="Moerman" width={175} height={70}></img>

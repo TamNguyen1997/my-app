@@ -7,7 +7,7 @@ const logo = [
   "/brand/KLEEN-TEX.png",
   "/brand/Logo-Moerman.png",
   "/brand/Logo-Kimberly-Clark.png",
-  "/brand/Logo-Ghibli.png"
+  "/brand/Logo-Ghibli.svg"
 ]
 
 const responsive = {

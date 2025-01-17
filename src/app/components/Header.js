@@ -200,7 +200,7 @@ const BRANDS = [
     slug: "thuong-hieu-ghibli",
     name: "Ghibli_Máy vệ sinh công nghiệp",
     image: {
-      path: "/brand/Logo-Ghibli.png"
+      path: "/brand/Logo-Ghibli.svg"
     },
   },
   {

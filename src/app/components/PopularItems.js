@@ -61,8 +61,8 @@ const brandDescription = {
     description: `Kimberly-Clark Corporation - tập đoàn chuyên sản xuất hàng hóa tiêu dùng, đặc biệt là các sản phẩm về Giấy. 
     Thành lập năm 1872 với hơn 140 năm hoạt động, khăn giấy cao cấp Kimberly-Clark luôn là tiện ích cho mọi gia đình.`,
   },
-  "GHIBLI&WIRBEL": {
-    logo: "/brand/Logo-Ghibli.png",
+  "GHIBLI": {
+    logo: "/brand/Logo-Ghibli.svg",
     slug: "thuong-hieu-ghibli",
     description: `Ghibli, nhà sản xuất thiết bị làm sạch thành lập năm 1968 tại Ý. 
     Với hơn 50 năm kinh nghiệm, Ghibli giờ đây đã là Công ty hàng đầu trong lĩnh vực máy móc làm vệ sinh tại Châu Âu.`,
@@ -169,14 +169,14 @@ export default function PopularItems() {
           <Button
             radius="none"
             onClick={() => {
-              setSelectedBrand("GHIBLI&WIRBEL");
+              setSelectedBrand("GHIBLI");
               setBrandProducts(ghibliProducts);
             }}
             className={`${getSelectedColor(
-              "GHIBLI&WIRBEL"
+              "GHIBLI"
             )} text-white text-medium font-bold border-r hover:bg-slate-800`}
           >
-            GHIBLI&WIRBEL
+            GHIBLI
           </Button>
           <Button
             radius="none"

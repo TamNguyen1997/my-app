@@ -93,7 +93,7 @@ const SubCategory = ({ params, productFilter }) => {
           }} >
         </div>
         <div className="w-9/12 mx-auto pt-5">
-          <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
+          <div className="flex flex-wrap gap-4">
             {
               filters.map((filter, index) =>
                 <Select key={index}

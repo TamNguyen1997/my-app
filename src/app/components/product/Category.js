@@ -76,14 +76,14 @@ const Category = ({ category, productFilter }) => {
           backgroundSize: "100% 100%"
         }} >
       </div>
-      <div className="sm:w-9/12 mx-auto ">
-        <div className="flex w-full flex-wrap md:flex-nowrap gap-3 p-3 pt-2">
+      <div className="sm:w-9/12 mx-auto">
+        <div className="flex flex-wrap">
           {
             category.subcates.map(subcate => <Link key={subcate.id} href={`/${subcate.slug}`}><Button variant="ghost" color="default">{subcate.name}</Button></Link>)
           }
         </div>
         <div className="flex gap-2 px-3">
-          <div className="flex w-full flex-wrap md:flex-nowrap gap-4 p-3">
+          <div className="flex flex-wrap gap-4 p-3">
             {
               filters.map((filter, index) =>
                 <Select key={index}

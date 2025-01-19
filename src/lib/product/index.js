@@ -12,7 +12,7 @@ const getPrice = (product) => {
   const display = [...promotions, ...prices].sort()
 
   if (display[0] === display[display.length - 1]) return display[0].toLocaleString().replaceAll(",", ".")
-  return <>{`${display[0].toLocaleString().replaceAll(",", ".")} - ${Math.min(prices[prices.length - 1], promotions[promotions.length - 1] || prices[prices.length - 1]).toLocaleString().replaceAll(",", ".")}`} </>
+  return <>{`${Math.min(...promotions, ...prices)} - ${Math.max(...promotions, ...prices).toLocaleString().replaceAll(",", ".")}`} </>
 }
 
 export { getPrice }

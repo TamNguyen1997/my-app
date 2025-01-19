@@ -77,84 +77,82 @@ const Category = ({ category, productFilter }) => {
         }} >
       </div>
       <div className="sm:w-9/12 mx-auto">
-        <div className="flex flex-wrap">
+        <div className="flex flex-wrap gap-2 p-3">
           {
             category.subcates.map(subcate => <Link key={subcate.id} href={`/${subcate.slug}`}><Button variant="ghost" color="default">{subcate.name}</Button></Link>)
           }
         </div>
-        <div className="flex gap-2 px-3">
-          <div className="flex flex-wrap gap-4 p-3">
-            {
-              filters.map((filter, index) =>
-                <Select key={index}
-                  label={filter.name}
-                  className="max-w-[200px]"
-                  selectionMode="multiple"
-                  labelPlacement="outside"
-                  defaultSelectedKeys={new Set([
-                    filter.filterValue.find(item => window.location.hash.includes(item.slug) || item.slug === productFilter)?.slug])}
-                  onSelectionChange={(value) => {
-                    setSelectedFilterValues({ ...selectedFilterValues, [filter.id]: Array.from(value).filter(item => item) })
-                  }}
-                >
-                  {
-                    filter.filterValue.filter(item => item.slug).map((item, i) =>
-                      <SelectItem key={item.slug}>{item.value}</SelectItem>
-                    )
-                  }
-                </Select>
-              )
-            }
-            <div className="items-end flex min-h-full gap-4">
-              <Dropdown >
-                <DropdownTrigger>
-                  <Button variant="bordered">
-                    Giá
-                  </Button>
-                </DropdownTrigger>
-                <DropdownMenu aria-label="Example with disabled actions" variant="light" closeOnSelect={false}>
-                  <DropdownItem textValue="item">
-                    <>
-                      <div className="p-4 flex flex-col gap-2 items-center">
-                        <div>
-                          <div className="flex flex-wrap gap-2">
-                            <Button variant="ghost" onClick={() => setValue([0, 2000000])}>
-                              Dưới 2 triệu
-                            </Button>
-                            <Button variant="ghost" onClick={() => setValue([2000000, 3000000])}>
-                              Từ 2 - 3 triệu
-                            </Button>
-                            <Button variant="ghost" onClick={() => setValue([3000000, 4000000])}>
-                              Từ 3 - 4 triệu
-                            </Button>
-                            <Button variant="ghost" onClick={() => setValue([4000000, 100000000])}>
-                              Trên 4 triệu
-                            </Button>
-                          </div>
-                          <div>
-                            <Slider
-                              label="Mức giá"
-                              step={50}
-                              minValue={0}
-                              maxValue={100000000}
-                              value={value}
-                              onChange={setValue}
-                              formatOptions={{ style: "currency", currency: "VND" }}
-                              className="max-w-md m-auto p-3"
-                            />
-                          </div>
+        <div className="flex flex-wrap gap-2 p-3">
+          {
+            filters.map((filter, index) =>
+              <Select key={index}
+                label={filter.name}
+                className="max-w-[200px]"
+                selectionMode="multiple"
+                labelPlacement="outside"
+                defaultSelectedKeys={new Set([
+                  filter.filterValue.find(item => window.location.hash.includes(item.slug) || item.slug === productFilter)?.slug])}
+                onSelectionChange={(value) => {
+                  setSelectedFilterValues({ ...selectedFilterValues, [filter.id]: Array.from(value).filter(item => item) })
+                }}
+              >
+                {
+                  filter.filterValue.filter(item => item.slug).map((item, i) =>
+                    <SelectItem key={item.slug}>{item.value}</SelectItem>
+                  )
+                }
+              </Select>
+            )
+          }
+          <div className="items-end flex min-h-full gap-4">
+            <Dropdown >
+              <DropdownTrigger>
+                <Button variant="bordered">
+                  Giá
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu aria-label="Example with disabled actions" variant="light" closeOnSelect={false}>
+                <DropdownItem textValue="item">
+                  <>
+                    <div className="p-4 flex flex-col gap-2 items-center">
+                      <div>
+                        <div className="flex flex-wrap gap-2">
+                          <Button variant="ghost" onClick={() => setValue([0, 2000000])}>
+                            Dưới 2 triệu
+                          </Button>
+                          <Button variant="ghost" onClick={() => setValue([2000000, 3000000])}>
+                            Từ 2 - 3 triệu
+                          </Button>
+                          <Button variant="ghost" onClick={() => setValue([3000000, 4000000])}>
+                            Từ 3 - 4 triệu
+                          </Button>
+                          <Button variant="ghost" onClick={() => setValue([4000000, 100000000])}>
+                            Trên 4 triệu
+                          </Button>
                         </div>
-                        <div className="flex gap-1">
-                          <Button color="primary" onClick={filter}>Tìm</Button>
-                          <Button variant="ghost" color="danger" onClick={() => setValue([0, 100000000])}>Bỏ chọn</Button>
+                        <div>
+                          <Slider
+                            label="Mức giá"
+                            step={50}
+                            minValue={0}
+                            maxValue={100000000}
+                            value={value}
+                            onChange={setValue}
+                            formatOptions={{ style: "currency", currency: "VND" }}
+                            className="max-w-md m-auto p-3"
+                          />
                         </div>
                       </div>
-                    </>
-                  </DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-              <Button color="primary" onClick={filter}>Tìm</Button>
-            </div>
+                      <div className="flex gap-1">
+                        <Button color="primary" onClick={filter}>Tìm</Button>
+                        <Button variant="ghost" color="danger" onClick={() => setValue([0, 100000000])}>Bỏ chọn</Button>
+                      </div>
+                    </div>
+                  </>
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+            <Button color="primary" onClick={filter}>Tìm</Button>
           </div>
         </div>
         {

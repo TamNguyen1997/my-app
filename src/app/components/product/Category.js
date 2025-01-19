@@ -89,7 +89,6 @@ const Category = ({ category, productFilter }) => {
                 label={filter.name}
                 className="max-w-[200px]"
                 selectionMode="multiple"
-                labelPlacement="outside"
                 defaultSelectedKeys={new Set([
                   filter.filterValue.find(item => window.location.hash.includes(item.slug) || item.slug === productFilter)?.slug])}
                 onSelectionChange={(value) => {

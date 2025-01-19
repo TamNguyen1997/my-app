@@ -13,7 +13,7 @@ const Header = () => {
   const menuRef = useRef();
   const brandCategory = {
     id: "-1",
-    slug: "thuong-hieu",
+    slug: "#",
     name: "Thương hiệu",
     subcates: BRANDS
   };

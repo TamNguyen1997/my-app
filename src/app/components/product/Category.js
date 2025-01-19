@@ -67,6 +67,15 @@ const Category = ({ category, productFilter }) => {
   return (
     <>
       <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${category.slug}`} />
+      <div
+        className="flex flex-col items-center 
+        bg-[image:var(--image-url)] bg-no-repeat bg-center bg-cover
+        justify-center xl:h-96 lg:h-72 md:h-60 h-32"
+        style={{
+          '--image-url': `url(${category.image ? process.env.NEXT_PUBLIC_FILE_PATH + category.image.path : ""})`,
+          backgroundSize: "100% 100%"
+        }} >
+      </div>
       <div className="sm:w-9/12 mx-auto ">
         <div className="flex w-full flex-wrap md:flex-nowrap gap-3 p-3 pt-2">
           {

@@ -27,7 +27,7 @@ const SearchBar = () => {
       (key) =>
         filteredCondition[key] === undefined && delete filteredCondition[key]
     );
-    const queryString = new URLSearchParams({ slug: slugify(filteredCondition.slug || "") }).toString().toLowerCase();
+    const queryString = new URLSearchParams({ slug: slugify(filteredCondition.slug || "") }).replaceAll("(", "").replaceAll(")", "").toLowerCase();
 
     fetch(`/api/categories/?size=${5}&page=${1}&${queryString}`).then(
       async (res) => {
@@ -74,7 +74,7 @@ const SearchBar = () => {
         }}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            window.location.replace(`/tim-kiem?key=${slugify(condition.name)}`)
+            window.location.replace(`/tim-kiem?key=${slugify(condition.name, { locale: 'vi' }).replaceAll("(", "").replaceAll(")", "")}`)
           }
         }}
         onClear={() => onConditionChange({ name: '', slug: '' })}

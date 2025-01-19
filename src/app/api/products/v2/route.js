@@ -10,7 +10,7 @@ export async function POST(req) {
     const productBody = {
       id: body.product.id || crypto.randomBytes(3).toString("hex"),
       name: body.product.name,
-      slug: body.product.slug || slugify(body.product.name, { locale: 'vi' }).toLowerCase(),
+      slug: body.product.slug || slugify(body.product.name, { locale: 'vi' }).toLowerCase().replaceAll("(", "").replaceAll(")", ""),
       imageAlt: body.product.imageAlt,
       imageId: body.product.imageId,
       active: body.product.active,

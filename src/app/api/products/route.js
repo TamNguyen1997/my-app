@@ -56,7 +56,7 @@ export async function GET(req) {
       condition.active = query.active === 'true'
     }
     if (query.id_name) {
-      const idNameQuery = slugify(query.id_name, { locale: 'vi', replacement: " ", remove: /[*+~.()'"!:@]/g })
+      const idNameQuery = slugify(query.id_name, { locale: 'vi' }).replaceAll("(", "").replaceAll(")", "")
       condition = Object.assign(condition, {
         OR: [
           {

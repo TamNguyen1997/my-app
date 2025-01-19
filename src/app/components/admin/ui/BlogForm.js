@@ -36,10 +36,10 @@ const BlogForm = ({ blog, setBlog }) => {
 
   const onSubmit = async (data) => {
     if (!blog.id && !blog.slug) {
-      blog.slug = `${slugify(blog.title, { locale: 'vi', remove: /[*+~.()'"!:@]/g })}`;
+      blog.slug = `${slugify(blog.title, { locale: 'vi' }).replaceAll("(", "").replaceAll(")", "")}`;
     }
     if (blog.slug) {
-      blog.slug = `${slugify(blog.slug, { locale: "vi", remove: /[*+~.()'"!:@]/g })}`;
+      blog.slug = `${slugify(blog.slug, { locale: "vi" }).replaceAll("(", "").replaceAll(")", "")}`;
     }
 
     const body = Object.assign(blog, data, {

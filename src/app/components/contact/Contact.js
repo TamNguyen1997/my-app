@@ -1,11 +1,11 @@
 "use client"
-import { Button, Input, Link, Textarea } from "@nextui-org/react";
+import { Button, Image, Input, Link, Textarea } from "@nextui-org/react";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export default function Contact() {
+const Contact = () => {
   const {
     register,
     handleSubmit,
@@ -130,13 +130,13 @@ export default function Contact() {
             <div className="flex items-center text-center">
               <div className="flex gap-3">
                 <Link href="https://bit.ly/lazada-saoviet">
-                  <img src="icon-lazada.svg" width={70} height={70}></img>
+                  <Image src="icon-lazada.svg" width={70} height={70} />
                 </Link>
                 <Link href="https://shopee.vn/saovietcompany">
-                  <img src="icon-shopee.svg" width={70} height={70}></img>
+                  <Image src="icon-shopee.svg" width={70} height={70} />
                 </Link>
                 <Link href="https://www.tiktok.com/@vesinhsaoviet">
-                  <img src="icon-tiktok.png" width={70} height={70}></img>
+                  <Image src="icon-tiktok.png" width={70} height={70} />
                 </Link>
               </div>
             </div>
@@ -146,17 +146,17 @@ export default function Contact() {
             <div className="items-center text-center">
               <div className="flex gap-3">
                 <Link href="https://www.tiktok.com/@vesinhsaoviet">
-                  <img src="icon-tiktok.png" width={70} height={70}></img>
+                  <Image src="icon-tiktok.png" width={70} height={70} />
                 </Link>
                 <Link href="http://bit.ly/youtube-saoviet">
-                  <img src="icon-youtube.svg" width={70} height={70}></img>
+                  <Image src="icon-youtube.svg" width={70} height={70} />
                 </Link>
               </div>
               <div className="pt-10">
                 <div className="flex gap-3">
                   <div>
                     <Link href="https://www.facebook.com/vesinhsaoviet/">
-                      <img src="icon-facebook.svg" width={70} height={70}></img>
+                      <Image src="icon-facebook.svg" width={70} height={70} />
                     </Link>
                   </div>
                   <div className="flex flex-col">
@@ -179,3 +179,5 @@ export default function Contact() {
     </div>
   );
 }
+
+export default Contact

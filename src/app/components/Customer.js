@@ -1,6 +1,5 @@
 "use client"
 import { Image } from "@nextui-org/react"
-import Link from "next/link"
 import Carousel from "react-multi-carousel"
 import "react-multi-carousel/lib/styles.css"
 
@@ -54,21 +53,6 @@ const Customer = () => {
       <Carousel infinite responsive={responsive} className="w-full items-center mb-6" autoPlaySpeed={3000} autoPlay arrows={false} showDots centerMode >
         {
           logo.splice(0, logo.l).map((l, i) => <div className="p-3 w-full h-full m-auto items-center text-center content-center" key={i}>
-            <Image
-              className="group-hover:opacity-50
-              hover:-translate-y-2.5 hover:scale-[1.02]
-              hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)]"
-              width={200}
-              height={100}
-              src={l}
-              alt={l}
-            />
-          </div>)
-        }
-      </Carousel>
-      <Carousel infinite responsive={responsive} className="w-full items-center mb-6" autoPlaySpeed={3000} autoPlay arrows={false} showDots centerMode >
-        {
-          logo.map((l, i) => <div className="p-3 w-full h-full m-auto items-center text-center content-center" key={i}>
             <Image
               className="group-hover:opacity-50
               hover:-translate-y-2.5 hover:scale-[1.02]

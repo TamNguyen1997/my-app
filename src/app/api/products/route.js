@@ -188,9 +188,9 @@ export async function GET(req) {
         category: true,
         subCate: true,
         brand: true,
-        product_on_image: {
-          include: { image: true }
-        }
+        // product_on_image: {
+        //   include: { image: true }
+        // }
       },
       orderBy: [
         {

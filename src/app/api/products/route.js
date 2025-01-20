@@ -180,18 +180,27 @@ export async function GET(req) {
 
   try {
     const result = await db.product.findMany({
-      where: condition,
-      include: {
+      select: {
+        active: true,
+        brandId: true,
+        categoryId: true,
+        createdAt: true,
+        id: true,
+        name: true,
+        imageId: true,
+        productId: true,
+        slug: true,
+        updatedAt: true,
+        imageAlt: true,
+        imageId: true,
         saleDetails: true,
         technical_detail: true,
         image: true,
         category: true,
         subCate: true,
         brand: true,
-        // product_on_image: {
-        //   include: { image: true }
-        // }
       },
+      where: condition,
       orderBy: [
         {
           updatedAt: "desc"

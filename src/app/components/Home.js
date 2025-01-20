@@ -1,5 +1,3 @@
-// "use client";
-
 import HeroBanner from "@/components/HeroBanner";
 import PopularItems from "@/components/PopularItems";
 import PopularBlogs from "@/components/PopularBlogs";
@@ -7,7 +5,7 @@ import Customer from "@/components/Customer";
 import Introduction from "@/components/Introduction";
 import Head from "next/head";
 
-export default function Home() {
+const Home = () => {
   return (
     <div>
       <Head>
@@ -28,3 +26,5 @@ export default function Home() {
     </div>
   );
 }
+
+export default Home

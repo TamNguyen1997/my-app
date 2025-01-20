@@ -1,7 +1,9 @@
+"use client"
 import { Image } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import Carousel from "react-multi-carousel"
 import "react-multi-carousel/lib/styles.css"
+import { motion } from "framer-motion";
 
 const responsive = {
   superLargeDesktop: {
@@ -50,16 +52,23 @@ const HeroBanner = () => {
   }, [])
 
   return (
-    <Carousel responsive={responsive} infinite autoPlay autoPlaySpeed={5000}>
-      {
-        banners.reverse().map((banner, i) => {
-          return <Image key={i} width="1280" height="720"
-            className="w-full h-full max-h-[500px]"
-            src={banner?.path && process.env.NEXT_PUBLIC_FILE_PATH ? process.env.NEXT_PUBLIC_FILE_PATH + banner.path : "/default-featured-image.jpg"}
-            alt={banner?.alt} />
-        })
-      }
-    </Carousel>
+    <motion.div
+      initial={{ x: -200, opacity: 0 }}
+      whileInView={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.7, delay: 0.3 }}
+      viewport={{ once: true }}
+      className="mx-auto sm:w-3/4 ">
+      <Carousel responsive={responsive} infinite autoPlay autoPlaySpeed={5000}>
+        {
+          banners.reverse().map((banner, i) => {
+            return <Image key={i} width="1280" height="720"
+              className="w-full h-full max-h-[500px]"
+              src={banner?.path && process.env.NEXT_PUBLIC_FILE_PATH ? process.env.NEXT_PUBLIC_FILE_PATH + banner.path : "/default-featured-image.jpg"}
+              alt={banner?.alt} />
+          })
+        }
+      </Carousel>
+    </motion.div>
   );
 };
 

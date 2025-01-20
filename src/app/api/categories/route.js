@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/app/db';
 import queryString from 'query-string';
-import { cate_type } from '@prisma/client';
+import { cate_type, product_type } from '@prisma/client';
 
 export async function GET(req) {
   const { query } = queryString.parseUrl(req.url);
@@ -106,6 +106,21 @@ const getCategories = async (query) => {
 
   if (query.highlight) {
     condition.highlight = query.highlight === 'true'
+  }
+
+  if (query.includeProducts === "true") {
+    include.product = {
+      take: 10,
+      where: {
+        active: true,
+        productType: product_type.PRODUCT
+      },
+      orderBy: [
+        {
+          updatedAt: "desc"
+        }
+      ]
+    }
   }
 
   try {

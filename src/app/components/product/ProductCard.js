@@ -1,5 +1,6 @@
 import { Button, Link } from "@nextui-org/react"
 import { getPrice } from "@/lib/product"
+import Image from "next/image"
 
 const ProductCard = ({ product }) => {
   return (
@@ -8,10 +9,13 @@ const ProductCard = ({ product }) => {
             overflow-hidden mx-auto">
         <Link href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`} className="flex flex-col sm:h-[250px] h-[150px]">
           <div className="overflow-hidden">
-            <img
+            <Image
               width={200}
               height={200}
-              src={`${process.env.NEXT_PUBLIC_FILE_PATH + product.image?.path}`}
+              isZoomed
+              src={`${product.image?.path && process.env.NEXT_PUBLIC_FILE_PATH ?
+                process.env.NEXT_PUBLIC_FILE_PATH + product.image?.path :
+                "/default-featured-image.jpg"}`}
               alt={product.imageAlt}
               className=" object-cover object-center"
             />

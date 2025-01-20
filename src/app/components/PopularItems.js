@@ -60,7 +60,7 @@ export default function PopularItems() {
       className="pb-[60px] pt-4 mx-auto sm:w-3/4 ">
       <div className="flex flex-col gap-11">
         <div>
-          <ProductCards category="SẢN PHẨM NỔI BẬT" products={products} />
+          <ProductCards name="SẢN PHẨM NỔI BẬT" products={products} />
         </div>
 
         <div>
@@ -143,7 +143,7 @@ export default function PopularItems() {
         {
           highlightCates.filter(item => item.product.length).map((cate, i) => {
             return <div key={i} className="">
-              <ProductCards banner={cate.image?.path} products={cate.product} category={cate} />
+              <ProductCards banner={cate.image?.path} products={cate.product} name={cate.name} />
               <Link isExternal
                 href={`/${cate.slug}`}
                 className="flex justify-center items-center text-black font-semibold w-[181px] bg-white
@@ -161,12 +161,12 @@ export default function PopularItems() {
   );
 }
 
-const ProductCards = ({ category, products, redirect, banner }) => {
+const ProductCards = ({ name, products, redirect, banner }) => {
   const CategoryDisplay = () => (
     <>
       <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center sm:w-2/3 md:w-1/3 min-w-[240px] h-[50px] m-auto shadow-md">
         <div className="m-auto text-black font-bold md:text-xl">
-          {category.name}
+          {name}
         </div>
         {redirect ? (
           <Link

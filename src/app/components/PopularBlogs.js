@@ -60,8 +60,11 @@ export default function PopularBlogs() {
                   <Card>
                     <CardHeader className="flex flex-col items-center justify-center h-64">
                       <Image
+                        height={256}
                         className="h-full w-full object-cover object-top"
-                        src={`${process.env.NEXT_PUBLIC_FILE_PATH && blog.thumbnail ? process.env.NEXT_PUBLIC_FILE_PATH + blog.thumbnail : "/default-featured-image.jpg"}`}
+                        src={`${process.env.NEXT_PUBLIC_FILE_PATH && blog.thumbnail ?
+                          process.env.NEXT_PUBLIC_FILE_PATH + blog.thumbnail :
+                          "/default-featured-image.jpg"}`}
                         alt="Thumbnail image"
                       />
                     </CardHeader>

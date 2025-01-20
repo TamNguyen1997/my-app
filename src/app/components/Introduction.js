@@ -1,28 +1,37 @@
+"use client"
 import { Image } from "@nextui-org/react"
 import "react-multi-carousel/lib/styles.css"
+import { motion } from "framer-motion";
 
 const Introduction = () => {
   return (
-    <div className="bg-introduction bg-center w-full bg-cover bg-no-repeat mb-8 md:h-[700px] sm:h-[600px]" style={{
-      backgroundSize: "100% 100%"
-    }}>
-      <div className="flex gap-3 md:ga-7 max-w-[1200px] px-4 mx-auto w-full flex-col md:pt-[90px] pt-7">
-        <div className="text-xl font-medium text-justify w-2/3">
-          Một trong những công ty dẫn đầu trong lĩnh vực cung cấp máy móc, dụng cụ làm vệ sinh chuyên nghiệp và tư vấn các giải pháp làm sạch cho nhà đầu tư. Được thành lập từ năm 2005, chuyên phân phối chính hãng các thương hiệu:
-        </div>
-        <div className="grid grid-cols-3 w-3/5">
-          <Image src="/brand/Logo-Ghibli.svg" alt="Ghibli" width={175} />
-          <Image src="/brand/Rubbermaid.png" alt="Rubbermaid" width={175} />
-          <Image src="/brand/Logo-Kimberly-Clark.png" alt="Kimberly" width={175} />
-          <Image src="/brand/Logo-Moerman.png" alt="Moerman" width={175} />
-          <Image src="/brand/KLEEN-TEX.png" alt="KLEEN-TEX" width={175} />
-          <Image src="/brand/Logo-Mapa.png" alt="MAPA" width={175} />
-        </div>
-        <div className="text-xl font-medium text-justify w-2/3 mb-7">
-          Các sản phẩm đạt đầy đủ chứng nhận theo tiêu chuẩn quốc tế. Mang đến sự hài lòng cho khách hàng của doanh nghiệp - là đối tác tin cậy của các nhà đầu tư.
+    <motion.div
+      initial={{ x: 200, opacity: 0 }}
+      whileInView={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.7, delay: 0.3 }}
+      viewport={{ once: true }}
+      className="pb-[60px] items-center">
+      <div className="bg-introduction bg-center w-full bg-cover bg-no-repeat mb-8 md:h-[700px] sm:h-[600px]" style={{
+        backgroundSize: "100% 100%"
+      }}>
+        <div className="flex gap-3 md:ga-7 max-w-[1200px] px-4 mx-auto w-full flex-col md:pt-[90px] pt-7">
+          <div className="text-xl font-medium text-justify w-2/3">
+            Một trong những công ty dẫn đầu trong lĩnh vực cung cấp máy móc, dụng cụ làm vệ sinh chuyên nghiệp và tư vấn các giải pháp làm sạch cho nhà đầu tư. Được thành lập từ năm 2005, chuyên phân phối chính hãng các thương hiệu:
+          </div>
+          <div className="grid grid-cols-3 w-3/5">
+            <Image src="/brand/Logo-Ghibli.svg" alt="Ghibli" width={175} />
+            <Image src="/brand/Rubbermaid.png" alt="Rubbermaid" width={175} />
+            <Image src="/brand/Logo-Kimberly-Clark.png" alt="Kimberly" width={175} />
+            <Image src="/brand/Logo-Moerman.png" alt="Moerman" width={175} />
+            <Image src="/brand/KLEEN-TEX.png" alt="KLEEN-TEX" width={175} />
+            <Image src="/brand/Logo-Mapa.png" alt="MAPA" width={175} />
+          </div>
+          <div className="text-xl font-medium text-justify w-2/3 mb-7">
+            Các sản phẩm đạt đầy đủ chứng nhận theo tiêu chuẩn quốc tế. Mang đến sự hài lòng cho khách hàng của doanh nghiệp - là đối tác tin cậy của các nhà đầu tư.
+          </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
 

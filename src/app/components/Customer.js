@@ -2,6 +2,7 @@
 import { Image } from "@nextui-org/react"
 import Carousel from "react-multi-carousel"
 import "react-multi-carousel/lib/styles.css"
+import { motion } from "framer-motion";
 
 const logo = [
   "/icon/client/BW.png",
@@ -49,10 +50,15 @@ const responsive = {
 const Customer = () => {
 
   return (
-    <>
+    <motion.div
+      initial={{ x: -200, opacity: 0 }}
+      whileInView={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.7, delay: 0.3 }}
+      viewport={{ once: true }}
+      className="m-auto sm:w-3/4">
       <Carousel infinite responsive={responsive} className="w-full items-center mb-6" autoPlaySpeed={3000} autoPlay arrows={false} showDots centerMode >
         {
-          logo.splice(0, logo.l).map((l, i) => <div className="p-3 w-full h-full m-auto items-center text-center content-center" key={i}>
+          logo.map((l, i) => <div className="p-3 w-full h-full m-auto items-center text-center content-center" key={i}>
             <Image
               className="group-hover:opacity-50
               hover:-translate-y-2.5 hover:scale-[1.02]
@@ -65,7 +71,7 @@ const Customer = () => {
           </div>)
         }
       </Carousel>
-    </>
+    </motion.div>
   )
 }
 

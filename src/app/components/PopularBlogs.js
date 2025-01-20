@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import Carousel from "react-multi-carousel"
 import "react-multi-carousel/lib/styles.css"
+import { motion } from "framer-motion";
 
 const responsive = {
   superLargeDesktop: {
@@ -37,7 +38,13 @@ export default function PopularBlogs() {
   if (isLoading) return <Spinner className="m-auto" />
 
   return (
-    <>
+    <motion.div
+      initial={{ x: -200, opacity: 0 }}
+      whileInView={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.7, delay: 0.3 }}
+      viewport={{ once: true }}
+      className="pb-[60px] m-auto sm:w-3/4 px-2">
+
       <div className="pb-2">
         <div className="bg-black rounded-tr-[50px] rounded-bl-[50px] flex items-center w-1/3 min-w-[222px] h-[50px] m-auto">
           <Link href="/" className="m-auto text-white font-bold text-xl">BÀI VIẾT NỔI BẬT</Link>
@@ -89,6 +96,6 @@ export default function PopularBlogs() {
           Xem tất cả tin tức
         </span>
       </Link>
-    </>
+    </motion.div>
   )
 }

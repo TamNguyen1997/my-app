@@ -44,7 +44,7 @@ const PopularItems = () => {
       .then((json) => setBrandProducts(json.products))
   }, [selectedBrand]);
 
-  if (isLoading) return <Spinner className="m-auto" />;
+  if (isLoading) return <Spinner className="flex m-auto pt-10 w-full h-full" />;
 
   const getSelectedColor = (value) => {
     return selectedBrand === value ? "bg-slate-700" : "bg-black";

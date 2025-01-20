@@ -3,7 +3,6 @@ import { Image } from "@nextui-org/react"
 import Link from "next/link"
 import Carousel from "react-multi-carousel"
 import "react-multi-carousel/lib/styles.css"
-import { motion } from "framer-motion";
 
 const logo = [
   "/icon/client/BW.png",
@@ -51,27 +50,20 @@ const responsive = {
 const Customer = ({ hideTitle }) => {
 
   return (
-
-    <motion.div
-      initial={{ x: -200, opacity: 0 }}
-      whileInView={{ x: 0, opacity: 1 }}
-      transition={{ duration: 0.7, delay: 0.3 }}
-      viewport={{ once: true }}
-      className="m-auto sm:w-3/4">
-
+    <>
       {
         hideTitle ? "" : <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-2/3 md:w-1/3 min-w-[300px] h-[50px] m-auto shadow-md">
           <Link href="/" className="m-auto text-black font-bold md:text-xl">KHÁCH HÀNG SAO VIỆT</Link>
         </div>
       }
 
-      <Carousel infinite responsive={responsive} className="w-full items-center mb-6" autoPlaySpeed={3000} autoPlay arrows={false} showDots centerMode>
+      <Carousel infinite responsive={responsive} className="w-full items-center mb-6" autoPlaySpeed={3000} autoPlay arrows={false} showDots centerMode >
         {
           logo.map((l, i) => <div className="p-3 w-full h-full m-auto items-center text-center content-center" key={i}>
             <Image
               className="group-hover:opacity-50
-            hover:-translate-y-2.5 hover:scale-[1.02]
-            hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)]"
+              hover:-translate-y-2.5 hover:scale-[1.02]
+              hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)]"
               width={200}
               height={100}
               src={l}
@@ -80,8 +72,7 @@ const Customer = ({ hideTitle }) => {
           </div>)
         }
       </Carousel>
-
-    </motion.div>
+    </>
   )
 }
 

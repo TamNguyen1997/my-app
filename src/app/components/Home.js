@@ -18,11 +18,13 @@ const Home = () => {
         />
       </Head>
       <link rel="canonical" href={process.env.NEXT_PUBLIC_DOMAIN} />
-      <HeroBanner />
-      <PopularItems />
-      <Introduction />
-      <PopularBlogs />
-      <Customer />
+      <div className="m-auto sm:w-3/4">
+        <HeroBanner />
+        <PopularItems />
+        <Introduction />
+        <PopularBlogs />
+        <Customer />
+      </div>
     </div>
   );
 }

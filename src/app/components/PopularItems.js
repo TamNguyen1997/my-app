@@ -39,7 +39,7 @@ const PopularItems = () => {
   }, []);
 
   useEffect(() => {
-    fetch(`/api/brands/${brandKeyToSlug[selectedBrand]}/products/?active=true`)
+    fetch(`/api/brands/${brandKeyToSlug[selectedBrand]}/products/?active=true&size=7`)
       .then((res) => res.json())
       .then((json) => setBrandProducts(json.products))
   }, [selectedBrand]);

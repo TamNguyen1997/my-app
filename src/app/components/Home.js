@@ -4,6 +4,7 @@ import PopularBlogs from "@/components/PopularBlogs";
 import Customer from "@/components/Customer";
 import Introduction from "@/components/Introduction";
 import Head from "next/head";
+import { Link } from "@nextui-org/react";
 
 const Home = () => {
   return (
@@ -18,11 +19,14 @@ const Home = () => {
         />
       </Head>
       <link rel="canonical" href={process.env.NEXT_PUBLIC_DOMAIN} />
-      <div className="m-auto sm:w-3/4">
+      <div className="m-auto sm:w-3/4 flex flex-col gap-10">
         <HeroBanner />
         <PopularItems />
         <Introduction />
         <PopularBlogs />
+        <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-2/3 md:w-1/3 min-w-[300px] h-[50px] m-auto shadow-md">
+          <Link href="/" className="m-auto text-black font-bold md:text-xl">KHÁCH HÀNG SAO VIỆT</Link>
+        </div>
         <Customer />
       </div>
     </div>

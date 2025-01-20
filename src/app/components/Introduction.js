@@ -3,7 +3,7 @@ import "react-multi-carousel/lib/styles.css"
 
 const Introduction = () => {
   return (
-    <div className="bg-center w-full bg-cover bg-no-repeat mb-8 md:h-[700px] sm:h-[600px]" style={{
+    <div className="bg-introduction bg-center w-full bg-cover bg-no-repeat mb-8 md:h-[700px] sm:h-[600px]" style={{
       backgroundSize: "100% 100%"
     }}>
       <div className="flex gap-3 md:ga-7 max-w-[1200px] px-4 mx-auto w-full flex-col md:pt-[90px] pt-7">

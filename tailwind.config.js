@@ -34,7 +34,7 @@ module.exports = {
         'ping-delay': 'ping-delay 7s linear infinite'
       },
       backgroundImage: {
-        'introduction': "url('/Anh-gui-27.png')",
+        'introduction': "url('/background.png')",
         'banner1': "url('/banner-1.jpg')",
         'contact': "url('/img-bg-contact.png')",
       },

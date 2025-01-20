@@ -15,7 +15,7 @@ const brandKeyToSlug = {
   "KLEEN-TEX": "thuong-hieu-kleen-tex",
 }
 
-export default function PopularItems() {
+const PopularItems = () => {
   const [products, setProducts] = useState([]);
   const [selectedBrand, setSelectedBrand] = useState("RUBBERMAID");
 
@@ -202,3 +202,5 @@ const ProductCards = ({ name, products, redirect, banner }) => {
     </div>
   );
 };
+
+export default PopularItems

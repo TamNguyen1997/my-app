@@ -6,6 +6,7 @@ import { useEffect, useState, useContext, useRef } from "react";
 import SearchBar from "@/components/SearchBar";
 import { CartContext } from "@/context/CartProvider";
 import "./Header.css";
+import { Image } from "@nextui-org/react";
 
 const Header = () => {
   const [hoveredCate, setHoveredCate] = useState(null)
@@ -69,7 +70,7 @@ const Header = () => {
         <div className="flex w-full h-full">
           <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto sm:pl-10 pl-4">
             <Link href="/" className="pr-4">
-              <img
+              <Image
                 src="/saoviet.png"
                 alt="favicon"
                 height={80}

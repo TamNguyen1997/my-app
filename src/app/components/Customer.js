@@ -1,3 +1,4 @@
+import { Image } from "@nextui-org/react"
 import Link from "next/link"
 import Carousel from "react-multi-carousel"
 import "react-multi-carousel/lib/styles.css"

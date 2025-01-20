@@ -27,11 +27,11 @@ const AboutUsArticle = () => {
             </div>
             <div className="md:w-[calc(50%_-_20px)] w-full mb-5 relative flex flex-col justify-end">
               <h2 className="text-3xl text-center font-semibold mb-6 md:hidden block">Đội ngũ nhân viên</h2>
-              <img
+              <Image
                 width="450"
                 height="300"
                 src="/about-us/article-1.jpg"
-                alt="/about-us/article-1.jpg"
+                alt="Về chúng tôi"
                 className="aspect-[16/9] object-cover w-full rounded mb-6"
               />
             </div>

@@ -29,7 +29,7 @@ export default function AboutUs() {
         viewport={{ once: true }}
         className="container"
       >
-        <img
+        <Image
           src="/about-us/intro.png"
           width="1280"
           height="720"

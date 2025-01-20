@@ -1,3 +1,4 @@
+import { Image } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import Carousel from "react-multi-carousel"
 import "react-multi-carousel/lib/styles.css"
@@ -52,7 +53,10 @@ const HeroBanner = () => {
     <Carousel responsive={responsive} infinite autoPlay autoPlaySpeed={5000}>
       {
         banners.reverse().map((banner, i) => {
-          return <img key={i} width="1280" height="720" className="w-full h-full max-h-[500px]" src={process.env.NEXT_PUBLIC_FILE_PATH + banner?.path} alt={banner?.alt} />
+          return <Image key={i} width="1280" height="720"
+            className="w-full h-full max-h-[500px]"
+            src={banner?.path && process.env.NEXT_PUBLIC_FILE_PATH ? process.env.NEXT_PUBLIC_FILE_PATH + banner.path : "/default-featured-image.jpg"}
+            alt={banner?.alt} />
         })
       }
     </Carousel>

@@ -1,6 +1,6 @@
 "use client"
 
-import { Card, CardBody, CardHeader, Divider, Spinner } from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Divider, Image, Spinner } from "@nextui-org/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Carousel from "react-multi-carousel"
@@ -52,9 +52,9 @@ export default function PopularBlogs() {
                 <div className="hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)] rounded-[20px] transition">
                   <Card>
                     <CardHeader className="flex flex-col items-center justify-center h-64">
-                      <img
+                      <Image
                         className="h-full w-full object-cover object-top"
-                        src={`${process.env.NEXT_PUBLIC_FILE_PATH + blog.thumbnail}`}
+                        src={`${process.env.NEXT_PUBLIC_FILE_PATH && blog.thumbnail ? process.env.NEXT_PUBLIC_FILE_PATH + blog.thumbnail : "/default-featured-image.jpg"}`}
                         alt="Thumbnail image"
                       />
                     </CardHeader>

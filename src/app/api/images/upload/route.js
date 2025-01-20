@@ -27,7 +27,7 @@ export async function POST(req) {
 
     const extension = file.type.split("/")[1];
 
-    if (!['png', 'jpeg', 'svg'].includes(extension)) {
+    if (!['png', 'jpeg', 'svg', 'webp', 'avif', 'jpg'].includes(extension)) {
       return NextResponse.json({ message: "Image extension not allow" }, { status: 400 });
     }
 

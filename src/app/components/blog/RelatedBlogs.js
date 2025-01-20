@@ -1,3 +1,4 @@
+import { Image } from "@nextui-org/react";
 import Link from "next/link";
 
 const blogCategories = {
@@ -15,8 +16,8 @@ const RelatedBlogs = ({ relatedBlogs }) => {
           relatedBlogs.map((item, index) => {
             return (
               <Link href={`/${blogCategories[item.blogCategory]}/${item.slug}`} className="sm:flex items-center" key={index}>
-                <img
-                  src={`${process.env.NEXT_PUBLIC_FILE_PATH + item.thumbnail}`}
+                <Image
+                  src={`${item.thumbnail && process.env.NEXT_PUBLIC_FILE_PATH ? process.env.NEXT_PUBLIC_FILE_PATH + item.thumbnail : "/default-featured-image.jpg"}`}
                   width="192"
                   height="120"
                   alt=""

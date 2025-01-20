@@ -1,6 +1,6 @@
 "use client";
 
-import { Link } from "@nextui-org/react";
+import { Image, Link } from "@nextui-org/react";
 import ProductCarousel from "@/components/product/ProductCarousel";
 
 const brandDescription = {
@@ -75,7 +75,7 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
                   className="mx-auto max-h-full"
                   href={`/${brandDescription[selectedBrand].slug}`}
                 >
-                  <img width={220} src={brandDescription[selectedBrand].logo} />
+                  <Image width={220} src={brandDescription[selectedBrand].logo} />
                 </Link>
               ) : null}
             </div>

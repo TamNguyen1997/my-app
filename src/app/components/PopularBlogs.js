@@ -35,7 +35,7 @@ export default function PopularBlogs() {
     fetch(`/api/blogs?excludeSupport=true&active=true&size=10&page=${1}`).then(res => res.json()).then((json) => setBlogs(json.result)).then(() => setIsLoading(false))
   }, [])
 
-  if (isLoading) return <Spinner className="m-auto" />
+  if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />
 
   return (
     <motion.div

@@ -1,3 +1,4 @@
+import { Image } from "@nextui-org/react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useState } from 'react';
 import Carousel from "react-multi-carousel";
@@ -70,7 +71,7 @@ const AboutUsBanner = () => {
           >
             {
               banners.map((banner, i) => {
-                return <img
+                return <Image
                   key={i}
                   src={banner}
                   width="1280"
@@ -86,7 +87,7 @@ const AboutUsBanner = () => {
       <div className="grid gap-5 w-[500px] max-w-full mx-auto px-2 pb-6 md:hidden">
         {
           banners.map((banner, i) => {
-            return <img
+            return <Image
               key={i}
               src={banner}
               width="1280"

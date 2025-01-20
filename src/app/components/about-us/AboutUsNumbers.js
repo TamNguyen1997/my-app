@@ -60,7 +60,7 @@ const AboutUsNumbers = () => {
             {
               images.map((image, i) => {
                 return <div key={i} className="w-full h-[calc(100%_-_32px)] rounded-[20px] p-[1px] bg-[linear-gradient(111.39deg,#38c8f9_-11.16%,#ffbe4c_100%)] overflow-hidden">
-                  <img
+                  <Image
                     src={image}
                     width="1280"
                     height="720"

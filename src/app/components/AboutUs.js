@@ -8,6 +8,7 @@ import AboutUsCustomer from "@/components/about-us/AboutUsCustomer";
 import AboutUsPartner from "@/components/about-us/AboutUsPartner";
 import Contact from "@/components/contact/Contact";
 import { motion } from "framer-motion";
+import { Image } from "@nextui-org/react";
 
 export default function AboutUs() {
   return (
@@ -53,7 +54,7 @@ export default function AboutUs() {
         viewport={{ once: true }}
         className="container pb-20 border-b border-black"
       >
-        <img
+        <Image
           src="/about-us/mission.png"
           width="1280"
           height="720"

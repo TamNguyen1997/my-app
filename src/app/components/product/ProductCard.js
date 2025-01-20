@@ -12,7 +12,6 @@ const ProductCard = ({ product }) => {
             <Image
               width={200}
               height={200}
-              isZoomed
               src={`${product.image?.path && process.env.NEXT_PUBLIC_FILE_PATH ?
                 process.env.NEXT_PUBLIC_FILE_PATH + product.image?.path :
                 "/default-featured-image.jpg"}`}

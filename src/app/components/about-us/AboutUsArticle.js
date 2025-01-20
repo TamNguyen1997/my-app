@@ -1,3 +1,4 @@
+import { Image } from "@nextui-org/react";
 import { motion } from "framer-motion";
 
 const AboutUsArticle = () => {
@@ -84,7 +85,7 @@ const AboutUsArticle = () => {
             </div>
             <div className="md:w-[calc(50%_-_20px)] w-full mb-5 relative flex flex-col justify-end">
               <h2 className="text-3xl text-center font-semibold mb-6 md:hidden block">Giá trị bền vững</h2>
-              <img
+              <Image
                 width="450"
                 height="300"
                 src="/about-us/article-2.jpg"

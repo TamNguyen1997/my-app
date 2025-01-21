@@ -31,22 +31,24 @@ const HeroBanner = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const dBanners = await fetch(`${imageUrl}?type=DEFAULT`).then(res => res.json())
-      const sBanners = await fetch(`${imageUrl}?type=SCHEDULED&inrange=true`).then(res => res.json())
+      await Promise.all([
+        fetch(`${imageUrl}?type=DEFAULT`).then(res => res.json()),
+        fetch(`${imageUrl}?type=SCHEDULED&inrange=true`).then(res => res.json())
+      ]).then(([dBanners, sBanners]) => {
+        const scheduledBanners = sBanners ? Object.groupBy(sBanners, ({ order }) => order) : {}
+        const defaultBanners = dBanners ? Object.groupBy(dBanners, ({ order }) => order) : {}
 
-      const scheduledBanners = sBanners ? Object.groupBy(sBanners, ({ order }) => order) : {}
-      const defaultBanners = dBanners ? Object.groupBy(dBanners, ({ order }) => order) : {}
-
-      let images = []
-      for (let i = 0; i < 5; i++) {
-        if (scheduledBanners[i] && scheduledBanners[i][0].image && scheduledBanners[i][0].active) {
-          images.push(scheduledBanners[i][0].image)
-        } else if (defaultBanners[i] && defaultBanners[i][0]?.image) {
-          images.push(defaultBanners[i][0].image)
+        let images = []
+        for (let i = 0; i < 5; i++) {
+          if (scheduledBanners[i] && scheduledBanners[i][0].image && scheduledBanners[i][0].active) {
+            images.push(scheduledBanners[i][0].image)
+          } else if (defaultBanners[i] && defaultBanners[i][0]?.image) {
+            images.push(defaultBanners[i][0].image)
+          }
         }
-      }
 
-      setBanners(images)
+        setBanners(images)
+      })
     }
     getData()
   }, [])

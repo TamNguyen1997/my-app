@@ -1,5 +1,5 @@
 import { Link } from "@nextui-org/react";
-import { Facebook, Linkedin, Mail, MapPin, NotebookText, Phone, PhoneCall, Youtube } from "lucide-react";
+import { Facebook, Mail, MapPin, NotebookText, Phone, PhoneCall, Youtube } from "lucide-react";
 import Image from "next/image";
 
 

@@ -92,7 +92,7 @@ const Footer = () => {
               <Facebook className="w-[30px] h-[30px] text-white" />
             </Link>
             <Link href="https://www.tiktok.com/@vesinhsaoviet" isExternal>
-              <img src="/Titkok-line.svg" className="w-[30px] h-[30px] text-white" />
+              <Image src="/Titkok-line.svg" className="text-white" height={30} width={30} loading="lazy" />
             </Link>
             <Link href="http://bit.ly/youtube-saoviet" className="pt-1" isExternal>
               <Youtube className="w-[30px] h-[30px] text-white" />

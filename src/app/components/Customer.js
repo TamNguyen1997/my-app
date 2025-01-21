@@ -59,7 +59,7 @@ const Customer = () => {
       <Carousel infinite responsive={responsive} className="w-full items-center mb-6" autoPlaySpeed={3000} autoPlay arrows={false} showDots centerMode >
         {
           logo.map((l, i) => <div className="p-3 w-full h-full m-auto items-center text-center content-center" key={i}>
-            <Image
+            <Image loading="lazy"
               className="group-hover:opacity-50
               hover:-translate-y-2.5 hover:scale-[1.02]
               hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)]"

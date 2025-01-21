@@ -35,8 +35,8 @@ const HeroBanner = () => {
         fetch(`${imageUrl}?type=DEFAULT`).then(res => res.json()),
         fetch(`${imageUrl}?type=SCHEDULED&inrange=true`).then(res => res.json())
       ]).then(([dBanners, sBanners]) => {
-        const scheduledBanners = sBanners ? Object.groupBy(sBanners, ({ order }) => order) : {}
-        const defaultBanners = dBanners ? Object.groupBy(dBanners, ({ order }) => order) : {}
+        const scheduledBanners = Object.groupBy(sBanners, ({ order }) => order)
+        const defaultBanners = Object.groupBy(dBanners, ({ order }) => order)
 
         let images = []
         for (let i = 0; i < 5; i++) {

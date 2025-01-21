@@ -19,12 +19,12 @@ const Introduction = () => {
             Một trong những công ty dẫn đầu trong lĩnh vực cung cấp máy móc, dụng cụ làm vệ sinh chuyên nghiệp và tư vấn các giải pháp làm sạch cho nhà đầu tư. Được thành lập từ năm 2005, chuyên phân phối chính hãng các thương hiệu:
           </div>
           <div className="grid grid-cols-3 w-3/5">
-            <Image src="/brand/Logo-Ghibli.svg" alt="Ghibli" width={175} />
-            <Image src="/brand/Rubbermaid.png" alt="Rubbermaid" width={175} />
-            <Image src="/brand/Logo-Kimberly-Clark.png" alt="Kimberly" width={175} />
-            <Image src="/brand/Logo-Moerman.png" alt="Moerman" width={175} />
-            <Image src="/brand/KLEEN-TEX.png" alt="KLEEN-TEX" width={175} />
-            <Image src="/brand/Logo-Mapa.png" alt="MAPA" width={175} />
+            <Image src="/brand/Logo-Ghibli.svg" alt="Ghibli" width={175} height={85} />
+            <Image src="/brand/Rubbermaid.png" alt="Rubbermaid" width={175} height={85} />
+            <Image src="/brand/Logo-Kimberly-Clark.png" alt="Kimberly" width={175} height={85} />
+            <Image src="/brand/Logo-Moerman.png" alt="Moerman" width={175} height={85} />
+            <Image src="/brand/KLEEN-TEX.png" alt="KLEEN-TEX" width={175} height={85} />
+            <Image src="/brand/Logo-Mapa.png" alt="MAPA" width={175} height={85} />
           </div>
           <div className="text-xl font-medium text-justify w-2/3 mb-7">
             Các sản phẩm đạt đầy đủ chứng nhận theo tiêu chuẩn quốc tế. Mang đến sự hài lòng cho khách hàng của doanh nghiệp - là đối tác tin cậy của các nhà đầu tư.

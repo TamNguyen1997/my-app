@@ -68,7 +68,8 @@ export async function middleware(request: NextRequest) {
     const method = request.method;
     if (
       ["POST", "PUT", "DELETE"].includes(method) &&
-      pathname.startsWith("/api")
+      pathname.startsWith("/api") &&
+      !pathname.startsWith("/api/courier/shipping-price")
     ) {
       if (pathname !== "/api/order" && pathname !== "/api/login") {
         const userCookie = request.cookies.get("user");

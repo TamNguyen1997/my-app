@@ -33,7 +33,7 @@ const ContactIcons = () => {
         </li>
         <li>
           <div onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <Link href="">
+            <Link href="#">
               <ChevronUp size="50"></ChevronUp>
             </Link>
           </div>

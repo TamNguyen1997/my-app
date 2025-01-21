@@ -246,21 +246,15 @@ const HeaderItems = ({ setHoveredCate, menuRef, setMenuVisible, menuVisible }) =
     const handleScroll = () => {
       if (!headerItemsRef?.current) return;
       const parentNode = headerItemsRef.current.parentNode;
-      // const nav = headerItemsRef.current.closest("nav");
       const menuButton = headerItemsRef.current.querySelector(".menu-button");
       let menuHeight = 0;
 
       if (parentNode.getBoundingClientRect().bottom <= 0) {
         headerItemsRef.current.classList.add("fixed-header");
-        // headerItemsRef.current.childNodes?.[0]?.classList.remove("container");
-        // menuRef.current?.classList.remove("container");
         menuHeight = headerItemsRef.current.getBoundingClientRect().height || 0;
       } else {
-        // menuHeight = nav?.getBoundingClientRect().height || 0;
         menuHeight = menuButton?.getBoundingClientRect().bottom || 0;
         headerItemsRef.current.classList.remove("fixed-header");
-        // menuRef.current?.classList.add("container");
-        // headerItemsRef.current.childNodes?.[0]?.classList.add("container");
       }
 
       if (menuRef.current) {

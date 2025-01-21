@@ -30,10 +30,15 @@ export async function GET(req) {
           updatedAt: "desc"
         }
       ],
-      include: {
+      select: {
+        id: true,
+        name: true,
+        slug: true,
         subcates: {
-          include: {
-            image: true
+          select: {
+            id: true,
+            name: true,
+            slug: true,
           }
         }
       }

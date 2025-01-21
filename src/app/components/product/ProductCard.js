@@ -4,19 +4,19 @@ import Image from "next/image"
 
 const ProductCard = ({ product }) => {
   return (
-    <div className="group-hover:opacity-50 border hover:-translate-y-3 hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15) transition bg-white max-w-[300px] h-full flex flex-col">
-      <div className="rounded-md object-cover object-center overflow-hidden mx-auto">
-        <Link href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`} className="flex flex-col sm:h-[250px] h-[150px]">
-          <Image
-            width={200}
-            height={200}
-            src={`${product.image?.path && process.env.NEXT_PUBLIC_FILE_PATH ?
-              process.env.NEXT_PUBLIC_FILE_PATH + product.image?.path :
-              "/default-featured-image.webp"}`}
-            alt={product.imageAlt}
-          />
-        </Link>
-      </div>
+    <div className="group-hover:opacity-50 border hover:-translate-y-3 hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15) 
+      transition bg-white max-w-[300px] h-full flex flex-col">
+      <Link href={`/${product.subCate?.slug}/${product.slug}`}
+        className="flex flex-col sm:h-[250px] h-[150px] rounded-md object-cover object-center overflow-hidden mx-auto">
+        <Image
+          width={200}
+          height={200}
+          src={`${product.image?.path && process.env.NEXT_PUBLIC_FILE_PATH ?
+            process.env.NEXT_PUBLIC_FILE_PATH + product.image?.path :
+            "/default-featured-image.webp"}`}
+          alt={product.imageAlt}
+        />
+      </Link>
       <Link href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`}
         className="text-black border-gray-400 w-full grow">
         <div className="mx-auto border-b-medium w-[90%] py-3 h-full">

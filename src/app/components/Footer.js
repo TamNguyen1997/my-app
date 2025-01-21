@@ -14,7 +14,7 @@ const Footer = () => {
               <div>
                 <MapPin className="text-[#FFD400]" size="24" />
               </div>
-              <p className="w-">666/62 Đường 3/2, Phường 14, Quận 10, TP Hồ Chí Minh</p>
+              <p>666/62 Đường 3/2, Phường 14, Quận 10, TP Hồ Chí Minh</p>
             </div>
             <div className="flex gap-2">
               <NotebookText className="text-[#FFD400]" size="24" />

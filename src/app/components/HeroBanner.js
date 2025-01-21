@@ -63,7 +63,7 @@ const HeroBanner = () => {
           banners.reverse().map((banner, i) => {
             return <Image key={i} width="1280" height="720"
               className="w-full h-full max-h-[500px]"
-              src={banner?.path && process.env.NEXT_PUBLIC_FILE_PATH ? process.env.NEXT_PUBLIC_FILE_PATH + banner.path : "/default-featured-image.jpg"}
+              src={banner?.path && process.env.NEXT_PUBLIC_FILE_PATH ? process.env.NEXT_PUBLIC_FILE_PATH + banner.path : "/default-featured-image.webp"}
               alt={banner?.alt} />
           })
         }

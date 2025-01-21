@@ -14,7 +14,7 @@ const ProductCard = ({ product }) => {
               height={200}
               src={`${product.image?.path && process.env.NEXT_PUBLIC_FILE_PATH ?
                 process.env.NEXT_PUBLIC_FILE_PATH + product.image?.path :
-                "/default-featured-image.jpg"}`}
+                "/default-featured-image.webp"}`}
               alt={product.imageAlt}
               className=" object-cover object-center"
             />

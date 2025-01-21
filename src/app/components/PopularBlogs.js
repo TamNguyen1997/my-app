@@ -64,7 +64,7 @@ export default function PopularBlogs() {
                         className="h-full w-full object-cover object-top"
                         src={`${process.env.NEXT_PUBLIC_FILE_PATH && blog.thumbnail ?
                           process.env.NEXT_PUBLIC_FILE_PATH + blog.thumbnail :
-                          "/default-featured-image.jpg"}`}
+                          "/default-featured-image.webp"}`}
                         alt="Thumbnail image"
                       />
                     </CardHeader>

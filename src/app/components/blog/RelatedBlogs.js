@@ -17,7 +17,7 @@ const RelatedBlogs = ({ relatedBlogs }) => {
             return (
               <Link href={`/${blogCategories[item.blogCategory]}/${item.slug}`} className="sm:flex items-center" key={index}>
                 <Image
-                  src={`${item.thumbnail && process.env.NEXT_PUBLIC_FILE_PATH ? process.env.NEXT_PUBLIC_FILE_PATH + item.thumbnail : "/default-featured-image.jpg"}`}
+                  src={`${item.thumbnail && process.env.NEXT_PUBLIC_FILE_PATH ? process.env.NEXT_PUBLIC_FILE_PATH + item.thumbnail : "/default-featured-image.webp"}`}
                   width="192"
                   height="120"
                   alt=""

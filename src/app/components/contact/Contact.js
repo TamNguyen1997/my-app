@@ -136,7 +136,7 @@ const Contact = () => {
                   <Image src="icon-shopee.svg" width={70} height={70} />
                 </Link>
                 <Link href="https://www.tiktok.com/@vesinhsaoviet">
-                  <Image src="icon-tiktok.png" width={70} height={70} />
+                  <Image src="icon-tiktok.webp" width={70} height={70} />
                 </Link>
               </div>
             </div>
@@ -146,7 +146,7 @@ const Contact = () => {
             <div className="items-center text-center">
               <div className="flex gap-3">
                 <Link href="https://www.tiktok.com/@vesinhsaoviet">
-                  <Image src="icon-tiktok.png" width={70} height={70} />
+                  <Image src="icon-tiktok.webp" width={70} height={70} />
                 </Link>
                 <Link href="http://bit.ly/youtube-saoviet">
                   <Image src="icon-youtube.svg" width={70} height={70} />

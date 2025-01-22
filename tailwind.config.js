@@ -1,5 +1,4 @@
 import { nextui } from "@nextui-org/react"
-import { Roboto } from "next/font/google"
 
 module.exports = {
   darkMode: ["class"],

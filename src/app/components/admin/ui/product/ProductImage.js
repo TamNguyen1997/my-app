@@ -18,7 +18,7 @@ const ProductImage = () => {
 
   const selectImage = (value) => {
     let newImages = product.product_on_image
-    if (newImages.length >= 10) {
+    if (newImages.length > 10) {
       toast.error("Không thể thêm hình, đã đạt tối đa 10 hình")
     } else {
       if (newImages.find(item => item.imageId === value.id)) {
@@ -161,8 +161,6 @@ const ImageItem = ({ img, onClick, deleteItem, index, moveRow }) => {
     })
   });
 
-  const border = collectedDragProps.isDragging ? "1px solid green" : "";
-
   drag(drop(ref));
 
   return <>
@@ -176,7 +174,6 @@ const ImageItem = ({ img, onClick, deleteItem, index, moveRow }) => {
         hover:scale-[1.02]
         transition duration-400
       `}
-    // style={{ border }}
     >
       <img
         src={`${process.env.NEXT_PUBLIC_FILE_PATH + img?.path}`}

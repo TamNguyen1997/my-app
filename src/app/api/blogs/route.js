@@ -56,7 +56,7 @@ export async function GET(req) {
       condition.blogCategory = query.blogCategory
     }
 
-    if (query.blogSubCategory) {
+    if (query.blogSubCategory !== "undefined") {
       condition.blogSubCategory = query.blogSubCategory
     }
 

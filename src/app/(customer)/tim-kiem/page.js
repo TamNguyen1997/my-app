@@ -59,7 +59,7 @@ const SearchProductBar = () => {
                   showShadow
                   page={page}
                   total={pages}
-                  onChange={(page) => navigate(page)}
+                  onChange={(page) => navigate(`/tim-kiem?key=${searchParams.get("key")}&page=${page}`)}
                 />
               </div>
             </> : ""
@@ -86,7 +86,7 @@ const SearchBlog = () => {
   }, [total, rowsPerPage]);
 
   const getBlog = () => {
-    fetch(`/api/blogs/?excludeSupport=true&size=${rowsPerPage}&page=${page}&slug=${searchParams.get("key")}`).then(async res => {
+    fetch(`/ api / blogs /? excludeSupport = true & size= ${rowsPerPage}&page=${page}&slug=${searchParams.get("key")}`).then(async res => {
       if (res.ok) {
         const body = await res.json()
         setData(body.result)

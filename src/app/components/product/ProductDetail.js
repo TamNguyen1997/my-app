@@ -84,7 +84,7 @@ export default ({ id }) => {
 
           <div className="sm:w-5/12 md:w-4/12 w-full">
             <div className="p-5 border-white border-b-[3px] bg-[#f8f8f8]">
-              <SaleDetail saleDetails={product.saleDetails?.filter(item => item.filterValueId && item.filterId && item.showPrice)} product={product} />
+              <SaleDetail saleDetails={product.saleDetails?.filter(item => item.filterValueId && item.filterId && item.showPrice) || []} product={product} />
             </div>
             <div className="text-sm p-5 bg-[#f8f8f8]">
               <p className="mb-2.5">Bạn cần trợ giúp?</p>

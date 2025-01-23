@@ -14,7 +14,6 @@ const Header = () => {
   const menuRef = useRef();
   const brandCategory = {
     id: "-1",
-    slug: "#",
     name: "Thương hiệu",
     subcates: BRANDS
   };
@@ -143,24 +142,42 @@ const Header = () => {
               <div className="bg-white shadow-lg w-[240px] border rounded-bl-lg">
                 {
                   categories?.map(category => (
-                    <Link
-                      key={category.id}
-                      href={`/${category.slug}`}
-                      onMouseOver={() => setHoveredCate(category)}
-                      className={`
+                    category.slug ?
+                      <Link
+                        key={category.id}
+                        href={`/${category.slug}`}
+                        onMouseOver={() => setHoveredCate(category)}
+                        className={`
                         items-center border-b hover:font-bold transition p-1.5 
                         ${category.slug !== "kien-thuc-hay" && category.slug !== "tin-tuc" ? "flex" : category.class} 
                         ${hoveredCate?.id === category.id && 'font-bold'}
                       `}
-                    >
-                      {
-                        category.slug !== "kien-thuc-hay" && category.slug !== "tin-tuc" ?
-                          <img src={`/icon/header/${category.slug}.svg`} alt="" title="" className="max-w-6 mr-2" /> : ""
-                      }
+                      >
+                        {
+                          category.slug !== "kien-thuc-hay" && category.slug !== "tin-tuc" ?
+                            <img src={`/icon/header/${category.slug}.svg`} alt="" title="" className="max-w-6 mr-2" /> : ""
+                        }
 
-                      <span className="mr-2">{category.name}</span>
-                      <ChevronRight size="15" className="ml-auto" />
-                    </Link>
+                        <span className="mr-2">{category.name}</span>
+                        <ChevronRight size="15" className="ml-auto" />
+                      </Link> :
+                      <p
+                        key={category.id}
+                        onMouseOver={() => setHoveredCate(category)}
+                        className={`
+                        items-center border-b hover:font-bold transition p-1.5 
+                        ${category.slug !== "kien-thuc-hay" && category.slug !== "tin-tuc" ? "flex" : category.class} 
+                        ${hoveredCate?.id === category.id && 'font-bold'}
+                      `}
+                      >
+                        {
+                          category.slug !== "kien-thuc-hay" && category.slug !== "tin-tuc" ?
+                            <img src={`/icon/header/${category.slug}.svg`} alt="" title="" className="max-w-6 mr-2" /> : ""
+                        }
+
+                        <span className="mr-2">{category.name}</span>
+                        <ChevronRight size="15" className="ml-auto" />
+                      </p>
                   ))
                 }
               </div>

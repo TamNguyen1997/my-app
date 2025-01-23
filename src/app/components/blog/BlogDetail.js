@@ -7,6 +7,7 @@ import parse from 'html-react-parser';
 
 import TableOfContent from "./TableOfContent"
 import RelatedBlogs from "./RelatedBlogs"
+import BlogNotFound from "@/components/BlogNotFound"
 
 const BlogContent = ({ blog }) => {
   return (<>
@@ -44,11 +45,12 @@ const BlogDetail = ({ slug }) => {
   const [blog, setBlog] = useState({})
   const [relatedBlogs, setRelatedBlogs] = useState([])
   const [isLoading, setIsLoading] = useState(true)
+  const [notFound, setNotFound] = useState(false)
   const getBlog = async () => {
     setIsLoading(true)
     const res = await fetch(`/api/blogs/${slug}`)
     if (!res.ok) {
-      window.location.replace(`/not-found/blog`)
+      setNotFound(true)
     }
     const json = await res.json()
     setBlog(json)
@@ -61,6 +63,7 @@ const BlogDetail = ({ slug }) => {
   }, [slug])
 
   if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />
+  if (notFound) return <BlogNotFound />
   return (
     <div className="bg-[#f6f6f6] font-open_san">
       <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/blog/${slug}`} />

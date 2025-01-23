@@ -54,6 +54,7 @@ const BlogDetail = ({ slug }) => {
     setBlog(json)
     fetch(`/api/blogs?blogCategory=${json.blogCategory}&size=4&page=1&excludeSupport=true&excludeSupport=true&active=true`).then(res => res.json()).then(json => setRelatedBlogs(json.result))
     setIsLoading(false)
+    window.scrollTo(0, 0)
   }
   useEffect(() => {
     getBlog()

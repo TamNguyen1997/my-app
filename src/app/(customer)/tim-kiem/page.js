@@ -7,6 +7,7 @@ import { Link, Pagination, Tab, Tabs } from "@nextui-org/react";
 import { Suspense } from 'react'
 import ProductCard from "@/components/product/ProductCard"
 import BlogItem from "@/app/components/blog/BlogItem";
+import { navigate } from "@/lib/utils";
 
 const SearchProductBar = () => {
   const rowsPerPage = 20
@@ -58,7 +59,7 @@ const SearchProductBar = () => {
                   showShadow
                   page={page}
                   total={pages}
-                  onChange={(page) => setPage(page)}
+                  onChange={(page) => navigate(page)}
                 />
               </div>
             </> : ""
@@ -74,17 +75,17 @@ const SearchBlog = () => {
   const [data, setData] = useState([])
   const searchParams = useSearchParams()
   const [total, setTotal] = useState(0)
-  const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"))
+  const [page, _] = useState(parseInt(searchParams.get("page") || "1"))
 
   useEffect(() => {
-    getCate()
-  }, []);
+    getBlog()
+  }, [page, searchParams]);
 
   const pages = useMemo(() => {
     return getTotalPages(total, rowsPerPage)
   }, [total, rowsPerPage]);
 
-  const getCate = () => {
+  const getBlog = () => {
     fetch(`/api/blogs/?excludeSupport=true&size=${rowsPerPage}&page=${page}&slug=${searchParams.get("key")}`).then(async res => {
       if (res.ok) {
         const body = await res.json()
@@ -113,16 +114,18 @@ const SearchBlog = () => {
                     })
                   }
                 </div>
-                <div className="flex w-full justify-center">
-                  <Pagination
-                    isCompact
-                    showControls
-                    showShadow
-                    page={page}
-                    total={pages}
-                    onChange={(page) => setPage(page)}
-                  />
-                </div>
+                {
+                  pages !== 1 ? <div className="flex w-full justify-center">
+                    <Pagination
+                      isCompact
+                      showControls
+                      showShadow
+                      page={page}
+                      total={pages}
+                      onChange={(page) => navigate(`/tim-kiem?key=${searchParams.get("key")}&page=${page}`)}
+                    />
+                  </div> : ""
+                }
               </> : ""
             }
           </>

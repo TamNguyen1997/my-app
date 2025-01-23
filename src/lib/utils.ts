@@ -1,6 +1,7 @@
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
+'use server'
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+import { redirect } from 'next/navigation'
+
+export async function navigate(url: string) {
+  redirect(url)
 }

@@ -5,10 +5,11 @@ const getPrice = (product) => {
 
   if (product.saleDetails.length === 1) return product.saleDetails[0].price.toLocaleString()?.replaceAll(",", ".")
 
-  if (!saleDetails[0]?.price) return saleDetails[saleDetails.length - 1]?.price.toLocaleString()?.replaceAll(",", ".")
+  const filteredSaleDetails = saleDetails.filter(item => item.promotionalPrice && item.filterId && item.filterValueId)
+  if (!filteredSaleDetails[0]?.price) return filteredSaleDetails[filteredSaleDetails.length - 1]?.price.toLocaleString()?.replaceAll(",", ".")
 
-  const promotions = saleDetails.filter(item => item.promotionalPrice).map(item => item.promotionalPrice)
-  const prices = saleDetails.map(item => item.price)
+  const promotions = filteredSaleDetails.map(item => item.promotionalPrice)
+  const prices = filteredSaleDetails.map(item => item.price)
   const display = [...promotions, ...prices].sort()
 
   if (display[0] === display[display.length - 1]) return display[0].toLocaleString().replaceAll(",", ".")

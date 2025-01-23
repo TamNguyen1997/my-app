@@ -13,7 +13,7 @@ import ProductNotFound from "@/components/ProductNotFound";
 export default ({ id }) => {
   const [product, setProduct] = useState({});
   const [images, setImages] = useState([]);
-  const [notFound, setNotFound] = useState(false);
+  const [showNotFound, setShowNotFound] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     getProduct()
@@ -24,7 +24,7 @@ export default ({ id }) => {
 
     const res = await fetch(`/api/products/${id}?includeTechnical=true&includeSale=true`)
     if (res.status === 404) {
-      setNotFound(true)
+      setShowNotFound(true)
     } else {
       res.json().then(product => {
         setProduct(product)
@@ -41,7 +41,7 @@ export default ({ id }) => {
     return <Skeleton />
   }
 
-  if (notFound) {
+  if (showNotFound) {
     return <ProductNotFound />
   }
 

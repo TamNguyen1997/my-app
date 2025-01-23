@@ -14,8 +14,7 @@ const SearchProductBar = () => {
   const [data, setData] = useState([])
   const searchParams = useSearchParams()
   const [total, setTotal] = useState(0)
-  const [page, _] = useState(parseInt(searchParams.get("page") || "1"))
-
+  const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"))
 
   useEffect(() => {
     getProduct()
@@ -59,7 +58,10 @@ const SearchProductBar = () => {
                   showShadow
                   page={page}
                   total={pages}
-                  onChange={(page) => navigate(`/tim-kiem?key=${searchParams.get("key")}&page=${page}`)}
+                  onChange={(page) => {
+                    setPage(page)
+                    navigate(`/tim-kiem?key=${searchParams.get("key")}&page=${page}`)
+                  }}
                 />
               </div>
             </> : ""
@@ -122,7 +124,10 @@ const SearchBlog = () => {
                       showShadow
                       page={page}
                       total={pages}
-                      onChange={(page) => navigate(`/tim-kiem?key=${searchParams.get("key")}&page=${page}`)}
+                      onChange={(page) => {
+                        setPage(page)
+                        navigate(`/tim-kiem?key=${searchParams.get("key")}&page=${page}`)
+                      }}
                     />
                   </div> : ""
                 }

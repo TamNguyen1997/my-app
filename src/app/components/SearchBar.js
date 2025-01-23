@@ -78,7 +78,7 @@ const SearchBar = () => {
         }
         value={condition.name}
         onValueChange={(value) => {
-          onConditionChange({ name: value, slug: value });
+          onConditionChange({ name: value, slug: value, title: value });
           if (value.length > 2) onSearch();
         }}
         onKeyDown={(e) => {
@@ -86,7 +86,7 @@ const SearchBar = () => {
             window.location.replace(`/tim-kiem?key=${slugify(condition.name, { locale: 'vi' }).replaceAll("(", "").replaceAll(")", "")}`)
           }
         }}
-        onClear={() => onConditionChange({ name: '', slug: '' })}
+        onClear={() => onConditionChange({ name: '', slug: '', title: '' })}
       />
       {condition.name && condition.name.length > 2 && (
         <div className="w-[400px] bg-white shadow-lg rounded-lg absolute top-full left-0 mt-2 overflow-hidden z-50">
@@ -100,7 +100,7 @@ const SearchBar = () => {
                   <Link
                     key={category.id}
                     href={`/${category.slug}`}
-                    onClick={() => onConditionChange({ name: '', slug: '' })}
+                    onClick={() => onConditionChange({ name: '', slug: '', title: '' })}
                   >
                     <div className="px-4 py-2 hover:bg-slate-50 cursor-pointer">
                       {category.name}
@@ -129,7 +129,7 @@ const SearchBar = () => {
                     <div key={product.id}>
                       <Link
                         href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`}
-                        onClick={() => onConditionChange({ name: '', slug: '' })}
+                        onClick={() => onConditionChange({ name: '', slug: '', title: '' })}
                       >
                         <div className="px-4 py-2 flex items-center gap-5 hover:bg-slate-50 cursor-pointer">
                           {
@@ -180,7 +180,7 @@ const SearchBar = () => {
                     <div key={blog.id}>
                       <Link
                         href={`/${blogCategories[blog.blogCategory].slug}/${blog.slug}`}
-                        onClick={() => onConditionChange({ name: '', slug: '' })}
+                        onClick={() => onConditionChange({ name: '', slug: '', title: '' })}
                       >
                         <div className="px-4 py-2 flex items-center gap-5 hover:bg-slate-50 cursor-pointer">
                           {

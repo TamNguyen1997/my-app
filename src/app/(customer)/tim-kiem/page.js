@@ -117,7 +117,7 @@ const SearchBlog = () => {
                   }
                 </div>
                 {
-                  pages !== 1 ? <div className="flex w-full justify-center">
+                  pages > 1 ? <div className="flex w-full justify-center">
                     <Pagination
                       isCompact
                       showControls

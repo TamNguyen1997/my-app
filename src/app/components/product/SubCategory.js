@@ -186,19 +186,22 @@ const SubCategory = ({ params, productFilter }) => {
                     </div>
                   ))}
                 </div>
-                <div className="flex w-full justify-center">
-                  <Pagination
-                    isCompact
-                    showControls
-                    showShadow
-                    page={page}
-                    total={pages}
-                    onChange={(page) => {
-                      setPage(page)
-                      navigate(`/${params}?page=${page}`)
-                    }}
-                  />
-                </div>
+                {
+                  page > 1 ? <div className="flex w-full justify-center">
+                    <Pagination
+                      isCompact
+                      showControls
+                      showShadow
+                      page={page}
+                      total={pages}
+                      onChange={(page) => {
+                        setPage(page)
+                        navigate(`/${params}?page=${page}`)
+                      }}
+                    />
+                  </div> : ""
+                }
+
               </>
           }
         </div>

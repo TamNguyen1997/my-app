@@ -1,6 +1,7 @@
 import ProductDetail from "@/app/components/product/ProductDetail";
 import SubCategory from "@/app/components/product/SubCategory";
 import Category from "@/app/components/product/Category";
+import CategoryNotFound from "@/app/components/CategoryNotFound";
 import { db } from '@/app/db';
 import { cate_type } from "@prisma/client";
 
@@ -24,6 +25,10 @@ const Page = async ({ params }) => {
   if (params.slug.length === 1) {
     const [slug, filter] = params.slug[0].split("#")
     const category = await db.category.findFirst({ where: { slug: slug }, include: { subcates: true, image: true } })
+
+    if (!category) {
+      return <CategoryNotFound />
+    }
     if (category?.type === cate_type.SUB_CATE) {
       return <SubCategory params={slug} productFilter={filter} />
     }

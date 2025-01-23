@@ -56,13 +56,13 @@ const SubCategory = ({ params, productFilter }) => {
       range += `range=${value.join('-')}`
     } else {
       if (!filterIds.length) {
-        navigate(`/${category.slug}`)
         getProduct()
+        navigate(`/${category.slug}`)
         return
       }
       if (filterIds.length === 1) {
-        navigate(`/${category.slug}#${filterIds[0]}`)
         getProduct()
+        navigate(`/${category.slug}#${filterIds[0]}`)
         return
       }
     }
@@ -74,8 +74,8 @@ const SubCategory = ({ params, productFilter }) => {
     if (filterIds.length) {
       query.push(`filterId=${filterIds.join("&filterId=")}`)
     }
-    navigate(`/${params}#${query.join("&")}`)
     getProduct()
+    navigate(`/${params}#${query.join("&")}`)
   }
 
 

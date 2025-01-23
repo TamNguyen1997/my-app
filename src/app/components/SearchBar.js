@@ -179,7 +179,7 @@ const SearchBar = () => {
                   return (
                     <div key={blog.id}>
                       <Link
-                        href={`/${blogCategories[blog.blogCategory]}/${blog.slug}`}
+                        href={`/${blogCategories[blog.blogCategory].slug}/${blog.slug}`}
                         onClick={() => onConditionChange({ name: '', slug: '' })}
                       >
                         <div className="px-4 py-2 flex items-center gap-5 hover:bg-slate-50 cursor-pointer">

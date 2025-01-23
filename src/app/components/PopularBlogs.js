@@ -55,7 +55,7 @@ export default function PopularBlogs() {
         {
           blogs?.map((blog) => {
             return <div className="p-1" key={blog.id}>
-              <Link href={`/kien-thuc-hay/${blog.slug}`}>
+              <Link href={`/tin-tuc/${blog.slug}`}>
                 <div className="hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)] rounded-[20px] transition">
                   <Card>
                     <CardHeader className="flex flex-col items-center justify-center h-64">
@@ -93,7 +93,7 @@ export default function PopularBlogs() {
       </Carousel>
 
       <Link
-        href="/kien-thuc-hay"
+        href="/tin-tuc"
         className="flex items-center w-1/3 min-w-[170px] h-[50px] m-auto rounded-large border-medium border-slate-950 hover:opacity-30">
         <span className="m-auto text-black">
           Xem tất cả tin tức

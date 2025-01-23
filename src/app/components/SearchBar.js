@@ -7,6 +7,15 @@ import Link from 'next/link';
 import React, { useRef, useState } from 'react';
 import slugify from 'slugify';
 
+const blogCategories = {
+  "INFORMATION": {
+    slug: "kien-thuc-hay"
+  },
+  "NEWS": {
+    slug: "tin-tuc"
+  }
+}
+
 const SearchBar = () => {
   const wrapperRef = useRef(null);
   const [isCategoriesLoading, setIsCategoriesLoading] = useState(false);
@@ -119,7 +128,7 @@ const SearchBar = () => {
                   return (
                     <div key={product.id}>
                       <Link
-                        href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.id}`}
+                        href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`}
                         onClick={() => onConditionChange({ name: '', slug: '' })}
                       >
                         <div className="px-4 py-2 flex items-center gap-5 hover:bg-slate-50 cursor-pointer">
@@ -170,7 +179,7 @@ const SearchBar = () => {
                   return (
                     <div key={blog.id}>
                       <Link
-                        href={`}`}
+                        href={`/${blogCategories[blog.blogCategory]}/${blog.slug}`}
                         onClick={() => onConditionChange({ name: '', slug: '' })}
                       >
                         <div className="px-4 py-2 flex items-center gap-5 hover:bg-slate-50 cursor-pointer">

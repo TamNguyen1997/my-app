@@ -111,7 +111,7 @@ const Cart = () => {
             </div>
           </div>
 
-          <Link href="/thanh-toan" className="items-center justify-center flex m-auto mt-8">
+          <Link href={!cartdetails || !cartdetails.length ? "#" : "/thanh-toan"} className="items-center justify-center flex m-auto mt-8">
             <Button color="primary" type="button"
               isDisabled={!cartdetails || !cartdetails.length}>
               Chuyển đến mục thanh toán

@@ -25,7 +25,7 @@ const Home = () => {
       <Introduction />
       <PopularBlogs />
       <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-2/3 md:w-1/3 min-w-[300px] h-[50px] m-auto shadow-md">
-        <Link href="/" className="m-auto text-black font-bold md:text-xl">KHÁCH HÀNG SAO VIỆT</Link>
+        <p className="m-auto text-black font-bold md:text-xl">KHÁCH HÀNG SAO VIỆT</p>
       </div>
       <Customer />
     </div>

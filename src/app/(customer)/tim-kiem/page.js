@@ -14,12 +14,12 @@ const SearchProductBar = () => {
   const [data, setData] = useState([])
   const searchParams = useSearchParams()
   const [total, setTotal] = useState(0)
-  const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"))
+  const [page, _] = useState(parseInt(searchParams.get("page") || "1"))
 
 
   useEffect(() => {
     getProduct()
-  }, []);
+  }, [page, searchParams]);
 
   const pages = useMemo(() => {
     return getTotalPages(total, rowsPerPage)

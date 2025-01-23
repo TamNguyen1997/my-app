@@ -6,6 +6,7 @@ import ProductCard from "@/components/product/ProductCard"
 import { getTotalPages } from "@/lib/pagination"
 import { useSearchParams } from "next/navigation";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import { navigate } from "@/lib/utils";
 
 const rowsPerPage = 20;
 
@@ -55,12 +56,12 @@ const SubCategory = ({ params, productFilter }) => {
       range += `range=${value.join('-')}`
     } else {
       if (!filterIds.length) {
-        window.location.replace(`/${category.slug}`)
+        navigate(`/${category.slug}`)
         getProduct()
         return
       }
       if (filterIds.length === 1) {
-        window.location.replace(`/${category.slug}#${filterIds[0]}`)
+        navigate(`/${category.slug}#${filterIds[0]}`)
         getProduct()
         return
       }
@@ -73,7 +74,7 @@ const SubCategory = ({ params, productFilter }) => {
     if (filterIds.length) {
       query.push(`filterId=${filterIds.join("&filterId=")}`)
     }
-    window.location.replace(`/${params}#${query.join("&")}`)
+    navigate(`/${params}#${query.join("&")}`)
     getProduct()
   }
 
@@ -192,7 +193,10 @@ const SubCategory = ({ params, productFilter }) => {
                     showShadow
                     page={page}
                     total={pages}
-                    onChange={(page) => setPage(page)}
+                    onChange={(page) => {
+                      setPage(page)
+                      navigate(`/${params}?page=${page}`)
+                    }}
                   />
                 </div>
               </>

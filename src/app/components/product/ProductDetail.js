@@ -8,10 +8,13 @@ import ProductImageCarousel from "@/components/ProductImageCarousel";
 import ProductDetailTabs from "@/components/ProductDetailTabs";
 import { motion } from "framer-motion";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import ProductNotFound from "@/components/ProductNotFound";
 
 export default ({ id }) => {
   const [product, setProduct] = useState({});
   const [images, setImages] = useState([]);
+  const [notFound, setNotFound] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     getProduct()
 
@@ -21,7 +24,7 @@ export default ({ id }) => {
 
     const res = await fetch(`/api/products/${id}?includeTechnical=true&includeSale=true`)
     if (res.status === 404) {
-      window.location.replace("/not-found")
+      setNotFound(true)
     } else {
       res.json().then(product => {
         setProduct(product)
@@ -32,9 +35,14 @@ export default ({ id }) => {
         }
       })
     }
+    setIsLoading(false)
   }
-  if (!product?.id) {
+  if (isLoading) {
     return <Skeleton />
+  }
+
+  if (notFound) {
+    return <ProductNotFound />
   }
 
   return (

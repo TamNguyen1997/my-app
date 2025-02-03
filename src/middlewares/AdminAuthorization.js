@@ -9,6 +9,7 @@ export const AdminAuthorization = (next) => {
     if (
       ["POST", "PUT", "DELETE"].includes(method) &&
       pathname.startsWith("/api") &&
+      pathname.startsWith("/api/order") &&
       !pathname.startsWith("/api/courier/shipping-price")
     ) {
       if (pathname !== "/api/order" && pathname !== "/api/login") {

@@ -1,5 +1,13 @@
 const pg = require('pg');
-const { CATEGORY_TO_WORDPRESS_CATEGORY_ID } = require('./src/lib/blog');
+const CATEGORY_TO_WORDPRESS_CATEGORY_ID = {
+  "ALL": "7",
+  "INFORMATION": "8",
+  "NEWS": "9",
+  "TERMINOLOGY": "10",
+  "ADVISORY": "11",
+  "MANUAL": "12",
+}
+
 const { Client } = pg
 const client = new Client({
   user: 'postgres',

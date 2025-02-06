@@ -34,7 +34,7 @@ const BlogItem = ({ noBorder = false, item, containerClass = "lg:grid-cols-[160p
                     ${!noBorder && '[&:not(:last-child)]:border-b border-[#ebebeb] pb-4'}
                 `}
       >
-        <img src={`${item._embedded["wp:featuredmedia"].length ? item._embedded["wp:featuredmedia"][0]["source_url"] : "/default-featured-image.webp"}`} alt="" title="" className="w-full aspect-[16/10] object-cover rounded-lg" />
+        <img src={`${item._embedded["wp:featuredmedia"]?.length ? item._embedded["wp:featuredmedia"][0]["source_url"] : "/default-featured-image.webp"}`} alt="" title="" className="w-full aspect-[16/10] object-cover rounded-lg" />
         <div
           className={`${textClass}`}
         >

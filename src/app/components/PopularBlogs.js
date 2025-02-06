@@ -65,7 +65,7 @@ export default function PopularBlogs() {
                       <Image
                         height={256}
                         className="h-full w-full object-cover object-top"
-                        src={`${blog._embedded["wp:featuredmedia"].length ? blog._embedded["wp:featuredmedia"][0]["source_url"] : "/default-featured-image.webp"}`}
+                        src={`${blog._embedded["wp:featuredmedia"]?.length ? blog._embedded["wp:featuredmedia"][0]["source_url"] : "/default-featured-image.webp"}`}
                         alt="Thumbnail image"
                       />
                     </CardHeader>

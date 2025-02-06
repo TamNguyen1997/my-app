@@ -19,7 +19,7 @@ const execute = async () => {
   const products = await client.query("SELECT * FROM product where length(description) > 50 limit 1");
   products.rows.forEach(async product => {
     const data = {
-      title: product.title,
+      title: product.name,
       slug: product.slug,
       content: product.description,
       status: 'publish'

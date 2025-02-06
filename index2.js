@@ -16,7 +16,7 @@ const WORDPRESS_PASSWORD = "Password123!"
 const execute = async () => {
   await client.connect()
 
-  const products = await client.query("SELECT * FROM product limit 1");
+  const products = await client.query("SELECT * FROM product where length(description) > 50 limit 1");
   products.rows.forEach(async product => {
     const data = {
       title: product.title,

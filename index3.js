@@ -24,6 +24,14 @@ const WORDPRESS_PASSWORD = "Password123!"
 const execute = async () => {
   await client.connect()
 
+  const images = []
+
+  for (let i = 1; ; i++) {
+    const slice = await fetch(`https://dcvs.shop/wordpress/wp-json/wp/v2/media?per_page=100&page=${i}`)
+    if (!slice.ok) break
+    images.push(...await slice.json())
+  }
+
   const blogs = await client.query("SELECT * FROM blog where length(content) > 50 and slug not in ('ho-tro', 'chinh-sach-bao-mat', 'hop-tac-ban-hang', 'chinh-sach-doi-tra', 'chinh-sach-bao-hanh','huong-dan-mua-hang', 'hinh-thuc-thanh-toan', 'hinh-thuc-van-chuyen', 'doi-tac', 'khach-hang')");
   blogs.rows.forEach(async blog => {
     const data = {
@@ -33,6 +41,7 @@ const execute = async () => {
       categories: `${CATEGORY_TO_WORDPRESS_CATEGORY_ID[blog.blog_category]},${CATEGORY_TO_WORDPRESS_CATEGORY_ID[blog.blog_sub_category]}`,
       status: blog.actice ? 'publish' : 'draft',
       thumbnail: `https://dcvs.shop/wordpress/wp-content/uploads/${blog.thumbnail}`,
+      featured_media: images.find(image => image.source_url.includes(blog.thumbnail)).id,
       yoast_meta: {
         yoast_wpseo_title: blog.meta_title,
         yoast_wpseo_metadesc: blog.meta_description

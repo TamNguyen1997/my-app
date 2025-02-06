@@ -65,7 +65,7 @@ export default function PopularBlogs() {
                       <Image
                         height={256}
                         className="h-full w-full object-cover object-top"
-                        src={`${blog.yoast_head_json?.schema["@graph"].find(item => item["@type"] === "WebPage").thumbnailUrl || "/default-featured-image.webp"}`}
+                        src={`${blog._embedded["wp:featuredmedia"][0]["source_url"] || "/default-featured-image.webp"}`}
                         alt="Thumbnail image"
                       />
                     </CardHeader>
@@ -78,10 +78,10 @@ export default function PopularBlogs() {
                       </div>
                       <div className="w-full flex">
                         <div className="italic">
-                          {new Date(blog.updatedAt).toLocaleDateString("en-GB")}
+                          {new Date(blog.modified).toLocaleDateString("en-GB")}
                         </div>
                         <div className="text-sm text-[#6d6d6d] absolute right-2">
-                          {blog.author}
+                          {blog.yoast_head_json?.author}
                         </div>
                       </div>
                     </CardBody>

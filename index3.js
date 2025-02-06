@@ -1,11 +1,11 @@
 const pg = require('pg');
 const CATEGORY_TO_WORDPRESS_CATEGORY_ID = {
-  "ALL": "7",
-  "INFORMATION": "8",
-  "NEWS": "9",
-  "TERMINOLOGY": "10",
-  "ADVISORY": "11",
-  "MANUAL": "12",
+  "ALL": 7,
+  "INFORMATION": 8,
+  "NEWS": 9,
+  "TERMINOLOGY": 10,
+  "ADVISORY": 11,
+  "MANUAL": 12,
 }
 
 const { Client } = pg
@@ -25,7 +25,7 @@ const WORDPRESS_PASSWORD = "Password123!"
 const execute = async () => {
   await client.connect()
 
-  const blogs = await client.query("SELECT * FROM blog where length(content) and  > 50 limit 1");
+  const blogs = await client.query("SELECT * FROM blog where length(content) > 50 limit 1");
   blogs.rows.forEach(async blog => {
     const data = {
       title: blog.title,

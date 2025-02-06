@@ -9,11 +9,19 @@ const client = new Client({
 })
 
 
-const WORDPRESS_URL = "https://dcvs.shop/wordpress/wp-json/wp/v2/posts"
+const WORDPRESS_URL = "https://dcvs.shop/wordpress/wp-json/wp/v2"
 const WORDPRESS_USER = "admin"
 const WORDPRESS_PASSWORD = "Password123!"
 
 const execute = async () => {
+  const images = []
+
+  for (let i = 1; ; i++) {
+    const slice = await fetch(`${WORDPRESS_URL}/media?per_page=100&page=${i}`)
+    if (!slice.ok) break
+    images.push(...await slice.json())
+  }
+
   await client.connect()
 
   const products = await client.query("SELECT * FROM product where length(description) > 50 limit 1");
@@ -22,10 +30,11 @@ const execute = async () => {
       title: product.name,
       slug: product.slug,
       content: product.description,
-      status: 'publish'
+      categories: 13,
+      status: product.active ? 'publish' : 'draft',
     }
 
-    const result = await fetch(WORDPRESS_URL, {
+    const result = await fetch(`${WORDPRESS_URL}/posts`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -34,7 +43,6 @@ const execute = async () => {
       body: JSON.stringify(data)
     })
     console.log(result.status)
-    console.log(await result.json())
   });
 }
 

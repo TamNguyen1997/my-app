@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import parse from 'html-react-parser';
 
 import TableOfContent from "./TableOfContent"
-import RelatedBlogs from "./RelatedBlogs"
 import BlogNotFound from "@/components/BlogNotFound"
 
 const BlogContent = ({ blog }) => {
@@ -36,7 +35,7 @@ const BlogContent = ({ blog }) => {
               `}
       style={{ "--tw-prose-bullets": "currentColor" }}
     >
-      {blog.content ? parse(blog.content) : ""}
+      {blog.content ? parse(blog.content.rendered) : ""}
     </motion.div>
   </>)
 }
@@ -48,13 +47,18 @@ const BlogDetail = ({ slug }) => {
   const [notFound, setNotFound] = useState(false)
   const getBlog = async () => {
     setIsLoading(true)
-    const res = await fetch(`/api/blogs/${slug}`)
+    const res = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${slug}`)
     if (!res.ok) {
       setNotFound(true)
     }
-    const json = await res.json()
+    const json = (await res.json())[0]
+    if (!json || !json.content) {
+      setNotFound(true)
+    }
     setBlog(json)
-    fetch(`/api/blogs?blogCategory=${json.blogCategory}&size=4&page=1&excludeSupport=true&excludeSupport=true&active=true`).then(res => res.json()).then(json => setRelatedBlogs(json.result))
+    await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?categories=${json.categories?.join()}&exclude=${json.id}&per_page=4`)
+      .then(res => res.json())
+      .then(json => setRelatedBlogs(json))
     setIsLoading(false)
     window.scrollTo(0, 0)
   }
@@ -77,7 +81,7 @@ const BlogDetail = ({ slug }) => {
             }}
           >
             <BreadcrumbItem href="/blog">Blog</BreadcrumbItem>
-            <BreadcrumbItem>{blog.title}</BreadcrumbItem>
+            <BreadcrumbItem>{blog.title.rendered}</BreadcrumbItem>
           </Breadcrumbs>
         </div>
       </div>
@@ -91,7 +95,7 @@ const BlogDetail = ({ slug }) => {
               viewport={{ once: true }}
               className="text-3xl leading-[38px] font-semibold mb-4"
             >
-              {blog.title}
+              {blog.title.rendered}
             </motion.h1>
 
             <motion.div
@@ -103,17 +107,8 @@ const BlogDetail = ({ slug }) => {
             >
               <span>Đóng góp bởi: <b className="ml-1">{blog.author}</b></span>
               <span className="w-1 h-1 min-w-1 bg-[#e9e9e9] rounded-full mx-2"></span>
-              <span>Cập nhật: <b className="ml-1">{new Date(blog.updatedAt).toLocaleDateString()}</b></span>
+              <span>Cập nhật: <b className="ml-1">{new Date(blog.modified).toLocaleDateString()}</b></span>
             </motion.div>
-
-            <motion.p
-              initial={{ x: -100, opacity: 0 }}
-              whileInView={{ x: 0, opacity: 1 }}
-              transition={{ duration: 0.7 }}
-              viewport={{ once: true }}
-            >
-              {blog.summary}
-            </motion.p>
 
             <BlogContent blog={blog} />
 
@@ -130,21 +125,11 @@ const BlogDetail = ({ slug }) => {
                   return (
                     <div className="flex items-center pl-4 mb-2" key={index}>
                       <div className="w-[5px] h-[5px] min-w-[5px] bg-black rounded-full mr-2"></div>
-                      <Link href="" className="hover:underline transition">{item.title}</Link>
+                      <Link href="" className="hover:underline transition">{item.title.rendered}</Link>
                     </div>
                   )
                 })
               }
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              viewport={{ once: true }}
-              className="mt-14"
-            >
-              <RelatedBlogs relatedBlogs={relatedBlogs} />
             </motion.div>
           </div>
         </div>

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Carousel from "react-multi-carousel"
 import "react-multi-carousel/lib/styles.css"
 import { motion } from "framer-motion";
+import parse from 'html-react-parser';
 
 const responsive = {
   superLargeDesktop: {
@@ -32,7 +33,9 @@ export default function PopularBlogs() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    fetch(`/api/blogs?excludeSupport=true&active=true&size=10&page=${1}`).then(res => res.json()).then((json) => setBlogs(json.result)).then(() => setIsLoading(false))
+    fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?per_page=10&page=1`)
+      .then(res => res.json()).then(json => setBlogs(json))
+      .then(() => setIsLoading(false))
   }, [])
 
   if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />
@@ -62,9 +65,7 @@ export default function PopularBlogs() {
                       <Image
                         height={256}
                         className="h-full w-full object-cover object-top"
-                        src={`${process.env.NEXT_PUBLIC_FILE_PATH && blog.thumbnail ?
-                          process.env.NEXT_PUBLIC_FILE_PATH + blog.thumbnail :
-                          "/default-featured-image.webp"}`}
+                        src={`${blog.yoast_head_json?.schema["@graph"].find(item => item["@type"] === "WebPage").thumbnailUrl || "/default-featured-image.webp"}`}
                         alt="Thumbnail image"
                       />
                     </CardHeader>
@@ -72,7 +73,7 @@ export default function PopularBlogs() {
                     <CardBody>
                       <div className="h-28 w-full font-bold">
                         <p className="line-clamp-3">
-                          {blog.title}
+                          {parse(blog.title.rendered)}
                         </p>
                       </div>
                       <div className="w-full flex">

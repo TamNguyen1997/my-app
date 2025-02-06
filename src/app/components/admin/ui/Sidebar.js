@@ -7,7 +7,6 @@ import {
   Contact,
   Filter,
   History,
-  HomeIcon,
   Image,
   Info,
   Layers,
@@ -44,7 +43,7 @@ const items = [
     id: "blog",
     name: "Blog",
     icon: <NotebookPen />,
-    link: "/admin/blog",
+    link: `${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-admin/edit.php`,
   },
   {
     id: "support",

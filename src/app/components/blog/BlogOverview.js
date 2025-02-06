@@ -6,6 +6,7 @@ import { Button, Link } from "@nextui-org/react";
 import BlogCarousel from "./BlogCarousel";
 import TopBlogs from "./TopBlogs";
 import BlogItem from "./BlogItem";
+import { CATEGORY_TO_WORDPRESS_CATEGORY_ID } from "@/lib/blog";
 
 const blogCategories = [
   {
@@ -49,10 +50,13 @@ const BlogOverview = ({ activeCategory, activeTag }) => {
   const [page, setPage] = useState(1)
 
   useEffect(() => {
-    fetch(`/api/blogs?blogCategory=${activeCategory}&blogSubCategory=${activeTag || ""}&activeDate=true&excludeSupport=true&active=true&size=10&page=${page}&orderBy=createdAt:desc`).then(res => res.json()).then(json => {
-      setBlogs([...blogs, ...json.result])
-      setCategory(blogCategories.find(item => item.id === activeCategory))
-    })
+    const wordpressCateIds = [CATEGORY_TO_WORDPRESS_CATEGORY_ID[activeCategory], CATEGORY_TO_WORDPRESS_CATEGORY_ID[activeTag]]
+    fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?categories=${wordpressCateIds.join()}&per_page=10&page=${page}`)
+      .then(res => res.json())
+      .then(json => {
+        setBlogs([...blogs, ...json])
+        setCategory(blogCategories.find(item => item.id === activeCategory))
+      })
   }, [activeCategory, activeTag, page])
 
   return (

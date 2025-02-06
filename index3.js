@@ -31,12 +31,12 @@ const execute = async () => {
       title: blog.title,
       slug: blog.slug,
       content: blog.content,
-      categories: `${CATEGORY_TO_WORDPRESS_CATEGORY_ID[blog.category]},${CATEGORY_TO_WORDPRESS_CATEGORY_ID[blog.blogSubCategory]}`,
+      categories: `${CATEGORY_TO_WORDPRESS_CATEGORY_ID[blog.blog_category]},${CATEGORY_TO_WORDPRESS_CATEGORY_ID[blog.blog_sub_category]}`,
       status: blog.actice ? 'publish' : 'draft',
       thumbnail: `https://dcvs.shop/wordpress/wp-content/uploads/${blog.thumbnail}`,
       yoast_meta: {
-        yoast_wpseo_title: blog.metaTitle,
-        yoast_wpseo_metadesc: blog.metaDescription
+        yoast_wpseo_title: blog.meta_title,
+        yoast_wpseo_metadesc: blog.meta_description
       }
     }
 

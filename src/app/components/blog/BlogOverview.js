@@ -48,11 +48,13 @@ const BlogOverview = ({ activeCategory, activeTag }) => {
   const [blogs, setBlogs] = useState([]);
   const [category, setCategory] = useState({});
   const [page, setPage] = useState(1)
+  const [endContent, setEndContent] = useState(false)
 
   useEffect(() => {
     const wordpressCateIds = [CATEGORY_TO_WORDPRESS_CATEGORY_ID[activeCategory], CATEGORY_TO_WORDPRESS_CATEGORY_ID[activeTag]]
-    fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?categories=${wordpressCateIds.join()}&per_page=10&page=${page}`)
+    fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&categories=${wordpressCateIds.join()}&per_page=10&page=${page}`)
       .then(res => res.json())
+      .catch(err => setEndContent(true))
       .then(json => {
         setBlogs([...blogs, ...json])
         setCategory(blogCategories.find(item => item.id === activeCategory))
@@ -137,13 +139,13 @@ const BlogOverview = ({ activeCategory, activeTag }) => {
                 }
               </div>
 
-              <Button
+              {!endContent && <Button
                 className="flex justify-center items-center font-semibold w-[181px] h-[43px] rounded-[30px] text-black bg-white
                 border border-black hover:bg-[#FFD400] transition mx-auto text-large"
                 onClick={() => setPage(page + 1)}
               >
                 Xem thêm
-              </Button>
+              </Button>}
             </div>
           </motion.div>
         </div>

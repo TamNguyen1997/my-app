@@ -6,7 +6,7 @@ import { Button, Link } from "@nextui-org/react";
 import BlogCarousel from "./BlogCarousel";
 import TopBlogs from "./TopBlogs";
 import BlogItem from "./BlogItem";
-import { CATEGORY_TO_WORDPRESS_CATEGORY_ID } from "@/lib/blog";
+import { CATEGORY_TO_WORDPRESS_CATEGORY_ID } from "@/lib/constant";
 
 const blogCategories = [
   {

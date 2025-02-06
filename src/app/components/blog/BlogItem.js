@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { User, Calendar } from "lucide-react";
+import { CATEGORY_TO_WORDPRESS_CATEGORY_ID } from "@/lib/constant";
 import parse from 'html-react-parser';
 
 const blogCategories = {
@@ -14,7 +15,7 @@ const blogCategories = {
 }
 
 const getParentCategory = (blog) => {
-  if (blog.categories.includes(9)) {
+  if (blog.categories.includes(CATEGORY_TO_WORDPRESS_CATEGORY_ID["NEWS"])) {
     return "NEWS"
   }
   return "INFORMATION"

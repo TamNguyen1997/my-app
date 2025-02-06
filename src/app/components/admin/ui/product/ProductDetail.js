@@ -1,17 +1,17 @@
-import { Button, DatePicker, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Switch, useDisclosure } from "@nextui-org/react"
+import { Button, DatePicker, Input, Link, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Switch, useDisclosure } from "@nextui-org/react"
 import slugify from "slugify"
 import ImageCms from "../ImageCms"
 import { useCallback, useContext, useState } from "react"
 import { parseDate } from "@internationalized/date";
-import RichTextEditor from "../RichTextArea";
 import { ProductContext } from "../../../../(admin)/admin/product/edit/[id]/page"
+import { toast } from "react-toastify";
 
 const getDateString = (isoDate) =>
   parseDate(new Date(isoDate).toISOString().split("T")[0]);
 
 const ProductDetail = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const { categories, brands, subCategories, product, setProduct, editor } = useContext(ProductContext)
+  const { categories, brands, subCategories, product, setProduct } = useContext(ProductContext)
   const [productImage, setProductImage] = useState(product.image || {})
 
   const selectImage = (value) => {
@@ -24,6 +24,35 @@ const ProductDetail = () => {
   const getSubCate = useCallback(() => {
     return product.categoryId ? subCategories.filter(item => item.cateId === product.categoryId) : subCategories
   }, [product])
+
+  const getProductPostLink = async (product) => {
+    const existingPostResponse = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts?slug=${product.slug}`)
+    if (!existingPostResponse.ok) {
+      console.log(existingPostResponse.status)
+      toast.error("Có lỗi xảy ra khi kiểm tra bài viết sản phẩm")
+    } else {
+      const existingPost = await existingPostResponse.json()
+      if (existingPost.length > 0) {
+        window.open(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-admin/post.php?post=${existingPost[0].id}&action=edit`, "_blank").focus()
+      } else {
+        const createdPostResponse = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Basic ${Buffer.from(`${process.env.NEXT_PUBLIC_WORDPRESS_USER}:${process.env.NEXT_PUBLIC_WORDPRESS_PASSWORD}`).toString("base64")}`
+          },
+          body: JSON.stringify({
+            title: product.name,
+            slug: product.slug,
+            status: "draft",
+            categories: [process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID],
+          })
+        })
+        const createdPost = await createdPostResponse.json()
+        window.open(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-admin/post.php?post=${createdPost.id}&action=edit`, '_blank').focus();
+      }
+    }
+  }
 
   return (
     <>
@@ -218,9 +247,7 @@ const ProductDetail = () => {
             }
           </div>
         </div>
-        <div className="max-h-96">
-          <RichTextEditor editor={editor} />
-        </div>
+        <Button color="primary" className="w-40" onClick={() => getProductPostLink(product)}>Xem mô tả sản phẩm</Button>
       </div>
 
       <Modal

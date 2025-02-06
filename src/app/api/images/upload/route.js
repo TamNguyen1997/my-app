@@ -37,8 +37,19 @@ export async function POST(req) {
     const result = await save(formData, filePath);
     fs.writeFile(`./public${filePath}`, buffer, { encoding: 'utf8', flag: 'w' });
 
+    const formDataForWordpress = new FormData();
+    formDataForWordpress.append("file", file);
+    formData.append("title", convertStringToSlug(name));
+    await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/media`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${Buffer.from(`${process.env.NEXT_PUBLIC_WORDPRESS_USER}:${process.env.NEXT_PUBLIC_WORDPRESS_PASSWORD}`).toString('base64')}`
+      },
+      body: formDataForWordpress
+    })
     return NextResponse.json(result);
   } catch (e) {
+    console.log(e)
     await db.image.deleteMany({ where: { slug_type: { slug: slug, type: formData.get("type") } } })
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 });
   }

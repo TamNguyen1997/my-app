@@ -14,14 +14,6 @@ const WORDPRESS_USER = "admin"
 const WORDPRESS_PASSWORD = "Password123!"
 
 const execute = async () => {
-  const images = []
-
-  for (let i = 1; ; i++) {
-    const slice = await fetch(`${WORDPRESS_URL}/media?per_page=100&page=${i}`)
-    if (!slice.ok) break
-    images.push(...await slice.json())
-  }
-
   await client.connect()
 
   const products = await client.query("SELECT * FROM product where length(description) > 50 limit 1");

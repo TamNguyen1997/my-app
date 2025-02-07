@@ -13,6 +13,7 @@ export default ({ id }) => {
   const [product, setProduct] = useState({});
   const [images, setImages] = useState([]);
   const [showNotFound, setShowNotFound] = useState(false);
+  const [description, setDescription] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     getProduct()
@@ -25,8 +26,13 @@ export default ({ id }) => {
     if (res.status === 404) {
       setShowNotFound(true)
     } else {
-      res.json().then(product => {
+      res.json().then(async product => {
         setProduct(product)
+        const productPostResponse = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${product.slug}`);
+        if (productPostResponse.ok) {
+          const productPost = await productPostResponse.json();
+          setDescription(productPost[0]?.content?.rendered);
+        }
         if (product.id) {
           fetch(`/api/products/${product.id}/images`).then((res) => res.json()).then((json) => {
             setImages(json.map(item => process.env.NEXT_PUBLIC_FILE_PATH + item.image.path))
@@ -104,7 +110,7 @@ export default ({ id }) => {
           transition={{ duration: 0.7 }}
           viewport={{ once: true }}
         >
-          <ProductDetailTabs product={product} />
+          <ProductDetailTabs product={product} description={description} />
         </motion.div>
       </div>
     </>

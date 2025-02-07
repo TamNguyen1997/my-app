@@ -16,13 +16,7 @@ const ID = {
   RELATED_ITEMS: "RELATED_ITEMS"
 };
 
-const TabContent = async ({ id, product }) => {
-  const productPostResponse = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${product.slug}`);
-  let description;
-  if (productPostResponse.ok) {
-    const productPost = await productPostResponse.json();
-    description = productPost[0]?.content?.rendered;
-  }
+const TabContent = ({ id, product, description }) => {
   switch (id) {
     case ID.DESCRIPTION:
       return (

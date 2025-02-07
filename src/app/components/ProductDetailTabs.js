@@ -16,7 +16,13 @@ const ID = {
   RELATED_ITEMS: "RELATED_ITEMS"
 };
 
-const TabContent = ({ id, product }) => {
+const TabContent = async ({ id, product }) => {
+  const productPostResponse = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${product.slug}`);
+  let description;
+  if (productPostResponse.ok) {
+    const productPost = await productPostResponse.json();
+    description = productPost[0]?.content?.rendered;
+  }
   switch (id) {
     case ID.DESCRIPTION:
       return (
@@ -30,7 +36,7 @@ const TabContent = ({ id, product }) => {
           prose
           mb-9 product-description
         `}>
-          {product.description ? parse(product.description) : ""}
+          {description ? parse(description) : ""}
         </div>
       )
     case ID.FEATURES:

@@ -7,6 +7,7 @@ import parse from 'html-react-parser';
 
 import TableOfContent from "./TableOfContent"
 import BlogNotFound from "@/components/BlogNotFound"
+import "./BlogDetail.css"
 
 const BlogContent = ({ blog }) => {
   return (<>

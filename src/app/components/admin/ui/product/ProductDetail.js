@@ -26,7 +26,7 @@ const ProductDetail = () => {
   }, [product])
 
   const getProductPostLink = async (product) => {
-    const existingPostResponse = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts?slug=${product.slug}&status=draft,publish`,
+    const existingPostResponse = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts?slug=${product.slug}&status=any`,
       {
         method: "GET",
         headers: {

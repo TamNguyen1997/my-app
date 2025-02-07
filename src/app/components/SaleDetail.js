@@ -45,6 +45,11 @@ const SaleDetail = ({ saleDetails, product }) => {
   }
 
   const getPrice = () => {
+    if (saleDetails.length === 1 && saleDetails[0].showPrice) {
+      return saleDetails[0].promotionalPrice > 0 ?
+        saleDetails[0].promotionalPrice.toLocaleString().replaceAll(",", ".") :
+        saleDetails[0].price.toLocaleString().replaceAll(",", ".");
+    }
     if (selectedSecondaryDetail.price && selectedSecondaryDetail.showPrice) {
       return selectedSecondaryDetail.promotionalPrice > 0 ?
         selectedSecondaryDetail.promotionalPrice.toLocaleString().replaceAll(",", ".") :

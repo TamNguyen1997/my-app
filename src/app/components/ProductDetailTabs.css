@@ -16,3 +16,7 @@
 .tab-header>.tab-header-content {
   scroll-behavior: smooth;
 }
+
+*[style*="font-family: open-sans"] {
+  font-family: "Open Sans", sans-serif !important;
+}

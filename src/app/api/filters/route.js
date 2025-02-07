@@ -129,8 +129,13 @@ const getFilters = async (query) => {
     condition.active = query.active === "true"
   }
 
-  if (query.name && query.name !== 'undefined') {
-    condition.name = query.name
+  if (query.filterValueName && query.filterValueName !== 'undefined') {
+    condition.filterValue = condition.filterValue || {}
+    condition.filterValue = Object.assign(condition.filterValue, {
+      some: {
+        value: query.filterValueName
+      }
+    })
   }
 
   if (query.id_name) {

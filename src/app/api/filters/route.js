@@ -116,8 +116,21 @@ const getFilters = async (query) => {
     })
   }
 
+  if (query.filterValueId) {
+    condition.filterValue = condition.filterValue || {}
+    condition.filterValue = Object.assign(condition.filterValue, {
+      some: {
+        id: query.filterValueId
+      }
+    })
+  }
+
   if (query.active) {
     condition.active = query.active === "true"
+  }
+
+  if (query.name && query.name !== 'undefined') {
+    condition.name = query.name
   }
 
   if (query.id_name) {

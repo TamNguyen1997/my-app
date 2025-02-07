@@ -123,7 +123,7 @@ const Filter = () => {
           <Input label="Tên giá trị filter" aria-label="Tên giá trị filter" labelPlacement="outside"
             isClearable
             onValueChange={(value) => {
-              if (value.length > 2 || value.length === 0) onConditionChange({ attrName: value })
+              if (value.length > 2 || value.length === 0) onConditionChange({ name: value })
             }}
           />
 
@@ -137,7 +137,7 @@ const Filter = () => {
           <Input label="ID giá trị filter" aria-label="ID giá trị filter" labelPlacement="outside"
             isClearable
             onValueChange={(value) => {
-              if (value.length > 2 || value.length === 0) onConditionChange({ attrId: value })
+              if (value.length > 2 || value.length === 0) onConditionChange({ filterValueId: value })
             }}
           />
 

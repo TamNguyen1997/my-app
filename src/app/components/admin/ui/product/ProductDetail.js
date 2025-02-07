@@ -47,8 +47,10 @@ const ProductDetail = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "Cache-Control": "no-cache",
             "Authorization": `Basic ${Buffer.from(`${process.env.NEXT_PUBLIC_WORDPRESS_USER}:${process.env.NEXT_PUBLIC_WORDPRESS_PASSWORD}`).toString("base64")}`
           },
+          credentials: "omit",
           body: JSON.stringify({
             title: product.name,
             slug: product.slug,

@@ -127,7 +127,7 @@ const SaleDetail = ({ saleDetails, product }) => {
       <div className="flex flex-col gap-3">
         <div className="flex gap-2 flex-wrap">
           {
-            saleDetails.length > 1 && saleDetails.filter(item => !item.saleDetailId && item.filterValueId && item.filterValue).map(detail => {
+            saleDetails.length > 1 && saleDetails.filter(item => !item.saleDetailId && item.filterValueId && item.filterValue && item.filterId && item.filterValue).map(detail => {
               return <div key={detail.id} className="flex flex-col gap-1">
                 {
                   detail.type === "COLOR" ?

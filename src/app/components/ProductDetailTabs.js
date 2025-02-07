@@ -17,6 +17,7 @@ const ID = {
 };
 
 const TabContent = ({ id, product, description }) => {
+  console.log(description)
   switch (id) {
     case ID.DESCRIPTION:
       return (
@@ -86,7 +87,7 @@ const TabContent = ({ id, product, description }) => {
   }
 }
 
-export default ({ product }) => {
+export default ({ product, description }) => {
   const tabs = [
     { id: ID.DESCRIPTION, title: "Mô tả" },
     // { id: ID.FEATURES, title: "Tính năng và ưu điểm" },
@@ -219,7 +220,7 @@ export default ({ product }) => {
                   {tab.title}
                 </div>
 
-                <TabContent id={tab.id} product={product} />
+                <TabContent id={tab.id} product={product} description={description} />
               </div>
             )
           })

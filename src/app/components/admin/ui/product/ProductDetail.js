@@ -28,6 +28,7 @@ const ProductDetail = () => {
   const getProductPostLink = async (product) => {
     const existingPostResponse = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts?slug=${product.slug}&status=draft,publish`,
       {
+        method: "GET",
         headers: {
           "Authorization": `Basic ${Buffer.from(`${process.env.NEXT_PUBLIC_WORDPRESS_USER}:${process.env.NEXT_PUBLIC_WORDPRESS_PASSWORD}`).toString("base64")}`
         }

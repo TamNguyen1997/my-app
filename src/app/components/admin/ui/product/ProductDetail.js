@@ -26,7 +26,12 @@ const ProductDetail = () => {
   }, [product])
 
   const getProductPostLink = async (product) => {
-    const existingPostResponse = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts?slug=${product.slug}`)
+    const existingPostResponse = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts?slug=${product.slug}&status=draft,publish`,
+      {
+        headers: {
+          "Authorization": `Basic ${Buffer.from(`${process.env.NEXT_PUBLIC_WORDPRESS_USER}:${process.env.NEXT_PUBLIC_WORDPRESS_PASSWORD}`).toString("base64")}`
+        }
+      })
     if (!existingPostResponse.ok) {
       console.log(existingPostResponse.status)
       toast.error("Có lỗi xảy ra khi kiểm tra bài viết sản phẩm")

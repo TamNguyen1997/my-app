@@ -30,8 +30,10 @@ const ProductDetail = () => {
       {
         method: "GET",
         headers: {
-          "Authorization": `Basic ${Buffer.from(`${process.env.NEXT_PUBLIC_WORDPRESS_USER}:${process.env.NEXT_PUBLIC_WORDPRESS_PASSWORD}`).toString("base64")}`
-        }
+          "Authorization": `Basic ${Buffer.from(`${process.env.NEXT_PUBLIC_WORDPRESS_USER}:${process.env.NEXT_PUBLIC_WORDPRESS_PASSWORD}`).toString("base64")}`,
+          "Cache-Control": "no-cache"
+        },
+        credentials: "omit"
       })
     if (!existingPostResponse.ok) {
       console.log(existingPostResponse.status)

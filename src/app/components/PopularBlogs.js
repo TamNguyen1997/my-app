@@ -33,7 +33,7 @@ export default function PopularBlogs() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?per_page=10&page=1&_embed&categories_exclude=${NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}`)
+    fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?per_page=10&page=1&_embed&categories_exclude=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}`)
       .then(res => res.json()).then(json => setBlogs(json))
       .then(() => setIsLoading(false))
   }, [])

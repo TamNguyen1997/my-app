@@ -5,16 +5,17 @@ const client = new Client({
   host: 'localhost',
   password: 'admin',
   port: 5432,
-  database: 'dung-cu-ve-sinh'
+  database: 'dung-cu-ve-sinh-prod'
 })
 
-const WORDPRESS_URL = "https://dcvs.shop/wordpress/wp-json/wp/v2"
+const WORDPRESS_URL = "https://dungcuvesinhsaoviet.com/wordpress-prod/wp-json/wp/v2"
 const wpUsername = "admin";
 const wpPassword = "Password123!"; // Or use JWT token
 const newStatus = "publish"; // Options: 'publish', 'draft', 'private', etc.
 
 async function updatePostStatus(newStatus) {
   try {
+    await client.connect()
     const products = await client.query("SELECT * FROM product where length(description) > 50");
     products.rows.forEach(async product => {
 
@@ -27,24 +28,23 @@ async function updatePostStatus(newStatus) {
 
       let posts = await response.json();
 
-      if (!posts.length) {
-        throw new Error("Post not found");
+      if (posts.length) {
+        let postId = posts[0].id;
+
+        // Step 2: Update the post status
+        response = await fetch(`${WORDPRESS_URL}/posts/${postId}`, {
+          method: "POST",
+          headers: {
+            "Authorization": "Basic " + btoa(`${wpUsername}:${wpPassword}`),
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ status: newStatus })
+        });
+
+        let updatedPost = await response.json();
+        console.log("Post updated successfully:", updatedPost);
       }
 
-      let postId = posts[0].id;
-
-      // Step 2: Update the post status
-      response = await fetch(`${WORDPRESS_URL}/posts/${postId}`, {
-        method: "POST",
-        headers: {
-          "Authorization": "Basic " + btoa(`${wpUsername}:${wpPassword}`),
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ status: newStatus })
-      });
-
-      let updatedPost = await response.json();
-      console.log("Post updated successfully:", updatedPost);
     });
     // Step 1: Fetch post by slug to get its ID
   } catch (error) {

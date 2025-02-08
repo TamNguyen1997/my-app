@@ -28,7 +28,7 @@ export default ({ id }) => {
     } else {
       res.json().then(async product => {
         setProduct(product)
-        const productPostResponse = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${product.slug}`);
+        const productPostResponse = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${product.slug}&categories_exclude=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}`);
         if (productPostResponse.ok) {
           const productPost = await productPostResponse.json();
           setDescription(productPost[0]?.content?.rendered);

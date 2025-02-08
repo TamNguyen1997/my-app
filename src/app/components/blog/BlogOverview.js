@@ -52,7 +52,7 @@ const BlogOverview = ({ activeCategory, activeTag }) => {
 
   useEffect(() => {
     const wordpressCateIds = [CATEGORY_TO_WORDPRESS_CATEGORY_ID[activeCategory], CATEGORY_TO_WORDPRESS_CATEGORY_ID[activeTag]]
-    fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&categories=${wordpressCateIds.join()}&per_page=10&page=${page}`)
+    fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&categories_exclude=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}&categories=${wordpressCateIds.join()}&per_page=10&page=${page}`)
       .then(res => res.json())
       .catch(err => setEndContent(true))
       .then(json => {

@@ -136,7 +136,7 @@ const SaleDetail = ({ saleDetails, product }) => {
         <p className="text-gray-500 text-small">SKU: {selectedSecondaryDetail.sku || selectedDetail.sku || saleDetails[0]?.sku}</p>
       </div>
 
-      {getOriginalPrice() && <p className="mb-2.5 line-through decoration-red-500">{getOriginalPrice()}</p>}
+      {getOriginalPrice() && <p className="line-through decoration-red-500 text-small text-opacity-60">{`${getOriginalPrice()} đ`}</p>}
       <p className="text-[32px] font-medium text-[#b61a2d] mb-2.5">{getPrice() ? `${getPrice()} đ` : ""}</p>
       <p className="text-sm mb-[30px]">Đã bao gồm VAT, chưa bao gồm phí giao hàng</p>
       <p className="text-sm mb-2.5">Giao hàng trong vòng 1-3 ngày</p>

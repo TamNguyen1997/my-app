@@ -12,6 +12,7 @@ const Brand = ({ params, productFilter }) => {
   const [value, setValue] = useState([0, 100000000])
 
   const [groupedData, setGroupData] = useState({})
+  const [categories, setCategories] = useState([])
   const [filters, setFilters] = useState([])
 
   const [selectedFilterValues, setSelectedFilterValues] = useState({})
@@ -33,11 +34,18 @@ const Brand = ({ params, productFilter }) => {
     const hash = window.location.hash?.split('#')
 
     await fetch(`/api/brands/${params}`).then(res => res.json()).then(setBrand)
-    await fetch(`/api/products/?active=true&page=1&size=1000&includeCate=true&brandId=${params}&${hash && hash[1]?.includes("=") ? hash[1] : `filterId=${productFilter || hash[1] || ""}`}`).then(async res => {
+    await fetch(`/api/products/?active=true&page=1&size=10000&includeCate=true&brandId=${params}&${hash && hash[1]?.includes("=") ? hash[1] : `filterId=${productFilter || hash[1] || ""}`}`).then(async res => {
       if (res.ok) {
         const body = await res.json()
         setData(body.result)
-        setGroupData(Object.groupBy(body.result, (item) => item.categoryId))
+        let categories = []
+        const groupData = Object.groupBy(body.result, (item) => item.categoryId)
+        setGroupData(groupData)
+        Object.keys(groupData).forEach(item => {
+          const categories = body.result.find(product => product.categoryId === item)?.category
+          categories && categories.push(subCate)
+        })
+        setCategories(categories)
       }
     })
     setIsLoading(false)
@@ -72,6 +80,11 @@ const Brand = ({ params, productFilter }) => {
       <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${brand.slug}`} />
       <div className="sm:w-9/12 mx-auto ">
         <div className="flex gap-2 pt-5 px-2">
+          <div className="flex flex-wrap gap-2 p-3">
+            {
+              categories.map(category => <Link key={category.id} href={`/${category.slug}`}><Button variant="ghost" color="default">{category.name}</Button></Link>)
+            }
+          </div>
           <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
             {
               filters.map((filter, index) =>
@@ -151,7 +164,7 @@ const Brand = ({ params, productFilter }) => {
             <p className="m-auto pt-4 text-lg opacity-55">Không tìm thấy sản phẩm nào.</p> :
             <div className="w-full my-5 flex flex-col gap-4 p-2">
               {
-                Object.keys(groupedData).map(key => <BrandSection products={groupedData[key]} key={key} />)
+                Object.keys(groupedData).map(key => <BrandSection products={groupedData[key].splice(0, 30)} key={key} />)
               }
             </div>
         }

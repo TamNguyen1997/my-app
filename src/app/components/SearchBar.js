@@ -78,7 +78,7 @@ const SearchBar = () => {
         }
         value={condition.name}
         onValueChange={(value) => {
-          onConditionChange({ name: value, slug: value, title: value });
+          onConditionChange({ name: value, slug: value, title: value, sku: value });
           if (value.length > 2) onSearch();
         }}
         onKeyDown={(e) => {

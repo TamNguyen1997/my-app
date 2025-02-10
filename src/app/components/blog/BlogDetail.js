@@ -48,7 +48,7 @@ const BlogDetail = ({ slug }) => {
   const [notFound, setNotFound] = useState(false)
   const getBlog = async () => {
     setIsLoading(true)
-    const res = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${slug}&_embed`)
+    const res = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${slug}&_embed&categories_exclude=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}`)
     if (!res.ok) {
       setNotFound(true)
     }
@@ -57,7 +57,7 @@ const BlogDetail = ({ slug }) => {
       setNotFound(true)
     }
     setBlog(json)
-    await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&categories=${json.categories?.join()}&exclude=${json.id}&per_page=4`)
+    await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&categories=${json.categories?.join()}&exclude=${json.id}&per_page=4&categories_exclude=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}`)
       .then(res => res.json())
       .then(json => setRelatedBlogs(json))
     setIsLoading(false)

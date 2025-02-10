@@ -118,7 +118,7 @@ const SaleDetail = ({ saleDetails, product }) => {
     <div className="">
       <div className="m-[10px_0_18px]">
         <p className="text-[30px] font-extrabold">{product.name}</p>
-        <p className="text-gray-500 text-small">SKU: {selectedSecondaryDetail.sku || selectedDetail.sku}</p>
+        <p className="text-gray-500 text-small">SKU: {selectedSecondaryDetail.sku || selectedDetail.sku || saleDetails[0]?.sku}</p>
       </div>
       <p className="text-[32px] font-medium text-[#b61a2d] mb-2.5">{getPrice() ? `${getPrice()} đ` : ""}</p>
       <p className="text-sm mb-[30px]">Đã bao gồm VAT, chưa bao gồm phí giao hàng</p>

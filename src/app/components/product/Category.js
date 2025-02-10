@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, Select, SelectItem, Slider, Spinner } from "@nextui-org/react";
 import ProductCard from "@/components/product/ProductCard";
 
-const Category = ({ category, productFilter }) => {
+const Category = ({ category, productFilter, subcates }) => {
   const [data, setData] = useState([])
   const [isLoading, setIsLoading] = useState(true)
 
@@ -31,7 +31,7 @@ const Category = ({ category, productFilter }) => {
   const getProduct = async () => {
     const hash = window.location.hash?.split('#')
 
-    await fetch(`/api/products/?active=true&page=1&size=1000&includeCate=true&categoryId=${category.id}&${hash && hash[1]?.includes("=") ? hash[1] : `filterId=${productFilter || hash[1] || ""}`}`).then(async res => {
+    await fetch(`/api/products/?active=true&page=1&size=10000&includeCate=true&categoryId=${category.id}&${hash && hash[1]?.includes("=") ? hash[1] : `filterId=${productFilter || hash[1] || ""}`}`).then(async res => {
       if (res.ok) {
         const body = await res.json()
         setData(body.result)
@@ -79,7 +79,7 @@ const Category = ({ category, productFilter }) => {
       <div className="sm:w-9/12 mx-auto">
         <div className="flex flex-wrap gap-2 p-3">
           {
-            category.subcates.map(subcate => <Link key={subcate.id} href={`/${subcate.slug}`}><Button variant="ghost" color="default">{subcate.name}</Button></Link>)
+            subcates.map(subcate => <Link key={subcate.id} href={`/${subcate.slug}`}><Button variant="ghost" color="default">{subcate.name}</Button></Link>)
           }
         </div>
         <div className="flex flex-wrap gap-2 p-3">
@@ -159,7 +159,7 @@ const Category = ({ category, productFilter }) => {
             <p className="m-auto pt-4 text-lg opacity-55">Không tìm thấy sản phẩm nào.</p> :
             <div className="w-full my-5 flex flex-col gap-4 p-2">
               {
-                Object.keys(groupedData).map(key => <CategorySection products={groupedData[key]} key={key} />)
+                Object.keys(groupedData).map(key => <CategorySection products={groupedData[key].slice(0, 30)} key={key} />)
               }
             </div>
         }

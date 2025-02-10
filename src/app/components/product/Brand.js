@@ -42,8 +42,8 @@ const Brand = ({ params, productFilter }) => {
         const groupData = Object.groupBy(body.result, (item) => item.categoryId)
         setGroupData(groupData)
         Object.keys(groupData).forEach(item => {
-          const categories = body.result.find(product => product.categoryId === item)?.category
-          categories && categories.push(subCate)
+          const category = body.result.find(product => product.categoryId === item)?.category
+          category && categories.push(category)
         })
         setCategories(categories)
       }

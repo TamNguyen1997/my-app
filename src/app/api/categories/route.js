@@ -115,6 +115,9 @@ const getCategories = async (query) => {
         active: true,
         productType: product_type.PRODUCT
       },
+      include: {
+        saleDetails: true
+      },
       orderBy: [
         {
           updatedAt: "desc"

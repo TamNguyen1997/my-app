@@ -1,5 +1,5 @@
 import { Button, Link } from "@nextui-org/react"
-import { getPrice } from "@/lib/product"
+import { getPrice, getOriginalPrice } from "@/lib/product"
 import Image from "next/image"
 
 const ProductCard = ({ product }) => {
@@ -25,10 +25,13 @@ const ProductCard = ({ product }) => {
           </p>
         </div>
       </Link>
-      <div className="py-2">
+      <div className="py-2 h-16">
         {
           getPrice(product) ?
-            <p className="text-red-500 font-bold w-full relative text-center items-center h-8 text-[16px] text-base">{getPrice(product)} đ</p> :
+            <>
+              <p className="text-red-500 font-bold w-full relative text-center items-center text-[16px] text-base">{getPrice(product)} đ</p>
+              {getOriginalPrice(product) && <span className="line-through decoration-red-500 decoration-[0.10rem]"><p className="font-bold w-full relative text-center items-center text-small opacity-60">{getOriginalPrice(product)} đ</p></span>}
+            </> :
             <Link isExternal href="https://zalo.me/0902366617" className="text-black sm:text-base text-xs w-full">
               <Button className="flex font-bold uppercase bg-gradient-to-b from-[#ffed00] to-[#fff466] rounded-3xl w-[90%] h-8 m-auto">
                 Liên hệ

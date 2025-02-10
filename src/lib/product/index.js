@@ -14,4 +14,17 @@ const getPrice = (product) => {
   return <>{`${Math.min(...promotions, ...prices).toLocaleString().replaceAll(",", ".")} - ${Math.max(...promotions, ...prices).toLocaleString().replaceAll(",", ".")}`} </>
 }
 
-export { getPrice }
+const getOriginalPrice = (product) => {
+  if (!product.saleDetails?.length) return null
+  const saleDetails = product.saleDetails.filter(item => item.showPrice === true && item.price > 0).sort((a, b) => a.price - b.price)
+  if (!saleDetails.length) return null
+  if (product.saleDetails.length === 1 && product.saleDetails[0].price && product.saleDetails[0].promotionalPrice) {
+    return product.saleDetails[0].price.toLocaleString()?.replaceAll(",", ".")
+  }
+
+  const filteredSaleDetails = saleDetails.filter(item => item.filterId && item.filterValueId)
+  if (!filteredSaleDetails.find(item => item.promotionalPrice)) return null
+  return <>{`${filteredSaleDetails[0]?.price.toLocaleString().replaceAll(",", ".")} - ${filteredSaleDetails[filteredSaleDetails.length - 1]?.price.toLocaleString().replaceAll(",", ".")}`} </>
+}
+
+export { getPrice, getOriginalPrice }

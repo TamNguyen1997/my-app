@@ -36,7 +36,7 @@ const BlogContent = ({ blog }) => {
               `}
       style={{ "--tw-prose-bullets": "currentColor" }}
     >
-      {blog.content ? parse(blog.content.rendered) : ""}
+      {blog.content ? parse(blog.content.rendered || blog.content) : ""}
     </motion.div>
   </>)
 }

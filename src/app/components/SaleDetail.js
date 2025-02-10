@@ -44,6 +44,21 @@ const SaleDetail = ({ saleDetails, product }) => {
     return className
   }
 
+  const getOriginalPrice = () => {
+    if (saleDetails.length === 1 && saleDetails[0].showPrice && saleDetails[0].promotionalPrice && saleDetails[0].price > saleDetails[0].promotionalPrice) {
+      return saleDetails[0].price.toLocaleString().replaceAll(",", ".");
+    }
+    if (selectedSecondaryDetail.price && selectedSecondaryDetail.showPrice && selectedSecondaryDetail.promotionalPrice && selectedSecondaryDetail.price > selectedSecondaryDetail.promotionalPrice) {
+      return selectedSecondaryDetail.price.toLocaleString().replaceAll(",", ".");
+    }
+
+    if (selectedDetail.price && !getSecondaryDetails().length && selectedDetail.showPrice && selectedDetail.promotionalPrice && selectedDetail.price > selectedDetail.promotionalPrice) {
+      return selectedDetail.price.toLocaleString().replaceAll(",", ".");
+    }
+
+    return ""
+  }
+
   const getPrice = () => {
     if (saleDetails.length === 1 && saleDetails[0].showPrice) {
       return saleDetails[0].promotionalPrice > 0 ?
@@ -120,6 +135,8 @@ const SaleDetail = ({ saleDetails, product }) => {
         <p className="text-[30px] font-extrabold">{product.name}</p>
         <p className="text-gray-500 text-small">SKU: {selectedSecondaryDetail.sku || selectedDetail.sku || saleDetails[0]?.sku}</p>
       </div>
+
+      {getOriginalPrice() && <p className="mb-2.5 line-through decoration-red-500">{getOriginalPrice()}</p>}
       <p className="text-[32px] font-medium text-[#b61a2d] mb-2.5">{getPrice() ? `${getPrice()} đ` : ""}</p>
       <p className="text-sm mb-[30px]">Đã bao gồm VAT, chưa bao gồm phí giao hàng</p>
       <p className="text-sm mb-2.5">Giao hàng trong vòng 1-3 ngày</p>

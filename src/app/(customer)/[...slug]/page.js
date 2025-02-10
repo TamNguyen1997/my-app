@@ -32,15 +32,7 @@ const Page = async ({ params }) => {
     if (category?.type === cate_type.SUB_CATE) {
       return <SubCategory params={slug} productFilter={filter} />
     }
-    const subcates = await db.category.findMany({
-      where: {
-        AND: [
-          { cateId: category.id },
-          { product: { some: {} } }
-        ]
-      }
-    })
-    return <Category category={category} productFilter={filter} subcates={subcates} />
+    return <Category category={category} productFilter={filter} />
   }
   return <ProductDetail id={params.slug[1]} />
 }

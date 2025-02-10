@@ -4,14 +4,14 @@ import { useEffect, useState } from "react";
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, Select, SelectItem, Slider, Spinner } from "@nextui-org/react";
 import ProductCard from "@/components/product/ProductCard";
 
-const Category = ({ category, productFilter, subcates }) => {
+const Category = ({ category, productFilter }) => {
   const [data, setData] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-
   const [value, setValue] = useState([0, 100000000])
 
   const [groupedData, setGroupData] = useState({})
   const [filters, setFilters] = useState([])
+  const [subcates, setSubcates] = useState([])
 
   const [selectedFilterValues, setSelectedFilterValues] = useState({})
 
@@ -34,8 +34,15 @@ const Category = ({ category, productFilter, subcates }) => {
     await fetch(`/api/products/?active=true&page=1&size=10000&includeCate=true&categoryId=${category.id}&${hash && hash[1]?.includes("=") ? hash[1] : `filterId=${productFilter || hash[1] || ""}`}`).then(async res => {
       if (res.ok) {
         const body = await res.json()
+        let subcates = []
+        const groupData = Object.groupBy(body.result, (item) => item.subCate.id)
         setData(body.result)
-        setGroupData(Object.groupBy(body.result, (item) => item.subCateId))
+        setGroupData(groupData)
+        Object.keys(groupData).forEach(item => {
+          const subCate = body.result.find(product => product.subCate.id === item)?.subCate
+          subCate && subcates.push(subCate)
+        })
+        setSubcates(subcates)
       }
     })
     setIsLoading(false)

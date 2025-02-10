@@ -17,7 +17,6 @@ const ID = {
 };
 
 const TabContent = ({ id, product, description }) => {
-  console.log(description)
   switch (id) {
     case ID.DESCRIPTION:
       return (

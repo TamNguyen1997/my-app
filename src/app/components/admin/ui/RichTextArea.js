@@ -945,7 +945,6 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
               </ModalBody>
               <ModalFooter>
                 <Button color="primary" onPress={() => {
-                  console.log(images)
                   images.forEach(image => {
                     editor
                       .chain()

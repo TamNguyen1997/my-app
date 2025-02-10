@@ -79,12 +79,12 @@ const Brand = ({ params, productFilter }) => {
     <>
       <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${brand.slug}`} />
       <div className="sm:w-9/12 mx-auto ">
+        <div className="flex flex-wrap gap-2 p-3">
+          {
+            categories.map(category => <Link key={category.id} href={`/${category.slug}`}><Button variant="ghost" color="default">{category.name}</Button></Link>)
+          }
+        </div>
         <div className="flex gap-2 pt-5 px-2">
-          <div className="flex flex-wrap gap-2 p-3">
-            {
-              categories.map(category => <Link key={category.id} href={`/${category.slug}`}><Button variant="ghost" color="default">{category.name}</Button></Link>)
-            }
-          </div>
           <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
             {
               filters.map((filter, index) =>

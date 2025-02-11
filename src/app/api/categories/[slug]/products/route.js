@@ -103,7 +103,7 @@ export async function GET(req, { params }) {
 
     return NextResponse.json({
       category: category,
-      products: products.splice(page - 1, size),
+      products: products.splice((page - 1) * size, size),
       total: total
     })
   } catch (e) {

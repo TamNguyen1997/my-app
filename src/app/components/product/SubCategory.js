@@ -172,7 +172,7 @@ const SubCategory = ({ params, productFilter }) => {
 
           {
             !isLoading && !data.length ?
-              <p className="m-auto pt-4 text-lg opacity-55">Không tìm thấy sản phẩm nào.</p> :
+              <p className="m-auto text-lg opacity-55 py-4">Không tìm thấy sản phẩm nào.</p> :
               <>
                 <div className="w-full my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
                   {data.map((product) => (

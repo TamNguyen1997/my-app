@@ -1,9 +1,8 @@
 "use client"
 
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Pagination, Select, SelectItem, Slider, Spinner } from "@nextui-org/react";
-import { useEffect, useMemo, useState } from "react";
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Select, SelectItem, Slider, Spinner } from "@nextui-org/react";
+import { useEffect, useState } from "react";
 import ProductCard from "@/components/product/ProductCard"
-import { getTotalPages } from "@/lib/pagination"
 import { useSearchParams } from "next/navigation";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { navigate } from "@/lib/utils";
@@ -16,9 +15,9 @@ const SubCategory = ({ params, productFilter }) => {
   const [category, setCategory] = useState({ name: "" })
   const [value, setValue] = useState([0, 100000000])
   const searchParams = useSearchParams()
-  const [total, setTotal] = useState(1)
   const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"))
   const [filters, setFilters] = useState([])
+  const [endContent, setEndContent] = useState(false)
 
   const [filterIds, setFilterIds] = useState([])
 
@@ -29,10 +28,6 @@ const SubCategory = ({ params, productFilter }) => {
     })
   }, [params, productFilter, page]);
 
-  const pages = useMemo(() => {
-    return getTotalPages(total, rowsPerPage)
-  }, [total, rowsPerPage]);
-
   const getProduct = () => {
     setIsLoading(true)
     const hash = window.location.hash?.split('#')
@@ -42,7 +37,9 @@ const SubCategory = ({ params, productFilter }) => {
           const body = await res.json()
           setCategory(body.category)
           setData(body.products)
-          setTotal(body.total)
+
+          setBlogs([...data, ...body.products])
+          setEndContent(body.products.length == rowsPerPage)
         }
       })
       setIsLoading(false)
@@ -186,21 +183,13 @@ const SubCategory = ({ params, productFilter }) => {
                     </div>
                   ))}
                 </div>
-                {
-                  page > 1 ? <div className="flex w-full justify-center">
-                    <Pagination
-                      isCompact
-                      showControls
-                      showShadow
-                      page={page}
-                      total={pages}
-                      onChange={(page) => {
-                        setPage(page)
-                        navigate(`/${params}?page=${page}`)
-                      }}
-                    />
-                  </div> : ""
-                }
+                {!endContent && <Button
+                  className="flex justify-center items-center font-semibold w-[181px] h-[43px] rounded-[30px] text-black bg-white
+                border border-black hover:bg-[#FFD400] transition mx-auto text-large"
+                  onClick={() => setPage(page + 1)}
+                >
+                  Xem thêm
+                </Button>}
 
               </>
           }

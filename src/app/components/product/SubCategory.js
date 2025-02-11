@@ -37,7 +37,7 @@ const SubCategory = ({ params, productFilter }) => {
           const body = await res.json()
           setCategory(body.category)
           setData([...data, ...body.products])
-          setEndContent(body.products.length == rowsPerPage)
+          setEndContent(body.products.length != rowsPerPage)
         }
       })
       setIsLoading(false)

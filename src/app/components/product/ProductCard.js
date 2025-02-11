@@ -7,7 +7,7 @@ const ProductCard = ({ product }) => {
     <div className="group-hover:opacity-50 border hover:-translate-y-3 hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15) 
       transition bg-white max-w-[300px] h-full flex flex-col">
       <Link href={`/${product.subCate?.slug}/${product.slug}`}
-        className="flex flex-col sm:h-[250px] h-[150px] rounded-md object-cover object-center overflow-hidden mx-auto">
+        className="flex flex-col h-[250px] rounded-md object-cover object-center overflow-hidden mx-auto">
         <Image
           width={200}
           height={200}

@@ -82,7 +82,9 @@ const BlogDetail = ({ slug }) => {
             }}
           >
             <BreadcrumbItem href="/blog">Blog</BreadcrumbItem>
-            <BreadcrumbItem>{blog.title.rendered}</BreadcrumbItem>
+            <BreadcrumbItem>
+              {blog.title ? parse(blog.title.rendered || blog.title) : ""}
+            </BreadcrumbItem>
           </Breadcrumbs>
         </div>
       </div>
@@ -96,7 +98,7 @@ const BlogDetail = ({ slug }) => {
               viewport={{ once: true }}
               className="text-3xl leading-[38px] font-semibold mb-4"
             >
-              {blog.title.rendered}
+              {blog.title ? parse(blog.title.rendered || blog.title) : ""}
             </motion.h1>
 
             <motion.div

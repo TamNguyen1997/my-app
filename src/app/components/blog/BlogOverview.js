@@ -54,11 +54,11 @@ const BlogOverview = ({ activeCategory, activeTag }) => {
     const wordpressCateIds = [CATEGORY_TO_WORDPRESS_CATEGORY_ID[activeCategory], CATEGORY_TO_WORDPRESS_CATEGORY_ID[activeTag]]
     fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&categories=${wordpressCateIds.join()}&per_page=10&page=${page}&status=publish`)
       .then(res => res.json())
-      .catch(err => setEndContent(true))
       .then(json => {
         setBlogs([...blogs, ...json])
         setCategory(blogCategories.find(item => item.id === activeCategory))
-      })
+        setEndContent(json.length !== 10)
+      }).catch(err => setEndContent(true))
   }, [activeCategory, activeTag, page])
 
   return (

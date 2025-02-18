@@ -40,18 +40,18 @@ const CartProvider = ({ children }) => {
     localStorage.setItem('cartdetails', JSON.stringify(details));
   }
 
-  const getPrice = (saleDetail, secondarySaleDetail) => {
+  const getPrice = (saleDetail, secondarySaleDetail, detail) => {
     if (!secondarySaleDetail && !saleDetail) return 0
     if (secondarySaleDetail.price) return secondarySaleDetail.price
     if (!secondarySaleDetail.price && saleDetail.price) return saleDetail.price
-
+    if (detail.saleDetails?.length === 1 && detail.saleDetails[0].price) return detail.saleDetails[0].price
     return 0
   }
 
   const getTotal = useCallback(() => {
     let total = 0
     cartdetails.forEach(detail => {
-      total += getPrice(0, detail.saleDetail, detail.secondarySaleDetail) * (detail.quantity || 1)
+      total += getPrice(0, detail.saleDetail, detail.secondarySaleDetail, detail) * (detail.quantity || 1)
     });
     return total
   }, [cartdetails])

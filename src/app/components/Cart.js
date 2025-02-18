@@ -23,11 +23,11 @@ const Cart = () => {
     }
   }, [cartdetails.length])
 
-  const getPrice = (saleDetail, secondarySaleDetail) => {
+  const getPrice = (saleDetail, secondarySaleDetail, detail) => {
     if (!secondarySaleDetail && !saleDetail) return 0
     if (!secondarySaleDetail.price && saleDetail.price) return saleDetail.price
     if (secondarySaleDetail.price) return secondarySaleDetail.price
-
+    if (detail.saleDetails?.length === 1 && detail.saleDetails[0].price) return detail.saleDetails[0].price
     return 0
   }
 
@@ -55,7 +55,7 @@ const Cart = () => {
                       </div>
                       <div className="text-end md:order-4 md:w-32">
                         <p className="text-base font-bold text-gray-900 dark:text-white">
-                          {(getPrice(detail.saleDetail, detail.secondarySaleDetail) * detail.quantity).toLocaleString().replaceAll(",", ".")} đ
+                          {(getPrice(detail.saleDetail, detail.secondarySaleDetail, detail) * detail.quantity).toLocaleString().replaceAll(",", ".")} đ
                         </p>
                       </div>
                     </div>
@@ -64,7 +64,7 @@ const Cart = () => {
                       <div>
                         <a href={`/${detail.product.subCate ? detail.product.subCate.slug : "san-pham"}/${detail.product.slug}`} className="text-base font-medium text-gray-900 hover:underline dark:text-white">{detail.product.name}</a>
                         <p className="text-lg font-bold leading-tight text-red-600 dark:text-red-500">
-                          {getPrice(detail.saleDetail, detail.secondarySaleDetail).toLocaleString().replaceAll(",", ".")} đ</p>
+                          {getPrice(detail.saleDetail, detail.secondarySaleDetail, detail).toLocaleString().replaceAll(",", ".")} đ</p>
                         <div className="text-[16px] flex opacity-80 pt-1">
                           <div className="pr-3">
                             {

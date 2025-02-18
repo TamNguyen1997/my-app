@@ -47,13 +47,13 @@ const CartProvider = ({ children }) => {
     return 0
   }
 
-  const getTotal = useCallback(() => {
+  const getTotal = () => {
     let total = 0
     cartdetails.forEach(detail => {
-      total += getPrice(0, detail.saleDetail, detail.secondarySaleDetail, detail) * (detail.quantity || 1)
+      total += getPrice(detail.saleDetail, detail.secondarySaleDetail, detail) * (detail.quantity || 1)
     });
     return total
-  }, [cartdetails])
+  }
 
   useEffect(() => {
     const cartdetails = localStorage.getItem('cartdetails') ? JSON.parse(localStorage.getItem('cartdetails')) : [];

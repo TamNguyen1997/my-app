@@ -11,7 +11,8 @@ export async function POST(req) {
 
         let listItem = [];
 
-        const saleDetails = await db.sale_detail.findMany({ where: { id: { in: products.map(item => item.saleDetailId) } }, include: { product: true } })
+        const saleDetails = products.saleDetails.length === 1 ? products.saleDetails :
+            await db.sale_detail.findMany({ where: { id: { in: products.map(item => item.saleDetailId) } }, include: { product: true } })
 
         saleDetails.forEach(item => {
             weight += item.product.weight

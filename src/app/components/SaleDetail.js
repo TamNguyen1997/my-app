@@ -183,7 +183,7 @@ const SaleDetail = ({ saleDetails, product }) => {
               addItemToCart({
                 quantity: quantity,
                 product: product,
-                saleDetail: selectedDetail,
+                saleDetail: selectedDetail || saleDetails[0],
                 secondarySaleDetail: selectedSecondaryDetail
               })
               window.location.replace("/gio-hang")

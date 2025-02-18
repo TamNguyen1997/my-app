@@ -225,7 +225,7 @@ const Payment = () => {
                 </>
             }
 
-            <Button className="items-center justify-center flex m-auto" color="primary" type="submit" isDisabled={!cartdetails || !cartdetails.length}>
+            <Button className="items-center justify-center flex m-auto" color="primary" type="submit" isDisabled={!cartdetails || !cartdetails.length || getTotal() === 0}>
               Thanh toán
             </Button>
 

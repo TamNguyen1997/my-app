@@ -41,10 +41,9 @@ const CartProvider = ({ children }) => {
   }
 
   const getPrice = (saleDetail, secondarySaleDetail, detail) => {
-    if (!secondarySaleDetail && !saleDetail) return 0
-    if (secondarySaleDetail.price) return secondarySaleDetail.price
-    if (!secondarySaleDetail.price && saleDetail.price) return saleDetail.price
     if (detail.saleDetails?.length === 1 && detail.saleDetails[0].price) return detail.saleDetails[0].price
+    if (secondarySaleDetail?.price) return secondarySaleDetail.price
+    if (!secondarySaleDetail?.price && saleDetail?.price) return saleDetail.price
     return 0
   }
 

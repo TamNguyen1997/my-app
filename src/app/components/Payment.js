@@ -70,6 +70,7 @@ const Payment = () => {
       order: { ...data, total: getTotal(), paymentMethod: selected, shippingFee: getTotal() > 2000000 ? 0 : shippingCost },
       products: cartdetails.map(detail => {
         return {
+          saleDetails: detail.product?.saleDetails || [],
           productId: detail.product.id,
           quantity: detail.quantity,
           saleDetailId: detail.secondarySaleDetail?.id || detail.saleDetail?.id

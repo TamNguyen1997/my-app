@@ -73,7 +73,7 @@ const Payment = () => {
           saleDetails: detail.product?.saleDetails || [],
           productId: detail.product.id,
           quantity: detail.quantity,
-          saleDetailId: detail.secondarySaleDetail?.id || detail.saleDetail?.id
+          saleDetailId: detail.secondarySaleDetail?.id || detail.saleDetail?.id || detail.product?.saleDetails[0]?.id
         }
       })
     }

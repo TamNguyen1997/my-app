@@ -26,17 +26,11 @@ const SearchBar = () => {
   const [blogs, setBlogs] = useState([]);
   const [condition, setCondition] = useState({});
 
-  const onSearch = async () => {
+  const onSearch = async (value) => {
     setIsCategoriesLoading(true);
     setIsProductsLoading(true);
     setIsBlogsLoading(true)
-
-    let filteredCondition = { ...condition };
-    Object.keys(filteredCondition).forEach(
-      (key) =>
-        filteredCondition[key] === undefined && delete filteredCondition[key]
-    );
-    const searchTerm = slugify(filteredCondition.slug || "").replaceAll("(", "").replaceAll(")", "")
+    const searchTerm = slugify(value || "").replaceAll("(", "").replaceAll(")", "")
     const queryString = new URLSearchParams({ slug: searchTerm });
 
     fetch(`/api/categories/?size=${5}&page=${1}&${queryString}`).then(
@@ -79,8 +73,9 @@ const SearchBar = () => {
         }
         value={condition.name}
         onValueChange={(value) => {
+          console.log(value)
           onConditionChange({ name: value, slug: value, title: value, sku: value });
-          if (value.length > 2) onSearch();
+          if (value.length > 2) onSearch(value);
         }}
         onKeyDown={(e) => {
           if (e.key === "Enter") {

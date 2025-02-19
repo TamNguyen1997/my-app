@@ -12,7 +12,7 @@ const StaticBlog = ({ slug }) => {
   if (!blog.id) return <Spinner className="flex m-auto pt-10 w-full h-full" />
 
   return (<>
-    <div className="pt-5 pb-20">
+    <div className="container pt-5 pb-20">
       <BlogContent blog={blog} />
     </div>
   </>)

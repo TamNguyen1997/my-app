@@ -87,7 +87,7 @@ const BlogDetail = ({ slug }) => {
           </Breadcrumbs>
         </div>
       </div>
-      <div className="container pt-5 pb-20">
+      <div className="pt-5 pb-20">
         <div className="bg-white rounded-lg">
           <div className="max-w-[860px] p-5 pb-20 mx-auto">
             <motion.h1

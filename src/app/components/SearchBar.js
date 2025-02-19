@@ -30,7 +30,7 @@ const SearchBar = () => {
     setIsCategoriesLoading(true);
     setIsProductsLoading(true);
     setIsBlogsLoading(true)
-    const searchTerm = slugify(value || "").replaceAll("(", "").replaceAll(")", "")
+    const searchTerm = slugify(value || "", { locale: 'vi' }).replaceAll("(", "").replaceAll(")", "")
     const queryString = new URLSearchParams({ slug: searchTerm });
 
     fetch(`/api/categories/?size=${5}&page=${1}&${queryString}`).then(

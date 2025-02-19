@@ -83,8 +83,12 @@ export async function GET(req) {
       }
     }
     if (query.sku) {
-      condition.sku = {
-        search: `${query.sku.trim().replaceAll(" ", " & ")}:*`
+      condition.saleDetails = {
+        some: {
+          sku: {
+            search: `${query.sku.trim().replaceAll(" ", " & ")}:*`
+          }
+        }
       }
     }
 

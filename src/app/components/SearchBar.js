@@ -36,7 +36,8 @@ const SearchBar = () => {
       (key) =>
         filteredCondition[key] === undefined && delete filteredCondition[key]
     );
-    const queryString = new URLSearchParams({ slug: slugify(filteredCondition.slug || "").replaceAll("(", "").replaceAll(")", "") });
+    const searchTerm = slugify(filteredCondition.slug || "").replaceAll("(", "").replaceAll(")", "")
+    const queryString = new URLSearchParams({ slug: searchTerm });
 
     fetch(`/api/categories/?size=${5}&page=${1}&${queryString}`).then(
       async (res) => {
@@ -46,7 +47,7 @@ const SearchBar = () => {
       }
     );
 
-    fetch(`/api/products/?size=${5}&page=${1}&${queryString}&includeCate=true`).then(
+    fetch(`/api/products/search/?size=${5}&page=${1}&searchTerm=${searchTerm}&includeCate=true`).then(
       async (value) => {
         const response = await value.json();
         setProducts(response.result);

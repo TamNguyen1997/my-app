@@ -25,7 +25,7 @@ const SearchProductBar = () => {
   }, [total, rowsPerPage]);
 
   const getProduct = () => {
-    fetch(`/api/products/?size=${rowsPerPage}&page=${page}&slug=${searchParams.get("key")}&active=true&includeCate=true`).then(async res => {
+    fetch(`/api/products/search/?size=${rowsPerPage}&page=${page}&searchTerm=${searchParams.get("key")}&active=true&includeCate=true`).then(async res => {
       if (res.ok) {
         const body = await res.json()
         setData(body.result)
@@ -88,7 +88,7 @@ const SearchBlog = () => {
   }, [total, rowsPerPage]);
 
   const getBlog = () => {
-    fetch(`/ api / blogs /? excludeSupport = true & size= ${rowsPerPage}&page=${page}&slug=${searchParams.get("key")}`).then(async res => {
+    fetch(`/api/blogs/?excludeSupport=true&size=${rowsPerPage}&page=${page}&slug=${searchParams.get("key")}`).then(async res => {
       if (res.ok) {
         const body = await res.json()
         setData(body.result)

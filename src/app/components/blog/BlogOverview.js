@@ -8,7 +8,7 @@ import TopBlogs from "./TopBlogs";
 import BlogItem from "./BlogItem";
 import { CATEGORY_TO_WORDPRESS_CATEGORY_ID } from "@/lib/constant";
 
-const itemPerPage = 10
+const itemPerPage = 5
 const blogCategories = [
   {
     title: "Kiến thức hay",
@@ -53,7 +53,7 @@ const BlogOverview = ({ activeCategory, activeTag }) => {
 
   useEffect(() => {
     const wordpressCateIds = [CATEGORY_TO_WORDPRESS_CATEGORY_ID[activeCategory], CATEGORY_TO_WORDPRESS_CATEGORY_ID[activeTag]]
-    fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&categories=${wordpressCateIds.join()}&per_page=${itemPerPage}&page=${page}&status=publish&_fields=id,title,excerpt,yoast_head_json,modified,_embedded,slug,categories`)
+    fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&categories=${wordpressCateIds.join()}&per_page=${itemPerPage}&page=${page}&status=publish`)
       .then(res => res.json())
       .then(json => {
         setBlogs([...blogs, ...json])

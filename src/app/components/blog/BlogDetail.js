@@ -56,7 +56,7 @@ const BlogDetail = ({ slug }) => {
       setNotFound(true)
     }
     setBlog(json)
-    await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&categories=${json.categories?.join()}&exclude=${json.id}&per_page=4&categories_exclude=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}&_fields=id,title,excerpt,yoast_head_json,modified,_embedded,slug,categories`)
+    await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&categories=${json.categories?.join()}&exclude=${json.id}&per_page=4&categories_exclude=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}`)
       .then(res => res.json())
       .then(json => setRelatedBlogs(json))
     setIsLoading(false)

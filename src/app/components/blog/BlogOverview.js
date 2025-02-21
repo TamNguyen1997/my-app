@@ -59,7 +59,7 @@ const BlogOverview = ({ activeCategory, activeTag }) => {
         setBlogs([...blogs, ...json])
         setEndContent(json.length == itemPerPage)
         setCategory(blogCategories.find(item => item.id === activeCategory))
-        setEndContent(json.length !== 5)
+        setEndContent(json.length !== itemPerPage)
       }).catch(err => setEndContent(true))
   }, [activeCategory, activeTag, page])
 

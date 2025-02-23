@@ -203,6 +203,7 @@ export async function GET(req) {
         category: true,
         subCate: true,
         brand: true,
+        highlight: true
       },
       where: condition,
       orderBy: [

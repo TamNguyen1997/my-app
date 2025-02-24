@@ -51,18 +51,17 @@ const Category = () => {
     return total ? Math.ceil(total / rowsPerPage) : 0;
   }, [total, rowsPerPage]);
 
-  const getCategories = () => {
+  const getCategories = (p = page) => {
     setLoadingState("loading")
     let filteredCondition = { ...condition }
     Object.keys(filteredCondition).forEach(key => filteredCondition[key] === undefined && delete filteredCondition[key])
     const queryString = new URLSearchParams(filteredCondition).toString()
-    fetch(`/api/categories/?size=${rowsPerPage}&page=1&${queryString}&includeImage=true&includeParentCategory=true`)
+    fetch(`/api/categories/?size=${rowsPerPage}&page=${p}&${queryString}&includeImage=true&includeParentCategory=true`)
       .then(async res => {
         const data = await res.json()
         setCategories(data.result)
         setTotal(data.total)
         setLoadingState("idle")
-        setPage(1)
       })
   }
   useEffect(() => {
@@ -73,8 +72,12 @@ const Category = () => {
   }, [])
   useEffect(() => {
     getCategories()
-  }, [page, condition, rowsPerPage])
+  }, [page, rowsPerPage])
 
+  useEffect(() => {
+    setPage(1)
+    getCategories(1)
+  }, [condition])
   const onSubmit = (e) => {
     e.preventDefault()
     if (selectedCate.id) {
@@ -250,7 +253,7 @@ const Category = () => {
                       isCompact
                       showControls
                       showShadow
-                      page={page}
+                      page={page > pages ? 1 : page}
                       total={pages}
                       onChange={(page) => setPage(page)}
                     />

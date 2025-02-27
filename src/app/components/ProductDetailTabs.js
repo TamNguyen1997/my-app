@@ -6,6 +6,7 @@ import RelatedProducts from "@/components/RelatedProducts";
 import TechnicalDetail from './TechnicalDetail';
 import parse from 'html-react-parser'
 import "./ProductDetailTabs.css"
+import "./blog/BlogDetail.css"
 
 const ID = {
   DESCRIPTION: "DESCRIPTION",

@@ -6,6 +6,7 @@ import RelatedProducts from "@/components/RelatedProducts";
 import TechnicalDetail from './TechnicalDetail';
 import parse from 'html-react-parser'
 import "./ProductDetailTabs.css"
+import "./blog/BlogDetail.css"
 
 const ID = {
   DESCRIPTION: "DESCRIPTION",
@@ -21,7 +22,6 @@ const TabContent = ({ id, product, description }) => {
     case ID.DESCRIPTION:
       return (
         <div className={`
-          [&_img]:max-w-[75%]
           [&_img]:mx-auto
           [&_a]:text-primary
           [&_h2]:mt-[1.25em]

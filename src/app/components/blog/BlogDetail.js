@@ -27,7 +27,6 @@ const BlogContent = ({ blog }) => {
       transition={{ duration: 0.7, delay: 0.3 }}
       viewport={{ once: true }}
       className={`
-                [&_img]:max-w-[75%]
                 [&_a]:text-primary
                 [&_h2]:mt-[1.25em]
                 [&_p]:my-[1.125em]

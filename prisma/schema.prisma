@@ -316,8 +316,8 @@ enum BannerType {
 model banner {
   id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   active     Boolean   @default(true)
-  activeFrom DateTime? @map("active_from") @db.Date
-  activeTo   DateTime? @map("active_to") @db.Date
+  activeFrom DateTime? @map("active_from")
+  activeTo   DateTime? @map("active_to")
   order      Int
 
   type      BannerType @default(DEFAULT)

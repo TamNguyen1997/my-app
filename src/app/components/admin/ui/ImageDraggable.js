@@ -1,8 +1,8 @@
 import React, { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { X } from 'lucide-react';
-import { parseDate } from "@internationalized/date";
 import { Button, DatePicker, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Switch, useDisclosure } from '@nextui-org/react';
+import { now, getLocalTimeZone } from "@internationalized/date";
 import ImageCms from "./ImagePicker";
 
 export function ImageDraggable({ itemData, moveRow, index, deleteImagePos, isScheduled, saveImage, setActiveFrom, setActiveTo, setActive }) {
@@ -67,7 +67,7 @@ export function ImageDraggable({ itemData, moveRow, index, deleteImagePos, isSch
     <div
       ref={ref}
       data-handler-id={collectedProps.handlerId}
-      className="border rounded-2xl select-none p-[24px_12px_12px] cursor-grab h-full"
+      className="border rounded-2xl select-none p-[24px_12px_12px] cursor-grab h-[200px]"
       style={{ backgroundColor: bgColor }}
     >
       <div className="grid grid-cols-[auto_160px] gap-3 min-h-28">
@@ -86,17 +86,21 @@ export function ImageDraggable({ itemData, moveRow, index, deleteImagePos, isSch
         </div>
         {
           isScheduled ? <div className="flex flex-col space-y-2.5 items-end">
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2 h-32">
               <DatePicker
                 label="Từ ngày"
                 onChange={setActiveFrom}
-                defaultValue={itemData.activeFrom ? getDateString(itemData.activeFrom) : ""}
+                hideTimeZone
+                showMonthAndYearPickers
+                defaultValue={itemData.activeFrom ? now(getLocalTimeZone(itemData.activeFrom)) : now()}
                 aria-label="Date"
               />
               <DatePicker
                 label="Đến ngày"
                 onChange={setActiveTo}
-                defaultValue={itemData.activeTo ? getDateString(itemData.activeTo) : ""}
+                hideTimeZone
+                showMonthAndYearPickers
+                defaultValue={itemData.activeTo ? now(getLocalTimeZone(itemData.activeTo)) : now()}
                 aria-label="Date"
               />
             </div>
@@ -112,8 +116,6 @@ export function ImageDraggable({ itemData, moveRow, index, deleteImagePos, isSch
     </div>
   );
 }
-
-const getDateString = (isoDate) => parseDate(new Date(isoDate).toISOString().split('T')[0])
 
 const AddPicture = ({ saveImage }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()

@@ -20,8 +20,14 @@ export async function GET(req) {
 
     const description = query.vnp_OrderInfo
     const orderId = description.split("OrId")[1].substring(0, 20)
-    let vnp_Params = sortObject({ ...query });
+    var secureHash = query['vnp_SecureHash'];
+    delete query['vnp_SecureHash'];
+    delete query['vnp_SecureHashType'];
 
+    let vnp_Params = sortObject({ ...query });
+    vnp_Params['vnp_Amount'] = parseInt(vnp_Params['vnp_Amount']);
+    console.log(vnp_Params)
+    var secretKey = process.env.VNP_HASH_SECRET;
     var querystring = require('qs');
     var signData = querystring.stringify(vnp_Params, { encode: true });
     var crypto = require("crypto");
@@ -53,4 +59,15 @@ export async function GET(req) {
     console.log(e)
     return NextResponse.json(e, { status: 400 })
   }
+}
+
+function sortObject(o) {
+  return Object.keys(o).sort().reduce(
+    (obj, key) => {
+      obj[key] = o[key];
+      return obj;
+    },
+    {}
+  );
+
 }

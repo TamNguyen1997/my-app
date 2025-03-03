@@ -16,7 +16,7 @@ import {
   StickyNote,
   User,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -135,7 +135,7 @@ export default () => {
           <ul className="space-y-2 font-medium">
             {items.map((item) => {
               return (
-                <li key={item.id}>
+                <li key={item.id} className={`${usePathname() === item.link ? "bg-gray-300 rounded-lg" : ""}`}>
                   {item.id === "logout" ? (
                     <button
                       onClick={handleLogout}

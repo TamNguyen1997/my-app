@@ -87,15 +87,36 @@ const Order = () => {
     return "danger"
   }
 
-  const getPaymentStatus = (order) => {
-    if (order.shippingStatus === "SHIPPING") {
-      return "warning"
+  const getStatus = (status) => {
+    switch (status) {
+      case "PENDING":
+        return "Đang đợi giao hàng"
+      case "PAID":
+        return "Đã thanh toán"
+      case "FAILED":
+        return "Thanh toán thất bại"
+      case "DELIVERED":
+        return "Đã giao hàng"
+      case "PAID_PROCESSING":
+        return "Đã thực hiện thanh toán"
+      default:
+        return "Chưa thanh toán"
     }
-    if (order.shippingStatus === "SHIPPED") {
-      return "success"
-    }
-    return "danger"
   }
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "PENDING":
+      case "PAID_PROCESSING":
+        return "bg-[#E4A11B]"
+      case "PAID":
+      case "DELIVERED":
+        return "bg-[#14A44D]"
+      case "FAILED":
+        return "bg-[#F31260]"
+    }
+  }
+
   return (
     <>
       <ToastContainer />
@@ -189,8 +210,8 @@ const Order = () => {
                 value={order.paymentMethod}
                 readOnly />
               <Input label="Trạng thái thanh toán"
-                color={order.status === "PAID" ? "success" : "warning"}
-                value={order.status === "PAID" ? "Đã thanh toán" : "Chưa thanh toán"}
+                color={getStatusColor(order.status)}
+                value={getStatus(order.status)}
                 readOnly />
               <Input label="Số tiền chuyển khoản"
                 value={order.customerPayment}
@@ -251,6 +272,12 @@ const Order = () => {
               }
 
             </div>
+            <Textarea
+              label="Log đơn hàng"
+              aria-label="Log đơn hàng"
+              value={order.log}
+              readOnly
+            />
           </div>
 
           <div>

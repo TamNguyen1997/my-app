@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/app/db';
+import { db, ORDER_STATUS } from '@/app/db';
 import queryString from 'query-string';
 
 export async function GET(req) {
@@ -26,35 +26,41 @@ export async function GET(req) {
 
     let vnp_Params = sortObject({ ...query });
     vnp_Params['vnp_Amount'] = parseInt(vnp_Params['vnp_Amount']);
-    console.log(vnp_Params)
     var secretKey = process.env.VNP_HASH_SECRET;
     var querystring = require('qs');
     var signData = querystring.stringify(vnp_Params, { encode: true });
     var crypto = require("crypto");
     var signed = crypto.createHmac("sha512", secretKey).update(Buffer.from(signData, 'utf-8')).digest("hex");
 
-    if (secureHash === signed) {
-      await db.order.updateMany({
-        where: {
-          orderId: orderId
-        },
-        data: {
-          customerPayment: parseInt(query.vnp_Amount) / 100,
-          vnpayTransactionNo: query.vnp_TransactionNo,
-          bankTransactionNo: query.vnp_BankTranNo,
-          bankCode: query.vnp_BankCode,
-          vnpayResponseCode: parseInt(query.vnp_ResponseCode),
-          vnpayTransactionStatus: parseInt(query.vnp_TransactionStatus),
-          vnpayTxtRef: query.vnp_TxnRef,
-          vnpayHashType: query.vnp_SecureHashType,
-          vnpaySecureHash: query.vnp_SecureHash,
-          status: "PAID"
-        }
-      })
-      //Kiem tra du lieu co hop le khong, cap nhat trang thai don hang va gui ket qua cho VNPAY theo dinh dang duoi
-      return NextResponse.json({ RspCode: '00', Message: 'success' })
+    let data = {
+      customerPayment: parseInt(query.vnp_Amount) / 100,
+      vnpayTransactionNo: query.vnp_TransactionNo,
+      bankTransactionNo: query.vnp_BankTranNo,
+      bankCode: query.vnp_BankCode,
+      vnpayResponseCode: parseInt(query.vnp_ResponseCode),
+      vnpayTransactionStatus: parseInt(query.vnp_TransactionStatus),
+      vnpayTxtRef: query.vnp_TxnRef,
+      vnpayHashType: query.vnp_SecureHashType,
+      vnpaySecureHash: query.vnp_SecureHash,
     }
-    return NextResponse.json({ RspCode: '97', Message: 'Fail checksum' })
+
+    data.log = JSON.stringify(query)
+    if (query['vnp_ResponseCode'] !== "00") {
+      data.status = ORDER_STATUS.FAILED
+      data.log = JSON.stringify(query)
+    } else if (secureHash === signed) {
+      data.status = ORDER_STATUS.PAID
+      data.log = null
+    }
+
+    await db.order.updateMany({
+      where: {
+        orderId: orderId
+      },
+      data: data
+    })
+
+    return NextResponse.json({ RspCode: vnp_Params['vnp_ResponseCode'], Message: query['vnp_ResponseCode'] !== "00" ? "Success" : 'Fail' })
   } catch (e) {
     console.log(e)
     return NextResponse.json(e, { status: 400 })

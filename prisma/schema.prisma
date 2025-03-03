@@ -243,6 +243,8 @@ model order {
   createdAt        DateTime           @default(now()) @map("created_at")
   updatedAt        DateTime           @default(now()) @updatedAt @map("updated_at")
 
+  log String?
+
   @@index([orderId])
 }
 
@@ -256,7 +258,9 @@ enum SHIPPING_METHOD {
 }
 
 enum ORDER_STATUS {
+  FAILED
   PENDING
+  PAID_PROCESSING
   PAID
   DELIVERED
 }

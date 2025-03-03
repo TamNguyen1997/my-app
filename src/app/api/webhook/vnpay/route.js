@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/app/db';
+import { db, ORDER_STATUS } from '@/app/db';
 import queryString from 'query-string';
 
 export async function GET(req) {
@@ -35,10 +35,10 @@ export async function GET(req) {
         vnpayTxtRef: query.vnp_TxnRef,
         vnpayHashType: query.vnp_SecureHashType,
         vnpaySecureHash: query.vnp_SecureHash,
-        status: "PAID"
+        status: ORDER_STATUS.PAID_PROCESSING
       }
     })
-    return NextResponse.redirect("https://dcvs.shop/thanh-toan/thanh-cong")
+    return NextResponse.redirect(`${process.env.BASE_URL}/thanh-toan/thanh-cong`)
   } catch (e) {
     console.log(e)
     return NextResponse.json(e, { status: 400 })

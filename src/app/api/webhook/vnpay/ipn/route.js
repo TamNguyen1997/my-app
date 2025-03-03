@@ -46,10 +46,10 @@ export async function GET(req) {
 
     data.log = JSON.stringify(query)
     if (query['vnp_ResponseCode'] !== "00") {
-      data.status = ORDER_STATUS.FAILED
+      data.status = "FAILED"
       data.log = JSON.stringify(query)
     } else if (secureHash === signed) {
-      data.status = ORDER_STATUS.PAID
+      data.status = "PAID"
       data.log = null
     }
 

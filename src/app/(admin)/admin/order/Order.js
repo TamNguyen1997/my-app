@@ -36,6 +36,36 @@ const Order = () => {
     setLoadingState("idle")
   }
 
+  const getStatus = (status) => {
+    switch (status) {
+      case "PENDING":
+        return "Đang đợi giao hàng"
+      case "PAID":
+        return "Đã thanh toán"
+      case "FAILED":
+        return "Thanh toán thất bại"
+      case "DELIVERED":
+        return "Đã giao hàng"
+      case "PAID_PROCESSING":
+        return "Đã thực hiện thanh toán"
+      default:
+        return "Chưa thanh toán"
+    }
+  }
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "PENDING":
+      case "PAID_PROCESSING":
+        return "bg-[#E4A11B]"
+      case "PAID":
+      case "DELIVERED":
+        return "bg-[#14A44D]"
+      case "FAILED":
+        return "bg-[#F31260]"
+    }
+  }
+
   const renderCell = useCallback((order, columnKey) => {
     const cellValue = order[columnKey]
     switch (columnKey) {
@@ -43,8 +73,8 @@ const Order = () => {
         return order.total + order.shippingFee
       case "status":
         return <div className="relative flex items-center gap-2">
-          <span className={`block w-4 h-4 ${order[columnKey] === "PENDING" ? "bg-[#E4A11B]" : "#14A44D"} rounded-full`}></span>
-          <p>{order[columnKey] === "PENDING" ? "Chưa thanh toán" : "Đã thanh toán"}</p>
+          <span className={`block w-4 h-4 ${getStatusColor(order[columnKey])} rounded-full`}></span>
+          <p>{getStatus(order[columnKey])}</p>
         </div>
       case "shippingOrderCreated":
         return (

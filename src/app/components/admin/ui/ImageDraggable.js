@@ -2,7 +2,6 @@ import React, { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { X } from 'lucide-react';
 import { Button, DatePicker, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Switch, useDisclosure } from '@nextui-org/react';
-import { now, getLocalTimeZone } from "@internationalized/date";
 import ImageCms from "./ImagePicker";
 
 export function ImageDraggable({ itemData, moveRow, index, deleteImagePos, isScheduled, saveImage, setActiveFrom, setActiveTo, setActive }) {
@@ -92,7 +91,7 @@ export function ImageDraggable({ itemData, moveRow, index, deleteImagePos, isSch
                 onChange={setActiveFrom}
                 showMonthAndYearPickers
                 hideTimeZone
-                defaultValue={itemData.activeFrom ? now(getLocalTimeZone(itemData.activeFrom)) : now()}
+                defaultValue={itemData.activeFrom}
                 aria-label="Date"
               />
               <DatePicker
@@ -100,7 +99,7 @@ export function ImageDraggable({ itemData, moveRow, index, deleteImagePos, isSch
                 onChange={setActiveTo}
                 showMonthAndYearPickers
                 hideTimeZone
-                defaultValue={itemData.activeTo ? now(getLocalTimeZone(itemData.activeTo)) : now()}
+                defaultValue={itemData.activeTo}
                 aria-label="Date"
               />
             </div>

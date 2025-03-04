@@ -7,6 +7,7 @@ import { ImageDraggable } from "./ImageDraggable";
 import { Button } from "@nextui-org/react";
 import { v4 } from "uuid";
 import { ToastContainer, toast } from "react-toastify";
+import { now, parseAbsolute } from "@internationalized/date";
 
 const imageUrl = "/api/images/banner"
 
@@ -18,7 +19,13 @@ const generateList = (list, type) => {
       active: false
     })
   }
-  return list
+  return list.map((item) => {
+    return {
+      ...item,
+      activeFrom: item.activeFrom ? parseAbsolute(item.activeFrom) : now('Asia/Ho_Chi_Minh'),
+      activeTo: item.activeTo ? parseAbsolute(item.activeTo) : now('Asia/Ho_Chi_Minh'),
+    }
+  })
 }
 
 const BannerScheduler = () => {
@@ -70,17 +77,18 @@ const BannerScheduler = () => {
   }, []);
 
   const onSave = () => {
-    let defaultBannersToCreate = defaultBanners
-    let scheduledBannersToCreate = scheduledBanners
-
-    defaultBannersToCreate.forEach((item, index) => {
-      item.order = index
-    })
-
-    scheduledBannersToCreate.forEach((item, index) => {
-      item.order = index
-    })
-
+    let defaultBannersToCreate = defaultBanners.map((item, index) => ({
+      ...item,
+      order: index,
+      activeFrom: item.activeFrom.toDate().toISOString(),
+      activeTo: item.activeTo.toDate().toISOString()
+    }))
+    let scheduledBannersToCreate = scheduledBanners.map((item, index) => ({
+      ...item,
+      order: index,
+      activeFrom: item.activeFrom.toDate().toISOString(),
+      activeTo: item.activeTo.toDate().toISOString()
+    }))
     toast.promise(
       fetch(`${imageUrl}`, { method: "POST", body: JSON.stringify(defaultBannersToCreate) }).then(async res => {
         if (!res.ok) {
@@ -134,8 +142,8 @@ const BannerScheduler = () => {
                     deleteImagePos={() => setValue(item.id, { imageId: null, image: null }, scheduledBanners, setScheduledBanners)}
                     isScheduled
                     saveImage={(image) => setValue(item.id, { imageId: image.id, image: image }, scheduledBanners, setScheduledBanners)}
-                    setActiveFrom={(activeFrom) => setValue(item.id, { activeFrom: new Date(activeFrom.toString()) }, scheduledBanners, setScheduledBanners)}
-                    setActiveTo={(activeTo) => setValue(item.id, { activeTo: new Date(activeTo.toString()) }, scheduledBanners, setScheduledBanners)}
+                    setActiveFrom={(activeFrom) => setValue(item.id, { activeFrom: activeFrom }, scheduledBanners, setScheduledBanners)}
+                    setActiveTo={(activeTo) => setValue(item.id, { activeTo: activeTo }, scheduledBanners, setScheduledBanners)}
                     setActive={(value) => setValue(item.id, { active: value }, scheduledBanners, setScheduledBanners)}
                   />
                 ))

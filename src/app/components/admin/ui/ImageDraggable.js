@@ -92,7 +92,7 @@ export function ImageDraggable({ itemData, moveRow, index, deleteImagePos, isSch
                 onChange={setActiveFrom}
                 showMonthAndYearPickers
                 hideTimeZone
-                defaultValue={itemData.activeFrom ? now(getLocalTimeZone(itemData.activeFrom)) : ""}
+                defaultValue={itemData.activeFrom ? now(getLocalTimeZone(itemData.activeFrom)) : now()}
                 aria-label="Date"
               />
               <DatePicker
@@ -100,7 +100,7 @@ export function ImageDraggable({ itemData, moveRow, index, deleteImagePos, isSch
                 onChange={setActiveTo}
                 showMonthAndYearPickers
                 hideTimeZone
-                defaultValue={itemData.activeTo ? now(getLocalTimeZone(itemData.activeTo)) : ""}
+                defaultValue={itemData.activeTo ? now(getLocalTimeZone(itemData.activeTo)) : now()}
                 aria-label="Date"
               />
             </div>

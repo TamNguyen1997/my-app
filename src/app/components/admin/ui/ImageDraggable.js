@@ -90,7 +90,6 @@ export function ImageDraggable({ itemData, moveRow, index, deleteImagePos, isSch
               <DatePicker
                 label="Từ ngày"
                 onChange={setActiveFrom}
-                hideTimeZone
                 showMonthAndYearPickers
                 defaultValue={itemData.activeFrom ? now(getLocalTimeZone(itemData.activeFrom)) : now()}
                 aria-label="Date"
@@ -98,7 +97,6 @@ export function ImageDraggable({ itemData, moveRow, index, deleteImagePos, isSch
               <DatePicker
                 label="Đến ngày"
                 onChange={setActiveTo}
-                hideTimeZone
                 showMonthAndYearPickers
                 defaultValue={itemData.activeTo ? now(getLocalTimeZone(itemData.activeTo)) : now()}
                 aria-label="Date"

@@ -135,7 +135,7 @@ export default () => {
           <ul className="space-y-2 font-medium">
             {items.map((item) => {
               return (
-                <li key={item.id} className={`${usePathname() === item.link ? "bg-gray-300 rounded-lg" : ""}`}>
+                <li key={item.id} className={`${usePathname() === item.link ? "bg-gray-300 rounded-lg" : "hover:bg-gray-300 hover:rounded-lg"}`}>
                   {item.id === "logout" ? (
                     <button
                       onClick={handleLogout}

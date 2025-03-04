@@ -7,7 +7,7 @@ import { ImageDraggable } from "./ImageDraggable";
 import { Button } from "@nextui-org/react";
 import { v4 } from "uuid";
 import { ToastContainer, toast } from "react-toastify";
-import { now, parseAbsolute } from "@internationalized/date";
+import { now, parseAbsolute, getLocalTimeZone } from "@internationalized/date";
 
 const imageUrl = "/api/images/banner"
 
@@ -22,8 +22,8 @@ const generateList = (list, type) => {
   return list.map((item) => {
     return {
       ...item,
-      activeFrom: item.activeFrom ? parseAbsolute(item.activeFrom) : now('Asia/Ho_Chi_Minh'),
-      activeTo: item.activeTo ? parseAbsolute(item.activeTo) : now('Asia/Ho_Chi_Minh'),
+      activeFrom: item.activeFrom ? parseAbsolute(item.activeFrom, "Asia/Ho_Chi_Minh") : now(getLocalTimeZone()),
+      activeTo: item.activeTo ? parseAbsolute(item.activeTo, "Asia/Ho_Chi_Minh") : now(getLocalTimeZone()),
     }
   })
 }
@@ -80,14 +80,14 @@ const BannerScheduler = () => {
     let defaultBannersToCreate = defaultBanners.map((item, index) => ({
       ...item,
       order: index,
-      activeFrom: item.activeFrom.toDate().toISOString(),
-      activeTo: item.activeTo.toDate().toISOString()
+      activeFrom: item.activeFrom ? item.activeFrom.toDate().toISOString() : new Date().toISOString(),
+      activeTo: item.activeTo ? item.activeTo.toDate().toISOString() : new Date().toISOString()
     }))
     let scheduledBannersToCreate = scheduledBanners.map((item, index) => ({
       ...item,
       order: index,
-      activeFrom: item.activeFrom.toDate().toISOString(),
-      activeTo: item.activeTo.toDate().toISOString()
+      activeFrom: item.activeFrom ? item.activeFrom.toDate().toISOString() : new Date().toISOString(),
+      activeTo: item.activeTo ? item.activeTo.toDate().toISOString() : new Date().toISOString()
     }))
     toast.promise(
       fetch(`${imageUrl}`, { method: "POST", body: JSON.stringify(defaultBannersToCreate) }).then(async res => {

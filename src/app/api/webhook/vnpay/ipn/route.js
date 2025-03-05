@@ -53,21 +53,20 @@ export async function GET(req) {
       data.status = "PAID"
       data.log = null
     }
-
+    if (signed !== secureHash) {
+      return NextResponse.json({ RspCode: "97", Message: 'Invalid Checksum' })
+    }
     const existOrder = await db.order.findFirst({ where: { orderId: orderId } })
     if (!existOrder) {
       return NextResponse.json({ RspCode: "01", Message: 'Order Not Found' })
     }
-    if (existOrder.status === "PAID") {
-      return NextResponse.json({ RspCode: "02", Message: 'Order already confirmed' })
-    }
+
     if ((existOrder.total + existOrder.shippingFee) !== (parseInt(query.vnp_Amount) / 100)) {
       return NextResponse.json({ RspCode: "04", Message: 'Invalid amount' })
     }
-    if (signed !== secureHash) {
-      return NextResponse.json({ RspCode: "97", Message: 'Invalid Checksum' })
+    if (existOrder.status === "PAID") {
+      return NextResponse.json({ RspCode: "02", Message: 'Order already confirmed' })
     }
-
     await db.order.updateMany({
       where: {
         orderId: orderId

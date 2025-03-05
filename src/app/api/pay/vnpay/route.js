@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import dateFormat from "dateformat";
+import { db } from '@/app/db';
 
 export async function POST(req) {
   try {
@@ -48,6 +49,7 @@ export async function POST(req) {
 
     vnp_Params = sortObject(vnp_Params);
 
+    await db.order.update({ where: { orderId: body.orderId }, data: { vnpayTxtRef: orderId } })
     var querystring = require('qs');
     var signData = querystring.stringify(vnp_Params, { encode: true });
     var crypto = require("crypto");

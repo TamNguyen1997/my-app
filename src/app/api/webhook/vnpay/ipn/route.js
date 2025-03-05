@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-import { db, ORDER_STATUS } from '@/app/db';
+import { db } from '@/app/db';
 import queryString from 'query-string';
-import { parse } from 'path';
 
 export async function GET(req) {
   const { query } = queryString.parseUrl(req.url);

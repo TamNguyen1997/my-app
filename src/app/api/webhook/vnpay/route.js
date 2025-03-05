@@ -4,18 +4,21 @@ import queryString from 'query-string';
 
 export async function GET(req) {
   const { query } = queryString.parseUrl(req.url);
-
+  console.log(`Received payment response: ${query.vnp_TxnRef}`)
   try {
     if (query.vnp_TmnCode !== process.env.MERCHANT_CODE) {
+      console.log(`MERCHANT_CODE not match: ${query.vnp_TxnRef}`)
       return NextResponse.json({ message: "MERCHANT_CODE not match" }, { status: 401 })
     }
 
     if (!query.vnp_Amount) {
+      console.log(`vnp_Amount missing: ${query.vnp_TxnRef}`)
       return NextResponse.json({ message: "vnp_Amount missing" }, { status: 400 })
     }
 
     if (!query.vnp_OrderInfo) {
-      return NextResponse.json({ message: "vnp_Amount missing" }, { status: 400 })
+      console.log(`vnp_OrderInfo missing: ${query.vnp_TxnRef}`)
+      return NextResponse.json({ message: "vnp_OrderInfo missing" }, { status: 400 })
     }
 
     const description = query.vnp_OrderInfo
@@ -41,6 +44,7 @@ export async function GET(req) {
         }
       })
     }
+    console.log(`Order ${orderId} updated with status PAID_PROCESSING`)
     return NextResponse.redirect(`${process.env.BASE_URL}/thanh-toan/thanh-cong`)
   } catch (e) {
     console.log(e)

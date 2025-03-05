@@ -5,17 +5,21 @@ import queryString from 'query-string';
 export async function GET(req) {
   const { query } = queryString.parseUrl(req.url);
 
+  console.log(`Received IPN request for order: ${query.vnp_TxnRef}`)
   try {
     if (query.vnp_TmnCode !== process.env.MERCHANT_CODE) {
+      console.log(`MERCHANT_CODE not match: ${query.vnp_TxnRef}`)
       return NextResponse.json({ message: "MERCHANT_CODE not match" }, { status: 401 })
     }
 
     if (!query.vnp_Amount) {
+      console.log(`vnp_Amount missing: ${query.vnp_TxnRef}`)
       return NextResponse.json({ message: "vnp_Amount missing" }, { status: 400 })
     }
 
     if (!query.vnp_OrderInfo) {
-      return NextResponse.json({ message: "vnp_Amount missing" }, { status: 400 })
+      console.log(`vnp_OrderInfo missing: ${query.vnp_TxnRef}`)
+      return NextResponse.json({ message: "vnp_OrderInfo missing" }, { status: 400 })
     }
 
     const description = query.vnp_OrderInfo
@@ -53,17 +57,21 @@ export async function GET(req) {
       data.log = null
     }
     if (signed !== secureHash) {
+      console.log(`Invalid Checksum for order: ${query.vnp_TxnRef}`)
       return NextResponse.json({ RspCode: "97", Message: 'Invalid Checksum' })
     }
     const existOrder = await db.order.findFirst({ where: { vnpayTxtRef: query.vnp_TxnRef } })
     if (!existOrder) {
+      console.log(`Order not found: ${query.vnp_TxnRef}`)
       return NextResponse.json({ RspCode: "01", Message: 'Order Not Found' })
     }
 
     if ((existOrder.total + existOrder.shippingFee) !== (parseInt(query.vnp_Amount) / 100)) {
+      console.log(`Invalid amount for order: ${query.vnp_TxnRef}`)
       return NextResponse.json({ RspCode: "04", Message: 'Invalid amount' })
     }
     if (existOrder.status === "PAID") {
+      console.log(`Order already confirmed: ${query.vnp_TxnRef}`)
       return NextResponse.json({ RspCode: "02", Message: 'Order already confirmed' })
     }
     await db.order.updateMany({
@@ -73,6 +81,7 @@ export async function GET(req) {
       data: data
     })
 
+    console.log(`Order ${orderId} updated with status ${data.status}`)
     return NextResponse.json({ RspCode: "00", Message: query['vnp_ResponseCode'] === "00" ? "Success" : 'Fail' })
   } catch (e) {
     console.log(e)

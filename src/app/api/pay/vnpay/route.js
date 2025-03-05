@@ -3,6 +3,8 @@ import dateFormat from "dateformat";
 import { db } from '@/app/db';
 
 export async function POST(req) {
+  var orderId = dateFormat(date, 'HHmmss');
+
   try {
     const body = await req.json()
     const priceList = body["price_list"]
@@ -29,7 +31,6 @@ export async function POST(req) {
     expiration.setHours(expiration.getHours() + 1);
     var createDate = dateFormat(date, 'yyyymmddHHmmss');
     var expirationDate = dateFormat(expiration, 'yyyymmddHHmmss');
-    var orderId = dateFormat(date, 'HHmmss');
 
     var currCode = 'VND';
     var vnp_Params = {};
@@ -49,6 +50,7 @@ export async function POST(req) {
 
     vnp_Params = sortObject(vnp_Params);
 
+    console.log(`Requesting payment for order: ${orderId}`)
     await db.order.updateMany({ where: { orderId: body.orderId }, data: { vnpayTxtRef: orderId } })
     var querystring = require('qs');
     var signData = querystring.stringify(vnp_Params, { encode: true });
@@ -59,7 +61,7 @@ export async function POST(req) {
 
     return NextResponse.json({ vnpUrl }, { status: 200 })
   } catch (e) {
-    console.log(e)
+    console.log(`Error occur while requesting for payment ${orderId}`, e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }

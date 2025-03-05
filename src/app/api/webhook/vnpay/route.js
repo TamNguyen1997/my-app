@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { db, ORDER_STATUS } from '@/app/db';
+import { db } from '@/app/db';
 import queryString from 'query-string';
 
 export async function GET(req) {
@@ -35,7 +35,7 @@ export async function GET(req) {
         vnpayTxtRef: query.vnp_TxnRef,
         vnpayHashType: query.vnp_SecureHashType,
         vnpaySecureHash: query.vnp_SecureHash,
-        status: ORDER_STATUS.PAID_PROCESSING
+        status: "PAID_PROCESSING"
       }
     })
     return NextResponse.redirect(`${process.env.BASE_URL}/thanh-toan/thanh-cong`)

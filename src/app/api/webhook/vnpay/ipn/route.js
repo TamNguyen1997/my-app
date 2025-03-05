@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db, ORDER_STATUS } from '@/app/db';
 import queryString from 'query-string';
+import { parse } from 'path';
 
 export async function GET(req) {
   const { query } = queryString.parseUrl(req.url);
@@ -53,6 +54,20 @@ export async function GET(req) {
       data.log = null
     }
 
+    const existOrder = await db.order.findFirst({ where: { orderId: orderId } })
+    if (!existOrder) {
+      return NextResponse.json({ RspCode: "01", Message: 'Order Not Found' })
+    }
+    if (existOrder.status !== ORDER_STATUS.PAID) {
+      return NextResponse.json({ RspCode: "02", Message: 'Order already confirmed' })
+    }
+    if (existOrder.total !== (parseInt(query.vnp_Amount) / 100)) {
+      return NextResponse.json({ RspCode: "04", Message: 'Invalid amoun' })
+    }
+    if (signData !== secureHash) {
+      return NextResponse.json({ RspCode: "97", Message: 'Invalid Checksum' })
+    }
+
     await db.order.updateMany({
       where: {
         orderId: orderId
@@ -60,7 +75,7 @@ export async function GET(req) {
       data: data
     })
 
-    return NextResponse.json({ RspCode: vnp_Params['vnp_ResponseCode'], Message: query['vnp_ResponseCode'] !== "00" ? "Success" : 'Fail' })
+    return NextResponse.json({ RspCode: "00", Message: query['vnp_ResponseCode'] === "00" ? "Success" : 'Fail' })
   } catch (e) {
     console.log(e)
     return NextResponse.json(e, { status: 400 })

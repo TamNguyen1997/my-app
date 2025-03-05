@@ -58,7 +58,7 @@ export async function GET(req) {
     if (!existOrder) {
       return NextResponse.json({ RspCode: "01", Message: 'Order Not Found' })
     }
-    if (existOrder.status !== "PAID") {
+    if (existOrder.status === "PAID") {
       return NextResponse.json({ RspCode: "02", Message: 'Order already confirmed' })
     }
     if (existOrder.total !== (parseInt(query.vnp_Amount) / 100)) {

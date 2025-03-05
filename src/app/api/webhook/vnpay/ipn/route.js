@@ -62,7 +62,7 @@ export async function GET(req) {
       return NextResponse.json({ RspCode: "02", Message: 'Order already confirmed' })
     }
     if (existOrder.total !== (parseInt(query.vnp_Amount))) {
-      return NextResponse.json({ RspCode: "04", Message: 'Invalid amoun' })
+      return NextResponse.json({ RspCode: "04", Message: 'Invalid amount' })
     }
     if (signData !== secureHash) {
       return NextResponse.json({ RspCode: "97", Message: 'Invalid Checksum' })

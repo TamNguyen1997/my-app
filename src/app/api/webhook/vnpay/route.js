@@ -21,23 +21,26 @@ export async function GET(req) {
     const description = query.vnp_OrderInfo
     const orderId = description.split("OrId")[1].substring(0, 20)
 
-    await db.order.updateMany({
-      where: {
-        orderId: orderId
-      },
-      data: {
-        customerPayment: parseInt(query.vnp_Amount) / 100,
-        vnpayTransactionNo: query.vnp_TransactionNo,
-        bankTransactionNo: query.vnp_BankTranNo,
-        bankCode: query.vnp_BankCode,
-        vnpayResponseCode: parseInt(query.vnp_ResponseCode),
-        vnpayTransactionStatus: parseInt(query.vnp_TransactionStatus),
-        vnpayTxtRef: query.vnp_TxnRef,
-        vnpayHashType: query.vnp_SecureHashType,
-        vnpaySecureHash: query.vnp_SecureHash,
-        status: "PAID_PROCESSING"
-      }
-    })
+    const order = await db.order.findFirst({ where: { orderId: orderId } })
+    if (order?.status !== "PAID") {
+      await db.order.updateMany({
+        where: {
+          orderId: orderId
+        },
+        data: {
+          customerPayment: parseInt(query.vnp_Amount) / 100,
+          vnpayTransactionNo: query.vnp_TransactionNo,
+          bankTransactionNo: query.vnp_BankTranNo,
+          bankCode: query.vnp_BankCode,
+          vnpayResponseCode: parseInt(query.vnp_ResponseCode),
+          vnpayTransactionStatus: parseInt(query.vnp_TransactionStatus),
+          vnpayTxtRef: query.vnp_TxnRef,
+          vnpayHashType: query.vnp_SecureHashType,
+          vnpaySecureHash: query.vnp_SecureHash,
+          status: "PAID_PROCESSING"
+        }
+      })
+    }
     return NextResponse.redirect(`${process.env.BASE_URL}/thanh-toan/thanh-cong`)
   } catch (e) {
     console.log(e)

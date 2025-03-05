@@ -56,7 +56,7 @@ export async function GET(req) {
     if (signed !== secureHash) {
       return NextResponse.json({ RspCode: "97", Message: 'Invalid Checksum' })
     }
-    const existOrder = await db.order.findFirst({ where: { orderId: orderId } })
+    const existOrder = await db.order.findFirst({ where: { vnpayTxtRef: query.vnp_TxnRef } })
     if (!existOrder) {
       return NextResponse.json({ RspCode: "01", Message: 'Order Not Found' })
     }

@@ -6,7 +6,7 @@ export async function GET(req) {
   const { query } = queryString.parseUrl(req.url);
 
   console.log(
-    `${new Date(new Date().toLocaleString('en', { timeZone: 'Asia/Ho_Chi_Minh' }))}, Received IPN request for order ${query.vnp_TxnRef} from IP ${(req.headers['x-forwarded-for'] || req.connection.remoteAddress).split(',')[0].trim()}`,
+    `${new Date(new Date().toLocaleString('en', { timeZone: 'Asia/Ho_Chi_Minh' }))}, Received IPN request for order ${query.vnp_TxnRef} from IP ${(req.headers['x-forwarded-for'] || req.connection?.remoteAddress || "").split(',')[0].trim()}`,
     req.method, req.url, req.protocol, req.headers['user-agent'])
   console.log(`Received IPN request for order: ${query.vnp_TxnRef}`)
   try {

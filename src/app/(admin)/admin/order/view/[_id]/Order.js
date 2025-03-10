@@ -207,7 +207,7 @@ const Order = () => {
                 value={order.orderId}
                 readOnly />
               <Input label="Phương thức thanh toán"
-                value={order.paymentMethod}
+                value={order.paymentMethod === "COD" ? "COD" : "Chuyển khoản"}
                 readOnly />
               <Input label="Trạng thái thanh toán"
                 color={getStatusColor(order.status)}

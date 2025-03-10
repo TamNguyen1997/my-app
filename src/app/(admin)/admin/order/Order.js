@@ -94,6 +94,8 @@ const Order = () => {
             </span>
           </div>
         )
+      case "paymentMethod":
+        return order[columnKey] === "COD" ? "COD" : "Chuyển khoản"
       default:
         return cellValue
     }

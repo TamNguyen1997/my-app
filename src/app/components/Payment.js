@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const Payment = () => {
   const { cartdetails, getTotal, removeAllItems } = useContext(CartContext)
-  const [selected, setSelected] = useState("COD");
+  const [selected, setSelected] = useState("VIETQR");
   const [isVATActive, setIsVATActive] = useState(false);
 
   const [cities, setCities] = useState([])

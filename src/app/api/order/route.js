@@ -38,7 +38,12 @@ export async function GET(req) {
         }
       },
       take: size,
-      skip: (page - 1) * size
+      skip: (page - 1) * size,
+      orderBy: [
+        {
+          updatedAt: "desc"
+        }
+      ],
     })
     return NextResponse.json({
       result,
@@ -74,7 +79,7 @@ export async function POST(req) {
           wardId: order.wardId,
           provinceId: order.provinceId,
           status: ORDER_STATUS.PENDING,
-          paymentMethod: order.payment_method,
+          paymentMethod: order.paymentMethod,
           shippingFee: order.shippingFee,
           orderId: crypto.randomBytes(10).toString("hex"),
           companyName: order.companyName,

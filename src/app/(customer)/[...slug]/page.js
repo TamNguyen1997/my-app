@@ -23,8 +23,10 @@ export async function generateMetadata({ params }) {
 }
 
 const Page = async ({ params }) => {
-  if (params.slug.length === 1) {
-    const [slug, filter] = params.slug[0].split("#")
+  const [categorySlug, productSlug] = params.slug
+
+  if (categorySlug && !productSlug) {
+    const [slug, filter] = categorySlug.split("#")
     const category = await db.category.findFirst({ where: { slug: slug }, include: { subcates: true, image: true } })
 
     if (!category) {
@@ -35,34 +37,49 @@ const Page = async ({ params }) => {
     }
     return <Category category={category} productFilter={filter} />
   }
-  const product = await db.product.findFirst({
-    where: { slug: params.slug[1] }, include: {
-      technical_detail: {
-        include: {
-          filterValue: true,
-          filter: true
-        }
-      },
-      saleDetails: {
-        include: {
-          filter: true,
-          filterValue: true
-        }
-      },
-      image: true,
-      category: true,
-      subCate: true,
-      product_on_image: {
-        orderBy: {
-          order: 'asc'
+  if (categorySlug && productSlug) {
+    const product = await db.product.findFirst({
+      where: {
+        AND: [
+          {
+            OR: [
+              { brand: { slug: categorySlug } },
+              { category: { slug: categorySlug } },
+              { subCate: { slug: categorySlug } }
+            ]
+          },
+          {
+            slug: productSlug
+          }
+        ]
+      }, include: {
+        technical_detail: {
+          include: {
+            filterValue: true,
+            filter: true
+          }
         },
-        include: { image: true }
-      },
-      brand: true
+        saleDetails: {
+          include: {
+            filter: true,
+            filterValue: true
+          }
+        },
+        image: true,
+        category: true,
+        subCate: true,
+        product_on_image: {
+          orderBy: {
+            order: 'asc'
+          },
+          include: { image: true }
+        },
+        brand: true
+      }
+    })
+    if (product) {
+      return <ProductDetail id={params.slug[1]} product={product} />
     }
-  })
-  if (product) {
-    return <ProductDetail id={params.slug[1]} product={product} />
   }
   return notFound()
 }

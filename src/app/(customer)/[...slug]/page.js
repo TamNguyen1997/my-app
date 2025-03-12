@@ -4,6 +4,7 @@ import Category from "@/app/components/product/Category";
 import CategoryNotFound from "@/app/components/CategoryNotFound";
 import { db } from '@/app/db';
 import { cate_type } from "@prisma/client";
+import { notFound } from "next/navigation";
 
 export async function generateMetadata({ params }) {
   if (params.slug.length === 1) {
@@ -34,7 +35,36 @@ const Page = async ({ params }) => {
     }
     return <Category category={category} productFilter={filter} />
   }
-  return <ProductDetail id={params.slug[1]} />
+  const product = await db.product.findFirst({
+    where: { slug: params.slug[1] }, include: {
+      technical_detail: {
+        include: {
+          filterValue: true,
+          filter: true
+        }
+      },
+      saleDetails: {
+        include: {
+          filter: true,
+          filterValue: true
+        }
+      },
+      image: true,
+      category: true,
+      subCate: true,
+      product_on_image: {
+        orderBy: {
+          order: 'asc'
+        },
+        include: { image: true }
+      },
+      brand: true
+    }
+  })
+  if (product) {
+    return <ProductDetail id={params.slug[1]} product={product} />
+  }
+  return notFound()
 }
 
 export default Page;

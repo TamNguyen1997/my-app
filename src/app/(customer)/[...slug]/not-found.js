@@ -1,7 +1,7 @@
-import { Link } from "@nextui-org/react"
+import { Link } from "@nextui-org/react";
 
-const ProductNotFound = () => {
-  return <section className="bg-white dark:bg-gray-900">
+export default function NotFound() {
+  return (<section className="bg-white dark:bg-gray-900">
     <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
       <div className="mx-auto max-w-screen-sm text-center">
         <p className="mb-4 text-3xl tracking-tight font-bold text-gray-900 md:text-4xl dark:text-white">Không tìm thấy sản phẩm.</p>
@@ -10,6 +10,5 @@ const ProductNotFound = () => {
       </div>
     </div>
   </section>
+  )
 }
-
-export default ProductNotFound

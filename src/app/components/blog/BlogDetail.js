@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import parse from 'html-react-parser';
 
 import TableOfContent from "./TableOfContent"
-import BlogNotFound from "@/components/BlogNotFound"
 import "./BlogDetail.css"
 
 const BlogContent = ({ blog }) => {
@@ -39,23 +38,12 @@ const BlogContent = ({ blog }) => {
   </>)
 }
 
-const BlogDetail = ({ slug }) => {
-  const [blog, setBlog] = useState({})
+const BlogDetail = ({ slug, blog }) => {
   const [relatedBlogs, setRelatedBlogs] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-  const [notFound, setNotFound] = useState(false)
   const getBlog = async () => {
     setIsLoading(true)
-    const res = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${slug}&_embed&categories_exclude=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}`)
-    if (!res.ok) {
-      setNotFound(true)
-    }
-    const json = (await res.json())[0]
-    if (!json || !json.content) {
-      setNotFound(true)
-    }
-    setBlog(json)
-    await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&categories=${json.categories?.join()}&exclude=${json.id}&per_page=4&categories_exclude=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}`)
+    await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&categories=${blog.categories?.join()}&exclude=${blog.id}&per_page=4&categories_exclude=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}`)
       .then(res => res.json())
       .then(json => setRelatedBlogs(json))
     setIsLoading(false)
@@ -66,7 +54,7 @@ const BlogDetail = ({ slug }) => {
   }, [slug])
 
   if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />
-  if (notFound) return <BlogNotFound />
+
   return (
     <div className="bg-[#f6f6f6] font-open_san">
       <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/blog/${slug}`} />

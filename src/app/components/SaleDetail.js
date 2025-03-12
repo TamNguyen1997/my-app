@@ -1,3 +1,4 @@
+"use client"
 import { Button, Input } from "@nextui-org/react"
 import { ShoppingCart } from "lucide-react"
 import { useContext, useState } from "react"

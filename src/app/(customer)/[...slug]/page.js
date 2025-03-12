@@ -23,7 +23,8 @@ export async function generateMetadata({ params }) {
 }
 
 const Page = async ({ params }) => {
-  const [categorySlug, productSlug] = params.slug
+  const categorySlug = Array.isArray(params.slug) ? params.slug[0] : null;
+  const productSlug = Array.isArray(params.slug) ? params.slug[1] : null;
 
   if (categorySlug && !productSlug) {
     const [slug, filter] = categorySlug.split("#")

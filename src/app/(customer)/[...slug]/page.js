@@ -79,7 +79,13 @@ const Page = async ({ params }) => {
       }
     })
     if (product) {
-      return <ProductDetail id={params.slug[1]} product={product} />
+      let description = "";
+      const productPostResponse = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${product.slug}&categories=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}`);
+      if (productPostResponse.ok) {
+        const productPost = await productPostResponse.json();
+        description = productPost[0]?.content?.rendered;
+      }
+      return <ProductDetail id={params.slug[1]} product={product} description={description} />
     }
   }
   return notFound()

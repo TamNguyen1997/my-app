@@ -1,33 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { BreadcrumbItem, Breadcrumbs, Button, Link } from "@nextui-org/react";
-import Skeleton from "@/components/Skeleton";
 import SaleDetail from "@/components/SaleDetail";
 import ProductImageCarousel from "@/components/ProductImageCarousel";
 import ProductDetailTabs from "@/components/ProductDetailTabs";
 import { motion } from "framer-motion";
 
-export default ({ id, product }) => {
-  const [description, setDescription] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  useEffect(() => {
-    getProduct()
-  }, [id])
-
-  const getProduct = async () => {
-    const productPostResponse = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${product.slug}&categories=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}`);
-    if (productPostResponse.ok) {
-      const productPost = await productPostResponse.json();
-      setDescription(productPost[0]?.content?.rendered);
-    }
-
-    setIsLoading(false)
-  }
-  if (isLoading) {
-    return <Skeleton />
-  }
-
+export default ({ id, product, description }) => {
   return (
     <>
       <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${product.subCate?.slug}/${id}`} />

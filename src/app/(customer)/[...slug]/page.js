@@ -38,55 +38,57 @@ const Page = async ({ params }) => {
     }
     return <Category category={category} productFilter={filter} />
   }
-  const product = await db.product.findFirst({
-    where: {
-      AND: [
-        {
-          OR: [
-            { brand: { slug: categorySlug } },
-            { category: { slug: categorySlug } },
-            { subCate: { slug: categorySlug } }
-          ]
+  if (categorySlug && productSlug) {
+    const product = await db.product.findFirst({
+      where: {
+        AND: [
+          {
+            OR: [
+              { brand: { slug: categorySlug } },
+              { category: { slug: categorySlug } },
+              { subCate: { slug: categorySlug } }
+            ]
+          },
+          {
+            slug: productSlug
+          }
+        ]
+      }, include: {
+        technical_detail: {
+          include: {
+            filterValue: true,
+            filter: true
+          }
         },
-        {
-          slug: productSlug
-        }
-      ]
-    }, include: {
-      technical_detail: {
-        include: {
-          filterValue: true,
-          filter: true
-        }
-      },
-      saleDetails: {
-        include: {
-          filter: true,
-          filterValue: true
-        }
-      },
-      image: true,
-      category: true,
-      subCate: true,
-      product_on_image: {
-        orderBy: {
-          order: 'asc'
+        saleDetails: {
+          include: {
+            filter: true,
+            filterValue: true
+          }
         },
-        include: { image: true }
-      },
-      brand: true
+        image: true,
+        category: true,
+        subCate: true,
+        product_on_image: {
+          orderBy: {
+            order: 'asc'
+          },
+          include: { image: true }
+        },
+        brand: true
+      }
+    })
+    if (product) {
+      let description = "";
+      const productPostResponse = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${product.slug}&categories=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}`);
+      if (productPostResponse.ok) {
+        const productPost = await productPostResponse.json();
+        description = productPost[0]?.content?.rendered;
+      }
+      return <ProductDetail id={params.slug[1]} product={product} description={description} />
     }
-  })
-  if (product) {
-    let description = "";
-    const productPostResponse = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${product.slug}&categories=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}`);
-    if (productPostResponse.ok) {
-      const productPost = await productPostResponse.json();
-      description = productPost[0]?.content?.rendered;
-    }
-    return <ProductDetail id={params.slug[1]} product={product} description={description} />
   }
-
+  return notFound()
 }
 
 export default Page;

@@ -82,7 +82,7 @@ const ProductCms = () => {
           product: {
             id: product.id,
             name: product.name,
-            slug: product.slug || slugify(body.product.name, { locale: 'vi', remove: /[*+~.()'"!:@]/g }).toLowerCase(),
+            slug: product.slug || slugify(body.product.name, { locale: 'vi' }).replaceAll("(", "").replaceAll(")", "").toLowerCase(),
             imageAlt: product.imageAlt,
             imageId: product.imageId,
             active: product.active,

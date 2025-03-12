@@ -110,7 +110,7 @@ async function importProduct(worksheet) {
         throw new Error(`"Line ${index + 1}": ${IMPORT_MESSAGE.BRAND_NOT_FOUND}`)
       }
 
-      const slug = slugify(name, { locale: 'vi' }).toLowerCase()
+      const slug = slugify(name, { locale: 'vi' }).replaceAll("(", "").replaceAll(")", "").toLowerCase()
 
       const isExisting = await tx.product.findUnique({
         where: { id: productId },

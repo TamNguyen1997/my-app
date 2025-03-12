@@ -311,7 +311,7 @@ const Category = () => {
                     onValueChange={(value) => setSelectedCate(Object.assign(
                       {},
                       selectedCate,
-                      { name: value, slug: slugify(value, { locale: 'vi', remove: /[*+~.()'"!:@]/g }).toLowerCase() }))}
+                      { name: value, slug: slugify(value, { locale: 'vi' }).replaceAll("(", "").replaceAll(")", "").toLowerCase() }))}
                     labelPlacement="outside" isRequired />
                   <Input
                     type="text"
@@ -320,7 +320,7 @@ const Category = () => {
                     onValueChange={(value) => setSelectedCate(Object.assign(
                       {},
                       selectedCate,
-                      { slug: slugify(value, { locale: 'vi' }).toLowerCase() }))}
+                      { slug: slugify(value, { locale: 'vi' }).replaceAll("(", "").replaceAll(")", "").toLowerCase() }))}
                     labelPlacement="outside" isRequired />
                   <Input
                     type="text"

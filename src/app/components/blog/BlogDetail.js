@@ -38,12 +38,16 @@ const BlogContent = ({ blog }) => {
   </>)
 }
 
-const BlogDetail = ({ slug, blog }) => {
+const BlogDetail = ({ slug }) => {
+  const [blog, setBlog] = useState({})
   const [relatedBlogs, setRelatedBlogs] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const getBlog = async () => {
     setIsLoading(true)
-    await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&categories=${blog.categories?.join()}&exclude=${blog.id}&per_page=4&categories_exclude=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}`)
+    const res = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${slug}&_embed&categories_exclude=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}`)
+    const json = (await res.json())[0]
+    setBlog(json)
+    await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&categories=${json.categories?.join()}&exclude=${json.id}&per_page=4&categories_exclude=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}`)
       .then(res => res.json())
       .then(json => setRelatedBlogs(json))
     setIsLoading(false)

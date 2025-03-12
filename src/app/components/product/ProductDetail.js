@@ -1,7 +1,10 @@
+"use client";
+
 import { BreadcrumbItem, Breadcrumbs, Button, Link } from "@nextui-org/react";
 import SaleDetail from "@/components/SaleDetail";
 import ProductImageCarousel from "@/components/ProductImageCarousel";
 import ProductDetailTabs from "@/components/ProductDetailTabs";
+import { motion } from "framer-motion";
 
 export default ({ id, product, description }) => {
   return (
@@ -30,7 +33,8 @@ export default ({ id, product, description }) => {
       </div>
 
       <div className="container py-[30px]">
-        <div
+
+        <motion.div
           initial={{ y: 100, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.7 }}
@@ -55,8 +59,16 @@ export default ({ id, product, description }) => {
               </Link>
             </div>
           </div>
-        </div>
-        <ProductDetailTabs product={product} description={description} />
+        </motion.div>
+
+        <motion.div
+          initial={{ y: 100, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.7 }}
+          viewport={{ once: true }}
+        >
+          <ProductDetailTabs product={product} description={description} />
+        </motion.div>
       </div>
     </>
   );

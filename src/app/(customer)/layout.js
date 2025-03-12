@@ -8,6 +8,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="vi">
       <meta name="robots" content="index,follow" />
+      <meta name="google-site-verification" content="bnj-0vSnMlKuLmNzj5kleHIQ2Sk85O1ZqwB4-fGPIHo" />
       <body className='font-roboto'>
         <CartProvider>
           <Header />

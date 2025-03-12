@@ -17,7 +17,7 @@ export async function generateMetadata({ params }) {
 const Information = async ({ params }) => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${params._id}&_embed`)
   if (!res.ok) {
-    return notFound()
+    notFound()
   }
 
   const blog = (await res.json())[0]

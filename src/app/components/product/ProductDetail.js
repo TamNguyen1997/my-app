@@ -8,10 +8,8 @@ import ProductImageCarousel from "@/components/ProductImageCarousel";
 import ProductDetailTabs from "@/components/ProductDetailTabs";
 import { motion } from "framer-motion";
 
-export default ({ id }) => {
+export default ({ id, description, images = [] }) => {
   const [product, setProduct] = useState({});
-  const [images, setImages] = useState([]);
-  const [description, setDescription] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     getProduct()
@@ -24,16 +22,6 @@ export default ({ id }) => {
 
     res.json().then(async product => {
       setProduct(product)
-      const productPostResponse = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${product.slug}&categories=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}`);
-      if (productPostResponse.ok) {
-        const productPost = await productPostResponse.json();
-        setDescription(productPost[0]?.content?.rendered);
-      }
-      if (product.id) {
-        fetch(`/api/products/${product.id}/images`).then((res) => res.json()).then((json) => {
-          setImages(json.map(item => process.env.NEXT_PUBLIC_FILE_PATH + item.image.path))
-        })
-      }
     })
 
     setIsLoading(false)

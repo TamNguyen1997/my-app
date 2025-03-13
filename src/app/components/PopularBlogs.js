@@ -1,8 +1,7 @@
 "use client"
 
-import { Card, CardBody, CardHeader, Divider, Image, Spinner } from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Divider, Image } from "@nextui-org/react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import Carousel from "react-multi-carousel"
 import "react-multi-carousel/lib/styles.css"
 import { motion } from "framer-motion";
@@ -27,18 +26,7 @@ const responsive = {
   }
 }
 
-export default function PopularBlogs() {
-
-  const [blogs, setBlogs] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?per_page=10&page=1&_embed&categories_exclude=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}&status=publish`)
-      .then(res => res.json()).then(json => setBlogs(json))
-      .then(() => setIsLoading(false))
-  }, [])
-
-  if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />
+export default function PopularBlogs({ blogs }) {
 
   return (
     <motion.div

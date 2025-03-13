@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Link, Spinner } from "@nextui-org/react";
+import { Button, Link } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import "react-multi-carousel/lib/styles.css";
 import ProductCarousel from "@/components/product/ProductCarousel";
@@ -16,36 +16,16 @@ const brandKeyToSlug = {
   "KLEEN-TEX": "thuong-hieu-kleen-tex",
 }
 
-const PopularItems = () => {
-  const [products, setProducts] = useState([]);
+const PopularItems = ({ highlightProducts = [], highlightCatesWithProducts = [] }) => {
   const [selectedBrand, setSelectedBrand] = useState("RUBBERMAID");
 
   const [brandProducts, setBrandProducts] = useState([]);
-
-  const [isLoading, setIsLoading] = useState(true);
-  const [highlightCates, setHighlightCates] = useState([]);
-
-  useEffect(() => {
-    Promise.all([
-      fetch(
-        `/api/products/?size=${10}&page=${1}&highlight=true&active=true&productType=PRODUCT&includeCate=true`)
-        .then((res) => res.json())
-        .then((value) => setProducts(value.result)),
-      fetch(`/api/categories/?highlight=true&size=3&page=1&includeImage=true&active=true&includeProducts=true`)
-        .then((res) => res.json())
-        .then((json) => setHighlightCates(json.result)),
-    ]).then(() => {
-      setIsLoading(false);
-    });
-  }, []);
 
   useEffect(() => {
     fetch(`/api/brands/${brandKeyToSlug[selectedBrand]}/products/?active=true&size=7`)
       .then((res) => res.json())
       .then((json) => setBrandProducts(json.products))
   }, [selectedBrand]);
-
-  if (isLoading) return <Spinner className="flex m-auto pt-10 w-full h-full" />;
 
   const getSelectedColor = (value) => {
     return selectedBrand === value ? "bg-slate-700" : "bg-black";
@@ -60,7 +40,7 @@ const PopularItems = () => {
       className="pb-[60px] pt-4 mx-auto sm:w-3/4 ">
       <div className="flex flex-col gap-11">
         <div>
-          <ProductCards name="SẢN PHẨM NỔI BẬT" products={products} />
+          <ProductCards name="SẢN PHẨM NỔI BẬT" products={highlightProducts} />
         </div>
 
         <div>
@@ -141,7 +121,7 @@ const PopularItems = () => {
         </div>
 
         {
-          highlightCates.filter(item => item.product.length).map((cate, i) => {
+          highlightCatesWithProducts.filter(item => item.product.length).map((cate, i) => {
             return <div key={i} className="">
               <ProductCards banner={cate.image?.path} products={cate.product} name={cate.name} />
               <Link isExternal

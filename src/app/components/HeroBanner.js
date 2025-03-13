@@ -1,6 +1,5 @@
 "use client"
 import { Image } from '@nextui-org/react';
-import { useEffect, useState } from 'react';
 import Carousel from "react-multi-carousel"
 import "react-multi-carousel/lib/styles.css"
 import { motion } from "framer-motion";
@@ -23,36 +22,7 @@ const responsive = {
     items: 1
   }
 }
-
-const imageUrl = "/api/images/banner"
-
-const HeroBanner = () => {
-  const [banners, setBanners] = useState([])
-
-  useEffect(() => {
-    const getData = async () => {
-      await Promise.all([
-        fetch(`${imageUrl}?type=DEFAULT`).then(res => res.json()),
-        fetch(`${imageUrl}?type=SCHEDULED&inrange=true`).then(res => res.json())
-      ]).then(([dBanners, sBanners]) => {
-        const scheduledBanners = Object.groupBy(sBanners, ({ order }) => order)
-        const defaultBanners = Object.groupBy(dBanners, ({ order }) => order)
-
-        let images = []
-        for (let i = 0; i < 5; i++) {
-          if (scheduledBanners[i] && scheduledBanners[i][0].image && scheduledBanners[i][0].active) {
-            images.push(scheduledBanners[i][0].image)
-          } else if (defaultBanners[i] && defaultBanners[i][0]?.image) {
-            images.push(defaultBanners[i][0].image)
-          }
-        }
-
-        setBanners(images)
-      })
-    }
-    getData()
-  }, [])
-
+const HeroBanner = ({ banners }) => {
   return (
     <motion.div
       initial={{ x: -200, opacity: 0 }}

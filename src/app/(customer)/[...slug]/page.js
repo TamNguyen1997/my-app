@@ -11,14 +11,20 @@ export async function generateMetadata({ params }) {
     const [slug] = params.slug[0].split("_")
     const category = await db.category.findFirst({ where: { slug: slug } })
     return {
-      title: category?.name
+      title: category?.name,
+      alternates: {
+        canonical: `${process.env.NEXT_PUBLIC_DOMAIN}/${slug}/${id}`,
+      }
     }
   }
 
-  const product = await db.product.findFirst({ where: { slug: params.slug[1] } })
+  const product = await db.product.findFirst({ where: { slug: params.slug[1] }, include: { subCate: true } })
   return {
     title: product?.metaTitle,
     description: product?.metaDescription,
+    alternates: {
+      canonical: `${process.env.NEXT_PUBLIC_DOMAIN}/${product.subCate?.slug}/${id}`,
+    }
   }
 }
 
@@ -85,7 +91,7 @@ const Page = async ({ params }) => {
         const productPost = await productPostResponse.json();
         description = productPost[0]?.content?.rendered;
       }
-      return <ProductDetail id={params.slug[1]} product={product} description={description} />
+      return <ProductDetail product={product} description={description} />
     }
   }
   notFound()

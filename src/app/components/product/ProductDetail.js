@@ -1,50 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { BreadcrumbItem, Breadcrumbs, Button, Link } from "@nextui-org/react";
-import Skeleton from "@/components/Skeleton";
 import SaleDetail from "@/components/SaleDetail";
 import ProductImageCarousel from "@/components/ProductImageCarousel";
 import ProductDetailTabs from "@/components/ProductDetailTabs";
 import { motion } from "framer-motion";
 
-export default ({ id }) => {
-  const [product, setProduct] = useState({});
-  const [images, setImages] = useState([]);
-  const [description, setDescription] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  useEffect(() => {
-    getProduct()
-
-  }, [id])
-
-  const getProduct = async () => {
-
-    const res = await fetch(`/api/products/${id}?includeTechnical=true&includeSale=true`)
-
-    res.json().then(async product => {
-      setProduct(product)
-      const productPostResponse = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${product.slug}&categories=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}`);
-      if (productPostResponse.ok) {
-        const productPost = await productPostResponse.json();
-        setDescription(productPost[0]?.content?.rendered);
-      }
-      if (product.id) {
-        fetch(`/api/products/${product.id}/images`).then((res) => res.json()).then((json) => {
-          setImages(json.map(item => process.env.NEXT_PUBLIC_FILE_PATH + item.image.path))
-        })
-      }
-    })
-
-    setIsLoading(false)
-  }
-  if (isLoading) {
-    return <Skeleton />
-  }
+export default ({ product, description }) => {
 
   return (
     <>
-      <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${product.subCate?.slug}/${id}`} />
       <div className="bg-[#ffed00] py-2.5">
         <div className="container">
           <Breadcrumbs
@@ -77,7 +42,7 @@ export default ({ id }) => {
           className="flex flex-wrap items-start bg-[#f8f8f8] mb-5"
         >
           <div className="relative sm:w-7/12 md:w-8/12 w-full bg-white border-[3px] border-[#f8f8f8]">
-            <ProductImageCarousel items={images} />
+            <ProductImageCarousel items={product.product_on_image || []} />
           </div>
 
           <div className="sm:w-5/12 md:w-4/12 w-full">

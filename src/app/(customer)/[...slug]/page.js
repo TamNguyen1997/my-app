@@ -23,7 +23,7 @@ export async function generateMetadata({ params }) {
     title: product?.metaTitle,
     description: product?.metaDescription,
     alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_DOMAIN}/${product.subCate?.slug}/${id}`,
+      canonical: `${process.env.NEXT_PUBLIC_DOMAIN}/${product.subCate?.slug}/${params.slug[1]}`,
     }
   }
 }

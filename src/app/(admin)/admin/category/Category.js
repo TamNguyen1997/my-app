@@ -2,10 +2,10 @@
 
 import ImageCms from "@/app/components/admin/ui/ImageCms";
 import {
-  Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Input,
+  Button, Input,
   Modal, ModalBody,
   ModalContent, ModalFooter,
-  ModalHeader, Pagination, Select, SelectItem, Spinner,
+  ModalHeader, Select, SelectItem, Spinner,
   Switch,
   Table, TableBody,
   TableCell, TableColumn,
@@ -15,6 +15,7 @@ import {
 import { EditIcon, Search, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import slugify from "slugify"
+import PaginationWithTotal from "@/app/components/PaginationWithTotal";
 
 import { ToastContainer, toast } from 'react-toastify';
 import { v4 } from "uuid";
@@ -231,33 +232,14 @@ const Category = () => {
             bottomContent={
               loadingState === "loading" ? null :
                 <div className="w-full flex">
-                  <Dropdown>
-                    <DropdownTrigger>
-                      <Button
-                        variant="bordered"
-                      >
-                        {rowsPerPage}
-                      </Button>
-                    </DropdownTrigger>
-                    <DropdownMenu
-                      onAction={(key) => setRowsPerPage(key)}
-                    >
-                      <DropdownItem key="10">10</DropdownItem>
-                      <DropdownItem key="20">20</DropdownItem>
-                      <DropdownItem key="50">50</DropdownItem>
-                      <DropdownItem key="100">100</DropdownItem>
-                    </DropdownMenu>
-                  </Dropdown>
-                  <div className="flex w-full justify-center">
-                    <Pagination
-                      isCompact
-                      showControls
-                      showShadow
-                      page={page > pages ? 1 : page}
-                      total={pages}
-                      onChange={(page) => setPage(page)}
-                    />
-                  </div>
+                  <PaginationWithTotal
+                    rowsPerPage={rowsPerPage}
+                    setRowsPerPage={setRowsPerPage}
+                    page={page}
+                    setPage={setPage}
+                    pages={pages}
+                    total={total}
+                  />
                 </div>
             }>
             <TableHeader>

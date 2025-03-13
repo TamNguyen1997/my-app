@@ -15,10 +15,6 @@ import {
   Select,
   SelectItem,
   Link,
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
   Snippet,
   useDisclosure,
 } from "@nextui-org/react"
@@ -26,6 +22,7 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { EditIcon, Plus, Search, Trash2 } from "lucide-react"
 import { toast, ToastContainer } from "react-toastify"
 import DeleteConfirmation from "@/components/admin/ui/DeleteConfirmation"
+import PaginationWithTotal from "@/components/PaginationWithTotal"
 
 const quickUpdateProduct = async (product, value) => {
   await fetch(`/api/products/${product.id}`, {
@@ -231,33 +228,14 @@ const ProductCms = () => {
             bottomContent={
               loadingState === "loading" ? null : (
                 <div className="w-full flex">
-                  <Dropdown>
-                    <DropdownTrigger>
-                      <Button
-                        variant="bordered"
-                      >
-                        {rowsPerPage}
-                      </Button>
-                    </DropdownTrigger>
-                    <DropdownMenu
-                      onAction={(key) => setRowsPerPage(key)}
-                    >
-                      <DropdownItem key="10">10</DropdownItem>
-                      <DropdownItem key="20">20</DropdownItem>
-                      <DropdownItem key="50">50</DropdownItem>
-                      <DropdownItem key="100">100</DropdownItem>
-                    </DropdownMenu>
-                  </Dropdown>
-                  <div className="flex w-full justify-center">
-                    <Pagination
-                      isCompact
-                      showControls
-                      showShadow
-                      page={page}
-                      total={pages}
-                      onChange={(page) => setPage(page)}
-                    />
-                  </div>
+                  <PaginationWithTotal
+                    rowsPerPage={rowsPerPage}
+                    setRowsPerPage={setRowsPerPage}
+                    page={page}
+                    setPage={setPage}
+                    pages={pages}
+                    total={total}
+                  />
                 </div>
               )
             }

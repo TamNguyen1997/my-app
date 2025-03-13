@@ -1,16 +1,15 @@
 "use client"
 
+import PaginationWithTotal from "@/app/components/PaginationWithTotal";
 import { Button, Input, Link, Pagination, Select, SelectItem, Spinner, Switch, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
 import { EditIcon, Trash2, Search, Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-
-const rowsPerPage = 10;
 
 const Filter = () => {
   const [filters, setFilters] = useState([])
   const [loadingState, setLoadingState] = useState("loading")
   const [condition, setCondition] = useState({})
-
+  const [rowsPerPage, setRowsPerPage] = useState(10)
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0)
 
@@ -51,7 +50,7 @@ const Filter = () => {
 
   useEffect(() => {
     getFilter()
-  }, [page])
+  }, [page, rowsPerPage])
 
   const getFilter = async () => {
     setLoadingState("loading")
@@ -169,14 +168,14 @@ const Filter = () => {
           loadingState={loadingState}
           bottomContent={
             loadingState === "loading" ? null :
-              <div className="flex w-full justify-center">
-                <Pagination
-                  isCompact
-                  showControls
-                  showShadow
+              <div className="flex w-full">
+                <PaginationWithTotal
+                  rowsPerPage={rowsPerPage}
+                  setRowsPerPage={setRowsPerPage}
                   page={page}
-                  total={pages}
-                  onChange={(page) => setPage(page)}
+                  setPage={setPage}
+                  pages={pages}
+                  total={total}
                 />
               </div>
           }>

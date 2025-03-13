@@ -1,4 +1,5 @@
 "use client"
+import PaginationWithTotal from "@/app/components/PaginationWithTotal";
 import {
   Spinner,
   Table, TableBody,
@@ -7,6 +8,7 @@ import {
 } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 
+const rowsPerPage = 10
 const Brand = () => {
 
   const [brands, setBrands] = useState([])
@@ -29,6 +31,20 @@ const Brand = () => {
       <div className="flex flex-col gap-2">
         <div className="border-default-200">
           <Table
+            bottomContent={
+              loadingState === "loading" ? null : (
+                <div className="w-full flex">
+                  <PaginationWithTotal
+                    rowsPerPage={rowsPerPage}
+                    setRowsPerPage={() => { }}
+                    page={1}
+                    setPage={() => { }}
+                    pages={1}
+                    total={brands.length}
+                  />
+                </div>
+              )
+            }
             aria-label="Tất cả thương hiệu">
             <TableHeader>
               <TableColumn key="id" textValue="id">ID</TableColumn>
@@ -40,7 +56,8 @@ const Brand = () => {
               isLoading={loadingState === 'loading'}
               emptyContent={"Không có thương hiệu nào"}
               loadingState={loadingState}
-              loadingContent={<Spinner label="Loading..." />}>
+              loadingContent={<Spinner label="Loading..." />}
+            >
               {(item) => (
                 <TableRow key={item.id}>
                   {(columnKey) => <TableCell>{item[columnKey]}</TableCell>}

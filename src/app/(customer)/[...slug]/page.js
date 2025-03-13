@@ -13,7 +13,7 @@ export async function generateMetadata({ params }) {
     return {
       title: category?.name,
       alternates: {
-        canonical: `${process.env.NEXT_PUBLIC_DOMAIN}/${slug}/${id}`,
+        canonical: `${process.env.NEXT_PUBLIC_DOMAIN}/${slug}`,
       }
     }
   }
@@ -23,7 +23,7 @@ export async function generateMetadata({ params }) {
     title: product?.metaTitle,
     description: product?.metaDescription,
     alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_DOMAIN}/${product.subCate?.slug}/${params.slug[1]}`,
+      canonical: `${process.env.NEXT_PUBLIC_DOMAIN}/${product?.subCate?.slug}/${params.slug[1]}`,
     }
   }
 }
@@ -91,7 +91,7 @@ const Page = async ({ params }) => {
         const productPost = await productPostResponse.json();
         description = productPost[0]?.content?.rendered;
       }
-      return <ProductDetail product={product} description={description} />
+      return <ProductDetail id={params.slug[0]} product={product} description={description} />
     }
   }
   notFound()

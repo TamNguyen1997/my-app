@@ -1,15 +1,26 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { BreadcrumbItem, Breadcrumbs, Button, Link } from "@nextui-org/react";
+import Skeleton from "@/components/Skeleton";
 import SaleDetail from "@/components/SaleDetail";
 import ProductImageCarousel from "@/components/ProductImageCarousel";
 import ProductDetailTabs from "@/components/ProductDetailTabs";
 import { motion } from "framer-motion";
 
-export default ({ product, description }) => {
+export default ({ id, product, description }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    setIsLoading(false)
+  }, [id])
+
+  if (isLoading) {
+    return <Skeleton />
+  }
 
   return (
     <>
+      <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${product.subCate?.slug}/${id}`} />
       <div className="bg-[#ffed00] py-2.5">
         <div className="container">
           <Breadcrumbs
@@ -42,7 +53,7 @@ export default ({ product, description }) => {
           className="flex flex-wrap items-start bg-[#f8f8f8] mb-5"
         >
           <div className="relative sm:w-7/12 md:w-8/12 w-full bg-white border-[3px] border-[#f8f8f8]">
-            <ProductImageCarousel items={product.product_on_image || []} />
+            <ProductImageCarousel items={product.product_on_image} />
           </div>
 
           <div className="sm:w-5/12 md:w-4/12 w-full">

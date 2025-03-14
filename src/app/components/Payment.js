@@ -54,10 +54,11 @@ const Payment = () => {
       })
       if (res.status == 200) {
         const { vnpUrl } = await res.json()
-        console.log(vnpUrl)
         window.location.replace(vnpUrl)
       } else {
-        console.log(res)
+        const json = await res.json()
+        alert(json.message)
+        console.log(json)
       }
     } else {
       removeAllItems()
@@ -210,7 +211,7 @@ const Payment = () => {
               </div>
             </div>
             {
-              getTotal() > 2000000 ? <>
+              getTotal() && selected === "VIETQR" > 2000000 ? <>
                 <div>
                   <p className="opacity-65 line-through">Phí vận chuyển: {shippingCost.toLocaleString().replaceAll(",", ".")} đ</p>
                   <p className="text-xs opacity-65">Miễn phí vận chuyển với đơn trên 2,000,000đ</p>
@@ -220,7 +221,7 @@ const Payment = () => {
                 <>
                   <div>
                     <p className="opacity-65">Phí vận chuyển: {shippingCost.toLocaleString().replaceAll(",", ".")} đ</p>
-                    <p className="text-xs opacity-65">Miễn phí vận chuyển với đơn trên 2,000,000đ</p>
+                    {selected === "VIETQR" && <p className="text-xs opacity-65">Miễn phí vận chuyển với đơn trên 2,000,000đ</p>}
                   </div>
                   <p>Tổng: {(shippingCost + getTotal()).toLocaleString().replaceAll(",", ".")} đ</p>
                 </>

@@ -67,6 +67,12 @@ export async function POST(req) {
     if (order.total <= 0) {
       return NextResponse.json({ message: "Giá không hợp lệ" }, { status: 400 })
     }
+    if (order.paymentMethod === "COD" && order.shippingFee <= 0) {
+      return NextResponse.json({ message: "Phí ship không hợp lệ" }, { status: 400 })
+    }
+    if (order.paymentMethod === "VIETQR" && order.total < 2000000 && order.shippingFee <= 0) {
+      return NextResponse.json({ message: "Phí ship không hợp lệ" }, { status: 400 })
+    }
     return NextResponse.json({
       order: await db.order.create({
         data: {

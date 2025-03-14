@@ -1,7 +1,7 @@
 "use client"
 
 import PaginationWithTotal from "@/app/components/PaginationWithTotal";
-import { Button, Input, Link, Pagination, Select, SelectItem, Spinner, Switch, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
+import { Button, Input, Link, Select, SelectItem, Spinner, Switch, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
 import { EditIcon, Trash2, Search, Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 

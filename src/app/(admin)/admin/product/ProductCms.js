@@ -10,16 +10,16 @@ import {
   TableBody,
   Button,
   Switch,
-  Pagination,
   Input,
   Select,
   SelectItem,
   Link,
   Snippet,
   useDisclosure,
+  Tooltip,
 } from "@nextui-org/react"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { EditIcon, Plus, Search, Trash2 } from "lucide-react"
+import { EditIcon, FileImage, Fingerprint, Plus, Search, Trash2 } from "lucide-react"
 import { toast, ToastContainer } from "react-toastify"
 import DeleteConfirmation from "@/components/admin/ui/DeleteConfirmation"
 import PaginationWithTotal from "@/components/PaginationWithTotal"
@@ -119,11 +119,16 @@ const ProductCms = () => {
                 <EditIcon />
               </Link>
             </span>
-            <span className="text-lg text-danger cursor-pointer active:opacity-50 pl-5">
+            <span className="text-lg text-danger cursor-pointer active:opacity-50 pl-2">
               <Trash2 onClick={() => {
                 deleteConfirmationDisclosure.onOpen()
                 setProductIdToDelete(product.id)
               }} />
+            </span>
+            <span className="text-lg cursor-pointer text-green-400">
+              {product.imageId && <Tooltip showArrow content="Có thumbnail">
+                <FileImage />
+              </Tooltip>}
             </span>
           </div>
         )
@@ -201,6 +206,16 @@ const ProductCms = () => {
           >
             <SelectItem key="true">Active</SelectItem>
             <SelectItem key="false">Inactive</SelectItem>
+          </Select>
+          <Select
+            label="Thumbnail"
+            labelPlacement="outside"
+            onSelectionChange={(value) =>
+              onConditionChange({ thumbnail: value.values().next().value })
+            }
+          >
+            <SelectItem key="true">Có thumbnail</SelectItem>
+            <SelectItem key="false">Không có thumbnail</SelectItem>
           </Select>
           <div className="items-end flex min-h-full gap-2">
             <Button onClick={getProduct} color="primary">

@@ -163,18 +163,13 @@ export async function GET(req) {
         search: `${query.slug.trim().replaceAll(" ", " & ")}:*`
       }
     }
-    if (query.includeCate) {
-      condition.AND =
-        [
-          {
-            NOT: {
-              categoryId: null
-            },
-            NOT: {
-              subCateId: null
-            }
-          }
-        ]
+    if (query.thumbnail === "true") {
+      condition.imageId = {
+        not: null
+      }
+    }
+    if (query.thumbnail === "false") {
+      condition.imageId = null
     }
 
     if (query.productType) {

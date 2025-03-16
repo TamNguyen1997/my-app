@@ -154,7 +154,7 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights, showHigh
                   ${showHighlight && (product?.product_on_image?.map(item => item.imageId).includes(img.id) || (highlights?.map(item => item.id).includes(img.id))) && "border-green-400 border-large"}
                 `}>
               <img
-                src={`${process.env.NEXT_PUBLIC_FILE_PATH + img.path}`}
+                src={`${img.path}`}
                 alt={img.alt}
                 className="aspect-[16/10] object-cover rounded-t shrink-0"
                 onClick={() => {

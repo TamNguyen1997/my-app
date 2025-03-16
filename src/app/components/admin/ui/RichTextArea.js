@@ -147,7 +147,7 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
         .chain()
         .focus()
         .setFigure({
-          src: `${process.env.NEXT_PUBLIC_FILE_PATH + upload.path}`,
+          src: `${upload.path}`,
           alt: upload.description,
           caption: upload.description
         })
@@ -950,7 +950,7 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
                       .chain()
                       .focus()
                       .setFigure({
-                        src: `${process.env.NEXT_PUBLIC_FILE_PATH + image.path}`,
+                        src: `${image.path}`,
                         alt: image.description || "",
                         caption: image.description || ""
                       })

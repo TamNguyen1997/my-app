@@ -31,7 +31,7 @@ export default ({ id }) => {
       }
       if (product.id) {
         fetch(`/api/products/${product.id}/images`).then((res) => res.json()).then((json) => {
-          setImages(json.map(item => process.env.NEXT_PUBLIC_FILE_PATH + item.image.path))
+          setImages(json.map(item => item.image.path))
         })
       }
     })

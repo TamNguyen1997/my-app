@@ -374,7 +374,7 @@ const Category = () => {
                       selectedCate.imageId ?
                         <img
                           className="w-full h-full"
-                          src={`${process.env.NEXT_PUBLIC_FILE_PATH + selectedCate?.image?.path}`}
+                          src={`${selectedCate?.image?.path}`}
                         />
                         : <></>
                     }

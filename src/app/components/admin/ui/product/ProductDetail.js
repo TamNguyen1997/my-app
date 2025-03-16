@@ -248,7 +248,7 @@ const ProductDetail = () => {
             {
               productImage?.id ?
                 <img
-                  src={`${process.env.NEXT_PUBLIC_FILE_PATH + productImage?.path}`}
+                  src={`${productImage?.path}`}
                   alt={`${product.imageAlt}`}
                   width="150"
                   height="100"

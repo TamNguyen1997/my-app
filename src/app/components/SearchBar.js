@@ -134,9 +134,7 @@ const SearchBar = () => {
                                 width={60}
                                 height={60}
                                 priority
-                                src={`${process.env.NEXT_PUBLIC_FILE_PATH +
-                                  product.image?.path
-                                  }`}
+                                src={`${product.image?.path}`}
                                 alt={product?.name}
                               /> : ""
                           }
@@ -185,9 +183,7 @@ const SearchBar = () => {
                                 width={60}
                                 height={60}
                                 priority
-                                src={`${process.env.NEXT_PUBLIC_FILE_PATH +
-                                  blog.thumbnail
-                                  }`}
+                                src={`${blog.thumbnail}`}
                                 alt={blog.thumbnail}
                               /> : ""
                           }

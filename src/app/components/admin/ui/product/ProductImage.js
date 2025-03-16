@@ -176,7 +176,7 @@ const ImageItem = ({ img, onClick, deleteItem, index, moveRow }) => {
       `}
     >
       <img
-        src={`${process.env.NEXT_PUBLIC_FILE_PATH + img?.path}`}
+        src={`${img?.path}`}
         alt={img?.alt}
         className="aspect-auto object-cover rounded-t shrink-0"
         onClick={() => onClick(img)} />

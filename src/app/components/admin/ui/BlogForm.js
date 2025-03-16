@@ -244,7 +244,7 @@ const BlogForm = ({ blog, setBlog }) => {
             <div>
               {blog?.thumbnail ? (
                 <img
-                  src={`${process.env.NEXT_PUBLIC_FILE_PATH + blog.thumbnail}`}
+                  src={`${blog.thumbnail}`}
                   width="300"
                   height="300"
                   alt="Thumbnail image"

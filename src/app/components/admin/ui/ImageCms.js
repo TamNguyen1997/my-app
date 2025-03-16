@@ -29,7 +29,7 @@ const ImageCms = ({ onImageClick = () => { }, highlights, onUploadSuccess, showH
       formData.append('alt', item.description)
       formData.append('type', item.type)
 
-      return fetch('/api/images/upload', {
+      return fetch('/api/images/upload/wordpress', {
         method: 'POST',
         body: formData
       })

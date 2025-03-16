@@ -168,7 +168,7 @@ const ProductCards = ({ name, products, redirect, banner }) => {
     <div className="w-full">
       <img
         style={{ maxWidth: "100%", width: "100%" }}
-        src={`${process.env.NEXT_PUBLIC_FILE_PATH + banner}`}
+        src={`${banner}`}
         alt="Banner"
       />
     </div>

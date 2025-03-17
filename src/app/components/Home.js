@@ -3,6 +3,7 @@ import PopularItems from "@/components/PopularItems";
 import PopularBlogs from "@/components/PopularBlogs";
 import Customer from "@/components/Customer";
 import Introduction from "@/components/Introduction";
+import PopularSearches from "@/components/PopularSearches";
 import { db } from "@/app/db"
 
 export const viewport = {
@@ -14,7 +15,7 @@ const Home = async () => {
   const highlighProducts = await getHighlightProducts()
   const highlightCatesWithProducts = await getHighlightCatesWithProducts()
   const blogs = await getBlogs()
-
+  const popularSearches = await getPopularSearch()
   return (
     <div>
       <HeroBanner banners={banners} />
@@ -25,6 +26,9 @@ const Home = async () => {
         <p className="m-auto text-black font-bold md:text-xl">KHÁCH HÀNG SAO VIỆT</p>
       </div>
       <Customer />
+      <div className="pb-10">
+        <PopularSearches popularSearches={popularSearches} />
+      </div>
     </div>
   );
 }
@@ -146,6 +150,23 @@ const getBlogs = async () => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&per_page=3&categories_exclude=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}`)
   if (res.ok) blogs = await res.json()
   return blogs
+}
+
+const getPopularSearch = async () => {
+  return await db.popular_search.findMany({
+    include: {
+      category: {
+        select: {
+          id: true,
+          name: true,
+          slug: true
+        }
+      }
+    },
+    orderBy: {
+      updatedAt: "desc"
+    }
+  })
 }
 
 export default Home

@@ -3,7 +3,9 @@
 import ImageCms from "@/app/components/admin/ui/ImageCms";
 import {
   Badge,
+  Badge,
   Button, Input,
+  Link,
   Link,
   Modal, ModalBody,
   ModalContent, ModalFooter,
@@ -13,13 +15,13 @@ import {
   TableCell, TableColumn,
   TableHeader, TableRow,
   Tooltip,
-  useDisclosure,
-  Accordion, AccordionItem
+  useDisclosure
 } from "@nextui-org/react";
 import { EditIcon, Search, Trash2, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import slugify from "slugify"
 import PaginationWithTotal from "@/app/components/PaginationWithTotal";
+import { Accordion, AccordionItem } from "@heroui/accordion";
 
 import { ToastContainer, toast } from 'react-toastify';
 import { v4 } from "uuid";
@@ -44,6 +46,7 @@ const Category = () => {
   const [categoryId, setCategoryId] = useState(selectedCate.id)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [popularSearches, setPopularSearches] = useState([])
+  const [popularSearches, setPopularSearches] = useState([])
   const imageModal = useDisclosure()
 
   const [page, setPage] = useState(1);
@@ -61,6 +64,17 @@ const Category = () => {
     let filteredCondition = { ...condition }
     Object.keys(filteredCondition).forEach(key => filteredCondition[key] === undefined && delete filteredCondition[key])
     const queryString = new URLSearchParams(filteredCondition).toString()
+    Promise.all([
+      fetch("/api/popular-searches").then(res => res.json()).then(json => setPopularSearches(json.result)),
+      fetch(`/api/categories/?size=${rowsPerPage}&page=${p}&${queryString}&includeImage=true&includeParentCategory=true`)
+        .then(async res => {
+          const data = await res.json()
+          setCategories(data.result)
+          setTotal(data.total)
+        })
+    ]).then(() => {
+      setLoadingState("idle")
+    })
     Promise.all([
       fetch("/api/popular-searches").then(res => res.json()).then(json => setPopularSearches(json.result)),
       fetch(`/api/categories/?size=${rowsPerPage}&page=${p}&${queryString}&includeImage=true&includeParentCategory=true`)
@@ -205,6 +219,44 @@ const Category = () => {
       }
     )
   }
+  const addPopularSearch = (data) => {
+    toast.promise(
+      fetch(`/api/popular-searches/`, { method: "POST", body: JSON.stringify(data) }).then(async (res) => {
+        getCategories()
+        if (!res.ok) {
+          throw new Error((await res.json()).message)
+        }
+      }),
+      {
+        pending: 'Đang thêm',
+        success: 'Đã thêm vào Tìm kiếm phổ biến',
+        error: {
+          render({ data }) {
+            return data.message
+          }
+        }
+      }
+    )
+  }
+  const deletePopularSearch = (id) => {
+    toast.promise(
+      fetch(`/api/popular-searches/${id}`, { method: "DELETE" }).then(async (res) => {
+        getCategories()
+        if (!res.ok) {
+          throw new Error((await res.json()).message)
+        }
+      }),
+      {
+        pending: 'Đang xóa',
+        success: 'Đã xóa Tìm kiếm phổ biến',
+        error: {
+          render({ data }) {
+            return data.message
+          }
+        }
+      }
+    )
+  }
   const renderCell = useCallback((category, columnKey) => {
     const cellValue = category[columnKey]
 
@@ -223,13 +275,19 @@ const Category = () => {
               <EditIcon onClick={() => openModal(category)} />
             </span>
             <span className="text-lg text-danger cursor-pointer active:opacity-50">
-              <Trash2 onClick={() => { deleteCate(category.id) }} />
-            </span>
-            <span className="text-lg text-green-500 cursor-pointer active:opacity-50">
-              <Tooltip content="Thêm vào Tìm kiếm phổ biến">
-                <Search onClick={() => addPopularSearch({ categoryId: category.id, keyword: category.name })} />
-              </Tooltip>
-            </span>
+              <span className="text-lg text-danger cursor-pointer active:opacity-50">
+                <Trash2 onClick={() => { deleteCate(category.id) }} />
+              </span>
+              <span className="text-lg text-green-500 cursor-pointer active:opacity-50">
+                <Tooltip content="Thêm vào Tìm kiếm phổ biến">
+                  <Search onClick={() => addPopularSearch({ categoryId: category.id, keyword: category.name })} />
+                </Tooltip>
+              </span>
+              <span className="text-lg text-green-500 cursor-pointer active:opacity-50">
+                <Tooltip content="Thêm vào Tìm kiếm phổ biến">
+                  <Search onClick={() => addPopularSearch({ categoryId: category.id, keyword: category.name })} />
+                </Tooltip>
+              </span>
           </div>
         )
       default:
@@ -249,9 +307,10 @@ const Category = () => {
           <AccordionItem key="1" aria-label="Tìm kiếm phổ biến" title="Tìm kiếm phổ biến">
             <div className="flex flex-wrap">
               {popularSearches.map((item, index) => (
-                <div className="group" key={index}>
+                <div className="group">
                   <span className="bg-gray-100 text-gray-800 text-xs font-medium 
-                me-2 px-2.5 py-0.5 rounded-3xl dark:bg-gray-700 dark:text-gray-300 flex">
+                me-2 px-2.5 py-0.5 rounded-3xl dark:bg-gray-700 dark:text-gray-300 flex"
+                    key={index}>
                     <Link href="#">
                       {item.category?.name}
                     </Link>
@@ -284,6 +343,19 @@ const Category = () => {
           </SelectItem>
           <SelectItem key="SUB_CATE">
             SUB_CATE
+          </SelectItem>
+        </Select>
+        <Select
+          label="Tìm kiếm phổ biến"
+          labelPlacement="outside"
+          onSelectionChange={(value) =>
+            setCondition(Object.assign({}, condition, { excludePopularSearch: value.values().next().value }))}
+        >
+          <SelectItem key="true">
+            Tìm kiếm phổ biến
+          </SelectItem>
+          <SelectItem key="false">
+            Không thuộc tìm kiếm phổ biến
           </SelectItem>
         </Select>
         <Select

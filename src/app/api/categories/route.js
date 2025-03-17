@@ -126,6 +126,17 @@ const getCategories = async (query) => {
     }
   }
 
+  if (query.excludePopularSearch === "true") {
+    condition.popular_search = {
+      some: {}
+    }
+  }
+  if (query.excludePopularSearch === "false") {
+    condition.popular_search = {
+      none: {}
+    }
+  }
+
   try {
     const result = await db.category.findMany({
       where: condition,
@@ -141,6 +152,7 @@ const getCategories = async (query) => {
 
     return NextResponse.json({ result, total: await db.category.count({ where: condition }) })
   } catch (e) {
+    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }

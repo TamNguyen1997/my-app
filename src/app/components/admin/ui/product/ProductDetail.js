@@ -240,7 +240,7 @@ const ProductDetail = () => {
               onValueChange={(value) => setProduct(Object.assign({}, product, { imageAlt: value }))}
               value={product?.imageAlt} />
             <div>
-              <Button color="primary" onClick={onOpen} className="w-24 float-right">Chọn ảnh</Button>
+              <Button color="primary" onPress={onOpen} className="w-24 float-right">Chọn ảnh</Button>
             </div>
           </div>
 

@@ -251,7 +251,7 @@ const User = () => {
           {(onClose) => (
             <form onSubmit={handleSubmit(onSubmit)}>
               <ModalHeader className="flex flex-col gap-1">
-                Create user
+                Tạo User
               </ModalHeader>
               <ModalBody>
                 <Input

@@ -425,6 +425,7 @@ model category {
   metaDescription String? @map("meta_description")
 
   category_on_filter_value category_on_filter_value[] @relation("category")
+  popular_search           popular_search[]
 
   @@unique([slug])
   @@index([imageId])
@@ -471,6 +472,17 @@ model category_on_filter_value {
   @@id([categoryId, filterValueId])
   @@index([categoryId])
   @@index([filterValueId])
+}
+
+model popular_search {
+  id         String    @id @default(dbgenerated("gen_random_uuid()"))
+  keyword    String
+  categoryId String?   @map("category_id")
+  category   category? @relation(fields: [categoryId], references: [id])
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  @@index([categoryId])
 }
 
 enum blog_type {

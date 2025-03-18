@@ -10,7 +10,10 @@ export async function generateMetadata({ params }) {
     const [slug] = params.slug[0].split("_")
     const category = await db.category.findFirst({ where: { slug: slug } })
     return {
-      title: category?.name
+      title: category?.name,
+      alternates: {
+        canonical: `${process.env.NEXT_PUBLIC_DOMAIN}/${slug}/`,
+      },
     }
   }
 
@@ -18,6 +21,9 @@ export async function generateMetadata({ params }) {
   return {
     title: product?.metaTitle,
     description: product?.metaDescription,
+    alternates: {
+      canonical: `${process.env.NEXT_PUBLIC_DOMAIN}/${params.slug[0]}/${params.slug[1]}`,
+    },
   }
 }
 

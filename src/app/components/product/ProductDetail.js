@@ -7,8 +7,13 @@ import ProductImageCarousel from "@/components/ProductImageCarousel";
 import ProductDetailTabs from "@/components/ProductDetailTabs";
 import { motion } from "framer-motion";
 import { addRecentlyView } from "@/lib/product";
+import { addRecentlyView } from "@/lib/product";
 
-export default ({ product = {}, description = "", relatedProducts = [] }) => {
+export default ({ id }) => {
+  const [product, setProduct] = useState({});
+  const [images, setImages] = useState([]);
+  const [description, setDescription] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     addRecentlyView(product)
   }, [product.id])

@@ -7,15 +7,16 @@ import SaleDetail from "@/components/SaleDetail";
 import ProductImageCarousel from "@/components/ProductImageCarousel";
 import ProductDetailTabs from "@/components/ProductDetailTabs";
 import { motion } from "framer-motion";
+import { addRecentlyView } from "@/lib/product";
 
 export default ({ id }) => {
   const [product, setProduct] = useState({});
   const [images, setImages] = useState([]);
   const [description, setDescription] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     getProduct()
-
   }, [id])
 
   const getProduct = async () => {
@@ -24,6 +25,7 @@ export default ({ id }) => {
 
     res.json().then(async product => {
       setProduct(product)
+      addRecentlyView(product)
       const productPostResponse = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${product.slug}&categories=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}`);
       if (productPostResponse.ok) {
         const productPost = await productPostResponse.json();
@@ -44,7 +46,6 @@ export default ({ id }) => {
 
   return (
     <>
-      <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${product.subCate?.slug}/${id}`} />
       <div className="bg-[#ffed00] py-2.5">
         <div className="container">
           <Breadcrumbs

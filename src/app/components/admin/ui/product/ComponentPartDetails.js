@@ -51,9 +51,6 @@ const ComponentPartDetails = ({ productId, categories, subCategories }) => {
   const [page, setPage] = useState(1);
   const [products, setProducts] = useState([]);
 
-  const [technicalRows, setTechnicalRows] = useState([])
-  const [technicalColumns, setTechnicalColumns] = useState([])
-
   const [saleDetails, setSaleDetails] = useState([])
 
   const editor = useEditor(editorConfig(selectedProduct.description))
@@ -94,12 +91,7 @@ const ComponentPartDetails = ({ productId, categories, subCategories }) => {
       fetch(`/api/products/${product.id}`).then(res => res.json()).then((json) => {
         setSelectedProduct(json)
         editor.commands.setContent(json.description)
-      }),
-      fetch(`/api/products/${product.id}/technical-details`).then(res => res.json()).then(technical => {
-        setTechnicalColumns(technical ? JSON.parse(technical.column) : [])
-        setTechnicalRows(technical ? JSON.parse(technical.row) : [])
-      }),
-      fetch(`/api/products/${product.id}/sale-details`).then(res => res.json()).then(setSaleDetails),
+      })
     ]).then(() => onOpen())
   }
 

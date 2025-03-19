@@ -7,8 +7,12 @@ import TechnicalDetail from './TechnicalDetail';
 import parse from 'html-react-parser'
 import "./ProductDetailTabs.css"
 import "./blog/BlogDetail.css"
+import { getRecentlyView } from "@/lib/product";
+import Link from "next/link";
+import Image from "next/image";
 
 const ID = {
+  RECENTLY_VIEW: "RECENTLY_VIEW",
   DESCRIPTION: "DESCRIPTION",
   FEATURES: "FEATURES",
   SPECIFICATIONS: "SPECIFICATIONS",
@@ -81,6 +85,25 @@ const TabContent = ({ id, product, description }) => {
           <RelatedProducts query={`/?size=10&page=1&productType=COMPONENT_PART&productId=${product.id}`} />
         </div>
       )
+    case ID.RECENTLY_VIEW:
+      return (
+        <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
+          {getRecentlyView().map(item => (
+            <Link href={`/${item.subCate?.slug}/${item.slug}`} className="hover:opacity-50">
+              <div className="flex gap-3 items-center">
+                <Image
+                  width={200}
+                  height={200}
+                  src={`${product.image ? product.image.path : "/default-featured-image.webp"}`}
+                  alt={product.imageAlt}
+                  className="w-16 h-16"
+                />
+                <p>{item.name}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )
     default:
       return <></>
   }
@@ -88,6 +111,7 @@ const TabContent = ({ id, product, description }) => {
 
 export default ({ product, description }) => {
   const tabs = [
+    { id: ID.RECENTLY_VIEW, title: "Sản phẩm vừa xem" },
     { id: ID.DESCRIPTION, title: "Mô tả" },
     // { id: ID.FEATURES, title: "Tính năng và ưu điểm" },
     { id: ID.SPECIFICATIONS, title: "Thông số kỹ thuật" },

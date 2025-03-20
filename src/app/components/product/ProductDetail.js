@@ -8,7 +8,7 @@ import ProductDetailTabs from "@/components/ProductDetailTabs";
 import { motion } from "framer-motion";
 import { addRecentlyView } from "@/lib/product";
 
-export default ({ product = {}, description = "" }) => {
+export default ({ product = {}, description = "", relatedProducts = [] }) => {
   useEffect(() => {
     addRecentlyView(product)
   }, [product.id])
@@ -72,7 +72,7 @@ export default ({ product = {}, description = "" }) => {
           transition={{ duration: 0.7 }}
           viewport={{ once: true }}
         >
-          <ProductDetailTabs product={product} description={description} />
+          <ProductDetailTabs product={product} description={description} relatedProducts={relatedProducts} />
         </motion.div>
       </div>
     </>

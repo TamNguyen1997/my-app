@@ -2,14 +2,6 @@ import { NextResponse } from 'next/server';
 import { db } from '@/app/db';
 
 export async function GET(req) {
-  let include = { image: true }
-
-  include.subcates = {
-    include: {
-      image: true
-    }
-  }
-
   try {
     const result = await db.category.findMany({
       where: {

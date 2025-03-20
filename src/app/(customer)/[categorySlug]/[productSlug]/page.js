@@ -1,5 +1,6 @@
 import ProductDetail from "@/app/components/product/ProductDetail";
 import { db } from '@/app/db';
+import { product_type } from "@prisma/client";
 import { notFound } from "next/navigation";
 
 export async function generateMetadata({ params }) {
@@ -53,7 +54,46 @@ const Page = async ({ params }) => {
     const productDescriptionJson = await productPostResponse.json();
     productDescription = productDescriptionJson[0]?.content?.rendered
   }
-  return <ProductDetail product={product} description={productDescription} />
+
+  const relatedProducts = await db.product.findMany({
+    select: {
+      active: true,
+      brandId: true,
+      categoryId: true,
+      createdAt: true,
+      id: true,
+      name: true,
+      imageId: true,
+      productId: true,
+      slug: true,
+      updatedAt: true,
+      imageAlt: true,
+      imageId: true,
+      saleDetails: true,
+      technical_detail: true,
+      image: true,
+      category: true,
+      subCate: true,
+      brand: true,
+      highlight: true
+    },
+    where: {
+      active: true,
+      slug: {
+        not: params.productSlug
+      },
+      productType: product_type.PRODUCT,
+      categoryId: product.categoryId
+    },
+    orderBy: [
+      {
+        updatedAt: "desc"
+      }
+    ],
+    take: 10,
+    skip: 0
+  })
+  return <ProductDetail product={product} description={productDescription} relatedProducts={relatedProducts} />
 }
 
 export default Page;

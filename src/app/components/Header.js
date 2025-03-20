@@ -8,51 +8,10 @@ import { CartContext } from "@/context/CartProvider";
 import "./Header.css";
 import { Image } from "@nextui-org/react";
 
-const Header = () => {
+const Header = ({ headers }) => {
   const [hoveredCate, setHoveredCate] = useState(null)
   const [menuVisible, setMenuVisible] = useState(false);
   const menuRef = useRef();
-  const brandCategory = {
-    id: "-1",
-    name: "Thương hiệu",
-    subcates: BRANDS
-  };
-  const [categories, setCategories] = useState([]);
-
-  useEffect(() => {
-    fetch('/api/categories/headers').then(res => res.json()).then(json => setCategories([brandCategory, ...json.result,
-      {
-        id: "1000",
-        slug: "tin-tuc",
-        name: "Tin tức",
-        class: "flex md:hidden",
-        subcates: []
-      },
-      {
-        id: "1001",
-        slug: "kien-thuc-hay",
-        name: "Kiến thức hay",
-        class: "flex md:hidden",
-        subcates: [
-          {
-            id: "1",
-            slug: "kien-thuc-hay/tu-dien-thuat-ngu",
-            name: "Từ điển thuật ngữ"
-          },
-          {
-            id: "2",
-            slug: "kien-thuc-hay/tu-van-chon-mua",
-            name: "Tư vấn chọn mua"
-          },
-          {
-            id: "3",
-            slug: "kien-thuc-hay/huong-dan-su-dung",
-            name: "Hướng dẫn sử dụng"
-          }
-        ]
-      }
-    ]));
-  }, []);
 
   const { cartdetails } = useContext(CartContext);
   const getQuantity = (details) => {
@@ -141,7 +100,7 @@ const Header = () => {
             <div className="text-sm flex">
               <div className="bg-white shadow-lg w-[240px] border rounded-bl-lg">
                 {
-                  categories?.map(category => (
+                  headers?.map(category => (
                     category.slug ?
                       <Link
                         key={category.id}
@@ -203,58 +162,6 @@ const Header = () => {
     </nav>
   );
 };
-
-const BRANDS = [
-  {
-    id: 1,
-    slug: "thuong-hieu-rubbermaid",
-    name: "Rubbermaid_Dụng cụ làm vệ sinh",
-    image: {
-      path: "/brand/Rubbermaid.png"
-    },
-  },
-  {
-    id: 2,
-    slug: "thuong-hieu-ghibli",
-    name: "Ghibli_Máy vệ sinh công nghiệp",
-    image: {
-      path: "/brand/Logo-Ghibli.svg"
-    },
-  },
-  {
-    id: 3,
-    slug: "thuong-hieu-moerman",
-    name: "Moerman_Dụng cụ vệ sinh kính",
-    image: {
-      path: "/brand/Logo-Moerman.png"
-    }
-  },
-  {
-    id: 4,
-    slug: "thuong-hieu-mapa",
-    name: "Mapa_Găng tay bảo hộ",
-    image: {
-      path: "/brand/Logo-Mapa.png"
-    },
-  },
-  {
-    id: 5,
-    slug: "thuong-hieu-kleen-tex",
-    name: "Kleen-Tex_Thảm trải sản/sảnh",
-    image: {
-      path: "/brand/KLEEN-TEX.png"
-    },
-  },
-  {
-    id: 6,
-    slug: "thuong-hieu-kimberly-clark",
-    name: "Kimberly Clark_Khăn giấy/vệ sinh",
-    image: {
-      path: "/brand/Logo-Kimberly-Clark.png"
-    },
-  },
-
-];
 
 const HeaderItems = ({ setHoveredCate, menuRef, setMenuVisible, menuVisible }) => {
   const headerItemsRef = useRef();

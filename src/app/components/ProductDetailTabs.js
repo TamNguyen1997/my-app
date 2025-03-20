@@ -22,7 +22,7 @@ const ID = {
   RELATED_ITEMS: "RELATED_ITEMS"
 };
 
-const TabContent = ({ id, product, description }) => {
+const TabContent = ({ id, product, description, relatedProducts }) => {
 
   const [recentlyView, setRecentlyView] = useState([])
 
@@ -84,7 +84,7 @@ const TabContent = ({ id, product, description }) => {
     case ID.RELATED_ITEMS:
       return (
         <div className="mb-9">
-          <RelatedProducts query={`?size=10&page=1&productType=PRODUCT&categoryId=${product.categoryId}`} />
+          <RelatedProducts relatedProducts={relatedProducts} />
         </div>
       )
     case ID.COMPONENT_PARTS:
@@ -117,13 +117,13 @@ const TabContent = ({ id, product, description }) => {
   }
 }
 
-export default ({ product, description }) => {
+export default ({ product, description, relatedProducts }) => {
   const tabs = [
     { id: ID.RECENTLY_VIEW, title: "Sản phẩm vừa xem" },
     { id: ID.DESCRIPTION, title: "Mô tả" },
     // { id: ID.FEATURES, title: "Tính năng và ưu điểm" },
     { id: ID.SPECIFICATIONS, title: "Thông số kỹ thuật" },
-    { id: ID.COMPONENT_PARTS, title: "Phụ kiện" },
+    // { id: ID.COMPONENT_PARTS, title: "Phụ kiện" },
     { id: ID.RELATED_ITEMS, title: "Sản phẩm liên quan" },
   ];
 
@@ -251,7 +251,7 @@ export default ({ product, description }) => {
                   {tab.title}
                 </div>
 
-                <TabContent id={tab.id} product={product} description={description} />
+                <TabContent id={tab.id} product={product} description={description} relatedProducts={relatedProducts} />
               </div>
             )
           })

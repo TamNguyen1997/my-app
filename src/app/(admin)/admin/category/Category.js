@@ -249,10 +249,9 @@ const Category = () => {
           <AccordionItem key="1" aria-label="Tìm kiếm phổ biến" title="Tìm kiếm phổ biến">
             <div className="flex flex-wrap">
               {popularSearches.map((item, index) => (
-                <div className="group">
+                <div className="group" key={index}>
                   <span className="bg-gray-100 text-gray-800 text-xs font-medium 
-                me-2 px-2.5 py-0.5 rounded-3xl dark:bg-gray-700 dark:text-gray-300 flex"
-                    key={index}>
+                me-2 px-2.5 py-0.5 rounded-3xl dark:bg-gray-700 dark:text-gray-300 flex">
                     <Link href="#">
                       {item.category?.name}
                     </Link>

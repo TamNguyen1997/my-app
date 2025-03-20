@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import { Button } from '@nextui-org/react';
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -22,6 +23,13 @@ const ID = {
 };
 
 const TabContent = ({ id, product, description }) => {
+
+  const [recentlyView, setRecentlyView] = useState([])
+
+  useEffect(() => {
+    setRecentlyView(getRecentlyView())
+  }, [])
+
   switch (id) {
     case ID.DESCRIPTION:
       return (
@@ -88,8 +96,8 @@ const TabContent = ({ id, product, description }) => {
     case ID.RECENTLY_VIEW:
       return (
         <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
-          {getRecentlyView().map(item => (
-            <Link href={`/${item.subCate?.slug}/${item.slug}`} className="hover:opacity-50">
+          {recentlyView.map((item, index) => (
+            <Link href={`/${item.subCate?.slug}/${item.slug}`} className="hover:opacity-50" key={index}>
               <div className="flex gap-3 items-center">
                 <Image
                   width={200}

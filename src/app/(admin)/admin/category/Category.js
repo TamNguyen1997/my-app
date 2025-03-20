@@ -15,13 +15,13 @@ import {
   TableCell, TableColumn,
   TableHeader, TableRow,
   Tooltip,
-  useDisclosure
+  useDisclosure,
+  Accordion, AccordionItem
 } from "@nextui-org/react";
 import { EditIcon, Search, Trash2, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import slugify from "slugify"
 import PaginationWithTotal from "@/app/components/PaginationWithTotal";
-import { Accordion, AccordionItem } from "@heroui/accordion";
 
 import { ToastContainer, toast } from 'react-toastify';
 import { v4 } from "uuid";

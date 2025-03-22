@@ -178,7 +178,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
               if (Array.from(value)?.includes("all")) return;
               onCellValueChange(filterValue?.id, { [columnKey]: Array.from(value).map(item => ({ id: item })) })
             }}
-            selectedKeys={
+            defaultSelectedKeys={
               (filterValue[columnKey] ? filterValue[columnKey].map(v => v.id) : [])
             }
             className={`${columnKey === "brands" ? "min-w-[140px]" : "min-w-[200px] max-w-[200px]"}`}

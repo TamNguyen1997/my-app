@@ -19,7 +19,7 @@ import {
   Tooltip,
 } from "@nextui-org/react"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { EditIcon, FileImage, Fingerprint, Plus, Search, Trash2 } from "lucide-react"
+import { EditIcon, FileImage, Plus, Search, Trash2 } from "lucide-react"
 import { toast, ToastContainer } from "react-toastify"
 import DeleteConfirmation from "@/components/admin/ui/DeleteConfirmation"
 import PaginationWithTotal from "@/components/PaginationWithTotal"
@@ -31,9 +31,10 @@ const quickUpdateProduct = async (product, value) => {
   })
 }
 
-const ProductCms = () => {
+const ProductCms = ({ filters = [] }) => {
   const [loadingState, setLoadingState] = useState("loading")
 
+  const [selectedFilter, setSelectedFilter] = useState({})
   const [condition, setCondition] = useState({})
   const [total, setTotal] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
@@ -60,7 +61,7 @@ const ProductCms = () => {
     const queryString = new URLSearchParams(filteredCondition).toString()
 
     await fetch(
-      `/api/products/?size=${rowsPerPage}&page=${page}&${queryString}`
+      `/api/products/v2?size=${rowsPerPage}&page=${page}&${queryString}`
     ).then(async (res) => {
       const data = await res.json()
       setProducts(data.result)
@@ -175,7 +176,7 @@ const ProductCms = () => {
       <DeleteConfirmation disclosure={deleteConfirmationDisclosure} onDelete={deleteProduct} />
       <DeleteConfirmation disclosure={deleteManyConfirmationDisclosure} onDelete={deleteMany} />
       <div className="flex flex-col gap-2 border-r min-h-full p-2">
-        <div className="flex gap-3">
+        <div className="flex gap-3 w-full">
           <Input
             label="ID/Tên"
             aria-label="ID/Tên"
@@ -217,6 +218,31 @@ const ProductCms = () => {
             <SelectItem key="true">Có thumbnail</SelectItem>
             <SelectItem key="false">Không có thumbnail</SelectItem>
           </Select>
+
+          <Select
+            label="Filter"
+            labelPlacement="outside"
+            onSelectionChange={(value) => {
+              const filterId = value.values().next().value
+              onConditionChange({ filterId: filterId })
+              setSelectedFilter(filters.find(item => item.id === filterId))
+            }}>
+            {
+              filters.map((filter) => (<SelectItem key={filter.id}>{filter.name}</SelectItem>))
+            }
+          </Select>
+          <Select
+            isDisabled={!selectedFilter?.filterValue}
+            label="Giá trị filter"
+            labelPlacement="outside"
+            onSelectionChange={(value) => {
+              const filterValueId = value.values().next().value
+              onConditionChange({ filterValueId: filterValueId })
+            }}>
+            {
+              selectedFilter?.filterValue?.map((filterValue) => (<SelectItem key={filterValue.id}>{filterValue.value}</SelectItem>))
+            }
+          </Select>
           <div className="items-end flex min-h-full gap-2">
             <Button onClick={getProduct} color="primary">
               <Search />
@@ -242,7 +268,7 @@ const ProductCms = () => {
             selectedKeys={selectedKeys}
             bottomContent={
               loadingState === "loading" ? null : (
-                <div className="w-full flex">
+                <div className="flex">
                   <PaginationWithTotal
                     rowsPerPage={rowsPerPage}
                     setRowsPerPage={setRowsPerPage}

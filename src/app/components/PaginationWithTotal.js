@@ -3,7 +3,7 @@ import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Paginati
 const PaginationWithTotal = ({ rowsPerPage, setRowsPerPage, page, pages, setPage, total = 0 }) => {
   return (
     <>
-      <div className="flex w-full gap-2">
+      <div className="flex gap-2">
         <p className="pt-2 opacity-70 text-small">Hiển thị</p>
         <Dropdown>
           <DropdownTrigger>
@@ -24,7 +24,7 @@ const PaginationWithTotal = ({ rowsPerPage, setRowsPerPage, page, pages, setPage
         </Dropdown>
         <p className="pt-2 opacity-70 text-small">trên tổng số {total}.</p>
       </div>
-      <div className="flex w-full justify-center">
+      <div className="flex justify-center mx-auto">
         <Pagination
           isCompact
           showControls

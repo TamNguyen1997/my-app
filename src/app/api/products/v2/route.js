@@ -2,6 +2,7 @@ import { db } from '@/app/db';
 import { NextResponse } from 'next/server';
 import crypto from "crypto";
 import { product_type, sale_detail_type } from "@prisma/client";
+import queryString from 'query-string';
 
 export async function POST(req) {
   try {
@@ -86,5 +87,96 @@ export async function POST(req) {
   } catch (e) {
     console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
+  }
+}
+
+
+export async function GET(req) {
+  const { query } = queryString.parseUrl(req.url);
+  const page = parseInt(query.page) || 1;
+  const size = parseInt(query.size) || 10;
+  let condition = {};
+
+  if (query) {
+    Object.assign(condition, {
+      ...(query.highlight && { highlight: query.highlight === 'true' }),
+      ...(query.categoryId && { categoryId: { in: query.categoryId.split(',') } }),
+      ...(query.subCateId && { subCateId: { in: query.subCateId.split(',') } }),
+      ...(query.active && { active: query.active === 'true' }),
+      ...(query.name && { name: { contains: query.name } }),
+      ...(query.slug && { slug: { contains: query.slug } }),
+      ...(query.productType && { productType: query.productType }),
+      ...(query.thumbnail === 'true' && { imageId: { not: null } }),
+      ...(query.thumbnail === 'false' && { imageId: null }),
+      ...(query.brandId && { brand: { slug: query.brandId } })
+    });
+
+    if (query.id_name) {
+      const idNameQuery = slugify(query.id_name, { locale: 'vi' }).replace(/[()]/g, '');
+      condition.OR = ['name', 'id', 'slug'].map(field => ({ [field]: { contains: idNameQuery } }));
+    }
+
+    if (query.sku) {
+      condition.saleDetails = { some: { sku: { contains: query.sku } } };
+    }
+
+    let productIds = query.productId ? [query.productId] : [];
+
+    if (query.filterId || query.filterValueId) {
+      const filterIds = Array.isArray(query.filterId || []) ? query.filterId : [query.filterId];
+      const filterValueIds = Array.isArray(query.filterValueId || []) ? query.filterValueId : [query.filterValueId];
+      let saleDetailCondition = condition.saleDetails || { saleDetails: { some: {} } }
+      saleDetailCondition.saleDetails.some.AND = [
+        { filterId: { in: filterIds } },
+        {
+          OR: [
+            { filterValueId: { in: filterValueIds } },
+            { filterValue: { slug: { in: filterValueIds } } }
+          ]
+        }
+      ]
+
+      let technicalDetailCondition = condition.technical_detail || { technical_detail: { some: {} } }
+
+      technicalDetailCondition.technical_detail.some.AND = [
+        { filterId: { in: filterIds } },
+        {
+          OR: [
+            { filterValueId: { in: filterValueIds } },
+            { filterValue: { slug: { in: filterValueIds } } }
+          ]
+        }
+      ]
+
+      Object.assign(condition, {
+        OR: [
+          saleDetailCondition,
+          technicalDetailCondition
+        ]
+      })
+    }
+
+    if (productIds.length) condition.id = { in: productIds };
+  }
+
+  try {
+    const result = await db.product.findMany({
+      select: {
+        active: true, brandId: true, categoryId: true, createdAt: true, id: true,
+        name: true, imageId: true, productId: true, slug: true, updatedAt: true,
+        imageAlt: true, saleDetails: true, technical_detail: true, image: true,
+        category: true, subCate: true, brand: true, highlight: true
+      },
+      where: condition,
+      orderBy: { updatedAt: 'desc' },
+      take: size,
+      skip: (page - 1) * size
+    });
+
+    const total = await db.product.count({ where: condition });
+    return NextResponse.json({ result, total });
+  } catch (e) {
+    console.log(e)
+    return NextResponse.json({ message: 'Something went wrong', error: e }, { status: 400 });
   }
 }

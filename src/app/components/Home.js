@@ -87,7 +87,8 @@ const getHighlightProducts = async () => {
       category: true,
       subCate: true,
       brand: true,
-      highlight: true
+      highlight: true,
+      imageUrl: true
     },
     where: {
       highlight: true,

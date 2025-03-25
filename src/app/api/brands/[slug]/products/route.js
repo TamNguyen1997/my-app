@@ -106,6 +106,7 @@ export async function GET(req, { params }) {
         category: true,
         subCate: true,
         brand: true,
+        imageUrl: true,
       },
       orderBy: {
         createdAt: 'desc'

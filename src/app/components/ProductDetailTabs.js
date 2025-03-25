@@ -53,7 +53,7 @@ const TabContent = ({ id, product, description, relatedProducts }) => {
               return (
                 <div className="text-sm" key={index}>
                   <div className="relative pb-[100%]">
-                    <img src={product?.image?.path} className="absolute inset-0 w-full h-full object-cover" />
+                    <img src={product?.imageUrl} className="absolute inset-0 w-full h-full object-cover" />
                   </div>
                   <p className="font-bold my-1.5">Ứng dụng Home & Garden</p>
                   <p>Ứng dụng Kärcher Home & Garden giúp bạn trở thành một chuyên gia làm sạch. Tận dụng kiến ​​thức sâu rộng về Kärcher của chúng tôi để có kết quả làm sạch hoàn hảo. Dịch vụ toàn diện tiện lợi - tất cả thông tin trên thiết bị, ứng dụng và cổng Dịch vụ của chúng tôi.</p>
@@ -102,7 +102,7 @@ const TabContent = ({ id, product, description, relatedProducts }) => {
                 <Image
                   width={200}
                   height={200}
-                  src={`${product.image ? product.image.path : "/default-featured-image.webp"}`}
+                  src={`${product.imageUrl || "/default-featured-image.webp"}`}
                   alt={product.imageAlt}
                   className="w-16 h-16"
                 />

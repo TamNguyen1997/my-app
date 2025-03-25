@@ -79,7 +79,7 @@ const Category = ({ category, productFilter }) => {
         bg-[image:var(--image-url)] bg-no-repeat bg-center bg-cover
         justify-center xl:h-96 lg:h-72 md:h-60 h-32"
         style={{
-          '--image-url': `url(${category.image ? category.image.path : ""})`,
+          '--image-url': `url(${category.imageUrl || ""})`,
           backgroundSize: "100% 100%"
         }} >
       </div>

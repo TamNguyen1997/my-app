@@ -134,7 +134,7 @@ const SearchBar = () => {
                                 width={60}
                                 height={60}
                                 priority
-                                src={`${product.image?.path}`}
+                                src={`${product.imageUrl}`}
                                 alt={product?.name}
                               /> : ""
                           }

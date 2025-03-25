@@ -52,7 +52,7 @@ export default ({ id }) => {
           className="flex flex-wrap items-start bg-[#f8f8f8] mb-5"
         >
           <div className="relative sm:w-7/12 md:w-8/12 w-full bg-white border-[3px] border-[#f8f8f8]">
-            <ProductImageCarousel items={product.product_on_image.map(item => item.image.path)} />
+            <ProductImageCarousel items={product.product_on_image.map(item => item.imageUrl)} />
           </div>
 
           <div className="sm:w-5/12 md:w-4/12 w-full">

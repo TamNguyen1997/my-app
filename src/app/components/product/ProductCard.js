@@ -11,7 +11,7 @@ const ProductCard = ({ product }) => {
         <Image
           width={200}
           height={200}
-          src={`${product.image ? product.image.path : "/default-featured-image.webp"}`}
+          src={`${product.imageUrl || "/default-featured-image.webp"}`}
           alt={product.imageAlt}
         />
       </Link>

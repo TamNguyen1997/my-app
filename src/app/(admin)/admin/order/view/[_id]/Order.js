@@ -286,7 +286,7 @@ const Order = () => {
                 <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6" key={i}>
                   <div className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
                     <span className="shrink-0 md:order-1">
-                      <img className="h-20 w-20 dark:block" src={`${item.saleDetail?.product.image?.path}`} alt="image" />
+                      <img className="h-20 w-20 dark:block" src={`${item.saleDetail?.product.imageUrl || item.saleDetail?.product.image?.path}`} alt="image" />
                     </span>
                     <div className="flex items-center justify-between md:order-3 md:justify-end">
                       <div className="flex items-center w-32">

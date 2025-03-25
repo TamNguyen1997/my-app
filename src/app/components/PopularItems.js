@@ -123,7 +123,7 @@ const PopularItems = ({ highlightProducts = [], highlightCatesWithProducts = [] 
         {
           highlightCatesWithProducts.filter(item => item.product.length).map((cate, i) => {
             return <div key={i} className="">
-              <ProductCards banner={cate.image?.path} products={cate.product} name={cate.name} />
+              <ProductCards banner={cate.imageUrl} products={cate.product} name={cate.name} />
               <Link isExternal
                 href={`/${cate.slug}`}
                 className="flex justify-center items-center text-black font-semibold w-[181px] bg-white

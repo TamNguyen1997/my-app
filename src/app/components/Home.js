@@ -46,9 +46,6 @@ const getBanners = async () => {
         },
         active: true
       },
-      include: {
-        image: true
-      },
       orderBy: [
         {
           updatedAt: "desc"
@@ -59,9 +56,6 @@ const getBanners = async () => {
       where: {
         type: "DEFAULT",
       },
-      include: {
-        image: true
-      },
       orderBy: [
         {
           updatedAt: "desc"
@@ -70,7 +64,7 @@ const getBanners = async () => {
     })
   ])
 
-  return [...scheduledBanners, ...defaultBanners].splice(0, 5).filter(item => item && item.image).map(banner => banner.image)
+  return [...scheduledBanners, ...defaultBanners].splice(0, 5).filter(item => item && item.image)
 }
 
 const getHighlightProducts = async () => {

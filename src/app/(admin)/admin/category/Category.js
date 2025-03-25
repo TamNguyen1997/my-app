@@ -46,7 +46,6 @@ const Category = () => {
   const [categoryId, setCategoryId] = useState(selectedCate.id)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [popularSearches, setPopularSearches] = useState([])
-  const [popularSearches, setPopularSearches] = useState([])
   const imageModal = useDisclosure()
 
   const [page, setPage] = useState(1);
@@ -181,44 +180,7 @@ const Category = () => {
       }
     )
   }
-  const addPopularSearch = (data) => {
-    toast.promise(
-      fetch(`/api/popular-searches/`, { method: "POST", body: JSON.stringify(data) }).then(async (res) => {
-        getCategories()
-        if (!res.ok) {
-          throw new Error((await res.json()).message)
-        }
-      }),
-      {
-        pending: 'Đang thêm',
-        success: 'Đã thêm vào Tìm kiếm phổ biến',
-        error: {
-          render({ data }) {
-            return data.message
-          }
-        }
-      }
-    )
-  }
-  const deletePopularSearch = (id) => {
-    toast.promise(
-      fetch(`/api/popular-searches/${id}`, { method: "DELETE" }).then(async (res) => {
-        getCategories()
-        if (!res.ok) {
-          throw new Error((await res.json()).message)
-        }
-      }),
-      {
-        pending: 'Đang xóa',
-        success: 'Đã xóa Tìm kiếm phổ biến',
-        error: {
-          render({ data }) {
-            return data.message
-          }
-        }
-      }
-    )
-  }
+
   const addPopularSearch = (data) => {
     toast.promise(
       fetch(`/api/popular-searches/`, { method: "POST", body: JSON.stringify(data) }).then(async (res) => {
@@ -278,16 +240,17 @@ const Category = () => {
               <span className="text-lg text-danger cursor-pointer active:opacity-50">
                 <Trash2 onClick={() => { deleteCate(category.id) }} />
               </span>
-              <span className="text-lg text-green-500 cursor-pointer active:opacity-50">
-                <Tooltip content="Thêm vào Tìm kiếm phổ biến">
-                  <Search onClick={() => addPopularSearch({ categoryId: category.id, keyword: category.name })} />
-                </Tooltip>
-              </span>
-              <span className="text-lg text-green-500 cursor-pointer active:opacity-50">
-                <Tooltip content="Thêm vào Tìm kiếm phổ biến">
-                  <Search onClick={() => addPopularSearch({ categoryId: category.id, keyword: category.name })} />
-                </Tooltip>
-              </span>
+            </span>
+            <span className="text-lg text-green-500 cursor-pointer active:opacity-50">
+              <Tooltip content="Thêm vào Tìm kiếm phổ biến">
+                <Search onClick={() => addPopularSearch({ categoryId: category.id, keyword: category.name })} />
+              </Tooltip>
+            </span>
+            <span className="text-lg text-green-500 cursor-pointer active:opacity-50">
+              <Tooltip content="Thêm vào Tìm kiếm phổ biến">
+                <Search onClick={() => addPopularSearch({ categoryId: category.id, keyword: category.name })} />
+              </Tooltip>
+            </span>
           </div>
         )
       default:
@@ -529,7 +492,7 @@ const Category = () => {
                       selectedCate.imageId ?
                         <img
                           className="w-full h-full"
-                          src={`${selectedCate?.image?.path}`}
+                          src={`${selectedCate?.imageUrl}`}
                         />
                         : <></>
                     }

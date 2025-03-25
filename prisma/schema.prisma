@@ -19,8 +19,9 @@ model product {
   slug     String
   imageAlt String? @map("image_alt")
 
-  imageId String? @map("image_id") @db.Uuid
-  image   image?  @relation(fields: [imageId], references: [id])
+  imageId  String? @map("image_id") @db.Uuid
+  image    image?  @relation(fields: [imageId], references: [id])
+  imageUrl String? @map("image_url")
 
   active    Boolean @default(true)
   sku       String?
@@ -75,8 +76,9 @@ model product_on_image {
   productId String
   product   product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  imageId String @db.Uuid
-  image   image  @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  imageId  String  @db.Uuid
+  image    image   @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  imageUrl String? @map("image_url")
 
   order Int @default(0)
 
@@ -328,8 +330,9 @@ model banner {
   createdAt DateTime   @default(now()) @map("created_at")
   updatedAt DateTime   @default(now()) @updatedAt @map("updated_at")
 
-  imageId String? @map("image_id") @db.Uuid
-  image   image?  @relation(fields: [imageId], references: [id])
+  imageId  String? @map("image_id") @db.Uuid
+  image    image?  @relation(fields: [imageId], references: [id])
+  imageUrl String? @map("image_url")
 
   @@index([imageId])
 }
@@ -413,6 +416,7 @@ model category {
   headerOrder Int     @default(0) @map("header_order")
   imageId     String? @db.Uuid
   image       image?  @relation(fields: [imageId], references: [id])
+  imageUrl    String? @map("image_url")
 
   type     cate_type  @default(CATE)
   cateId   String?

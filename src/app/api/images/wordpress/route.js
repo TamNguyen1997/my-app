@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server'
-import { db } from '@/app/db';
 import queryString from 'query-string';
 
 export async function GET(req) {
@@ -8,34 +7,20 @@ export async function GET(req) {
   let page = 1
   let size = 10
 
-  let condition = {}
-
   if (query) {
     page = parseInt(query.page) || 1
     size = parseInt(query.size) || 10
   }
-  if (query.type && query.type !== "undefined") {
-    condition.type = query.type
-  }
 
-  if (query.name && query.name !== "undefined") {
-    condition.OR = [
-      { name: { search: `${query.name}:*` } },
-      { slug: { search: `${query.name}:*` } },
-    ]
-  }
+  const wordpressRes = await fetch(`${process.env.WORDPRESS_URL}/wp-json/wp/v2/media/?search=${query.search}&per_page=${size}&page=${page}`);
 
-  try {
+  const total = parseInt(wordpressRes.headers.get("X-WP-TotalPages") || "0")
+  if (wordpressRes.ok) {
     return NextResponse.json({
-      result: await db.image.findMany({
-        where: condition,
-        take: size,
-        skip: (page - 1) * size,
-        orderBy: { createdAt: 'desc' }
-      }),
-      total: await db.image.count({ where: condition })
+      result: await wordpressRes.json(),
+      total
     })
-  } catch (e) {
-    return NextResponse.json([])
   }
+
+  return NextResponse.json([])
 }

@@ -10,12 +10,13 @@ import {
 import { EditIcon, X } from 'lucide-react'
 import { toast, ToastContainer } from 'react-toastify'
 import { ProductContext } from '@/app/(admin)/admin/product/edit/[id]/page'
+import Image from 'next/image'
+import parse from 'html-react-parser';
 
 const ImagePicker = ({ onImageClick, disableDelete, reload, highlights, showHighlight = true }) => {
   const [images, setImages] = useState([])
   const [selectedImage, setSelectedImage] = useState()
-  const [type, setType] = useState(new Set([]))
-  const [name, setName] = useState()
+  const [search, setSearch] = useState()
   const [refresh, setRefresh] = useState(false)
 
   const [size, setSize] = useState(10)
@@ -33,18 +34,17 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights, showHigh
 
   useEffect(() => {
     setIsLoading(true)
-    const typeValue = type.values().next().value
-    fetch(`/api/images/?name=${name}&type=${typeValue}&size=${size}&page=${page}`).then(async res => {
+    fetch(`/api/images/wordpress/?search=${search || ""}&size=${size}&page=${page}`).then(async res => {
       const json = await res.json()
       setImages(json.result || [])
-      setTotal(json.total || json.total)
+      setTotal(json.total)
       setIsLoading(false)
     })
-  }, [type, name, refresh, reload, size, page])
+  }, [search, refresh, reload, size, page])
 
   const deleteImage = async (image) => {
     setIsLoading(true)
-    const res = await fetch(`/api/images/${image.id}`, {
+    const res = await fetch(`/api/images/wordpress/${image.id}`, {
       method: 'DELETE'
     })
     if (res.ok) {
@@ -86,31 +86,12 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights, showHigh
             type="text"
             aria-label="Images"
             placeholder="Tìm kiếm ảnh"
-            value={name}
             isClearable
             onValueChange={(value) => {
-              setName(value)
+              setSearch(value)
             }}
           >
           </Input>
-          <Select
-            aria-label='Loại'
-            className="w-52"
-            defaultSelectedKeys={type}
-            onSelectionChange={(value) => {
-              setType(value)
-            }}
-          >
-            <SelectItem key="PRODUCT">
-              Sản phẩm
-            </SelectItem>
-            <SelectItem key="BANNER">
-              Banner
-            </SelectItem>
-            <SelectItem key="BLOG">
-              Blog
-            </SelectItem>
-          </Select>
         </div>
       </div>
 
@@ -150,13 +131,15 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights, showHigh
                   group relative flex flex-col rounded hover:opacity-70 cursor-pointer
                   shadow-[0px_2px_10px_rgba(0,0,0,0.15)] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)]
                   hover:-translate-y-2.5 hover:scale-[1.02]
-                  transition duration-400 
+                  transition duration-400
                   ${showHighlight && (product?.product_on_image?.map(item => item.imageId).includes(img.id) || (highlights?.map(item => item.id).includes(img.id))) && "border-green-400 border-large"}
                 `}>
-              <img
-                src={`${img.path}`}
-                alt={img.alt}
-                className="aspect-[16/10] object-cover rounded-t shrink-0"
+
+              <Image
+                src={`${img.source_url}`}
+                alt={img.title.rendered}
+                height={400}
+                width={400}
                 onClick={() => {
                   onImageClick(img)
                 }}
@@ -179,7 +162,7 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights, showHigh
                 )
               }
               <div className="grow bg-white text-center rounded-b p-5">
-                <h6 className="text-[17px] font-bold text-[#212529] break-words mb-2">{img.name}</h6>
+                <h6 className="text-[17px] font-bold text-[#212529] break-words mb-2">{parse(img.title?.rendered || "")}</h6>
               </div>
             </div>
           ))

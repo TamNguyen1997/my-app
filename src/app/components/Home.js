@@ -64,7 +64,7 @@ const getBanners = async () => {
     })
   ])
 
-  return [...scheduledBanners, ...defaultBanners].splice(0, 5).filter(item => item && item.image)
+  return [...scheduledBanners, ...defaultBanners].splice(0, 5).filter(item => item && item.imageUrl)
 }
 
 const getHighlightProducts = async () => {

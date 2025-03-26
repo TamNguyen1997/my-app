@@ -5,13 +5,15 @@ import "./ImageCms.css"
 import {
   Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger,
   Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader,
-  Pagination, Select, SelectItem, Spinner, Textarea, useDisclosure
+  Pagination, Spinner, Textarea, useDisclosure
 } from '@nextui-org/react'
 import { EditIcon, Search, X } from 'lucide-react'
 import { toast, ToastContainer } from 'react-toastify'
 import { ProductContext } from '@/app/(admin)/admin/product/edit/[id]/page'
 import Image from 'next/image'
 import parse from 'html-react-parser';
+import { useForm } from 'react-hook-form'
+
 
 const ImagePicker = ({ onImageClick, disableDelete, reload, highlights, showHighlight = true }) => {
   const [images, setImages] = useState([])
@@ -25,6 +27,12 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights, showHigh
 
   const [isLoading, setIsLoading] = useState(true)
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   const { product } = useContext(ProductContext) || {}
 
@@ -59,15 +67,11 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights, showHigh
     setIsLoading(false)
   }
 
-  const editImage = async (e) => {
-    e.preventDefault()
-    const res = await fetch(`/api/images/${selectedImage.id}`, {
+  const editImage = async (data) => {
+    console.log(data)
+    const res = await fetch(`/api/images/wordpress/${selectedImage.id}`, {
       method: 'PUT',
-      body: JSON.stringify({
-        name: selectedImage.name,
-        type: selectedImage.type,
-        description: selectedImage.description,
-      })
+      body: JSON.stringify(data)
     })
     if (res.ok) {
       setRefresh(!refresh)
@@ -178,7 +182,7 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights, showHigh
       <Modal
         size="lg"
         isOpen={isOpen} onOpenChange={onOpenChange}>
-        <form onSubmit={editImage}>
+        <form onSubmit={handleSubmit(editImage)}>
           <ModalContent>
             {(onClose) => (
               <>
@@ -186,32 +190,22 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights, showHigh
                 <ModalBody>
                   <Input aria-label="Tên ảnh"
                     label="Tên ảnh"
-                    value={selectedImage.name}
-                    onValueChange={value => setSelectedImage(Object.assign({}, selectedImage, { name: value }))}
+                    defaultValue={parse(selectedImage.title?.rendered || "")}
+                    {...register("title", {
+                      required: "Bạn phải điền tên hình ảnh",
+                    })}
                     isRequired
                   />
-                  <Select
-                    label="Loại hình"
-                    defaultSelectedKeys={[selectedImage.type]}
-                    onSelectionChange={(value) => {
-                      setSelectedImage(Object.assign({}, selectedImage, { type: value.values().next().value }))
-                    }}
-                    isRequired
-                  >
-                    <SelectItem key="PRODUCT">
-                      Sản phẩm
-                    </SelectItem>
-                    <SelectItem key="BLOG">
-                      Blog
-                    </SelectItem>
-                    <SelectItem key="BANNER">
-                      Banner
-                    </SelectItem>
+                  {errors.title && (
+                    <p className="text-red-500 text-sm">
+                      {errors.title.message}
+                    </p>
+                  )}
 
-                  </Select>
-                  <Textarea aria-label="Mô tả" label="Mô tả"
-                    value={selectedImage.description}
-                    onValueChange={value => setSelectedImage(Object.assign({}, selectedImage, { description: value }))} />
+                  <Textarea aria-label="Alt" label="Alt"
+                    value={selectedImage.alt_text}
+                    {...register("alt_text")}
+                  />
                 </ModalBody>
                 <ModalFooter>
                   <Button color="primary" type='submit'>

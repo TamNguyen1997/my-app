@@ -22,6 +22,7 @@ import PaginationWithTotal from "@/app/components/PaginationWithTotal";
 
 import { ToastContainer, toast } from 'react-toastify';
 import { v4 } from "uuid";
+import Image from "next/image";
 
 const quickUpdate = async (category, value, setCategory) => {
   const res = await fetch(`/api/categories/${category.id}`, { method: "PUT", body: JSON.stringify(value) })
@@ -243,11 +244,6 @@ const Category = () => {
                 <Search onClick={() => addPopularSearch({ categoryId: category.id, keyword: category.name })} />
               </Tooltip>
             </span>
-            <span className="text-lg text-green-500 cursor-pointer active:opacity-50">
-              <Tooltip content="Thêm vào Tìm kiếm phổ biến">
-                <Search onClick={() => addPopularSearch({ categoryId: category.id, keyword: category.name })} />
-              </Tooltip>
-            </span>
           </div>
         )
       default:
@@ -284,7 +280,7 @@ const Category = () => {
         </Accordion>
 
       </div>
-      <div className="flex gap-3 w-3/4">
+      <div className="flex gap-3">
         <Input label="ID/Tên category/Slug" className="pt-2"
           aria-label="ID/Tên category/Slug" labelPlacement="outside" defaultValue={condition.name}
           onValueChange={(value) => {
@@ -482,16 +478,18 @@ const Category = () => {
                       ""
                   }
                   <div>
-                    <Button color="primary" onClick={imageModal.onOpen}>Chọn hình</Button>
+                    <Button color="primary" onPress={imageModal.onOpen}>Chọn hình</Button>
                   </div>
                   <div className="m-auto w-2/3">
                     {
-                      selectedCate.imageId ?
-                        <img
-                          className="w-full h-full"
-                          src={`${selectedCate?.imageUrl}`}
-                        />
-                        : <></>
+                      selectedCate.imageUrl &&
+                      <Image
+                        className="w-full h-full"
+                        width={1280}
+                        height={500}
+                        alt={`${selectedCate?.imageUrl}`}
+                        src={`${selectedCate?.imageUrl}`}
+                      />
                     }
                   </div>
                 </ModalBody>
@@ -519,7 +517,8 @@ const Category = () => {
               <ModalHeader className="flex flex-col gap-1">Chọn hình</ModalHeader>
               <ModalBody>
                 <ImageCms disableDelete onImageClick={image => {
-                  setSelectedCate(Object.assign({}, selectedCate, { imageId: image.id, image: image }))
+                  console.log(image)
+                  setSelectedCate(Object.assign({}, selectedCate, { imageUrl: image.source_url }))
                   onClose()
                 }} />
               </ModalBody>

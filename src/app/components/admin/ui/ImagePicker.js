@@ -68,7 +68,6 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights, showHigh
   }
 
   const editImage = async (data) => {
-    console.log(data)
     const res = await fetch(`/api/images/wordpress/${selectedImage.id}`, {
       method: 'PUT',
       body: JSON.stringify(data)

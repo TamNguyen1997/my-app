@@ -24,10 +24,8 @@ const ImageCms = ({ onImageClick = () => { }, highlights, onUploadSuccess, showH
     const results = await Promise.all(imageFiles.map(item => {
       const formData = new FormData()
       formData.append('file', item.file)
-      formData.append('description', item.description)
-      formData.append('name', item.fileName)
-      formData.append('alt', item.description)
-      formData.append('type', item.type)
+      formData.append('title', item.fileName)
+      formData.append('alt_text', item.alt_text)
 
       return fetch('/api/images/upload/wordpress', {
         method: 'POST',
@@ -121,26 +119,9 @@ const ImageCms = ({ onImageClick = () => { }, highlights, onUploadSuccess, showH
                                     defaultValue={img.fileName}
                                     onValueChange={value => updateImages(i, { fileName: value })}
                                     isRequired />
-                                  <Select
-                                    label="Loại hình"
-                                    defaultSelectedKeys={[img.type]}
-                                    onSelectionChange={value => updateImages(i, { type: value.values().next().value })}
-                                    isRequired
-                                  >
-                                    <SelectItem key="PRODUCT">
-                                      Sản phẩm
-                                    </SelectItem>
-                                    <SelectItem key="BLOG">
-                                      Blog
-                                    </SelectItem>
-                                    <SelectItem key="BANNER">
-                                      Banner
-                                    </SelectItem>
-
-                                  </Select>
                                   <Textarea aria-label="Mô tả" label="Mô tả"
-                                    defaultValue={img.description}
-                                    onValueChange={value => updateImages(i, { description: value })} />
+                                    defaultValue={img.alt_text}
+                                    onValueChange={value => updateImages(i, { alt_text: value })} />
                                 </span>
                               </div>
                             )

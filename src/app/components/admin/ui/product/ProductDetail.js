@@ -5,6 +5,7 @@ import { useCallback, useContext, useState } from "react"
 import { parseDate } from "@internationalized/date";
 import { ProductContext } from "../../../../(admin)/admin/product/edit/[id]/page"
 import { toast } from "react-toastify";
+import Image from "next/image";
 
 const getDateString = (isoDate) =>
   parseDate(new Date(isoDate).toISOString().split("T")[0]);
@@ -15,7 +16,7 @@ const ProductDetail = () => {
   const [productImage, setProductImage] = useState(product.image || {})
 
   const selectImage = (value) => {
-    const newProduct = { ...product, ...{ imageId: value.id, image: value } }
+    const newProduct = { ...product, ...{ imageUrl: value.source_url } }
     setProduct({ ...newProduct })
     setProductImage(value)
     onOpenChange()
@@ -231,9 +232,9 @@ const ProductDetail = () => {
               </div>
             }
             <Input type="text"
-              aria-label="Hình ảnh thumbnail"
+              aria-label="URL thumbnail"
               label="Hình ảnh thumbnail"
-              value={productImage?.name} isDisabled />
+              value={product?.imageUrl} isReadOnly />
             <Input type="text"
               aria-label="Alt"
               label="Alt"
@@ -246,18 +247,18 @@ const ProductDetail = () => {
 
           <div>
             {
-              productImage?.id ?
-                <img
-                  src={`${productImage?.path}`}
-                  alt={`${product.imageAlt}`}
-                  width="150"
-                  height="100"
-                  className="mx-auto"
-                /> : null
+              product?.imageUrl &&
+              <Image
+                src={`${product.imageUrl}`}
+                alt={`${product.imageAlt}`}
+                width="150"
+                height="100"
+                className="mx-auto"
+              />
             }
           </div>
         </div>
-        <Button color="primary" className="w-40" onClick={() => getProductPostLink(product)}>Xem mô tả sản phẩm</Button>
+        <Button color="primary" className="w-40" onPress={() => getProductPostLink(product)}>Xem mô tả sản phẩm</Button>
       </div>
 
       <Modal

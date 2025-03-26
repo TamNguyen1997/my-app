@@ -21,7 +21,7 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights, showHigh
   const [search, setSearch] = useState()
   const [refresh, setRefresh] = useState(false)
 
-  const [size, setSize] = useState(10)
+  const [size, setSize] = useState(20)
   const [page, setPage] = useState(1)
   const [total, setTotal] = useState(1)
 
@@ -116,8 +116,9 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights, showHigh
           <DropdownMenu
             onAction={(key) => setSize(key)}
           >
-            <DropdownItem key="10">10</DropdownItem>
             <DropdownItem key="20">20</DropdownItem>
+            <DropdownItem key="30">30</DropdownItem>
+            <DropdownItem key="40">40</DropdownItem>
             <DropdownItem key="50">50</DropdownItem>
             <DropdownItem key="100">100</DropdownItem>
           </DropdownMenu>

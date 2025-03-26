@@ -13,7 +13,7 @@ export async function POST(req) {
       name: body.product.name,
       slug: body.product.slug || slugify(body.product.name, { locale: 'vi' }).toLowerCase().replaceAll("(", "").replaceAll(")", ""),
       imageAlt: body.product.imageAlt,
-      imageId: body.product.imageId,
+      imageUrl: body.product.imageUrl,
       active: body.product.active,
       highlight: body.product.highlight,
       description: body.product.description,

@@ -84,7 +84,7 @@ const ProductCms = () => {
             name: product.name,
             slug: product.slug || slugify(body.product.name, { locale: 'vi' }).replaceAll("(", "").replaceAll(")", "").toLowerCase(),
             imageAlt: product.imageAlt,
-            imageId: product.imageId,
+            imageUrl: product.imageUrl,
             active: product.active,
             highlight: product.highlight,
             description: editor.getHTML(),
@@ -153,8 +153,8 @@ const ProductCms = () => {
       </ProductContext.Provider>
 
       <div className="pt-4 float-right sticky bottom-0">
-        <Button onClick={onSave} color="primary">Lưu</Button>
-        <Button onClick={deleteProduct} color="danger">Xoá sản phẩm</Button>
+        <Button onPress={onSave} color="primary">Lưu</Button>
+        <Button onPress={deleteProduct} color="danger">Xoá sản phẩm</Button>
       </div>
     </>
   )

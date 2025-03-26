@@ -102,8 +102,8 @@ const TabContent = ({ id, product, description, relatedProducts }) => {
                 <Image
                   width={200}
                   height={200}
-                  src={`${product.imageUrl || "/default-featured-image.webp"}`}
-                  alt={product.imageAlt}
+                  src={`${item.imageUrl || "/default-featured-image.webp"}`}
+                  alt={item.imageAlt}
                   className="w-16 h-16"
                 />
                 <p>{item.name}</p>

@@ -7,7 +7,7 @@ import {
   Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader,
   Pagination, Select, SelectItem, Spinner, Textarea, useDisclosure
 } from '@nextui-org/react'
-import { EditIcon, X } from 'lucide-react'
+import { EditIcon, Search, X } from 'lucide-react'
 import { toast, ToastContainer } from 'react-toastify'
 import { ProductContext } from '@/app/(admin)/admin/product/edit/[id]/page'
 import Image from 'next/image'
@@ -33,15 +33,18 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights, showHigh
   }, [total, size])
 
   useEffect(() => {
+    getImages()
+  }, [refresh, reload, size, page])
+
+  const getImages = async () => {
     setIsLoading(true)
-    fetch(`/api/images/wordpress/?search=${search || ""}&size=${size}&page=${page}`).then(async res => {
+    await fetch(`/api/images/wordpress/?search=${search || ""}&size=${size}&page=${page}`).then(async res => {
       const json = await res.json()
       setImages(json.result || [])
       setTotal(json.total)
-      setIsLoading(false)
     })
-  }, [search, refresh, reload, size, page])
-
+    setIsLoading(false)
+  }
   const deleteImage = async (image) => {
     setIsLoading(true)
     const res = await fetch(`/api/images/wordpress/${image.id}`, {
@@ -92,6 +95,9 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights, showHigh
             }}
           >
           </Input>
+          <Button onPress={getImages} color="primary" title="Tìm kiếm" className="mt-auto">
+            <Search />
+          </Button>
         </div>
       </div>
 

@@ -152,7 +152,7 @@ const Filter = () => {
             </SelectItem>
           </Select>
 
-          <Button onClick={getFilter} color="primary" title="Tìm kiếm" className="mt-auto">
+          <Button onPress={getFilter} color="primary" title="Tìm kiếm" className="mt-auto">
             <Search />
           </Button>
 

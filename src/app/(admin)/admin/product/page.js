@@ -18,7 +18,7 @@ const Page = async () => {
     }
   })
   return <>
-    <ProductCms filters={filters} categories={categories} />
+    <ProductCms categories={categories} />
   </>
 }
 

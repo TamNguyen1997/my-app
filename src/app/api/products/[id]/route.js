@@ -27,7 +27,6 @@ export async function GET(req, { params }) {
         orderBy: {
           order: 'asc'
         },
-        include: { image: true }
       },
       brand: true
     }

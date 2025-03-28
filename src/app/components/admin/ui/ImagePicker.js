@@ -142,7 +142,7 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights, showHigh
                   shadow-[0px_2px_10px_rgba(0,0,0,0.15)] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)]
                   hover:-translate-y-2.5 hover:scale-[1.02]
                   transition duration-400
-                  ${showHighlight && (product?.product_on_image?.map(item => item.imageId).includes(img.id) || (highlights?.map(item => item.id).includes(img.id))) && "border-green-400 border-large"}
+                  ${showHighlight && (product?.product_on_image?.map(item => item.imageUrl).includes(img.source_url) || (highlights?.map(item => item.imageUrl).includes(img.source_url))) && "border-green-400 border-large"}
                 `}>
 
               <Image

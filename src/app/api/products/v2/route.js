@@ -60,6 +60,7 @@ export async function POST(req) {
       return {
         order: item.order || 0,
         imageId: item.imageId,
+        imageUrl: item.imageUrl,
         productId: productBody.id
       }
     })

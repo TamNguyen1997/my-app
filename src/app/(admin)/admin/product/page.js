@@ -1,3 +1,4 @@
+import { cate_type } from "@prisma/client"
 import ProductCms from "./ProductCms"
 import { db } from "@/app/db"
 export async function generateMetadata() {
@@ -8,18 +9,16 @@ export async function generateMetadata() {
 }
 
 const Page = async () => {
-  const filters = await db.filter.findMany({
-    include: {
-      filterValue: true
+  const categories = await db.category.findMany({
+    where: {
+      type: cate_type.CATE
     },
-    orderBy: [
-      {
-        updatedAt: "desc"
-      }
-    ]
+    include: {
+      subcates: true
+    }
   })
   return <>
-    <ProductCms filters={filters} />
+    <ProductCms filters={filters} categories={categories} />
   </>
 }
 

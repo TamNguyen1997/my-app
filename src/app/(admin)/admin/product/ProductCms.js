@@ -31,10 +31,10 @@ const quickUpdateProduct = async (product, value) => {
   })
 }
 
-const ProductCms = ({ filters = [] }) => {
+const ProductCms = ({ categories = [] }) => {
   const [loadingState, setLoadingState] = useState("loading")
 
-  const [selectedFilter, setSelectedFilter] = useState({})
+  const [selectedCate, setSelectedCate] = useState({})
   const [condition, setCondition] = useState({})
   const [total, setTotal] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
@@ -220,31 +220,30 @@ const ProductCms = ({ filters = [] }) => {
           </Select>
 
           <Select
-            label="Filter"
+            label="Category"
             labelPlacement="outside"
             onSelectionChange={(value) => {
-              const filterId = value.values().next().value
-              onConditionChange({ filterId: filterId })
-              setSelectedFilter(filters.find(item => item.id === filterId))
+              const categoryId = value.values().next().value
+              onConditionChange({ categoryId: categoryId })
+              setSelectedCate(categories.find(item => item.id === categoryId))
             }}>
             {
-              filters.map((filter) => (<SelectItem key={filter.id}>{filter.name}</SelectItem>))
+              categories.map((category) => (<SelectItem key={category.id}>{category.name}</SelectItem>))
             }
           </Select>
           <Select
-            isDisabled={!selectedFilter?.filterValue}
-            label="Giá trị filter"
+            isDisabled={!selectedCate?.subcates?.length}
+            label="Subcategory"
             labelPlacement="outside"
             onSelectionChange={(value) => {
-              const filterValueId = value.values().next().value
-              onConditionChange({ filterValueId: filterValueId })
+              onConditionChange({ subCateId: value.values().next().value })
             }}>
             {
-              selectedFilter?.filterValue?.map((filterValue) => (<SelectItem key={filterValue.id}>{filterValue.value}</SelectItem>))
+              selectedCate?.subcates?.map((subCate) => (<SelectItem key={subCate.id}>{subCate.name}</SelectItem>))
             }
           </Select>
           <div className="items-end flex min-h-full gap-2">
-            <Button onClick={getProduct} color="primary">
+            <Button onPress={getProduct} color="primary">
               <Search />
             </Button>
 

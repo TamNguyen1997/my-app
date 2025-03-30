@@ -16,10 +16,15 @@ const Home = async () => {
   const highlightCatesWithProducts = await getHighlightCatesWithProducts()
   const blogs = await getBlogs()
   const popularSearches = await getPopularSearch()
+  const brandToProducts = await getBrandToProducts()
+
   return (
     <div>
       <HeroBanner banners={banners} />
-      <PopularItems highlightProducts={highlighProducts} highlightCatesWithProducts={highlightCatesWithProducts} />
+      <PopularItems
+        highlightProducts={highlighProducts}
+        highlightCatesWithProducts={highlightCatesWithProducts}
+        brandToProducts={brandToProducts} />
       <Introduction />
       <PopularBlogs blogs={blogs} />
       <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-2/3 md:w-1/3 min-w-[300px] h-[50px] m-auto shadow-md">
@@ -142,7 +147,7 @@ const getHighlightCatesWithProducts = async () => {
 
 const getBlogs = async () => {
   let blogs = []
-  const res = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&per_page=3&categories_exclude=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}`)
+  const res = await fetch(`${process.env.WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&per_page=3&categories_exclude=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}`)
   if (res.ok) blogs = await res.json()
   return blogs
 }
@@ -162,6 +167,40 @@ const getPopularSearch = async () => {
       updatedAt: "desc"
     }
   })
+}
+
+const getBrandToProducts = async () => {
+  const queries = [
+    "thuong-hieu-rubbermaid",
+    "thuong-hieu-moerman",
+    "thuong-hieu-mapa",
+    "thuong-hieu-ghibli",
+    "thuong-hieu-kimberly-clark",
+    "thuong-hieu-kleen-tex"
+  ].map(slug => db.product.findMany({
+    where: {
+      active: true,
+      categoryId: {
+        not: null,
+      },
+      subCateId: {
+        not: null
+      },
+      brand: {
+        slug: slug
+      }
+    }
+  }))
+  const brandProducts = await Promise.all(queries)
+
+  return {
+    "RUBBERMAID": brandProducts[0],
+    "MOERMAN": brandProducts[1],
+    "MAPA": brandProducts[2],
+    "GHIBLI": brandProducts[3],
+    "KIMBERLY-CLARK PROFESSIONAL": brandProducts[4],
+    "KLEEN-TEX": brandProducts[5]
+  }
 }
 
 export default Home

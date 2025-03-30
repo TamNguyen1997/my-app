@@ -1,31 +1,22 @@
 "use client";
 
 import { Button, Link } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import "react-multi-carousel/lib/styles.css";
 import ProductCarousel from "@/components/product/ProductCarousel";
 import PopularBrandCard from "@/components/product/PopularBrandCard";
 import { motion } from "framer-motion";
 
-const brandKeyToSlug = {
-  "RUBBERMAID": "thuong-hieu-rubbermaid",
-  "MOERMAN": "thuong-hieu-moerman",
-  "MAPA": "thuong-hieu-mapa",
-  "GHIBLI": "thuong-hieu-ghibli",
-  "KIMBERLY-CLARK PROFESSIONAL": "thuong-hieu-kimberly-clark",
-  "KLEEN-TEX": "thuong-hieu-kleen-tex",
-}
-
-const PopularItems = ({ highlightProducts = [], highlightCatesWithProducts = [] }) => {
+const PopularItems = ({
+  highlightProducts = [],
+  highlightCatesWithProducts = [],
+  brandToProducts = {}
+}) => {
   const [selectedBrand, setSelectedBrand] = useState("RUBBERMAID");
 
-  const [brandProducts, setBrandProducts] = useState([]);
-
-  useEffect(() => {
-    fetch(`/api/brands/${brandKeyToSlug[selectedBrand]}/products/?active=true&size=7`)
-      .then((res) => res.json())
-      .then((json) => setBrandProducts(json.products))
-  }, [selectedBrand]);
+  const getProducts = useCallback(() => {
+    return brandToProducts[selectedBrand] || []
+  }, [selectedBrand])
 
   const getSelectedColor = (value) => {
     return selectedBrand === value ? "bg-slate-700" : "bg-black";
@@ -114,7 +105,7 @@ const PopularItems = ({ highlightProducts = [], highlightCatesWithProducts = [] 
           </div>
 
           <PopularBrandCard
-            products={brandProducts}
+            products={getProducts()}
             selectedBrand={selectedBrand}
             setSelectedBrand={setSelectedBrand}
           />

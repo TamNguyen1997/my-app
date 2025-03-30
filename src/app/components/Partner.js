@@ -3,11 +3,11 @@ import Carousel from "react-multi-carousel"
 import "react-multi-carousel/lib/styles.css"
 
 const logo = [
-  "/brand/Rubbermaid.png",
-  "/brand/Logo-Mapa.png",
-  "/brand/KLEEN-TEX.png",
-  "/brand/Logo-Moerman.png",
-  "/brand/Logo-Kimberly-Clark.png",
+  "/brand/Rubbermaid.webp",
+  "/brand/Logo-Mapa.webp",
+  "/brand/KLEEN-TEX.webp",
+  "/brand/Logo-Moerman.webp",
+  "/brand/Logo-Kimberly-Clark.webp",
   "/brand/Logo-Ghibli.svg"
 ]
 

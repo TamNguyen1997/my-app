@@ -5,32 +5,32 @@ import ProductCarousel from "@/components/product/ProductCarousel";
 
 const brandDescription = {
   RUBBERMAID: {
-    logo: "/brand/Rubbermaid.png",
+    logo: "/brand/Rubbermaid.webp",
     slug: "thuong-hieu-rubbermaid",
     description: `Newell Rubbermaid, thành lập năm 1903 tại Thành phố Atlanta, tiểu bang Georgia, Hoa Kỳ. Thương hiệu Rubbermaid Commercial Products, 
     tiên phong trong các giải pháp vệ sinh, tạo ra các sản phẩm ưu việt, được người dùng tin tưởng lựa chọn.`,
   },
   MAPA: {
-    logo: "/brand/Logo-Mapa.png",
+    logo: "/brand/Logo-Mapa.webp",
     slug: "thuong-hieu-mapa",
     description: `Từ khi chiếc găng tay nhung đầu tiên được sản xuất năm 1957, 
     lịch sử của Mapa Professional luôn định hướng với một tầm nhìn: bảo vệ sức khỏe nhân viên, đảm bảo môi trường làm việc sạch sẽ, an toàn & lành mạnh.`,
   },
   "KLEEN-TEX": {
-    logo: "/brand/KLEEN-TEX.png",
+    logo: "/brand/KLEEN-TEX.webp",
     slug: "thuong-hieu-kleen-tex",
     description: `Hơn 50 năm phát triển, Kleen-Tex cung cấp loạt giải pháp về thảm, mang đến trải nghiệm tuyệt vời trong từng bước chân. 
     Thảm trải lối ra vào, logo nhiều màu, chống mỏi hay bất kỳ loại thảm cho ngành công nghiệp.`,
   },
   MOERMAN: {
-    logo: "/brand/Logo-Moerman.png",
+    logo: "/brand/Logo-Moerman.webp",
     slug: "thuong-hieu-moerman",
     description: `Được thành lập năm 1885 - suốt chiều dài lịch sử - đến nay dụng cụ vệ sinh sàn, 
     kính Moerman vẫn được duy trì như thương hiệu nổi tiếng vốn có của nó. 
     Moerman, dụng cụ vệ sinh kính nổi tiếng toàn cầu.`,
   },
   "KIMBERLY-CLARK PROFESSIONAL": {
-    logo: "/brand/Logo-Kimberly-Clark.png",
+    logo: "/brand/Logo-Kimberly-Clark.webp",
     slug: "thuong-hieu-kimberly-clark",
     description: `Kimberly-Clark Corporation - tập đoàn chuyên sản xuất hàng hóa tiêu dùng, đặc biệt là các sản phẩm về Giấy. 
     Thành lập năm 1872 với hơn 140 năm hoạt động, khăn giấy cao cấp Kimberly-Clark luôn là tiện ích cho mọi gia đình.`,

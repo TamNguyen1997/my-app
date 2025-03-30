@@ -4,7 +4,9 @@ import Image from "next/image"
 
 const ProductCard = ({ product }) => {
   return (
-    <Link className="group-hover:opacity-50 border hover:-translate-y-3 hover:shadow-md transition bg-white max-w-[300px] flex flex-col h-full">
+    <Link
+      className="group-hover:opacity-50 border hover:-translate-y-3 hover:shadow-md transition bg-white max-w-[300px] flex flex-col h-full"
+      href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`}>
       <Image
         width={200}
         height={200}

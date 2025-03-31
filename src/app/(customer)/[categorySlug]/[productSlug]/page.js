@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 export async function generateMetadata({ params }) {
   const product = await db.product.findFirst({ where: { slug: params.productSlug } })
   return {
-    title: product?.metaTitle || product.name,
+    title: product?.metaTitle || product?.name || "Sản phẩm của Dụng cụ vệ sinh Sao Việt",
     description: product?.metaDescription,
     alternates: {
       canonical: `${process.env.NEXT_PUBLIC_DOMAIN}/${params.categorySlug}/${params.productSlug}`,

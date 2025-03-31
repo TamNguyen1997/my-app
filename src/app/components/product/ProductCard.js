@@ -4,40 +4,40 @@ import Image from "next/image"
 
 const ProductCard = ({ product }) => {
   return (
-    <div className="group-hover:opacity-50 border hover:-translate-y-3 hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15) 
-      transition bg-white max-w-[300px] h-full flex flex-col">
-      <Link href={`/${product.subCate?.slug}/${product.slug}`}
-        className="flex flex-col h-[250px] rounded-md object-cover object-center overflow-hidden mx-auto">
-        <Image
-          width={200}
-          height={200}
-          src={`${product.imageUrl || "/default-featured-image.webp"}`}
-          alt={product.imageAlt}
-        />
-      </Link>
-      <Link href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`}
-        className="text-black border-gray-400 w-full grow">
-        <div className="mx-auto border-b-medium w-[90%] py-3 h-full">
-          <p className="sm:text-base text-[18px] text-gray-700 line-clamp-3 font-roboto relative text-center [word-spacing:1.2px] sm:min-h-14">
-            {product.name}
-          </p>
-        </div>
-      </Link>
-      <div className="py-2 h-16">
-        {
-          getPrice(product) ?
-            <>
-              <p className="text-red-500 font-bold w-full relative text-center items-center text-[16px] text-base">{getPrice(product)} đ</p>
-              {getOriginalPrice(product) && <span className="line-through decoration-red-500 decoration-[0.10rem]"><p className="font-bold w-full relative text-center items-center text-small opacity-60">{getOriginalPrice(product)} đ</p></span>}
-            </> :
-            <Link isExternal href="https://zalo.me/0902366617" className="text-black sm:text-base text-xs w-full">
-              <Button className="flex font-bold uppercase bg-gradient-to-b from-[#ffed00] to-[#fff466] rounded-3xl w-[90%] h-8 m-auto">
-                Liên hệ
-              </Button>
-            </Link>
-        }
+    <Link
+      className="group-hover:opacity-50 border hover:-translate-y-3 hover:shadow-md transition bg-white max-w-[300px] flex flex-col h-full"
+      href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`}>
+      <Image
+        width={200}
+        height={200}
+        src={product.imageUrl || "/default-featured-image.webp"}
+        alt={product.imageAlt}
+        className="flex flex-col h-[250px] rounded-md overflow-hidden mx-auto"
+      />
+      <p
+        className="w-full grow mx-auto border-b py-3 sm:text-base text-lg text-gray-700 line-clamp-3 font-roboto text-center">
+        {product.name}
+      </p>
+      <div className="py-2 h-16 w-full">
+        {getPrice(product) ? (
+          <>
+            <p className="text-red-500 font-bold text-center">{getPrice(product)} đ</p>
+            {getOriginalPrice(product) && (
+              <span className="line-through text-red-500 opacity-60">
+                <p className="font-bold text-center">{getOriginalPrice(product)} đ</p>
+              </span>
+            )}
+          </>
+        ) : (
+          <Link href="https://zalo.me/0902366617" className="text-black w-full">
+            <Button className="flex font-bold uppercase bg-gradient-to-b from-[#ffed00] to-[#fff466] rounded-3xl w-[90%] h-8 m-auto">
+              Liên hệ
+            </Button>
+          </Link>
+        )}
       </div>
-    </div>
+    </Link>
+
   )
 }
 

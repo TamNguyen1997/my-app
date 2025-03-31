@@ -7,8 +7,7 @@ export async function GET(req, { params }) {
     return NextResponse.json({ message: `Resource not found ${params.slug}` }, { status: 400 })
   }
   try {
-    let page = 1
-    let size = 20
+    const { page = 1, size = 20 } = queryString.parseUrl(req.url).query;
     const category = await db.category.findFirst({
       where: { slug: params.slug },
       include: { image: true }
@@ -38,10 +37,11 @@ export async function GET(req, { params }) {
         }
       ]
     }
-    if (query) {
-      page = parseInt(query.page) || 1
-      size = parseInt(query.size) || 20
+
+    let orderBy = {
+      createdAt: 'desc'
     }
+
     if (query.brand) {
       const brandIds = (await db.brand.findMany({ where: { slug: { in: query.brand.split(',') } } })).map(brand => brand.id)
 
@@ -71,6 +71,21 @@ export async function GET(req, { params }) {
       }
     }
 
+    const minMax = query.range?.split('-')
+    if (query.range && minMax.length == 2) {
+      if (minMax.length != 2) {
+        condition.saleDetails = {
+          some: {
+            showPrice: true,
+            price: {
+              gte: A,
+              lte: B
+            }
+          }
+        }
+      }
+    }
+
     let products = await db.product.findMany({
       where: condition,
       include: {
@@ -80,25 +95,14 @@ export async function GET(req, { params }) {
         category: true,
         brand: true,
         saleDetails: true
-      }
+      },
+      orderBy: orderBy
     })
-    if (query.filterId) {
-      products = products.filter(item => item.filterOnProduct.length >= filterId.length && filterId.every(id => item.filterOnProduct.map(f => f.filterId).includes(id)))
-    }
-
-    if (query.range) {
-      const [min, max] = query.range.split('-')
-      if (!min && !max) return
-
-      products = products.filter(item => {
-        const hasSaleDetails = item.saleDetails?.length > 0
-        if (!hasSaleDetails) return false
-        const maxPrice = item.saleDetails[0]?.price <= parseInt(max)
-        const minPrice = item.saleDetails.filter(detail => detail.price >= parseInt(min)).length
-        return maxPrice && minPrice
-      })
-    }
-
+    products = products.sort((a, b) => {
+      const minPriceA = Math.min(...a.saleDetails.map(detail => detail.price));
+      const minPriceB = Math.min(...b.saleDetails.map(detail => detail.price));
+      return minPriceA - minPriceB; // Ascending order
+    });
     const total = products.length
 
     return NextResponse.json({
@@ -107,6 +111,7 @@ export async function GET(req, { params }) {
       total: total
     })
   } catch (e) {
+    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }

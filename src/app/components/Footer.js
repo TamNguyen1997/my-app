@@ -83,8 +83,8 @@ const Footer = () => {
           <p>Thứ 7: 8h00 - 12h00</p>
           <p>Chủ nhật & Ngày lễ: Nghỉ</p>
           <div className="flex gap-4">
-            <Image height="200" width="200" src="/brand/Icon-dmca_protected.png" className="w-[90px] h-[30px]" alt="" />
-            <Image height="200" width="200" src="/brand/icon-bo-cong-thuong.png" className="w-[70px] h-[30px]" alt="" />
+            <Image height="200" width="200" src="/brand/Icon-dmca_protected.webp" className="w-[90px] h-[30px]" alt="" />
+            <Image height="200" width="200" src="/brand/icon-bo-cong-thuong.webp" className="w-[70px] h-[30px]" alt="" />
           </div>
           <p className="font-bold">MẠNG XÃ HỘI</p>
           <div className="flex gap-3">

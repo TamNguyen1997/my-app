@@ -14,6 +14,7 @@ const SubCategory = ({ params, productFilter }) => {
   const [isLoading, setIsLoading] = useState(true)
   const [category, setCategory] = useState({ name: "" })
   const [value, setValue] = useState([0, 100000000])
+  const [orderByPrice, setOrderByPrice] = useState("")
   const searchParams = useSearchParams()
   const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"))
   const [filters, setFilters] = useState([])
@@ -28,15 +29,19 @@ const SubCategory = ({ params, productFilter }) => {
     })
   }, [params, productFilter, page]);
 
-  const getProduct = () => {
+  const getProduct = (reload = false) => {
     setIsLoading(true)
     const hash = window.location.hash?.split('#')
     const getData = async () => {
-      await fetch(`/api/categories/${params}/products/?active=true&page=${page}&${window.location.hash ? hash[1] : `filterId=${productFilter || ""}`}`).then(async res => {
+      await fetch(`/api/categories/${params}/products/?active=true&page=${page}&${window.location.hash ? hash[1] : `filterId=${productFilter || ""}`}&${orderByPrice && `orderByPrice=${orderByPrice}`}`).then(async res => {
         if (res.ok) {
           const body = await res.json()
           setCategory(body.category)
-          setData([...data, ...body.products])
+          if (reload) {
+            setData([...body.products])
+          } else {
+            setData([...data, ...body.products])
+          }
           setEndContent(body.products.length != rowsPerPage)
         }
       })
@@ -51,12 +56,12 @@ const SubCategory = ({ params, productFilter }) => {
       range += `range=${value.join('-')}`
     } else {
       if (!filterIds.length) {
-        getProduct()
+        getProduct(true)
         navigate(`/${category.slug}`)
         return
       }
       if (filterIds.length === 1) {
-        getProduct()
+        getProduct(true)
         navigate(`/${category.slug}#${filterIds[0]}`)
         return
       }
@@ -69,7 +74,7 @@ const SubCategory = ({ params, productFilter }) => {
     if (filterIds.length) {
       query.push(`filterId=${filterIds.join("&filterId=")}`)
     }
-    getProduct()
+    getProduct(true)
     navigate(`/${params}#${query.join("&")}`)
   }
 
@@ -166,7 +171,15 @@ const SubCategory = ({ params, productFilter }) => {
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
-              <Button color="primary" onClick={filter}>Tìm</Button>
+              <Select label="Sắp xếp"
+                className="w-40"
+                labelPlacement="outside"
+                defaultSelectedKeys={[orderByPrice]}
+                onSelectionChange={value => setOrderByPrice(value.values().next().value)}>
+                <SelectItem key="asc">Giá thấp đến cao</SelectItem>
+                <SelectItem key="desc">Giá cao đến thấp</SelectItem>
+              </Select>
+              <Button color="primary" onClick={() => filter()}>Tìm</Button>
             </div>
           </div>
 

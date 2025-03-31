@@ -36,7 +36,6 @@ const Page = async ({ params }) => {
         orderBy: {
           order: 'asc'
         },
-        include: { image: true }
       },
       brand: true
     },

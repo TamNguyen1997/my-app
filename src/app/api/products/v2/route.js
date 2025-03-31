@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import crypto from "crypto";
 import { product_type, sale_detail_type } from "@prisma/client";
 import queryString from 'query-string';
+import slugify from 'slugify';
 
 export async function POST(req) {
   try {

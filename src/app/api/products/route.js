@@ -178,7 +178,7 @@ export async function GET(req) {
   }
 
   try {
-    const result = await db.product.findMany({
+    let result = await db.product.findMany({
       select: {
         active: true,
         brandId: true,
@@ -210,6 +210,29 @@ export async function GET(req) {
       take: size,
       skip: (page - 1) * size
     })
+
+    if (query.orderBy === "price:asc") {
+      result = result.sort((a, b) => {
+        const priceA = a.saleDetails.length
+          ? Math.min(...a.saleDetails.map(sd => sd.price).filter(p => p !== null))
+          : Infinity;
+        const priceB = b.saleDetails.length
+          ? Math.min(...b.saleDetails.map(sd => sd.price).filter(p => p !== null))
+          : Infinity;
+        return priceA - priceB;
+      });
+    }
+    if (query.orderBy === "price:asc") {
+      result = result.sort((a, b) => {
+        const priceA = a.saleDetails.length
+          ? Math.max(...a.saleDetails.map(sd => sd.price).filter(p => p !== null))
+          : -Infinity;
+        const priceB = b.saleDetails.length
+          ? Math.max(...b.saleDetails.map(sd => sd.price).filter(p => p !== null))
+          : -Infinity;
+        return priceB - priceA;
+      });
+    }
 
     return NextResponse.json({ result, total: await db.product.count({ where: condition }) })
   } catch (e) {

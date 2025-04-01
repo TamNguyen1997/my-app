@@ -8,7 +8,7 @@ const Brand = ({ params, productFilter }) => {
   const [data, setData] = useState([])
   const [brand, setBrand] = useState({ name: "" })
   const [isLoading, setIsLoading] = useState(true)
-
+  const [orderByPrice, setOrderByPrice] = useState("")
   const [value, setValue] = useState([0, 100000000])
 
   const [groupedData, setGroupData] = useState({})
@@ -34,12 +34,12 @@ const Brand = ({ params, productFilter }) => {
     const hash = window.location.hash?.split('#')
 
     await fetch(`/api/brands/${params}`).then(res => res.json()).then(setBrand)
-    await fetch(`/api/products/?active=true&page=1&size=10000&includeCate=true&brandId=${params}&${hash && hash[1]?.includes("=") ? hash[1] : `filterId=${productFilter || hash[1] || ""}`}`).then(async res => {
+    await fetch(`/api/products/?active=true&page=1&size=10000&includeCate=true&brandId=${params}&${hash && hash[1]?.includes("=") ? hash[1] : `filterId=${productFilter || hash[1] || ""}`}&${orderByPrice && `orderBy=price:${orderByPrice}`}`).then(async res => {
       if (res.ok) {
         const body = await res.json()
         setData(body.result)
         let categories = []
-        const groupData = Object.groupBy(body.result, (item) => item.categoryId)
+        const groupData = Object.groupBy(body.result, (item) => item.category.id)
         setGroupData(groupData)
         Object.keys(groupData).forEach(item => {
           const category = body.result.find(product => product.categoryId === item)?.category
@@ -155,6 +155,14 @@ const Brand = ({ params, productFilter }) => {
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
+              <Select label="Sắp xếp"
+                className="w-40"
+                labelPlacement="outside"
+                defaultSelectedKeys={[orderByPrice]}
+                onSelectionChange={value => setOrderByPrice(value.values().next().value)}>
+                <SelectItem key="asc">Giá thấp đến cao</SelectItem>
+                <SelectItem key="desc">Giá cao đến thấp</SelectItem>
+              </Select>
               <Button color="primary" onClick={filter}>Tìm</Button>
             </div>
           </div>
@@ -178,7 +186,7 @@ const BrandSection = ({ products }) => {
     <div>
       <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-2/3 md:w-1/3 h-[50px] m-auto shadow-md">
         <div className="m-auto text-black font-bold md:text-xl">
-          {products[0].category?.name}
+          {products[0]?.category?.name}
         </div>
       </div>
 

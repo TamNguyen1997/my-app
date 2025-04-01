@@ -8,7 +8,7 @@ const Category = ({ category, productFilter }) => {
   const [data, setData] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [value, setValue] = useState([0, 100000000])
-
+  const [orderByPrice, setOrderByPrice] = useState("")
   const [groupedData, setGroupData] = useState({})
   const [filters, setFilters] = useState([])
   const [subcates, setSubcates] = useState([])
@@ -31,7 +31,7 @@ const Category = ({ category, productFilter }) => {
   const getProduct = async () => {
     const hash = window.location.hash?.split('#')
 
-    await fetch(`/api/products/?active=true&page=1&size=10000&includeCate=true&categoryId=${category.id}&${hash && hash[1]?.includes("=") ? hash[1] : `filterId=${productFilter || hash[1] || ""}`}`).then(async res => {
+    await fetch(`/api/products/?active=true&page=1&size=10000&includeCate=true&categoryId=${category.id}&${hash && hash[1]?.includes("=") ? hash[1] : `filterId=${productFilter || hash[1] || ""}`}&${orderByPrice && `orderBy=price:${orderByPrice}`}`).then(async res => {
       if (res.ok) {
         const body = await res.json()
         let subcates = []
@@ -158,6 +158,14 @@ const Category = ({ category, productFilter }) => {
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>
+            <Select label="Sắp xếp"
+              className="w-40"
+              labelPlacement="outside"
+              defaultSelectedKeys={[orderByPrice]}
+              onSelectionChange={value => setOrderByPrice(value.values().next().value)}>
+              <SelectItem key="asc">Giá thấp đến cao</SelectItem>
+              <SelectItem key="desc">Giá cao đến thấp</SelectItem>
+            </Select>
             <Button color="primary" onClick={filter}>Tìm</Button>
           </div>
         </div>

@@ -33,7 +33,7 @@ const SubCategory = ({ params, productFilter }) => {
     setIsLoading(true)
     const hash = window.location.hash?.split('#')
     const getData = async () => {
-      await fetch(`/api/categories/${params}/products/?active=true&page=${page}&${window.location.hash ? hash[1] : `filterId=${productFilter || ""}`}&${orderByPrice && `orderByPrice=${orderByPrice}`}`).then(async res => {
+      await fetch(`/api/categories/${params}/products/?active=true&page=${page}&${window.location.hash ? hash[1] : `filterId=${productFilter || ""}`}&${orderByPrice && `orderBy=price:${orderByPrice}`}`).then(async res => {
         if (res.ok) {
           const body = await res.json()
           setCategory(body.category)

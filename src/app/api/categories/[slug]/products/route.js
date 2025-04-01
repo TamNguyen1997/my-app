@@ -98,11 +98,30 @@ export async function GET(req, { params }) {
       },
       orderBy: orderBy
     })
-    products = products.sort((a, b) => {
-      const minPriceA = Math.min(...a.saleDetails.map(detail => detail.price));
-      const minPriceB = Math.min(...b.saleDetails.map(detail => detail.price));
-      return minPriceA - minPriceB; // Ascending order
-    });
+
+    if (query.orderBy === "price:asc") {
+      products = products.sort((a, b) => {
+        const priceA = a.saleDetails.length
+          ? Math.min(...a.saleDetails.map(sd => sd.price).filter(p => p !== null))
+          : Infinity;
+        const priceB = b.saleDetails.length
+          ? Math.min(...b.saleDetails.map(sd => sd.price).filter(p => p !== null))
+          : Infinity;
+        return priceA - priceB;
+      });
+    }
+    if (query.orderBy === "price:asc") {
+      products = products.sort((a, b) => {
+        const priceA = a.saleDetails.length
+          ? Math.max(...a.saleDetails.map(sd => sd.price).filter(p => p !== null))
+          : -Infinity;
+        const priceB = b.saleDetails.length
+          ? Math.max(...b.saleDetails.map(sd => sd.price).filter(p => p !== null))
+          : -Infinity;
+        return priceB - priceA;
+      });
+    }
+
     const total = products.length
 
     return NextResponse.json({

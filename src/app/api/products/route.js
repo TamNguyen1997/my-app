@@ -207,6 +207,10 @@ export async function GET(req) {
           updatedAt: "desc"
         }
       ],
+      include: {
+        category: true,
+        subCate: true
+      },
       take: size,
       skip: (page - 1) * size
     })

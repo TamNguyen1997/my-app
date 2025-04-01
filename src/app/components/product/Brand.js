@@ -7,7 +7,7 @@ import ProductCard from "@/components/product/ProductCard";
 const Brand = ({ params, productFilter }) => {
   const [data, setData] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-  const [orderByPrice, setOrderByPrice] = useState("desc")
+  const [orderByPrice, setOrderByPrice] = useState("")
   const [value, setValue] = useState([0, 100000000])
 
   const [groupedData, setGroupData] = useState({})

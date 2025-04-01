@@ -4,32 +4,6 @@ import { useEffect, useState } from "react";
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, Select, SelectItem, Slider, Spinner } from "@nextui-org/react";
 import ProductCard from "@/components/product/ProductCard";
 
-const sort = (data, orderBy) => {
-  let result = data
-  if (orderBy === "price:asc") {
-    result = result.sort((a, b) => {
-      const priceA = a.saleDetails.length
-        ? Math.min(...a.saleDetails.map(sd => sd.price).filter(p => p !== null))
-        : Infinity;
-      const priceB = b.saleDetails.length
-        ? Math.min(...b.saleDetails.map(sd => sd.price).filter(p => p !== null))
-        : Infinity;
-      return priceA - priceB;
-    });
-  }
-  if (orderBy === "price:asc") {
-    result = result.sort((a, b) => {
-      const priceA = a.saleDetails.length
-        ? Math.max(...a.saleDetails.map(sd => sd.price).filter(p => p !== null))
-        : -Infinity;
-      const priceB = b.saleDetails.length
-        ? Math.max(...b.saleDetails.map(sd => sd.price).filter(p => p !== null))
-        : -Infinity;
-      return priceB - priceA;
-    });
-  }
-  return result
-}
 const Brand = ({ params, productFilter }) => {
   const [data, setData] = useState([])
   const [isLoading, setIsLoading] = useState(true)
@@ -58,14 +32,14 @@ const Brand = ({ params, productFilter }) => {
   const getProduct = async () => {
     const hash = window.location.hash?.split('#')
 
-    await fetch(`/api/products/?active=true&page=1&size=10000&includeCate=true&brandId=${params}&${hash && hash[1]?.includes("=") ? hash[1] : `filterId=${productFilter || hash[1] || ""}`}`).then(async res => {
+    await fetch(`/api/products/?active=true&page=1&size=10000&includeCate=true&${orderByPrice && `orderBy=price:${orderByPrice}`}&brandId=${params}&${hash && hash[1]?.includes("=") ? hash[1] : `filterId=${productFilter || hash[1] || ""}`}`).then(async res => {
       if (res.ok) {
         const body = await res.json()
         setData(body.result, `price:${orderByPrice}`)
         let categories = []
-        const groupData = Object.groupBy(body.result, (item) => item.categoryId)
-        setGroupData(groupData)
-        Object.keys(groupData).forEach(item => {
+        const temp = Object.groupBy(body.result, (item) => item.categoryId)
+        setGroupData(temp)
+        Object.keys(temp).forEach(item => {
           const category = body.result.find(product => product.categoryId === item)?.category
           category && categories.push(category)
         })
@@ -195,7 +169,7 @@ const Brand = ({ params, productFilter }) => {
             <p className="m-auto pt-4 text-lg opacity-55">Không tìm thấy sản phẩm nào.</p> :
             <div className="w-full my-5 flex flex-col gap-4 p-2">
               {
-                Object.keys(groupedData).filter(item => groupedData[item].length).map(key => <BrandSection products={groupedData[key].splice(0, 30)} key={key} />)
+                Object.keys(groupedData).map(key => <BrandSection products={Object.values(groupedData).flat().filter(item => item.categoryId === key).splice(0, 30)} key={key} />)
               }
             </div>
         }

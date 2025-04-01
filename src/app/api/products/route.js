@@ -199,7 +199,9 @@ export async function GET(req) {
         subCate: true,
         brand: true,
         highlight: true,
-        imageUrl: true
+        imageUrl: true,
+        category: true,
+        subCate: true
       },
       where: condition,
       orderBy: [
@@ -207,10 +209,6 @@ export async function GET(req) {
           updatedAt: "desc"
         }
       ],
-      include: {
-        category: true,
-        subCate: true
-      },
       take: size,
       skip: (page - 1) * size
     })

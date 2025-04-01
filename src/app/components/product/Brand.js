@@ -33,7 +33,7 @@ const sort = (data, orderBy) => {
 const Brand = ({ params, productFilter }) => {
   const [data, setData] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-  const [orderByPrice, setOrderByPrice] = useState("")
+  const [orderByPrice, setOrderByPrice] = useState("desc")
   const [value, setValue] = useState([0, 100000000])
 
   const [groupedData, setGroupData] = useState({})
@@ -61,7 +61,7 @@ const Brand = ({ params, productFilter }) => {
     await fetch(`/api/products/?active=true&page=1&size=10000&includeCate=true&brandId=${params}&${hash && hash[1]?.includes("=") ? hash[1] : `filterId=${productFilter || hash[1] || ""}`}`).then(async res => {
       if (res.ok) {
         const body = await res.json()
-        setData(sort(body.result, `price:${orderByPrice || "desc"}`))
+        setData(body.result, `price:${orderByPrice}`)
         let categories = []
         const groupData = Object.groupBy(body.result, (item) => item.categoryId)
         setGroupData(groupData)

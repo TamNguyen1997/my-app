@@ -4,9 +4,34 @@ import { useEffect, useState } from "react";
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, Select, SelectItem, Slider, Spinner } from "@nextui-org/react";
 import ProductCard from "@/components/product/ProductCard";
 
+const sort = (data, orderBy) => {
+  let result = data
+  if (orderBy === "price:asc") {
+    result = result.sort((a, b) => {
+      const priceA = a.saleDetails.length
+        ? Math.min(...a.saleDetails.map(sd => sd.price).filter(p => p !== null))
+        : Infinity;
+      const priceB = b.saleDetails.length
+        ? Math.min(...b.saleDetails.map(sd => sd.price).filter(p => p !== null))
+        : Infinity;
+      return priceA - priceB;
+    });
+  }
+  if (orderBy === "price:asc") {
+    result = result.sort((a, b) => {
+      const priceA = a.saleDetails.length
+        ? Math.max(...a.saleDetails.map(sd => sd.price).filter(p => p !== null))
+        : -Infinity;
+      const priceB = b.saleDetails.length
+        ? Math.max(...b.saleDetails.map(sd => sd.price).filter(p => p !== null))
+        : -Infinity;
+      return priceB - priceA;
+    });
+  }
+  return result
+}
 const Brand = ({ params, productFilter }) => {
   const [data, setData] = useState([])
-  const [brand, setBrand] = useState({ name: "" })
   const [isLoading, setIsLoading] = useState(true)
   const [orderByPrice, setOrderByPrice] = useState("")
   const [value, setValue] = useState([0, 100000000])
@@ -33,11 +58,10 @@ const Brand = ({ params, productFilter }) => {
   const getProduct = async () => {
     const hash = window.location.hash?.split('#')
 
-    await fetch(`/api/brands/${params}`).then(res => res.json()).then(setBrand)
-    await fetch(`/api/products/?active=true&page=1&size=10000&includeCate=true&brandId=${params}&${hash && hash[1]?.includes("=") ? hash[1] : `filterId=${productFilter || hash[1] || ""}`}&${orderByPrice && `orderBy=price:${orderByPrice}`}`).then(async res => {
+    await fetch(`/api/products/?active=true&page=1&size=10000&includeCate=true&brandId=${params}&${hash && hash[1]?.includes("=") ? hash[1] : `filterId=${productFilter || hash[1] || ""}`}`).then(async res => {
       if (res.ok) {
         const body = await res.json()
-        setData(body.result)
+        setData(sort(body.result, `price:${orderByPrice}`))
         let categories = []
         const groupData = Object.groupBy(body.result, (item) => item.categoryId)
         setGroupData(groupData)
@@ -77,7 +101,6 @@ const Brand = ({ params, productFilter }) => {
 
   return (
     <>
-      <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${brand.slug}`} />
       <div className="sm:w-9/12 mx-auto ">
         <div className="flex flex-wrap gap-2 p-3">
           {
@@ -172,7 +195,7 @@ const Brand = ({ params, productFilter }) => {
             <p className="m-auto pt-4 text-lg opacity-55">Không tìm thấy sản phẩm nào.</p> :
             <div className="w-full my-5 flex flex-col gap-4 p-2">
               {
-                Object.keys(groupedData).map(key => <BrandSection products={groupedData[key].splice(0, 30)} key={key} />)
+                Object.keys(groupedData).filter(item => groupedData[item].length).map(key => <BrandSection products={groupedData[key].splice(0, 30)} key={key} />)
               }
             </div>
         }
@@ -186,7 +209,7 @@ const BrandSection = ({ products }) => {
     <div>
       <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-2/3 md:w-1/3 h-[50px] m-auto shadow-md">
         <div className="m-auto text-black font-bold md:text-xl">
-          {products[0]?.category?.name}
+          {products[0].category?.name}
         </div>
       </div>
 

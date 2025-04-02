@@ -10,9 +10,12 @@ const ProductCard = ({ product }) => {
       <Image
         width={200}
         height={200}
+        srcSet={`${product.imageUrl}?w=400 400w, ${product.imageUrl}?w=800 800w`}
         src={product.imageUrl || "/default-featured-image.webp"}
         alt={product.imageAlt}
         className="flex flex-col h-[250px] rounded-md overflow-hidden mx-auto"
+        loading="eager"
+        priority={true}
       />
       <p
         className="w-full grow mx-auto border-b py-3 sm:text-base text-lg text-gray-700 line-clamp-3 font-roboto text-center">

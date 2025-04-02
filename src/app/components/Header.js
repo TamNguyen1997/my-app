@@ -2,7 +2,7 @@
 
 import { ShoppingCart, Menu, ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState, useContext, useRef } from "react";
+import { useEffect, useState, useContext, useRef, useMemo } from "react";
 import SearchBar from "@/components/SearchBar";
 import { CartContext } from "@/context/CartProvider";
 import "./Header.css";
@@ -14,14 +14,23 @@ const Header = ({ headers }) => {
   const menuRef = useRef();
   const { cartdetails } = useContext(CartContext);
 
-  const getQuantity = (details) => details.reduce((total, item) => total + parseInt(item.quantity), 0);
+  const cartCount = useMemo(() => cartdetails?.reduce((total, item) => total + parseInt(item.quantity), 0), [cartdetails]);
 
   return (
     <nav className="bg-black border-gray-200 dark:bg-gray-900 header">
       <div className="w-full h-full flex">
         <div className="max-w-screen-xl flex items-center justify-between mx-auto sm:pl-10 pl-4">
           <Link href="/" className="pr-4">
-            <Image src="/saoviet.webp" alt="favicon" height={80} width={200} className="bg-black sm:w-[200px] w-[120px]" />
+            <Image
+              src="/saoviet.webp"
+              alt="favicon"
+              height={80}
+              width={200}
+              priority={true}
+              loading="eager"
+              sizes="(max-width: 640px) 120px, 200px"
+              className="bg-black sm:w-[200px] w-[120px]"
+            />
           </Link>
         </div>
         <div className="w-[80%] rounded-tl-[50px] rounded-bl-[50px] bg-[#FFD400]">
@@ -31,10 +40,10 @@ const Header = ({ headers }) => {
               <Link id="header-cart-btn" href="/gio-hang" className="bg-[#FFAC0A] h-[35px] min-w-[100px] flex items-center justify-center relative rounded-md shadow-md">
                 <ShoppingCart size={32} strokeWidth={2} className="px-1" />
                 <span className="text-sm whitespace-nowrap pl-1 pr-1.5 sm:block hidden">Giỏ hàng</span>
-                {cartdetails?.length > 0 && (
+                {cartCount && (
                   <div className="absolute -top-1 -right-1 flex items-center justify-center rounded-full w-3 h-3 bg-red-600 text-white text-[10px]">
                     <span className="animate-ping absolute inline-flex w-3 h-3 rounded-full bg-red-600 opacity-75"></span>
-                    {getQuantity(cartdetails)}
+                    {cartCount}
                   </div>
                 )}
               </Link>
@@ -50,30 +59,28 @@ const Header = ({ headers }) => {
           </div>
         </div>
       </div>
-      {menuVisible && (
-        <div className="fixed w-full subcate-menu z-[10000]" ref={menuRef} onMouseOver={() => setMenuVisible(true)} onMouseOut={() => setMenuVisible(false)}>
-          <div className="text-sm flex">
-            <div className="bg-white shadow-lg w-[240px] border rounded-bl-lg">
-              {headers?.map(category => (
-                <Link key={category.id} href={category.slug ? `/${category.slug}` : '#'}
-                  onMouseOver={() => setHoveredCate(category)}
-                  className={`items-center border-b hover:font-bold transition p-1.5 flex ${hoveredCate?.id === category.id && 'font-bold'}`}>
-                  {category.slug && <img src={`/icon/header/${category.slug}.svg`} alt="" className="max-w-6 mr-2" />}
-                  <span className="mr-2">{category.name}</span>
-                  <ChevronRight size="15" className="ml-auto" />
-                </Link>
+      <div className={`fixed w-full subcate-menu z-[10000] ${menuVisible ? 'visible' : 'invisible'}`} ref={menuRef} onMouseOver={() => setMenuVisible(true)} onMouseOut={() => setMenuVisible(false)}>
+        <div className="text-sm flex">
+          <div className="bg-white shadow-lg w-[240px] border rounded-bl-lg">
+            {headers?.map(category => (
+              <Link key={category.id} href={category.slug ? `/${category.slug}` : '#'}
+                onMouseOver={() => setHoveredCate(category)}
+                className={`items-center border-b hover:font-bold transition p-1.5 flex ${hoveredCate?.id === category.id && 'font-bold'}`}>
+                {category.slug && <img src={`/icon/header/${category.slug}.svg`} alt="" className="max-w-6 mr-2" />}
+                <span className="mr-2">{category.name}</span>
+                <ChevronRight size="15" className="ml-auto" />
+              </Link>
+            ))}
+          </div>
+          {hoveredCate && hoveredCate.subcates?.length > 0 && (
+            <div className="bg-white shadow-lg grow border rounded-br-lg p-2 grid grid-rows-8 grid-flow-col">
+              {hoveredCate.subcates.map((subcate, i) => (
+                <Link key={i} className="p-1 hover:text-blue-500" href={`/${subcate.slug}`}>{subcate.name}</Link>
               ))}
             </div>
-            {hoveredCate && hoveredCate.subcates?.length > 0 && (
-              <div className="bg-white shadow-lg grow border rounded-br-lg p-2 grid grid-rows-8 grid-flow-col">
-                {hoveredCate.subcates.map((subcate, i) => (
-                  <Link key={i} className="p-1 hover:text-blue-500" href={`/${subcate.slug}`}>{subcate.name}</Link>
-                ))}
-              </div>
-            )}
-          </div>
+          )}
         </div>
-      )}
+      </div>
     </nav>
   );
 };

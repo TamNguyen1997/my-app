@@ -4,7 +4,7 @@ import { Input } from '@nextui-org/react';
 import { LoaderIcon, Search } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import slugify from 'slugify';
 
 const blogCategories = {
@@ -18,9 +18,10 @@ const SearchBar = () => {
   const [results, setResults] = useState({ categories: [], products: [], blogs: [] });
   const [query, setQuery] = useState('');
 
+  const queryString = useMemo(() => new URLSearchParams({ slug: slugify(query, { locale: 'vi' }).replace(/[()]/g, '') }), [query]);
+
   const onSearch = async (value) => {
     const searchTerm = slugify(value, { locale: 'vi' }).replace(/[()]/g, '');
-    const queryString = new URLSearchParams({ slug: searchTerm });
     setIsLoading({ categories: true, products: true, blogs: true });
 
     Promise.all([
@@ -32,6 +33,8 @@ const SearchBar = () => {
       setIsLoading({ categories: false, products: false, blogs: false });
     });
   };
+
+  const shouldShowResults = useMemo(() => query.length > 2, [query]);
 
   return (
     <div ref={wrapperRef} className="relative lg:w-72 md:w-60 xl:w-96 sm:w-44">
@@ -45,10 +48,10 @@ const SearchBar = () => {
           setQuery(value);
           if (value.length > 2) onSearch(value);
         }}
-        onKeyDown={(e) => e.key === 'Enter' && window.location.replace(`/tim-kiem?key=${slugify(query, { locale: 'vi' }).replace(/[()]/g, '')}`)}
+        onKeyDown={(e) => e.key === 'Enter' && query.trim() && window.location.replace(`/tim-kiem?key=${slugify(query, { locale: 'vi' }).replace(/[()]/g, '')}`)}
         onClear={() => setQuery('')}
       />
-      {query.length > 2 && (
+      {shouldShowResults && (
         <div className="w-[400px] bg-white shadow-lg rounded-lg absolute top-full left-0 mt-2 overflow-hidden z-50">
           {[{ key: 'categories', label: 'Có phải bạn đang muốn tìm' },
           { key: 'products', label: 'Sản phẩm gợi ý' },

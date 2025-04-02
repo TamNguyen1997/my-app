@@ -6,7 +6,7 @@ import { useEffect, useState, useContext, useRef, useMemo } from "react";
 import SearchBar from "@/components/SearchBar";
 import { CartContext } from "@/context/CartProvider";
 import "./Header.css";
-import { Image } from "@nextui-org/react";
+import Image from "next/image";
 
 const Header = ({ headers }) => {
   const [hoveredCate, setHoveredCate] = useState(null);
@@ -26,8 +26,10 @@ const Header = ({ headers }) => {
               alt="favicon"
               height={80}
               width={200}
+              priority="true"
               sizes="(max-width: 640px) 120px, (max-width: 1024px) 150px, 200px"
               className="bg-black sm:w-[200px] w-[120px]"
+              srcSet="/saoviet.webp 200w,/saoviet.webp 400w,/saoviet.webp 800w"
             />
           </Link>
         </div>

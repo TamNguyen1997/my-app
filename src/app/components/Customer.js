@@ -60,7 +60,7 @@ const Customer = () => {
       transition={{ duration: 0.7, delay: 0.3 }}
       viewport={{ once: true }}
       className="m-auto sm:w-3/4">
-      <Carousel infinite responsive={responsive} className="w-full items-center mb-6" autoPlaySpeed={3000} autoPlay arrows={false} showDots centerMode >
+      <Carousel infinite responsive={responsive} className="w-full items-center mb-6" autoPlaySpeed={3000} autoPlay arrows={false} centerMode >
         {
           logo.map((l, i) => <div className="p-3 w-full h-full m-auto items-center text-center content-center" key={i}>
             <Image loading="lazy"

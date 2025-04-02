@@ -36,13 +36,11 @@ export default function PopularBlogs({ blogs }) {
       viewport={{ once: true }}
       className="pb-[60px] m-auto sm:w-3/4 px-2">
 
-      <div className="pb-2">
-        <div className="bg-black rounded-tr-[50px] rounded-bl-[50px] flex items-center w-1/3 min-w-[222px] h-[50px] m-auto">
-          <Link href="/" className="m-auto text-white font-bold text-xl">BÀI VIẾT NỔI BẬT</Link>
-        </div>
+      <div className="bg-black rounded-tr-[50px] rounded-bl-[50px] flex items-center w-1/3 min-w-[222px] h-[50px] m-auto">
+        <Link href="/" className="m-auto text-white font-bold text-xl">BÀI VIẾT NỔI BẬT</Link>
       </div>
 
-      <Carousel responsive={responsive} className="flex items-center pb-1" infinite>
+      <Carousel responsive={responsive} className="flex items-center py-2" infinite>
         {
           blogs?.map((blog) => {
             return <div className="p-1" key={blog.id}>
@@ -59,11 +57,10 @@ export default function PopularBlogs({ blogs }) {
                     </CardHeader>
                     <Divider />
                     <CardBody>
-                      <div className="h-28 w-full font-bold">
-                        <p className="line-clamp-3">
-                          {parse(blog.title.rendered)}
-                        </p>
-                      </div>
+                      <p className="line-clamp-3 h-28 w-full font-bold">
+                        {parse(blog.title.rendered)}
+                      </p>
+
                       <div className="w-full flex">
                         <div className="italic">
                           {new Date(blog.modified).toLocaleDateString("en-GB")}

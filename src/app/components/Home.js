@@ -19,7 +19,7 @@ const Home = async () => {
   const brandToProducts = await getBrandToProducts()
 
   return (
-    <div>
+    <>
       <HeroBanner banners={banners} />
       <PopularItems
         highlightProducts={highlighProducts}
@@ -31,10 +31,8 @@ const Home = async () => {
         <p className="m-auto text-black font-bold md:text-xl">KHÁCH HÀNG SAO VIỆT</p>
       </div>
       <Customer />
-      <div className="pb-10">
-        <PopularSearches popularSearches={popularSearches} />
-      </div>
-    </div>
+      <PopularSearches popularSearches={popularSearches} className="pb-10" />
+    </>
   );
 }
 

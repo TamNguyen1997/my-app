@@ -28,77 +28,21 @@ const PopularItems = ({
       whileInView={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.7, delay: 0.3 }}
       viewport={{ once: true }}
-      className="pb-[60px] pt-4 mx-auto sm:w-3/4 flex flex-col gap-11">
+      className="pb-[60px] pt-4 mx-auto sm:w-3/4 flex flex-col gap-11"
+    >
       <ProductCards name="SẢN PHẨM NỔI BẬT" products={highlightProducts} />
-
       <div>
         <div className="bg-black grid lg:grid-cols-6 sm:grid-cols-3">
-          <Button
-            radius="none"
-            onClick={() => {
-              setSelectedBrand("RUBBERMAID");
-            }}
-            className={`${getSelectedColor(
-              "RUBBERMAID"
-            )} text-white text-medium font-bold hover:bg-slate-800 border-r border-white`}
-          >
-            RUBBERMAID
-          </Button>
-          <Button
-            radius="none"
-            onClick={() => {
-              setSelectedBrand("GHIBLI");
-            }}
-            className={`${getSelectedColor(
-              "GHIBLI"
-            )} text-white text-medium font-bold border-r hover:bg-slate-800`}
-          >
-            GHIBLI
-          </Button>
-          <Button
-            radius="none"
-            onClick={() => {
-              setSelectedBrand("MOERMAN");
-            }}
-            className={`${getSelectedColor(
-              "MOERMAN"
-            )} text-white text-medium font-bold hover:bg-slate-800 border-r border-white`}
-          >
-            MOERMAN
-          </Button>
-          <Button
-            radius="none"
-            onClick={() => {
-              setSelectedBrand("MAPA");
-            }}
-            className={`${getSelectedColor(
-              "MAPA"
-            )} text-white text-medium font-bold hover:bg-slate-800 border-r border-white`}
-          >
-            MAPA
-          </Button>
-          <Button
-            radius="none"
-            onClick={() => {
-              setSelectedBrand("KLEEN-TEX");
-            }}
-            className={`${getSelectedColor(
-              "KLEEN-TEX"
-            )} text-white text-medium font-bold hover:bg-slate-800 border-r border-white`}
-          >
-            KLEEN-TEX
-          </Button>
-          <Button
-            radius="none"
-            onClick={() => {
-              setSelectedBrand("KIMBERLY-CLARK PROFESSIONAL");
-            }}
-            className={`${getSelectedColor(
-              "KIMBERLY-CLARK PROFESSIONAL"
-            )} text-white text-medium font-bold hover:bg-slate-800 border-r border-white`}
-          >
-            KIMBERLY-CLARK
-          </Button>
+          {["RUBBERMAID", "GHIBLI", "MOERMAN", "MAPA", "KLEEN-TEX", "KIMBERLY-CLARK"].map(brand => (
+            <Button
+              key={brand}
+              radius="none"
+              onClick={() => setSelectedBrand(brand)}
+              className={`${getSelectedColor(brand)} text-white text-medium font-bold hover:bg-slate-800 border-r border-white`}
+            >
+              {brand}
+            </Button>
+          ))}
         </div>
 
         <PopularBrandCard
@@ -108,22 +52,22 @@ const PopularItems = ({
         />
       </div>
 
-      {
-        highlightCatesWithProducts.filter(item => item.product.length).map((cate, i) => {
-          return <div key={i} className="">
+      {highlightCatesWithProducts
+        .filter(item => item.product.length)
+        .map((cate, i) => (
+          <div key={i}>
             <ProductCards banner={cate.imageUrl} products={cate.product} name={cate.name} />
-            <Link isExternal
+            <Link
+              isExternal
               href={`/${cate.slug}`}
-              className="flex justify-center items-center text-black font-semibold w-[181px] bg-white
-              h-[43px] rounded-[30px] border border-black hover:bg-[#FFD400] transition mx-auto"
+              className="flex justify-center items-center text-black font-semibold w-[181px] bg-white h-[43px] rounded-[30px] border border-black hover:bg-[#FFD400] transition mx-auto"
             >
               Xem thêm
             </Link>
           </div>
-        }
-        )
-      }
+        ))}
     </motion.div>
+
   );
 }
 

@@ -64,36 +64,26 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
   };
 
   return (
-    <>
-      <div className="lg:grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-6">
-        <div className="pt-2 col-span-2">
-          <div className="bg-[#FFD400] shadow-lg rounded-md w-full h-[395px]">
-            <div className="flex mx-auto">
-              {brandDescription[selectedBrand] &&
-                brandDescription[selectedBrand].logo ? (
-                <Link
-                  className="mx-auto max-h-full"
-                  href={`/${brandDescription[selectedBrand].slug}`}
-                >
-                  <Image width={220} src={brandDescription[selectedBrand].logo} />
-                </Link>
-              ) : null}
-            </div>
-
-            <div className="px-5 text-justify overflow-auto scrollbar-hide">
-              {brandDescription[selectedBrand] &&
-                brandDescription[selectedBrand].description}
-            </div>
-          </div>
+    <div className="lg:grid xl:grid-cols-6 grid-cols-1">
+      <div className="pt-2 col-span-2 bg-yellow-400 shadow-lg rounded-md w-full h-[390px]">
+        <div className="flex justify-center">
+          {brandDescription[selectedBrand]?.logo && (
+            <Link href={`/${brandDescription[selectedBrand].slug}`} className="mx-auto max-h-full">
+              <Image width={220} src={brandDescription[selectedBrand].logo} />
+            </Link>
+          )}
         </div>
-        <div className="col-span-4 py-2 pl-2">
-          <ProductCarousel
-            products={products}
-            responsive={responsive}
-          />
+
+        <div className="px-5 text-justify overflow-auto scrollbar-hide">
+          {brandDescription[selectedBrand]?.description}
         </div>
       </div>
-    </>
+
+      <div className="col-span-4 py-2 pl-2">
+        <ProductCarousel products={products} responsive={responsive} />
+      </div>
+    </div>
+
   );
 };
 

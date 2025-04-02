@@ -111,7 +111,7 @@ const getHighlightProducts = async () => {
         updatedAt: "desc"
       }
     ],
-    take: 10,
+    take: 7,
     skip: 0
   })
 }
@@ -125,7 +125,7 @@ const getHighlightCatesWithProducts = async () => {
     include: {
       image: true,
       product: {
-        take: 10,
+        take: 7,
         where: {
           active: true,
           productType: "PRODUCT"
@@ -189,7 +189,9 @@ const getBrandToProducts = async () => {
       brand: {
         slug: slug
       }
-    }
+    },
+    take: 7,
+    skip: 0
   }))
   const brandProducts = await Promise.all(queries)
 

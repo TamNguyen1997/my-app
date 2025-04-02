@@ -69,7 +69,7 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
         <div className="flex justify-center">
           {brandDescription[selectedBrand]?.logo && (
             <Link href={`/${brandDescription[selectedBrand].slug}`} className="mx-auto max-h-full">
-              <Image width={220} src={brandDescription[selectedBrand].logo} />
+              <Image width={220} src={brandDescription[selectedBrand].logo} alt={brandDescription[selectedBrand].slug} />
             </Link>
           )}
         </div>

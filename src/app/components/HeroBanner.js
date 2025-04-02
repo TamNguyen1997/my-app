@@ -39,7 +39,7 @@ const HeroBanner = ({ banners }) => {
               height="720"
               className="w-full h-full max-h-[500px]"
               src={banner?.imageUrl || "/default-featured-image.webp"}
-              alt={banner?.alt}
+              alt={banner?.alt || "Sao Việt"}
               srcSet={`${banner?.imageUrl} 1280w, ${banner?.imageUrl.replace('1280', '640')} 640w`}
               sizes="(max-width: 640px) 640px, 1280px"
             />

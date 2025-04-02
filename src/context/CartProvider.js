@@ -1,81 +1,83 @@
-"use client"
+"use client";
 
-import { createContext, useCallback, useEffect, useState } from "react";
+import { createContext, useEffect, useState, useCallback } from "react";
 
 export const CartContext = createContext();
 
 const CartProvider = ({ children }) => {
   const [cartdetails, setCartDetails] = useState([]);
 
-  const addItemToCart = (e) => {
-    const item = cartdetails.find(item => item.product.id === e.product.id)
-    if (item) {
-      updateItemQuantityInCart(e, parseInt(item.quantity) + 1)
-    } else {
-      const details = localStorage.getItem('cartdetails') ? JSON.parse(localStorage.getItem('cartdetails')) : [];
-      updateCartDetails([...details, e])
-    }
-  };
+  useEffect(() => {
+    const storedCart = localStorage.getItem("cartdetails");
+    setCartDetails(storedCart ? JSON.parse(storedCart) : []);
+  }, []);
 
-  const removeItemFromCart = (item) => {
-    updateCartDetails(cartdetails.filter(detail => detail.product.id !== item.product.id))
-  };
+  const updateCartDetails = useCallback((details) => {
+    setCartDetails(details);
+    localStorage.setItem("cartdetails", JSON.stringify(details));
+  }, []);
 
-  const removeAllItems = () => {
-    updateCartDetails([])
-  };
+  const addItemToCart = useCallback((item) => {
+    setCartDetails((prevCart = []) => {
+      const existingItem = prevCart.find((detail) => detail.product.id === item.product.id);
+      const updatedCart = existingItem
+        ? prevCart.map((detail) =>
+          detail.product.id === item.product.id ? { ...detail, quantity: detail.quantity + 1 } : detail
+        )
+        : [...prevCart, { ...item, quantity: 1 }];
 
-  const updateItemQuantityInCart = (item, quantity) => {
-    let cart = [...cartdetails]
-    cart.forEach(detail => {
-      if (detail.product.id === item.product.id) {
-        detail.quantity = quantity
-      }
-    })
-    updateCartDetails(cart)
-  };
+      localStorage.setItem("cartdetails", JSON.stringify(updatedCart));
+      return updatedCart;
+    });
+  }, []);
 
-  const updateCartDetails = (details) => {
-    setCartDetails(details)
-    localStorage.setItem('cartdetails', JSON.stringify(details));
-  }
+  const removeItemFromCart = useCallback((item) => {
+    updateCartDetails(cartdetails.filter((detail) => detail.product.id !== item.product.id));
+  }, [cartdetails, updateCartDetails]);
+
+  const removeAllItems = useCallback(() => {
+    updateCartDetails([]);
+  }, [updateCartDetails]);
+
+  const updateItemQuantityInCart = useCallback((item, quantity) => {
+    updateCartDetails(
+      cartdetails.map((detail) =>
+        detail.product.id === item.product.id ? { ...detail, quantity } : detail
+      )
+    );
+  }, [cartdetails, updateCartDetails]);
 
   const getPrice = (saleDetail, secondarySaleDetail, detail) => {
-    if (detail.product?.saleDetails?.length === 1 && detail.product?.saleDetails[0]?.price) return detail.product?.saleDetails[0].price
-    if (secondarySaleDetail?.price) return secondarySaleDetail.price
-    if (!secondarySaleDetail?.price && saleDetail?.price) return saleDetail.price
-    return 0
-  }
+    return (
+      detail.product?.saleDetails?.[0]?.price ||
+      secondarySaleDetail?.price ||
+      saleDetail?.price ||
+      0
+    );
+  };
 
-  const getTotal = () => {
-    let total = 0
-    cartdetails.forEach(detail => {
-      total += getPrice(detail.saleDetail, detail.secondarySaleDetail, detail) * (detail.quantity || 1)
-    });
-    return total
-  }
-
-  useEffect(() => {
-    const cartdetails = localStorage.getItem('cartdetails') ? JSON.parse(localStorage.getItem('cartdetails')) : [];
-    if (cartdetails) {
-      setCartDetails(cartdetails);
-    }
-  }, [])
+  const getTotal = useCallback(() => {
+    return cartdetails.reduce(
+      (total, detail) =>
+        total + getPrice(detail.saleDetail, detail.secondarySaleDetail, detail) * (detail.quantity || 1),
+      0
+    );
+  }, [cartdetails]);
 
   return (
     <CartContext.Provider
       value={{
         cartdetails,
-        setCartDetails,
         addItemToCart,
         removeItemFromCart,
         updateItemQuantityInCart,
         getTotal,
-        removeAllItems
+        removeAllItems,
       }}
     >
       {children}
     </CartContext.Provider>
   );
 };
+
 export default CartProvider;

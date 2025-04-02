@@ -40,12 +40,12 @@ const Header = ({ headers }) => {
               <Link id="header-cart-btn" href="/gio-hang" className="bg-[#FFAC0A] h-[35px] min-w-[100px] flex items-center justify-center relative rounded-md shadow-md">
                 <ShoppingCart size={32} strokeWidth={2} className="px-1" />
                 <span className="text-sm whitespace-nowrap pl-1 pr-1.5 sm:block hidden">Giỏ hàng</span>
-                {cartCount && (
+                {cartCount > 0 ? (
                   <div className="absolute -top-1 -right-1 flex items-center justify-center rounded-full w-3 h-3 bg-red-600 text-white text-[10px]">
                     <span className="animate-ping absolute inline-flex w-3 h-3 rounded-full bg-red-600 opacity-75"></span>
                     {cartCount}
                   </div>
-                )}
+                ) : ""}
               </Link>
             </div>
             <div className="hidden md:flex items-center text-sm gap-10 uppercase">

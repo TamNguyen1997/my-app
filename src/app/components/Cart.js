@@ -14,7 +14,7 @@ const COLOR_VARIANT = {
 }
 
 const Cart = () => {
-  const { cartdetails, removeItemFromCart, updateItemQuantityInCart, getTotal, removeAllItems } = useContext(CartContext)
+  const { cartdetails, removeItemFromCart, updateItemQuantityInCart, getTotal } = useContext(CartContext)
   const [relatedProducts, setRelatedProducts] = useState([])
 
   useEffect(() => {

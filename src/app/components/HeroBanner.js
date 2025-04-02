@@ -37,7 +37,7 @@ const HeroBanner = ({ banners }) => {
               key={i}
               width={1280}
               height={720}
-              className="max-h-[500px]" // Keep the max-height, but avoid stretching
+              className="max-h-[720px]" // Keep the max-height, but avoid stretching
               src={banner?.imageUrl || "/default-featured-image.webp"}
               alt={banner?.alt}
             />

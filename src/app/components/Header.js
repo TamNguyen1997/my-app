@@ -29,7 +29,7 @@ const Header = ({ headers }) => {
           <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto sm:pl-10 pl-4">
             <Link href="/" className="pr-4">
               <Image
-                src="/saoviet.png"
+                src="/saoviet.webp"
                 alt="favicon"
                 height={80}
                 width={200}

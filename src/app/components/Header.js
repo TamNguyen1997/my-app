@@ -9,156 +9,71 @@ import "./Header.css";
 import { Image } from "@nextui-org/react";
 
 const Header = ({ headers }) => {
-  const [hoveredCate, setHoveredCate] = useState(null)
+  const [hoveredCate, setHoveredCate] = useState(null);
   const [menuVisible, setMenuVisible] = useState(false);
   const menuRef = useRef();
-
   const { cartdetails } = useContext(CartContext);
-  const getQuantity = (details) => {
-    let total = 0;
-    details.forEach(item => {
-      total += parseInt(item.quantity)
-    });
-    return total
-  }
+
+  const getQuantity = (details) => details.reduce((total, item) => total + parseInt(item.quantity), 0);
 
   return (
     <nav className="bg-black border-gray-200 dark:bg-gray-900 header">
-      <div className="w-full h-full">
-        <div className="flex w-full h-full">
-          <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto sm:pl-10 pl-4">
-            <Link href="/" className="pr-4">
-              <Image
-                src="/saoviet.webp"
-                alt="favicon"
-                height={80}
-                width={200}
-                className="bg-black sm:w-[200px] w-[120px]"
-              />
-            </Link>
-          </div>
-          <div className={`
-            w-[80%] rounded-tl-[50px] rounded-bl-[50px]
-            bg-[#FFD400]
-          `}>
-            <div className="pl-9">
-              <div className="p-3 flex gap-7 pl-0">
-                <div className="w-full max-w-[397px] flex items-center gap-3 [&>div]:grow">
-                  <SearchBar />
-                  <Link
-                    id="header-cart-btn"
-                    href="/gio-hang"
-                    className="bg-[#FFAC0A] h-[35px] min-w-[100px] items-center justify-center text-center relative flex rounded-md shadow-md">
-                    <span className="px-1">
-                      <ShoppingCart size={24} strokeWidth={2}></ShoppingCart>
-                    </span>
-                    <span className="text-sm whitespace-nowrap pl-1 pr-1.5 sm:block hidden">Giỏ hàng</span>
-                    {cartdetails?.length ? (
-                      <div className="absolute -top-1 -right-1 flex items-center justify-center rounded-full w-3 h-3 bg-red-600 text-white text-center text-[10px]">
-                        <span className="animate-ping absolute inline-flex w-3 h-3 rounded-full bg-red-600 opacity-75"></span>
-                        {getQuantity(cartdetails)}
-                      </div>
-                    ) : (
-                      ""
-                    )}
-                  </Link>
-                </div>
-                <div className="items-center text-sm hidden md:flex">
-                  <div className="flex gap-10">
-                    <div className="flex items-center gap-10 uppercase">
-                      <Link href="/tin-tuc">Tin tức</Link>
-                      <Link href="/kien-thuc-hay">Kiến thức hay</Link>
-                    </div>
-                    <div className="items-center gap-10 hidden md:block">
-                      <Link href="tel:0902802979">
-                        <div className="flex items-center font-bold">
-                          Hotline: 090 280 2979
-                        </div>
-                      </Link>
-                    </div>
+      <div className="w-full h-full flex">
+        <div className="max-w-screen-xl flex items-center justify-between mx-auto sm:pl-10 pl-4">
+          <Link href="/" className="pr-4">
+            <Image src="/saoviet.webp" alt="favicon" height={80} width={200} className="bg-black sm:w-[200px] w-[120px]" />
+          </Link>
+        </div>
+        <div className="w-[80%] rounded-tl-[50px] rounded-bl-[50px] bg-[#FFD400]">
+          <div className="pl-9 p-3 flex gap-7">
+            <div className="w-full max-w-[397px] flex items-center gap-3">
+              <SearchBar />
+              <Link id="header-cart-btn" href="/gio-hang" className="bg-[#FFAC0A] h-[35px] min-w-[100px] flex items-center justify-center relative rounded-md shadow-md">
+                <ShoppingCart size={32} strokeWidth={2} className="px-1" />
+                <span className="text-sm whitespace-nowrap pl-1 pr-1.5 sm:block hidden">Giỏ hàng</span>
+                {cartdetails?.length > 0 && (
+                  <div className="absolute -top-1 -right-1 flex items-center justify-center rounded-full w-3 h-3 bg-red-600 text-white text-[10px]">
+                    <span className="animate-ping absolute inline-flex w-3 h-3 rounded-full bg-red-600 opacity-75"></span>
+                    {getQuantity(cartdetails)}
                   </div>
-                </div>
-              </div>
-              <div className="pr-10">
-                <HeaderItems
-                  setHoveredCate={setHoveredCate}
-                  menuRef={menuRef}
-                  setMenuVisible={setMenuVisible}
-                  menuVisible={menuVisible}
-                />
-              </div>
+                )}
+              </Link>
             </div>
+            <div className="hidden md:flex items-center text-sm gap-10 uppercase">
+              <Link href="/tin-tuc">Tin tức</Link>
+              <Link href="/kien-thuc-hay">Kiến thức hay</Link>
+              <Link href="tel:0902802979" className="font-bold">Hotline: 090 280 2979</Link>
+            </div>
+          </div>
+          <div className="pl-9">
+            <HeaderItems setHoveredCate={setHoveredCate} menuRef={menuRef} setMenuVisible={setMenuVisible} menuVisible={menuVisible} />
           </div>
         </div>
-        {menuVisible ? (
-          <div
-            onMouseOver={() => setMenuVisible(true)}
-            onMouseOut={() => setMenuVisible(false)}
-            className="fixed w-full subcate-menu z-[10000]"
-            ref={menuRef}
-          >
-            <div className="text-sm flex">
-              <div className="bg-white shadow-lg w-[240px] border rounded-bl-lg">
-                {
-                  headers?.map(category => (
-                    category.slug ?
-                      <Link
-                        key={category.id}
-                        href={`/${category.slug}`}
-                        onMouseOver={() => setHoveredCate(category)}
-                        className={`
-                        items-center border-b hover:font-bold transition p-1.5 
-                        ${category.slug !== "kien-thuc-hay" && category.slug !== "tin-tuc" ? "flex" : category.class} 
-                        ${hoveredCate?.id === category.id && 'font-bold'}
-                      `}
-                      >
-                        {
-                          category.slug !== "kien-thuc-hay" && category.slug !== "tin-tuc" ?
-                            <img src={`/icon/header/${category.slug}.svg`} alt="" title="" className="max-w-6 mr-2" /> : ""
-                        }
-
-                        <span className="mr-2">{category.name}</span>
-                        <ChevronRight size="15" className="ml-auto" />
-                      </Link> :
-                      <p
-                        key={category.id}
-                        onMouseOver={() => setHoveredCate(category)}
-                        className={`
-                        items-center border-b hover:font-bold transition p-1.5 
-                        ${category.slug !== "kien-thuc-hay" && category.slug !== "tin-tuc" ? "flex" : category.class} 
-                        ${hoveredCate?.id === category.id && 'font-bold'}
-                      `}
-                      >
-                        {
-                          category.slug !== "kien-thuc-hay" && category.slug !== "tin-tuc" ?
-                            <img src={`/icon/header/${category.slug}.svg`} alt="" title="" className="max-w-6 mr-2" /> : ""
-                        }
-
-                        <span className="mr-2">{category.name}</span>
-                        <ChevronRight size="15" className="ml-auto" />
-                      </p>
-                  ))
-                }
-              </div>
-              {
-                hoveredCate && (
-                  <div className="bg-white shadow-lg grow border rounded-br-lg">
-                    <div className="p-2 grid grid-rows-8 grid-flow-col">
-                      {
-                        hoveredCate.subcates?.map((subcate, i) => (
-                          <Link key={i} className="p-1 hover:text-blue-500" href={`/${subcate.slug}`}>{subcate.name}</Link>
-                        ))
-                      }
-                    </div>
-                  </div>
-                )
-              }
-            </div>
-          </div>
-        ) : (
-          ""
-        )}
       </div>
+      {menuVisible && (
+        <div className="fixed w-full subcate-menu z-[10000]" ref={menuRef} onMouseOver={() => setMenuVisible(true)} onMouseOut={() => setMenuVisible(false)}>
+          <div className="text-sm flex">
+            <div className="bg-white shadow-lg w-[240px] border rounded-bl-lg">
+              {headers?.map(category => (
+                <Link key={category.id} href={category.slug ? `/${category.slug}` : '#'}
+                  onMouseOver={() => setHoveredCate(category)}
+                  className={`items-center border-b hover:font-bold transition p-1.5 flex ${hoveredCate?.id === category.id && 'font-bold'}`}>
+                  {category.slug && <img src={`/icon/header/${category.slug}.svg`} alt="" className="max-w-6 mr-2" />}
+                  <span className="mr-2">{category.name}</span>
+                  <ChevronRight size="15" className="ml-auto" />
+                </Link>
+              ))}
+            </div>
+            {hoveredCate && hoveredCate.subcates?.length > 0 && (
+              <div className="bg-white shadow-lg grow border rounded-br-lg p-2 grid grid-rows-8 grid-flow-col">
+                {hoveredCate.subcates.map((subcate, i) => (
+                  <Link key={i} className="p-1 hover:text-blue-500" href={`/${subcate.slug}`}>{subcate.name}</Link>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </nav>
   );
 };
@@ -195,93 +110,38 @@ const HeaderItems = ({ setHoveredCate, menuRef, setMenuVisible, menuVisible }) =
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   });
+  const menuItems = [
+    { href: "/dung-cu-ve-sinh", label: "DỤNG CỤ VỆ SINH" },
+    { href: "/xe-lam-ve-sinh", label: "XE LÀM VỆ SINH" },
+    { href: "/hop-thung-dung-do-da-nang", label: "THÙNG ĐỰNG ĐỒ ĐA NĂNG" },
+    { href: "/may-ve-sinh-cong-nghiep", label: "MÁY VỆ SINH CÔNG NGHIỆP" },
+    { href: "/dung-cu-ve-sinh-kinh", label: "DỤNG CỤ VỆ SINH KÍNH" },
+    { href: "/gang-tay-bao-ho", label: "GĂNG TAY BẢO HỘ" },
+    { href: "/tham", label: "THẢM TRẢI SÀN" },
+    { href: "/khan-giay", label: "KHĂN GIẤY/GIẤY VỆ SINH" },
+  ];
 
-  return (<>
-    <div className="w-full font-bold header-items" ref={headerItemsRef}>
-      <div className="w-full ml-0 flex text-sm overflow-auto">
-        <Link href=""
-          className={`
-            hover:bg-[#FFAC0A] transition pb-4 sm:pt-4 pt-2 menu-button w-28 mr-auto
-            ${menuVisible && 'bg-[#FFAC0A]'}
-          `}
-          onMouseOver={() => {
-            setMenuVisible(true)
-            setHoveredCate(null)
-          }}
-          onMouseOut={() => setMenuVisible(false)}
-        >
-          <div className="flex">
-            <Menu size="20" className="inline-block mr-2 min-w-5" />
-            DANH MỤC
-          </div>
+  return (<div className="w-full font-bold header-items" ref={headerItemsRef}>
+    <div className="w-full flex text-sm overflow-auto">
+      <Link
+        href=""
+        className={`hover:bg-[#FFAC0A] transition pb-4 sm:pt-4 pt-2 menu-button w-28 ${menuVisible ? 'bg-[#FFAC0A]' : ''}`}
+        onMouseOver={() => {
+          setMenuVisible(true);
+          setHoveredCate(null);
+        }}
+        onMouseOut={() => setMenuVisible(false)}
+      >
+        <Menu size="20" className="inline-block mr-2 min-w-5" />
+        DANH MỤC
+      </Link>
+      {menuItems.map(({ href, label }) => (
+        <Link key={href} href={href} className="hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block text-center capitalize">
+          {label}
         </Link>
-        <Link href={`/dung-cu-ve-sinh`}
-          className={`
-                hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
-                text-center capitalize
-              `}
-        >
-          DỤNG CỤ VỆ SINH
-        </Link>
-        <Link href={`/xe-lam-ve-sinh`}
-          className={`
-                hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
-                text-center capitalize
-              `}
-        >
-          XE LÀM VỆ SINH
-        </Link>
-        <Link href={`/hop-thung-dung-do-da-nang`}
-          className={`
-                hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
-                text-center capitalize
-              `}
-        >
-          THÙNG ĐỰNG ĐỒ ĐA NĂNG
-        </Link>
-        <Link href={`/may-ve-sinh-cong-nghiep`}
-          className={`
-                hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
-                text-center capitalize
-              `}
-        >
-          MÁY VỆ SINH CÔNG NGHIỆP
-        </Link>
-        <Link href={`/dung-cu-ve-sinh-kinh`}
-          className={`
-                hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
-                text-center capitalize
-              `}
-        >
-          DỤNG CỤ VỆ SINH KÍNH
-        </Link>
-        <Link href={`/gang-tay-bao-ho`}
-          className={`
-                hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
-                text-center capitalize
-              `}
-        >
-          GĂNG TAY BẢO HỘ
-        </Link>
-        <Link href={`/tham`}
-          className={`
-                hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
-                text-center capitalize
-              `}
-        >
-          THẢM TRẢI SÀN
-        </Link>
-        <Link href={`/khan-giay`}
-          className={`
-                hover:bg-[#FFAC0A] transition py-4 px-3 hidden md:block
-                text-center capitalize
-              `}
-        >
-          KHĂN GIẤY/GIẤY VỆ SINH
-        </Link>
-      </div>
+      ))}
     </div>
-  </>
+  </div>
   );
 };
 

@@ -26,7 +26,7 @@ const Header = ({ headers }) => {
               alt="favicon"
               height={80}
               width={200}
-              priority={true}
+              priority="true"
               loading="eager"
               sizes="(max-width: 640px) 120px, 200px"
               className="bg-black sm:w-[200px] w-[120px]"

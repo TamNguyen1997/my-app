@@ -15,7 +15,7 @@ const ProductCard = ({ product }) => {
         alt={product.imageAlt}
         className="flex flex-col h-[250px] rounded-md overflow-hidden mx-auto"
         loading="eager"
-        priority={true}
+        priority="true"
       />
       <p
         className="w-full grow mx-auto border-b py-3 sm:text-base text-lg text-gray-700 line-clamp-3 font-roboto text-center">

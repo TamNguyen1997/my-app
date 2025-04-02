@@ -33,10 +33,15 @@ const HeroBanner = ({ banners }) => {
       <Carousel responsive={responsive} infinite autoPlay autoPlaySpeed={5000}>
         {
           banners.reverse().map((banner, i) => {
-            return <Image key={i} width="1280" height="720"
-              className="w-full h-full max-h-[500px]"
+            return <Image
+              key={i}
+              width={1280}
+              height={720}
+              className="max-h-[500px]" // Keep the max-height, but avoid stretching
               src={banner?.imageUrl || "/default-featured-image.webp"}
-              alt={banner?.alt} />
+              alt={banner?.alt}
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            />
           })
         }
       </Carousel>

@@ -11,7 +11,13 @@ const Introduction = () => {
       transition={{ duration: 0.7, delay: 0.3 }}
       viewport={{ once: true }}
       className="pb-[60px] mx-auto w-3/4 ">
-      <Image src="introduction.avif" alt="introduction" width={1440} />
+      <Image
+        src="introduction.avif"
+        alt="introduction"
+        width={1440}
+        height="auto"
+        sizes="(max-width: 768px) 100vw, 50vw"
+      />
     </motion.div>
   )
 }

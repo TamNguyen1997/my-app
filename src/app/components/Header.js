@@ -66,7 +66,7 @@ const Header = ({ headers }) => {
               <Link key={category.id} href={category.slug ? `/${category.slug}` : '#'}
                 onMouseOver={() => setHoveredCate(category)}
                 className={`items-center border-b hover:font-bold transition p-1.5 flex ${hoveredCate?.id === category.id && 'font-bold'}`}>
-                {category.slug && <img src={`/icon/header/${category.slug}.svg`} alt="" className="max-w-6 mr-2" />}
+                {category.slug && (category.slug !== "tin-tuc" && category.slug !== "kien-thuc-hay") && <img src={`/icon/header/${category.slug}.svg`} alt="" className="max-w-6 mr-2" />}
                 <span className="mr-2">{category.name}</span>
                 <ChevronRight size="15" className="ml-auto" />
               </Link>

@@ -86,6 +86,19 @@ export async function GET(req, { params }) {
       }
     }
 
+    switch (query.orderBy) {
+      case "createdAt:asc":
+        orderBy = {
+          createdAt: "asc"
+        }
+        break;
+      case "createdAt:desc":
+        orderBy = {
+          createdAt: "desc"
+        }
+        break;
+    }
+
     let products = await db.product.findMany({
       where: condition,
       include: {
@@ -102,15 +115,17 @@ export async function GET(req, { params }) {
     if (query.orderBy === "price:asc") {
       products = products.sort((a, b) => {
         const priceA = a.saleDetails.length
-          ? Math.min(...a.saleDetails.map(sd => sd.price).filter(p => p !== null))
+          ? Math.min(...a.saleDetails.map(sd => sd.price).filter(p => p !== null && p !== 0))
           : Infinity;
         const priceB = b.saleDetails.length
-          ? Math.min(...b.saleDetails.map(sd => sd.price).filter(p => p !== null))
+          ? Math.min(...b.saleDetails.map(sd => sd.price).filter(p => p !== null && p !== 0))
           : Infinity;
+        if (priceA === Infinity) return 1;
+        if (priceB === Infinity) return -1;
         return priceA - priceB;
       });
     }
-    if (query.orderBy === "price:asc") {
+    if (query.orderBy === "price:desc") {
       products = products.sort((a, b) => {
         const priceA = a.saleDetails.length
           ? Math.max(...a.saleDetails.map(sd => sd.price).filter(p => p !== null))
@@ -118,6 +133,8 @@ export async function GET(req, { params }) {
         const priceB = b.saleDetails.length
           ? Math.max(...b.saleDetails.map(sd => sd.price).filter(p => p !== null))
           : -Infinity;
+        if (priceA === Infinity) return -1;
+        if (priceB === Infinity) return 1;
         return priceB - priceA;
       });
     }

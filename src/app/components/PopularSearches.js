@@ -12,11 +12,11 @@ const PopularSearches = ({ popularSearches = [] }) => {
       viewport={{ once: true }}
       className="pb-[60px] pt-4 mx-auto sm:w-3/4 flex flex-col gap-5 shadow-xl p-5 rounded-xl">
       <h2 className="font-bold text-xl">Mọi người cũng tìm kiếm</h2>
-      <div className="flex flex-wrap">
+      <div className="flex flex-wrap gap-2">
         {
           popularSearches.map((item, index) => (
             <Link href={`/${item.category.slug}`} key={index}>
-              <span className="bg-gray-100 text-gray-800 text-xs font-medium 
+              <span className="bg-gray-100 text-gray-800
                 me-2 px-2.5 py-0.5 rounded-3xl dark:bg-gray-700 dark:text-gray-300 flex">
                 {item.category.name}
               </span>

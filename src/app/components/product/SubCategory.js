@@ -1,5 +1,4 @@
 "use client"
-
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Select, SelectItem, Slider, Spinner } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import ProductCard from "@/components/product/ProductCard"
@@ -14,41 +13,38 @@ const SubCategory = ({ params, productFilter }) => {
   const [isLoading, setIsLoading] = useState(true)
   const [category, setCategory] = useState({ name: "" })
   const [value, setValue] = useState([0, 100000000])
-  const [orderByPrice, setOrderByPrice] = useState("")
+  const [orderBy, setOrderBy] = useState("")
   const searchParams = useSearchParams()
   const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"))
   const [filters, setFilters] = useState([])
   const [endContent, setEndContent] = useState(false)
-
   const [filterIds, setFilterIds] = useState([])
+
+  const getProduct = async (reload = false) => {
+    setIsLoading(true)
+    const hash = window.location.hash?.split('#')
+    const res = await fetch(`/api/categories/${params}/products/?active=true&page=${page}&${window.location.hash ? hash[1] : `filterId=${productFilter || ""}`}&${orderBy && `orderBy=${orderBy}`}`)
+    if (res.ok) {
+      const body = await res.json()
+      setCategory(body.category)
+      if (reload) {
+        setData([...body.products])
+      } else {
+        setData(prevData => [...prevData, ...body.products])
+      }
+      setEndContent(body.products.length !== rowsPerPage)
+    }
+    setIsLoading(false)
+  }
 
   useEffect(() => {
     getProduct()
-    fetch(`/api/filters/?categoryId=${params}&active=true`).then((res) => res.json()).then(json => {
-      setFilters(json.result.filter(item => item.filterValue.length))
-    })
-  }, [params, productFilter, page]);
-
-  const getProduct = (reload = false) => {
-    setIsLoading(true)
-    const hash = window.location.hash?.split('#')
-    const getData = async () => {
-      await fetch(`/api/categories/${params}/products/?active=true&page=${page}&${window.location.hash ? hash[1] : `filterId=${productFilter || ""}`}&${orderByPrice && `orderBy=price:${orderByPrice}`}`).then(async res => {
-        if (res.ok) {
-          const body = await res.json()
-          setCategory(body.category)
-          if (reload) {
-            setData([...body.products])
-          } else {
-            setData([...data, ...body.products])
-          }
-          setEndContent(body.products.length != rowsPerPage)
-        }
+    fetch(`/api/filters/?categoryId=${params}&active=true`)
+      .then(res => res.json())
+      .then(json => {
+        setFilters(json.result.filter(item => item.filterValue.length))
       })
-      setIsLoading(false)
-    }
-    getData()
-  }
+  }, []);
 
   const filter = () => {
     let range = ""
@@ -78,7 +74,6 @@ const SubCategory = ({ params, productFilter }) => {
     navigate(`/${params}#${query.join("&")}`)
   }
 
-
   if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />
   return (
     <>
@@ -95,34 +90,30 @@ const SubCategory = ({ params, productFilter }) => {
         </div>
         <div className="w-9/12 mx-auto pt-5">
           <div className="flex flex-wrap gap-4">
-            {
-              filters.map((filter, index) =>
-                <Select key={index}
-                  label={filter.name}
-                  className="max-w-[200px]"
-                  selectionMode="multiple"
-                  labelPlacement="outside"
-                  defaultSelectedKeys={new Set([
-                    filter.filterValue.find(item => window.location.hash.includes(item.slug) || item.slug === productFilter)?.id])}
-                  onSelectionChange={(value) => {
-                    const newValues = Array.from(value).filter(item => item)
-                    if (!newValues.length) {
-                      const temp = filterIds.filter(item => !filter.filterValue.map(item => item.id).includes(item))
-                      setFilterIds(temp)
-                    } else {
-                      const temp = filterIds.filter(item => !newValues.includes(item))
-                      setFilterIds([...newValues, ...temp])
-                    }
-                  }}
-                >
-                  {
-                    filter.filterValue.filter(item => item.slug).map((item, i) =>
-                      <SelectItem key={item.slug}>{item.value}</SelectItem>
-                    )
+            {filters.map((filter, index) => (
+              <Select key={index}
+                label={filter.name}
+                className="max-w-[200px]"
+                selectionMode="multiple"
+                labelPlacement="outside"
+                defaultSelectedKeys={new Set([
+                  filter.filterValue.find(item => window.location.hash.includes(item.slug) || item.slug === productFilter)?.id])}
+                onSelectionChange={(value) => {
+                  const newValues = Array.from(value).filter(item => item)
+                  if (!newValues.length) {
+                    const temp = filterIds.filter(item => !filter.filterValue.map(item => item.id).includes(item))
+                    setFilterIds(temp)
+                  } else {
+                    const temp = filterIds.filter(item => !newValues.includes(item))
+                    setFilterIds([...newValues, ...temp])
                   }
-                </Select>
-              )
-            }
+                }}
+              >
+                {filter.filterValue.filter(item => item.slug).map((item, i) => (
+                  <SelectItem key={item.slug}>{item.value}</SelectItem>
+                ))}
+              </Select>
+            ))}
             <div className="items-end flex min-h-full gap-4">
               <Dropdown >
                 <DropdownTrigger>
@@ -174,40 +165,42 @@ const SubCategory = ({ params, productFilter }) => {
               <Select label="Sắp xếp"
                 className="w-40"
                 labelPlacement="outside"
-                defaultSelectedKeys={[orderByPrice]}
-                onSelectionChange={value => setOrderByPrice(value.values().next().value)}>
-                <SelectItem key="asc">Giá thấp đến cao</SelectItem>
-                <SelectItem key="desc">Giá cao đến thấp</SelectItem>
+                defaultSelectedKeys={[orderBy]}
+                onSelectionChange={value => setOrderBy(value.values().next().value)}>
+                <SelectItem key="createdAt:desc">Sản phẩm mới</SelectItem>
+                <SelectItem key="price:asc">Giá thấp đến cao</SelectItem>
+                <SelectItem key="price:desc">Giá cao đến thấp</SelectItem>
               </Select>
-              <Button color="primary" onClick={() => filter()}>Tìm</Button>
+              <Button color="primary" onClick={filter}>Tìm</Button>
             </div>
           </div>
 
-          {
-            !isLoading && !data.length ?
-              <p className="m-auto text-lg opacity-55 py-4">Không tìm thấy sản phẩm nào.</p> :
-              <>
-                <div className="w-full my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
-                  {data.map((product) => (
-                    <div key={product.id} className="h-full hover:opacity-75">
-                      <ProductCard product={product} />
-                    </div>
-                  ))}
-                </div>
-                {!endContent && <Button
+          {!isLoading && !data.length ? (
+            <p className="m-auto text-lg opacity-55 py-4">Không tìm thấy sản phẩm nào.</p>
+          ) : (
+            <>
+              <div className="w-full my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
+                {data.map((product) => (
+                  <div key={product.id} className="h-full hover:opacity-75">
+                    <ProductCard product={product} />
+                  </div>
+                ))}
+              </div>
+              {!endContent && (
+                <Button
                   className="flex justify-center items-center font-semibold w-[181px] h-[43px] rounded-[30px] text-black bg-white
                 border border-black hover:bg-[#FFD400] transition mx-auto text-large"
                   onClick={() => setPage(page + 1)}
                 >
                   Xem thêm
-                </Button>}
-
-              </>
-          }
+                </Button>
+              )}
+            </>
+          )}
         </div>
       </ErrorBoundary>
     </>
   );
 };
 
-export default SubCategory
+export default SubCategory;

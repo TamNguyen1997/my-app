@@ -35,6 +35,9 @@ export async function GET(req) {
   const { query } = queryString.parseUrl(req.url);
 
   let condition = {}
+  let orderBy = {
+    updatedAt: "desc"
+  }
   if (query) {
     page = parseInt(query.page) || 1
     size = parseInt(query.size) || 10
@@ -175,6 +178,18 @@ export async function GET(req) {
     if (query.productType) {
       condition.productType = query.productType
     }
+    switch (query.orderBy) {
+      case "createdAt:asc":
+        orderBy = {
+          createdAt: "asc"
+        }
+        break;
+      case "createdAt:desc":
+        orderBy = {
+          createdAt: "desc"
+        }
+        break;
+    }
   }
 
   try {
@@ -204,11 +219,7 @@ export async function GET(req) {
         subCate: true
       },
       where: condition,
-      orderBy: [
-        {
-          updatedAt: "desc"
-        }
-      ],
+      orderBy: orderBy,
       take: size,
       skip: (page - 1) * size
     })
@@ -216,15 +227,17 @@ export async function GET(req) {
     if (query.orderBy === "price:asc") {
       result = result.sort((a, b) => {
         const priceA = a.saleDetails.length
-          ? Math.min(...a.saleDetails.map(sd => sd.price).filter(p => p !== null))
+          ? Math.min(...a.saleDetails.map(sd => sd.price).filter(p => p !== null && p !== 0))
           : Infinity;
         const priceB = b.saleDetails.length
-          ? Math.min(...b.saleDetails.map(sd => sd.price).filter(p => p !== null))
+          ? Math.min(...b.saleDetails.map(sd => sd.price).filter(p => p !== null && p !== 0))
           : Infinity;
+        if (priceA === Infinity) return 1;
+        if (priceB === Infinity) return -1;
         return priceA - priceB;
       });
     }
-    if (query.orderBy === "price:asc") {
+    if (query.orderBy === "price:desc") {
       result = result.sort((a, b) => {
         const priceA = a.saleDetails.length
           ? Math.max(...a.saleDetails.map(sd => sd.price).filter(p => p !== null))
@@ -232,6 +245,8 @@ export async function GET(req) {
         const priceB = b.saleDetails.length
           ? Math.max(...b.saleDetails.map(sd => sd.price).filter(p => p !== null))
           : -Infinity;
+        if (priceA === Infinity) return -1;
+        if (priceB === Infinity) return 1;
         return priceB - priceA;
       });
     }

@@ -18,6 +18,7 @@ export async function GET(req, { params }) {
         name: true,
         active: true,
         updatedAt: true,
+        role: true,
       },
     });
 
@@ -58,8 +59,7 @@ export async function PUT(req, { params }) {
       }
     }
     const [_, username] = userCookie.value.split(":");
-    if (!password && newPassword && username === 'admin') {
-
+    if (!password && newPassword && username === "admin") {
       const user = await db.user.findUnique({
         where: { id },
       });
@@ -75,10 +75,9 @@ export async function PUT(req, { params }) {
     }
 
     if (password && newPassword) {
-      const hashedPassword = password ? CryptoJS.HmacSHA256(
-        password,
-        PRIVATE_KEY
-      ).toString() : "";
+      const hashedPassword = password
+        ? CryptoJS.HmacSHA256(password, PRIVATE_KEY).toString()
+        : "";
 
       const user = await db.user.findUnique({
         where: { id },

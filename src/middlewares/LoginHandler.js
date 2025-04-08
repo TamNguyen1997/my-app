@@ -1,6 +1,4 @@
-import {
-  NextResponse
-} from "next/server";
+import { NextResponse } from "next/server";
 
 export const LoginHandler = (next) => {
   return async (request, _next) => {
@@ -8,8 +6,9 @@ export const LoginHandler = (next) => {
 
     if (pathname === "/login") {
       const userCookie = request.cookies.get("user");
+      const role = request.cookies.get("role");
 
-      if (userCookie) {
+      if (userCookie && role) {
         const url = request.nextUrl.clone();
         url.pathname = "/";
         return NextResponse.redirect(url);

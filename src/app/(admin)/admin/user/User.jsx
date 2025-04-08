@@ -17,6 +17,8 @@ import {
   TableHeader,
   TableRow,
   useDisclosure,
+  Select,
+  SelectItem,
 } from "@nextui-org/react";
 import {
   LockIcon,
@@ -35,6 +37,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { USER_MESSAGE } from "@/constants/message";
 import Head from "next/head";
+import { user_role } from "@prisma/client";
 
 const User = () => {
   const [limit] = useState(10);
@@ -60,6 +63,7 @@ const User = () => {
       confirmPassword: "",
       email: "",
       name: "",
+      role: user_role.MANAGER,
     },
   });
 
@@ -135,7 +139,7 @@ const User = () => {
   useEffect(() => {
     fetchUsers();
 
-    return () => { };
+    return () => {};
   }, [page]);
 
   return (
@@ -353,6 +357,19 @@ const User = () => {
                 />
                 {errors.name && (
                   <p className="text-red-500">{errors.name.message}</p>
+                )}
+                <Select
+                  {...register("role", {
+                    required: "Vui lòng phân quyền user",
+                  })}
+                  label="Phân Quyền"
+                  defaultSelectedKeys={[user_role.MANAGER]}
+                >
+                  <SelectItem key={user_role.MANAGER}>Manager</SelectItem>
+                  <SelectItem key={user_role.ADMIN}>Admin</SelectItem>
+                </Select>
+                {errors.role && (
+                  <p className="text-red-500">{errors.role.message}</p>
                 )}
               </ModalBody>
               <ModalFooter>

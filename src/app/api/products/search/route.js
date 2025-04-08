@@ -24,26 +24,26 @@ export async function GET(req) {
             OR: [
               {
                 name: {
-                  search: `${query.searchTerm.trim().replaceAll(" ", " & ")}:*`
+                  contains: query.searchTerm
                 }
               },
               {
                 id: {
-                  search: `${query.searchTerm.trim().replaceAll(" ", " & ")}:*`
+                  contains: query.searchTerm
                 }
               },
               {
                 saleDetails: {
                   some: {
                     sku: {
-                      search: `${query.searchTerm.trim().replaceAll(" ", " & ")}:*`
+                      contains: query.searchTerm
                     }
                   }
                 }
               },
               {
                 slug: {
-                  search: `${query.searchTerm.trim().replaceAll(" ", " & ")}:*`
+                  contains: query.searchTerm
                 }
               }
             ]

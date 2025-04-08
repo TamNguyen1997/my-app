@@ -40,6 +40,8 @@ export async function GET(req, { params }) {
 
 export async function PUT(req, { params }) {
   const { id } = params;
+  const cookieStore = cookies();
+  const userCookie = cookieStore.get("user");
 
   try {
     const body = await req.json();

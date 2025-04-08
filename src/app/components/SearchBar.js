@@ -21,12 +21,11 @@ const SearchBar = () => {
   const queryString = useMemo(() => new URLSearchParams({ slug: slugify(query, { locale: 'vi' }).replace(/[()]/g, '') }), [query]);
 
   const onSearch = async (value) => {
-    const searchTerm = slugify(value, { locale: 'vi' }).replace(/[()]/g, '');
     setIsLoading({ categories: true, products: true, blogs: true });
 
     Promise.all([
       fetch(`/api/categories/?size=5&page=1&${queryString}`).then(res => res.json()),
-      fetch(`/api/products/search/?size=5&page=1&searchTerm=${searchTerm}&includeCate=true`).then(res => res.json()),
+      fetch(`/api/products/search/?size=5&page=1&searchTerm=${value}&includeCate=true`).then(res => res.json()),
       fetch(`/api/blogs/?size=5&page=1&${queryString}&excludeSupport=true`).then(res => res.json()),
     ]).then(([categories, products, blogs]) => {
       setResults({ categories: categories.result, products: products.result, blogs: blogs.result });

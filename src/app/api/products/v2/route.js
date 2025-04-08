@@ -108,8 +108,8 @@ export async function GET(req) {
       ...(query.name && { name: { contains: query.name } }),
       ...(query.slug && { slug: { contains: query.slug } }),
       ...(query.productType && { productType: query.productType }),
-      ...(query.thumbnail === 'true' && { imageId: { not: null } }),
-      ...(query.thumbnail === 'false' && { imageId: null }),
+      ...(query.thumbnail === 'true' && { imageUrl: { not: null } }),
+      ...(query.thumbnail === 'false' && { imageUrl: null }),
       ...(query.brandId && { brand: { slug: query.brandId } })
     });
 
@@ -167,7 +167,7 @@ export async function GET(req) {
         active: true, brandId: true, categoryId: true, createdAt: true, id: true,
         name: true, imageId: true, productId: true, slug: true, updatedAt: true,
         imageAlt: true, saleDetails: true, technical_detail: true, image: true,
-        category: true, subCate: true, brand: true, highlight: true
+        category: true, subCate: true, brand: true, highlight: true, imageUrl: true,
       },
       where: condition,
       orderBy: { updatedAt: 'desc' },

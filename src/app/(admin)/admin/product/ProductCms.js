@@ -127,7 +127,7 @@ const ProductCms = ({ categories = [] }) => {
               }} />
             </span>
             <span className="text-lg cursor-pointer text-green-400">
-              {product.imageId && <Tooltip showArrow content="Có thumbnail">
+              {(product.imageUrl) && <Tooltip showArrow content="Có thumbnail">
                 <FileImage />
               </Tooltip>}
             </span>

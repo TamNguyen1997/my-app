@@ -24,6 +24,12 @@ export async function GET(req) {
     maxAge: 0,
     path: "/",
   });
+  response.cookies.set("role", "", {
+    httpOnly: true,
+    sameSite: "lax",
+    maxAge: 0,
+    path: "/",
+  });
 
   return response;
 }

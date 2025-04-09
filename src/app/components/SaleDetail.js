@@ -1,213 +1,233 @@
-"use client"
-import { Button, Input } from "@nextui-org/react"
-import { ShoppingCart } from "lucide-react"
-import { useContext, useState } from "react"
+"use client";
+import { Button, Input } from "@nextui-org/react";
+import { ShoppingCart } from "lucide-react";
+import { useContext, useEffect, useState } from "react";
 import { CartContext } from "@/context/CartProvider";
 
-const COLOR_VARIANT = {
-  "#ffffff": "bg-[#ffffff]",
-  "#4b5563": "bg-[#4b5563]",
-  "#1e3a8a": "bg-[#1e3a8a]",
-  "#facc15": "bg-[#facc15]",
-  "#dc2626": "bg-[#dc2626]",
-  "#000000": "bg-[#000000]",
-}
+const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
+  const [selectedDetail, setSelectedDetail] = useState(saleDetails[0] || {});
+  const [selectedSecondaryDetail, setSelectedSecondaryDetail] = useState({});
+  const [quantity, setQuantity] = useState(1);
 
-const SaleDetail = ({ saleDetails, product }) => {
-  const [selectedDetail, setSelectedDetail] = useState(saleDetails[0] || {})
-  const [selectedSecondaryDetail, setSelectedSecondaryDetail] = useState({})
-  const [quantity, setQuantity] = useState(1)
-
-  const { addItemToCart } = useContext(CartContext)
+  const { addItemToCart } = useContext(CartContext);
 
   const onPrimarySelect = (key) => {
-    setSelectedDetail(saleDetails.find(detail => detail.id === key))
-    setSelectedSecondaryDetail({})
-  }
+    const detail = saleDetails.find((detail) => detail.id === key);
+    setSelectedDetail(detail);
+    setSelectedSecondaryDetail({});
+  };
 
-  const getSecondaryDetails = () => {
-    return saleDetails
-      .filter(item => item.saleDetailId && item.saleDetailId === selectedDetail.id && item.filterValueId)
-  }
+  const getSecondaryDetails = () =>
+    saleDetails.filter(
+      (item) =>
+        item.saleDetailId === selectedDetail.id && item.filterValueId
+    );
 
   const onSecondarySelect = (key) => {
-    setSelectedSecondaryDetail(saleDetails.find(detail => detail.id === key))
-  }
+    const detail = saleDetails.find((detail) => detail.id === key);
+    setSelectedSecondaryDetail(detail);
+  };
 
-  const getVariant = (id, selected) => {
-    if (id === selected) return "solid"
-    return "ghost"
-  }
+  useEffect(() => {
+    if (selectedDetail.id && selectedSecondaryDetail.id) {
+      setImages(selectedSecondaryDetail.sale_detail_on_image?.map((item) => item.imageUrl) || []);
+    }
+    if (selectedDetail.id && !selectedSecondaryDetail.id) {
+      setImages(selectedDetail.sale_detail_on_image?.map((item) => item.imageUrl) || []);
+    }
+  }, [selectedDetail, selectedSecondaryDetail]);
+
+  const getVariant = (id, selected) => (id === selected ? "solid" : "ghost");
 
   const getColor = (detail, selected) => {
-    const className = `rounded-full ${COLOR_VARIANT[detail.value]} w-7 h-7 border-[#e3e3e3] border hover:opacity-50 hover:border-4 hover:border-blue-500`
-    if (detail.id === selected) return `${className} border-4 border-blue-500`
-    return className
-  }
+    const baseClass = `rounded-full w-7 h-7 border-[#e3e3e3] border hover:opacity-50 hover:border-4 hover:border-blue-500`;
+    return detail.id === selected
+      ? `${baseClass} border-4 border-blue-500`
+      : baseClass;
+  };
+
+  const formatPrice = (price) =>
+    price?.toLocaleString().replaceAll(",", ".");
 
   const getOriginalPrice = () => {
-    if (saleDetails.length === 1 && saleDetails[0].showPrice && saleDetails[0].promotionalPrice && saleDetails[0].price > saleDetails[0].promotionalPrice) {
-      return saleDetails[0].price.toLocaleString().replaceAll(",", ".");
-    }
-    if (selectedSecondaryDetail.price && selectedSecondaryDetail.showPrice && selectedSecondaryDetail.promotionalPrice && selectedSecondaryDetail.price > selectedSecondaryDetail.promotionalPrice) {
-      return selectedSecondaryDetail.price.toLocaleString().replaceAll(",", ".");
-    }
+    const detail =
+      selectedSecondaryDetail.price && selectedSecondaryDetail.showPrice
+        ? selectedSecondaryDetail
+        : selectedDetail.price && !getSecondaryDetails().length
+          ? selectedDetail
+          : saleDetails[0];
 
-    if (selectedDetail.price && !getSecondaryDetails().length && selectedDetail.showPrice && selectedDetail.promotionalPrice && selectedDetail.price > selectedDetail.promotionalPrice) {
-      return selectedDetail.price.toLocaleString().replaceAll(",", ".");
-    }
-
-    return ""
-  }
+    return detail?.price > detail?.promotionalPrice && detail?.promotionalPrice
+      ? formatPrice(detail.price)
+      : "";
+  };
 
   const getPrice = () => {
-    if (saleDetails.length === 1 && saleDetails[0].showPrice) {
-      return saleDetails[0].promotionalPrice > 0 ?
-        saleDetails[0].promotionalPrice.toLocaleString().replaceAll(",", ".") :
-        saleDetails[0].price.toLocaleString().replaceAll(",", ".");
-    }
-    if (selectedSecondaryDetail.price && selectedSecondaryDetail.showPrice) {
-      return selectedSecondaryDetail.promotionalPrice > 0 ?
-        selectedSecondaryDetail.promotionalPrice.toLocaleString().replaceAll(",", ".") :
-        selectedSecondaryDetail.price.toLocaleString().replaceAll(",", ".")
-    }
+    const detail =
+      selectedSecondaryDetail.price && selectedSecondaryDetail.showPrice
+        ? selectedSecondaryDetail
+        : selectedDetail.price && !getSecondaryDetails().length
+          ? selectedDetail
+          : saleDetails[0];
 
-    if (selectedDetail.price && !getSecondaryDetails().length && selectedDetail.showPrice) {
-      return selectedDetail.promotionalPrice > 0 ?
-        selectedDetail.promotionalPrice.toLocaleString().replaceAll(",", ".") :
-        selectedDetail.price.toLocaleString().replaceAll(",", ".")
-    }
-
-    return ""
-  }
+    return detail?.promotionalPrice > 0
+      ? formatPrice(detail.promotionalPrice)
+      : formatPrice(detail.price);
+  };
 
   const addToCartAnimation = (evt, image = null) => {
     const addBtn = evt?.target;
     const headerCartBtn = document.getElementById("header-cart-btn");
     if (!addBtn || !headerCartBtn) return;
 
-    const {
-      top: headerCartTop,
-      left: headerCartLeft,
-      width: headerCartWidth
-    } = headerCartBtn.getBoundingClientRect();
+    const { top, left, width } = headerCartBtn.getBoundingClientRect();
+    const animateItem = image
+      ? Object.assign(document.createElement("img"), { src: image })
+      : document.createElement("div");
 
-    let animateItem = document.createElement("div");
-    if (image) {
-      animateItem = document.createElement("img");
-      animateItem.src = image;
-    }
-
-    animateItem.style.position = "fixed";
-    animateItem.style.zIndex = 99999;
-    animateItem.style.background = "red";
-    animateItem.style.width = "50px";
-    animateItem.style.height = "50px";
+    Object.assign(animateItem.style, {
+      position: "fixed",
+      zIndex: 99999,
+      background: "red",
+      width: "50px",
+      height: "50px",
+    });
 
     document.body.appendChild(animateItem);
 
-    animateItem.animate(
-      [
-        {
-          transform: "scale(1)",
-          top: addBtn.getBoundingClientRect().top + "px",
-          left: addBtn.getBoundingClientRect().left + "px",
-          opacity: 0.8,
-        },
-        {
-          transform: "scale(0.2)",
-          top: headerCartTop + "px",
-          left: headerCartLeft + headerCartWidth / 2 + "px",
-          opacity: 0.4,
-        },
-      ],
-      {
-        duration: 600,
-        easing: "ease",
-      }
-    ).onfinish = (e) => {
-      e.target.effect.target.remove();
-    };
-  }
+    animateItem
+      .animate(
+        [
+          {
+            transform: "scale(1)",
+            top: `${addBtn.getBoundingClientRect().top}px`,
+            left: `${addBtn.getBoundingClientRect().left}px`,
+            opacity: 0.8,
+          },
+          {
+            transform: "scale(0.2)",
+            top: `${top}px`,
+            left: `${left + width / 2}px`,
+            opacity: 0.4,
+          },
+        ],
+        { duration: 600, easing: "ease" }
+      )
+      .onfinish = () => animateItem.remove();
+  };
 
-  return (<>
-    <div className="">
+  const handleAddToCart = (evt, redirect = false) => {
+    addToCartAnimation(evt);
+    addItemToCart({
+      quantity,
+      product,
+      saleDetail: selectedDetail.id ? selectedDetail : saleDetails[0],
+      secondarySaleDetail: selectedSecondaryDetail,
+    });
+    if (redirect) window.location.replace("/gio-hang");
+  };
+
+  return (
+    <div>
       <div className="m-[10px_0_18px]">
         <p className="text-[30px] font-extrabold">{product.name}</p>
-        <p className="text-gray-500 text-small">SKU: {selectedSecondaryDetail.sku || selectedDetail.sku || saleDetails[0]?.sku}</p>
+        <p className="text-gray-500 text-small">
+          SKU:{" "}
+          {selectedSecondaryDetail.sku ||
+            selectedDetail.sku ||
+            saleDetails[0]?.sku}
+        </p>
       </div>
 
-      {getOriginalPrice() && <p className="line-through decoration-red-500 text-small opacity-50">{`${getOriginalPrice()} đ`}</p>}
-      <p className="text-[32px] font-medium text-[#b61a2d] mb-2.5">{getPrice() ? `${getPrice()} đ` : ""}</p>
-      <p className="text-sm mb-[30px]">Đã bao gồm VAT, chưa bao gồm phí giao hàng</p>
+      {getOriginalPrice() && (
+        <p className="line-through decoration-red-500 text-small opacity-50">
+          {`${getOriginalPrice()} đ`}
+        </p>
+      )}
+      <p className="text-[32px] font-medium text-[#b61a2d] mb-2.5">
+        {getPrice() && getPrice() > 0 ? `${getPrice()} đ` : ""}
+      </p>
+      <p className="text-sm mb-[30px]">
+        Đã bao gồm VAT, chưa bao gồm phí giao hàng
+      </p>
       <p className="text-sm mb-2.5">Giao hàng trong vòng 1-3 ngày</p>
 
       <div className="flex flex-col gap-3">
         <div className="flex gap-2 flex-wrap">
-          {
-            saleDetails.length > 1 && saleDetails.filter(item => !item.saleDetailId && item.filterValueId && item.filterValue && item.filterId && item.filterValue).map(detail => {
-              return <div key={detail.id} className="flex flex-col gap-1">
-                {
-                  detail.type === "COLOR" ?
-                    <div className={getColor(detail, selectedDetail.id)} onClick={() => onPrimarySelect(detail.id)}></div> :
-                    <Button color="default"
-                      variant={getVariant(detail.id, selectedDetail.id)}
-                      onPress={() => onPrimarySelect(detail.id)}
-                      value={detail.id}>{detail.filterValue.value}</Button>
-                }
-
+          {saleDetails
+            .filter(
+              (item) =>
+                !item.saleDetailId &&
+                item.filterValueId &&
+                item.filterValue &&
+                item.filterId
+            )
+            .map((detail) => (
+              <div key={detail.id} className="flex flex-col gap-1">
+                {detail.type === "COLOR" ? (
+                  <div
+                    className={getColor(detail, selectedDetail.id)}
+                    onClick={() => onPrimarySelect(detail.id)}
+                  ></div>
+                ) : (
+                  <Button
+                    color="default"
+                    variant={getVariant(detail.id, selectedDetail.id)}
+                    onPress={() => onPrimarySelect(detail.id)}
+                  >
+                    {detail.filterValue.value}
+                  </Button>
+                )}
               </div>
-            })
-          }
+            ))}
         </div>
         <div>
-          {
-            getSecondaryDetails().length > 1 && getSecondaryDetails().filter(item => !item.saleDetailId && item.filterValueId && item.filterValue)
-              .map(sDetail => {
-                return <Button color="default"
-                  key={sDetail.id}
-                  variant={getVariant(sDetail.id, selectedSecondaryDetail.id)}
-                  onPress={() => onSecondarySelect(sDetail.id)}
-                  value={sDetail.id}>{sDetail.filterValue.value}</Button>
-              })
-          }
+          {getSecondaryDetails().map((sDetail) => (
+            <Button
+              color="default"
+              key={sDetail.id}
+              variant={getVariant(sDetail.id, selectedSecondaryDetail.id)}
+              onPress={() => onSecondarySelect(sDetail.id)}
+            >
+              {sDetail.filterValue.value}
+            </Button>
+          ))}
         </div>
 
-        <Input type="number" label="Số lượng"
-          aria-label="Số lượng" defaultValue={quantity}
+        <Input
+          type="number"
+          label="Số lượng"
+          aria-label="Số lượng"
+          defaultValue={quantity}
           onValueChange={setQuantity}
-          min={1} max={999} />
+          min={1}
+          max={999}
+        />
         <div className="flex lg:flex-nowrap flex-wrap">
           <div className="pr-3 pb-3">
-            <Button color="primary" fullWidth isDisabled={!getPrice()} onClick={(evt) => {
-              addToCartAnimation(evt);
-              addItemToCart({
-                quantity: quantity,
-                product: product,
-                saleDetail: selectedDetail.id ? selectedDetail : saleDetails[0],
-                secondarySaleDetail: selectedSecondaryDetail
-              })
-              window.location.replace("/gio-hang")
-            }}>Mua ngay <ShoppingCart /></Button>
+            <Button
+              color="primary"
+              fullWidth
+              isDisabled={!getPrice()}
+              onClick={(evt) => handleAddToCart(evt, true)}
+            >
+              Mua ngay <ShoppingCart />
+            </Button>
           </div>
           <div className="pb-3">
-            <Button color="primary" fullWidth
+            <Button
+              color="primary"
+              fullWidth
               isDisabled={!getPrice()}
-              onClick={(evt) => {
-                addToCartAnimation(evt);
-                addItemToCart({
-                  quantity: quantity,
-                  product: product,
-                  saleDetail: selectedDetail,
-                  secondarySaleDetail: selectedSecondaryDetail
-                })
-              }}>Thêm vào giỏ hàng</Button>
+              onClick={(evt) => handleAddToCart(evt)}
+            >
+              Thêm vào giỏ hàng
+            </Button>
           </div>
         </div>
       </div>
     </div>
+  );
+};
 
-  </>)
-}
-
-export default SaleDetail
+export default SaleDetail;

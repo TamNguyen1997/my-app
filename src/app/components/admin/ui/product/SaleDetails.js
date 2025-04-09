@@ -306,7 +306,7 @@ const SaleDetails = () => {
                       <Trash2 onClick={() => removeItem(detail.id, setProduct)} />
                     </div>
                     <Snippet symbol="" className="!font-open_san !bg-white" copyIcon={false} content="Xem hình ảnh của thông số bán hàng">
-                      <Link className="text-lg text-success cursor-pointer active:opacity-50 float-right" href="#">
+                      <Link className="text-lg text-success cursor-pointer active:opacity-50 float-right" href={`/admin/product/edit/${product.id}/sale-details/${detail.id}`}>
                         <FileImage />
                       </Link>
                     </Snippet>

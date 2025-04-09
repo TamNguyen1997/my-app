@@ -1,12 +1,20 @@
 
-import { db } from "@/lib/db";
-import { Image } from "@nextui-org/react";
-import { Trash2 } from "lucide-react";
+import { db } from '@/app/db'
+import SaleDetailImages from '@/app/components/admin/ui/product/SaleDetailImages'
 
-const Page = async ({ saleDetailId }) => {
-  const images = await db.sale_detail_on_image.findMany({
+export const metadata = {
+  title: 'Thông số bán hàng - Dụng cụ vệ sinh Sao Việt',
+  description: 'Thông số bán hàng - Dụng cụ vệ sinh Sao Việt'
+}
+
+const Page = async ({ params }) => {
+  const { saleDetailId } = params
+  const saleDetail = await db.sale_detail.findUnique({
     where: {
-      saleDetailId: saleDetailId
+      id: saleDetailId
+    },
+    include: {
+      sale_detail_on_image: true
     }
   })
 
@@ -14,14 +22,7 @@ const Page = async ({ saleDetailId }) => {
     <div className="flex flex-col gap-4">
       <h1 className="text-2xl font-bold">Sale Detail</h1>
       <div className="flex flex-col gap-4">
-        {images.map((item) => (
-          <div key={item.id} className="flex items-center gap-4">
-            <Image src={item.imageUrl} alt={item.imageAlt} height={200} width={200} className="w-16 h-16 object-cover" />
-            <div className="text-success">
-              <Trash2 />
-            </div>
-          </div>
-        ))}
+        <SaleDetailImages saleDetail={saleDetail} />
       </div>
     </div>
   );

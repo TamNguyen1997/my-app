@@ -384,15 +384,21 @@ enum blog_category {
   NEWS
 }
 
+enum user_role {
+  ADMIN
+  MANAGER
+}
+
 model user {
-  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  username  String   @unique
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  username  String    @unique
   password  String
-  email     String   @unique
+  email     String    @unique
   name      String
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  active    Boolean   @default(true)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  role      user_role @default(MANAGER) @map("user_role")
 
   @@index([username, email])
 }

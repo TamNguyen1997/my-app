@@ -1,24 +1,25 @@
 "use client";
 
 import { USER_MESSAGE } from "@/constants/message";
-import { Button, Input, Switch } from "@nextui-org/react";
+import { Button, Input, Switch, Select, SelectItem } from "@nextui-org/react";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast, ToastContainer } from "react-toastify";
-import { getCookie } from 'cookies-next';
+import { getCookie } from "cookies-next";
+import { user_role } from "@prisma/client";
 const UserDetail = () => {
   const params = useParams();
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const router = useRouter();
 
   const getUser = () => {
-    const [id, username] = getCookie("user")?.split(":")
+    const [id, username] = getCookie("user")?.split(":");
     return {
       id,
-      username
-    }
-  }
+      username,
+    };
+  };
 
   const {
     register,
@@ -36,6 +37,7 @@ const UserDetail = () => {
       email: "",
       name: "",
       active: false,
+      role: "",
     },
   });
 
@@ -47,12 +49,13 @@ const UserDetail = () => {
           throw new Error("Failed to fetch user data");
         }
         const result = await res.json();
-        const { username, email, name, active } = result;
+        const { username, email, name, active, role } = result;
         reset({
           username,
           email,
           name,
           active: active === true,
+          role,
         });
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -75,6 +78,7 @@ const UserDetail = () => {
       password,
       newPassword,
       confirmNewPassword,
+      role,
     } = data;
 
     if (isChangingPassword) {
@@ -89,6 +93,7 @@ const UserDetail = () => {
       email,
       name,
       active,
+      role,
       ...(isChangingPassword && { password, newPassword }),
     };
 
@@ -179,6 +184,21 @@ const UserDetail = () => {
                 <p className="text-red-500">{errors.name.message}</p>
               )}
             </div>
+            <div className="mt-2">
+              <Select
+                {...register("role", {
+                  required: "Vui lòng phân quyền user",
+                })}
+                label="Phân Quyền"
+                selectedKeys={[watch("role")]}
+              >
+                <SelectItem key={user_role.MANAGER}>Manager</SelectItem>
+                <SelectItem key={user_role.ADMIN}>Admin</SelectItem>
+              </Select>
+              {errors.role && (
+                <p className="text-red-500">{errors.role.message}</p>
+              )}
+            </div>
             <div className="flex items-center justify-end gap-2 mt-2">
               <label className="ml-2">Active</label>
               <Switch
@@ -197,9 +217,7 @@ const UserDetail = () => {
               className="mt-4"
               color="warning"
             >
-              {isChangingPassword
-                ? "Hủy"
-                : "Đổi mật khẩu"}
+              {isChangingPassword ? "Hủy" : "Đổi mật khẩu"}
             </Button>
             {isChangingPassword && (
               <div>
@@ -208,15 +226,20 @@ const UserDetail = () => {
                     label="Password"
                     placeholder="Vui lòng điền password"
                     type="password"
-                    isRequired={getUser().username !== 'admin'}
+                    isRequired={getUser().username !== "admin"}
                     variant="bordered"
-                    {...register("password", getUser().username === 'admin' ? {} : {
-                      required: "Vui lòng điền password",
-                      minLength: {
-                        value: 6,
-                        message: "Password phải có ít nhất 6 kí tự",
-                      },
-                    })}
+                    {...register(
+                      "password",
+                      getUser().username === "admin"
+                        ? {}
+                        : {
+                            required: "Vui lòng điền password",
+                            minLength: {
+                              value: 6,
+                              message: "Password phải có ít nhất 6 kí tự",
+                            },
+                          }
+                    )}
                     status={errors.password ? "error" : "default"}
                   />
                   {errors.password && (

@@ -2,6 +2,7 @@ import { db } from "@/app/db";
 import { NextResponse } from "next/server";
 import CryptoJS from "crypto-js";
 import { USER_MESSAGE } from "@/constants/message";
+import { cookies } from "next/headers";
 
 const PRIVATE_KEY = process.env.PRIVATE_KEY || "private_key";
 
@@ -18,6 +19,7 @@ export async function GET(req, { params }) {
         name: true,
         active: true,
         updatedAt: true,
+        role: true,
       },
     });
 
@@ -60,8 +62,7 @@ export async function PUT(req, { params }) {
       }
     }
     const [_, username] = userCookie.value.split(":");
-    if (!password && newPassword && username === 'admin') {
-
+    if (!password && newPassword && username === "admin") {
       const user = await db.user.findUnique({
         where: { id },
       });
@@ -77,10 +78,9 @@ export async function PUT(req, { params }) {
     }
 
     if (password && newPassword) {
-      const hashedPassword = password ? CryptoJS.HmacSHA256(
-        password,
-        PRIVATE_KEY
-      ).toString() : "";
+      const hashedPassword = password
+        ? CryptoJS.HmacSHA256(password, PRIVATE_KEY).toString()
+        : "";
 
       const user = await db.user.findUnique({
         where: { id },

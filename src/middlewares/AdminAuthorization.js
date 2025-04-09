@@ -23,7 +23,7 @@ export const AdminAuthorization = (next) => {
         const [userId, username] = userCookie.value.split(":");
 
         const role = request.cookies.get("role");
-        if (!userId || !username || !role) {
+        if (!userId || !username || !role || role.value === "undefined") {
           return NextResponse.json(
             { message: "Unauthorized: Invalid session." },
             { status: 401 }

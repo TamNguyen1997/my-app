@@ -9,7 +9,6 @@ import {
   TableRow,
   TableBody,
   Button,
-  Switch,
   Input,
   Select,
   SelectItem,
@@ -20,12 +19,13 @@ import {
 } from "@nextui-org/react"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { EditIcon, FileImage, Plus, Search, Trash2 } from "lucide-react"
+import Checkbox from '@mui/material/Checkbox';
 import { toast, ToastContainer } from "react-toastify"
 import DeleteConfirmation from "@/components/admin/ui/DeleteConfirmation"
 import PaginationWithTotal from "@/components/PaginationWithTotal"
 
 const quickUpdateProduct = async (product, value) => {
-  await fetch(`/api/products/${product.id}`, {
+  return await fetch(`/api/products/${product.id}`, {
     method: "PUT",
     body: JSON.stringify(value),
   })
@@ -117,6 +117,18 @@ const ProductCms = ({ categories = [] }) => {
     setProductIdToDelete()
   }
 
+  const massUpdate = async (value) => {
+    const productsToUpdate = selectedKeys === "all" ? products.map(product => product.id) : [...selectedKeys]
+    console.log(productsToUpdate)
+    const responses = await Promise.all(productsToUpdate.map(id => quickUpdateProduct({ id }, value)))
+    console.log(responses)
+    const errors = responses.filter(res => !res.ok)
+    if (errors.length) {
+      const errorMessages = await Promise.all(errors.map(res => res.json()))
+      errorMessages.forEach(error => toast.error(error.message))
+    }
+  }
+
   const renderCell = useCallback((product, columnKey) => {
     const cellValue = product[columnKey]
     switch (columnKey) {
@@ -147,10 +159,7 @@ const ProductCms = ({ categories = [] }) => {
       case "active":
       case "highlight":
         return (
-          <Switch
-            defaultSelected={product[columnKey]}
-            onValueChange={(value) => quickUpdateProduct(product, { [columnKey]: value })}
-          />
+          <Checkbox defaultChecked={product[columnKey]} onChange={event => quickUpdateProduct(product, { [columnKey]: event.target.checked })} />
         )
       case "cate":
         return product.category?.name
@@ -171,6 +180,7 @@ const ProductCms = ({ categories = [] }) => {
     setCondition((prevCondition) => ({ ...prevCondition, ...value }))
   }
 
+  console.log(selectedKeys)
   return (
     <>
       <ToastContainer />
@@ -298,8 +308,14 @@ const ProductCms = ({ categories = [] }) => {
             </TableBody>
           </Table>
         </div>
-        <div className="pt-3">
-          <Link href="/admin/product/edit/new" className="float-right">Thêm sản phẩm</Link>
+        <div className="pt-3 flex gap-3">
+          <Button color="primary" onPress={() => massUpdate({ highlight: true })} isDisabled={![...selectedKeys].length && selectedKeys !== "all"}>
+            Đánh dấu nổi bật
+          </Button>
+          <Button color="primary" onPress={() => massUpdate({ highlight: false })} isDisabled={![...selectedKeys].length && selectedKeys !== "all"}>
+            Đánh dấu không nổi bật
+          </Button>
+          <Link href="/admin/product/edit/new">Thêm sản phẩm</Link>
         </div>
       </div>
     </>

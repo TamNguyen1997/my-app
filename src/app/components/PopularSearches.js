@@ -15,10 +15,10 @@ const PopularSearches = ({ popularSearches = [] }) => {
       <div className="flex flex-wrap gap-2">
         {
           popularSearches.map((item, index) => (
-            <Link href={`/${item.category.slug}`} key={index}>
+            <Link href={`/${item.url || item.category?.slug}`} key={index}>
               <span className="bg-gray-100 text-gray-800
                 me-2 px-2.5 py-0.5 rounded-3xl dark:bg-gray-700 dark:text-gray-300 flex">
-                {item.category.name}
+                {item.keyword || item.category.name}
               </span>
             </Link>
           ))

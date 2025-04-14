@@ -19,8 +19,9 @@ model product {
   slug     String
   imageAlt String? @map("image_alt")
 
-  imageId String? @map("image_id") @db.Uuid
-  image   image?  @relation(fields: [imageId], references: [id])
+  imageId  String? @map("image_id") @db.Uuid
+  image    image?  @relation(fields: [imageId], references: [id])
+  imageUrl String? @map("image_url")
 
   active    Boolean @default(true)
   sku       String?
@@ -75,8 +76,9 @@ model product_on_image {
   productId String
   product   product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  imageId String @db.Uuid
-  image   image  @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  imageId  String  @db.Uuid
+  image    image   @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  imageUrl String? @map("image_url")
 
   order Int @default(0)
 
@@ -135,13 +137,29 @@ model sale_detail {
   showPrice        Boolean @default(true)
   inStock          Int     @default(0)
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  createdAt            DateTime               @default(now()) @map("created_at")
+  updatedAt            DateTime               @default(now()) @updatedAt @map("updated_at")
+  sale_detail_on_image sale_detail_on_image[]
 
   @@index([productId])
   @@index([saleDetailId])
   @@index([filterId])
   @@index([filterValueId])
+}
+
+model sale_detail_on_image {
+  saleDetailId String      @map("sale_detail_id")
+  saleDetail   sale_detail @relation(fields: [saleDetailId], references: [id], onDelete: Cascade)
+
+  imageUrl String @map("image_url")
+
+  order Int @default(0)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@id([imageUrl, saleDetailId])
+  @@index([saleDetailId])
 }
 
 model filter {
@@ -328,8 +346,9 @@ model banner {
   createdAt DateTime   @default(now()) @map("created_at")
   updatedAt DateTime   @default(now()) @updatedAt @map("updated_at")
 
-  imageId String? @map("image_id") @db.Uuid
-  image   image?  @relation(fields: [imageId], references: [id])
+  imageId  String? @map("image_id") @db.Uuid
+  image    image?  @relation(fields: [imageId], references: [id])
+  imageUrl String? @map("image_url")
 
   @@index([imageId])
 }
@@ -381,15 +400,21 @@ enum blog_category {
   NEWS
 }
 
+enum user_role {
+  ADMIN
+  MANAGER
+}
+
 model user {
-  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  username  String   @unique
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  username  String    @unique
   password  String
-  email     String   @unique
+  email     String    @unique
   name      String
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  active    Boolean   @default(true)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  role      user_role @default(MANAGER) @map("user_role")
 
   @@index([username, email])
 }
@@ -413,6 +438,7 @@ model category {
   headerOrder Int     @default(0) @map("header_order")
   imageId     String? @db.Uuid
   image       image?  @relation(fields: [imageId], references: [id])
+  imageUrl    String? @map("image_url")
 
   type     cate_type  @default(CATE)
   cateId   String?
@@ -425,6 +451,7 @@ model category {
   metaDescription String? @map("meta_description")
 
   category_on_filter_value category_on_filter_value[] @relation("category")
+  popular_search           popular_search[]
 
   @@unique([slug])
   @@index([imageId])
@@ -471,6 +498,18 @@ model category_on_filter_value {
   @@id([categoryId, filterValueId])
   @@index([categoryId])
   @@index([filterValueId])
+}
+
+model popular_search {
+  id         String    @id @default(dbgenerated("gen_random_uuid()"))
+  keyword    String
+  categoryId String?   @map("category_id")
+  category   category? @relation(fields: [categoryId], references: [id])
+  url        String?
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  @@index([categoryId])
 }
 
 enum blog_type {

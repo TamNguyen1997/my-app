@@ -7,8 +7,7 @@ export async function GET(req, { params }) {
     return NextResponse.json({ message: `Resource not found ${params.slug}` }, { status: 400 })
   }
   try {
-    let page = 1
-    let size = 20
+    const { page = 1, size = 20 } = queryString.parseUrl(req.url).query;
     const brand = await db.brand.findFirst({ where: { slug: params.slug } })
 
     if (!brand) {
@@ -30,36 +29,22 @@ export async function GET(req, { params }) {
         }
       ]
     }
+    let orderBy = {
+      createdAt: 'desc'
+    }
 
     const { query } = queryString.parseUrl(req.url);
     let filterId = []
 
-    if (query) {
-      page = parseInt(query.page) || 1
-      size = parseInt(query.size) || 20
-    }
-
-    if (query.brand) {
-      const brandIds = (await db.brand.findMany({ where: { slug: { in: query.brand.split(',') } } })).map(brand => brand.id)
-
-      condition.brandId = {
-        in: brandIds
-      }
-    }
-
     if (query.category) {
-      const categoryIds = (await db.category.findMany({ where: { slug: { in: query.category.split(',') } } })).map(category => category.id)
-
       condition.categoryId = {
-        in: categoryIds
+        in: query.category.split(',')
       }
     }
 
     if (query.subCategory) {
-      const subCateIds = (await db.category.findMany({ where: { slug: { in: query.subCategory.split(',') } } })).map(subcate => subcate.id)
-
       condition.subCateId = {
-        in: subCateIds
+        in: query.subCategory.split(',')
       }
     }
 
@@ -68,18 +53,27 @@ export async function GET(req, { params }) {
     }
 
     if (query.filterId) {
-      filterId = (await db.filter.findMany({
-        where: {
-          slug: {
-            in: Array.isArray(query.filterId) ? query.filterId : [query.filterId]
-          }
-        }
-      })).map(item => item.id)
+      filterId = Array.isArray(query.filterId) ? query.filterId : [query.filterId]
 
       condition.filterOnProduct = {
         some: {
           filterId: {
             in: filterId
+          }
+        }
+      }
+    }
+
+    const minMax = query.range?.split('-')
+    if (query.range && minMax.length == 2) {
+      if (minMax.length != 2) {
+        condition.saleDetails = {
+          some: {
+            showPrice: true,
+            price: {
+              gte: A,
+              lte: B
+            }
           }
         }
       }
@@ -106,30 +100,16 @@ export async function GET(req, { params }) {
         category: true,
         subCate: true,
         brand: true,
+        imageUrl: true,
       },
-      orderBy: {
-        createdAt: 'desc'
-      }
+      orderBy: orderBy
     })
 
-    if (query.filterId) {
-      products = products.filter(item => item.filterOnProduct.length >= filterId.length)
-    }
-
-    if (query.range) {
-      const minMax = query.range.split('-')
-      if (minMax.length != 2) return
-
-      products = products.filter(item => {
-        const hasSaleDetails = item.saleDetails.length > 0
-
-        const max = item.saleDetails[0]?.price <= parseInt(minMax[1])
-        const min = item.saleDetails.filter(detail => detail.price >= parseInt(minMax[0])).length >= 0
-
-        return hasSaleDetails && max && min
-      })
-    }
-
+    products = products.sort((a, b) => {
+      const minPriceA = Math.min(...a.saleDetails.map(detail => detail.price));
+      const minPriceB = Math.min(...b.saleDetails.map(detail => detail.price));
+      return minPriceA - minPriceB; // Ascending order
+    });
     const total = products.length
 
     return NextResponse.json({ brand, products: products.splice(page - 1, size), total })

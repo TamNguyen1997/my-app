@@ -52,7 +52,7 @@ const CustomDot = ({
 	);
 };
 
-export default ({ items }) => {
+export default ({ items = [] }) => {
 	return (
 		<>
 			<Carousel

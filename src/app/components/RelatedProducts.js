@@ -1,15 +1,10 @@
 "use client"
-import { useEffect, useState } from "react"
+
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import ProductCard from "./product/ProductCard";
 
-const RelatedProducts = ({ query }) => {
-  const [products, setProducts] = useState([])
-
-  useEffect(() => {
-    fetch(`/api/products/${query}`).then(res => res.json()).then(json => setProducts(json.result))
-  }, [query])
+const RelatedProducts = ({ relatedProducts = [] }) => {
 
   return (<>
     <div className="relative">
@@ -86,7 +81,7 @@ const RelatedProducts = ({ query }) => {
         swipeable
       >
         {
-          products.map((product) => <ProductCard product={product} key={product.id} />)
+          relatedProducts.map((product) => <ProductCard product={product} key={product.id} />)
         }
       </Carousel>
     </div>

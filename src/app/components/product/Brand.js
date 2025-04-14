@@ -1,118 +1,112 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, Select, SelectItem, Slider, Spinner } from "@nextui-org/react";
 import ProductCard from "@/components/product/ProductCard";
 
 const Brand = ({ params, productFilter }) => {
-  const [data, setData] = useState([])
-  const [brand, setBrand] = useState({ name: "" })
-  const [isLoading, setIsLoading] = useState(true)
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [orderBy, setOrderBy] = useState("");
+  const [value, setValue] = useState([0, 100000000]);
+  const [groupedData, setGroupData] = useState({});
+  const [categories, setCategories] = useState([]);
+  const [filters, setFilters] = useState([]);
+  const [selectedFilterValues, setSelectedFilterValues] = useState({});
 
-  const [value, setValue] = useState([0, 100000000])
+  const getProduct = useCallback(async () => {
+    const hash = window.location.hash?.split('#');
 
-  const [groupedData, setGroupData] = useState({})
-  const [categories, setCategories] = useState([])
-  const [filters, setFilters] = useState([])
-
-  const [selectedFilterValues, setSelectedFilterValues] = useState({})
+    const res = await fetch(`/api/products/?active=true&page=1&size=10000&includeCate=true&${orderBy && `orderBy=${orderBy}`}&brandId=${params}&${hash && hash[1]?.includes("=") ? hash[1] : `filterId=${productFilter || hash[1] || ""}`}`);
+    if (res.ok) {
+      const body = await res.json();
+      setData(body.result);
+      let categories = [];
+      const temp = Object.groupBy(body.result, (item) => item.categoryId);
+      setGroupData(temp);
+      Object.keys(temp).forEach(item => {
+        const category = body.result.find(product => product.categoryId === item)?.category;
+        category && categories.push(category);
+      });
+      setCategories(categories);
+    }
+    setIsLoading(false);
+  }, [params, productFilter, orderBy]);
 
   useEffect(() => {
-    getProduct()
-    fetch(`/api/filters/?categoryId=${params}&active=true`).then((res) => res.json()).then(json => {
-      const result = json.result.filter(item => item.filterValue.length)
-      let temp = {}
-      result.forEach(item => {
-        temp[item.id] = []
-      })
-      setSelectedFilterValues(temp)
-      setFilters(result)
-    })
-  }, [params, productFilter]);
+    getProduct();
+    fetch(`/api/filters/?categoryId=${params}&active=true`)
+      .then((res) => res.json())
+      .then(json => {
+        const result = json.result.filter(item => item.filterValue.length);
+        let temp = {};
+        result.forEach(item => {
+          temp[item.id] = [];
+        });
+        setSelectedFilterValues(temp);
+        setFilters(result);
+      });
+  }, [params, productFilter, getProduct]);
 
-  const getProduct = async () => {
-    const hash = window.location.hash?.split('#')
-
-    await fetch(`/api/brands/${params}`).then(res => res.json()).then(setBrand)
-    await fetch(`/api/products/?active=true&page=1&size=10000&includeCate=true&brandId=${params}&${hash && hash[1]?.includes("=") ? hash[1] : `filterId=${productFilter || hash[1] || ""}`}`).then(async res => {
-      if (res.ok) {
-        const body = await res.json()
-        setData(body.result)
-        let categories = []
-        const groupData = Object.groupBy(body.result, (item) => item.categoryId)
-        setGroupData(groupData)
-        Object.keys(groupData).forEach(item => {
-          const category = body.result.find(product => product.categoryId === item)?.category
-          category && categories.push(category)
-        })
-        setCategories(categories)
-      }
-    })
-    setIsLoading(false)
-  }
-
-  const filter = () => {
-    let range = ""
-    let filterIds = Object.values(selectedFilterValues).flat()
+  const filter = useCallback(() => {
+    let range = "";
+    let filterIds = Object.values(selectedFilterValues).flat();
 
     if (JSON.stringify(value) !== JSON.stringify([0, 100000000])) {
-      range += `range=${value.join('-')}`
+      range += `range=${value.join('-')}`;
     }
-    let query = []
+    let query = [];
     if (range) {
-      query.push(range)
+      query.push(range);
     } else if (filterIds.length === 1) {
-      window.location.replace(`/${params}#${filterIds[0]}`)
-      getProduct()
-      return
+      window.location.replace(`/${params}#${filterIds[0]}`);
+      getProduct();
+      return;
     }
     if (filterIds.length) {
-      query.push(`filterId=${filterIds.join("&filterId=")}`)
+      query.push(`filterId=${filterIds.join("&filterId=")}`);
     }
-    window.location.replace(`/${params}#${query.join("&")}`)
-    getProduct()
-  }
+    window.location.replace(`/${params}#${query.join("&")}`);
+    getProduct();
+  }, [params, selectedFilterValues, value, getProduct]);
 
-  if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />
+  if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />;
 
   return (
     <>
-      <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${brand.slug}`} />
       <div className="sm:w-9/12 mx-auto ">
         <div className="flex flex-wrap gap-2 p-3">
-          {
-            categories.map(category => <Link key={category.id} href={`/${category.slug}`}><Button variant="ghost" color="default">{category.name}</Button></Link>)
-          }
+          {categories.map(category => (
+            <Link key={category.id} href={`/${category.slug}`}>
+              <Button variant="ghost" color="default">{category.name}</Button>
+            </Link>
+          ))}
         </div>
         <div className="flex gap-2 pt-5 px-2">
           <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
-            {
-              filters.map((filter, index) =>
-                <Select key={index}
-                  label={filter.name}
-                  className="max-w-[200px]"
-                  selectionMode="multiple"
-                  labelPlacement="outside"
-                  defaultSelectedKeys={new Set([
-                    filter.filterValue.find(item => window.location.hash.includes(item.slug) || item.slug === productFilter)?.slug])}
-                  onSelectionChange={(value) => {
-                    setSelectedFilterValues({ ...selectedFilterValues, [filter.id]: Array.from(value).filter(item => item) })
-                  }}
-                >
-                  {
-                    filter.filterValue.filter(item => item.slug).map((item, i) =>
-                      <SelectItem key={item.slug}>{item.value}</SelectItem>
-                    )
-                  }
-                </Select>
-              )
-            }
+            {filters.map((filter, index) => (
+              <Select
+                key={index}
+                label={filter.name}
+                className="max-w-[200px]"
+                selectionMode="multiple"
+                labelPlacement="outside"
+                defaultSelectedKeys={new Set([
+                  filter.filterValue.find(item => window.location.hash.includes(item.slug) || item.slug === productFilter)?.slug
+                ])}
+                onSelectionChange={(value) => {
+                  setSelectedFilterValues({ ...selectedFilterValues, [filter.id]: Array.from(value).filter(item => item) });
+                }}
+              >
+                {filter.filterValue.filter(item => item.slug).map((item, i) => (
+                  <SelectItem key={item.slug}>{item.value}</SelectItem>
+                ))}
+              </Select>
+            ))}
             <div className="items-end flex min-h-full gap-4">
-              <Dropdown >
+              <Dropdown>
                 <DropdownTrigger>
-                  <Button variant="bordered">
-                    Giá
-                  </Button>
+                  <Button variant="bordered">Giá</Button>
                 </DropdownTrigger>
                 <DropdownMenu aria-label="Example with disabled actions" variant="light" closeOnSelect={false}>
                   <DropdownItem textValue="item">
@@ -155,19 +149,30 @@ const Brand = ({ params, productFilter }) => {
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
+              <Select
+                label="Sắp xếp"
+                className="w-40"
+                labelPlacement="outside"
+                defaultSelectedKeys={[orderBy]}
+                onSelectionChange={value => setOrderBy(value.values().next().value)}
+              >
+                <SelectItem key="created:desc">Sản phẩm mới</SelectItem>
+                <SelectItem key="price:asc">Giá thấp đến cao</SelectItem>
+                <SelectItem key="price:desc">Giá cao đến thấp</SelectItem>
+              </Select>
               <Button color="primary" onClick={filter}>Tìm</Button>
             </div>
           </div>
         </div>
-        {
-          !isLoading && !data.length ?
-            <p className="m-auto pt-4 text-lg opacity-55">Không tìm thấy sản phẩm nào.</p> :
-            <div className="w-full my-5 flex flex-col gap-4 p-2">
-              {
-                Object.keys(groupedData).map(key => <BrandSection products={groupedData[key].splice(0, 30)} key={key} />)
-              }
-            </div>
-        }
+        {!isLoading && !data.length ? (
+          <p className="m-auto pt-4 text-lg opacity-55">Không tìm thấy sản phẩm nào.</p>
+        ) : (
+          <div className="w-full my-5 flex flex-col gap-4 p-2">
+            {Object.keys(groupedData).map(key => (
+              <BrandSection products={Object.values(groupedData).flat().filter(item => item.categoryId === key).splice(0, 30)} key={key} />
+            ))}
+          </div>
+        )}
       </div>
     </>
   );
@@ -182,8 +187,8 @@ const BrandSection = ({ products }) => {
         </div>
       </div>
 
-      {
-        products.length ? <>
+      {products.length ? (
+        <>
           <div className="w-full my-5 grid grid-cols-[repeat(auto-fill,minmax(222px,1fr))] gap-4 p-2">
             {products.map((product) => (
               <div key={product.id} className="h-full hover:opacity-75 [&>div]:mx-auto">
@@ -192,18 +197,17 @@ const BrandSection = ({ products }) => {
             ))}
           </div>
 
-          <Link isExternal
+          <Link
+            isExternal
             href={`/${products[0].category?.slug}`}
-            className="flex justify-center items-center font-semibold w-[181px] text-black
-              h-[43px] rounded-[30px] border border-black hover:bg-[#FFD400] transition mx-auto"
+            className="flex justify-center items-center font-semibold w-[181px] text-black h-[43px] rounded-[30px] border border-black hover:bg-[#FFD400] transition mx-auto"
           >
             Xem thêm
           </Link>
-
-        </> : ""
-      }
+        </>
+      ) : null}
     </div>
-  )
-}
+  );
+};
 
 export default Brand;

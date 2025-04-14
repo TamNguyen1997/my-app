@@ -1,75 +1,76 @@
 "use client"
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, Select, SelectItem, Slider, Spinner } from "@nextui-org/react";
 import ProductCard from "@/components/product/ProductCard";
 
 const Category = ({ category, productFilter }) => {
-  const [data, setData] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [value, setValue] = useState([0, 100000000])
-
-  const [groupedData, setGroupData] = useState({})
-  const [filters, setFilters] = useState([])
-  const [subcates, setSubcates] = useState([])
-
-  const [selectedFilterValues, setSelectedFilterValues] = useState({})
-
-  useEffect(() => {
-    getProduct()
-    fetch(`/api/filters/?categoryId=${category.id}&active=true`).then((res) => res.json()).then(json => {
-      const result = json.result.filter(item => item.filterValue.length)
-      let temp = {}
-      result.forEach(item => {
-        temp[item.id] = []
-      })
-      setSelectedFilterValues(temp)
-      setFilters(result)
-    })
-  }, [category, productFilter]);
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [value, setValue] = useState([0, 100000000]);
+  const [orderBy, setOrderBy] = useState("");
+  const [groupedData, setGroupData] = useState({});
+  const [filters, setFilters] = useState([]);
+  const [subcates, setSubcates] = useState([]);
+  const [selectedFilterValues, setSelectedFilterValues] = useState({});
 
   const getProduct = async () => {
-    const hash = window.location.hash?.split('#')
+    const hash = window.location.hash?.split('#');
+    const res = await fetch(`/api/products/?active=true&page=1&size=10000&includeCate=true&categoryId=${category.id}&${hash && hash[1]?.includes("=") ? hash[1] : `filterId=${productFilter || hash[1] || ""}`}&${orderBy && `orderBy=${orderBy}`}`);
+    if (res.ok) {
+      const body = await res.json();
+      let subcates = [];
+      const groupData = Object.groupBy(body.result, (item) => item.subCate.id);
+      setData(body.result);
+      setGroupData(groupData);
+      Object.keys(groupData).forEach(item => {
+        const subCate = body.result.find(product => product.subCate.id === item)?.subCate;
+        subCate && subcates.push(subCate);
+      });
+      setSubcates(subcates);
+    }
+    setIsLoading(false);
+  };
 
-    await fetch(`/api/products/?active=true&page=1&size=10000&includeCate=true&categoryId=${category.id}&${hash && hash[1]?.includes("=") ? hash[1] : `filterId=${productFilter || hash[1] || ""}`}`).then(async res => {
-      if (res.ok) {
-        const body = await res.json()
-        let subcates = []
-        const groupData = Object.groupBy(body.result, (item) => item.subCate.id)
-        setData(body.result)
-        setGroupData(groupData)
-        Object.keys(groupData).forEach(item => {
-          const subCate = body.result.find(product => product.subCate.id === item)?.subCate
-          subCate && subcates.push(subCate)
-        })
-        setSubcates(subcates)
-      }
-    })
-    setIsLoading(false)
-  }
+  const fetchFilters = async () => {
+    const res = await fetch(`/api/filters/?categoryId=${category.id}&active=true`);
+    const json = await res.json();
+    const result = json.result.filter(item => item.filterValue.length);
+    let temp = {};
+    result.forEach(item => {
+      temp[item.id] = [];
+    });
+    setSelectedFilterValues(temp);
+    setFilters(result);
+  };
 
-  const filter = () => {
-    let range = ""
-    let filterIds = Object.values(selectedFilterValues).flat()
+  useEffect(() => {
+    getProduct();
+    fetchFilters();
+  }, [category, productFilter, orderBy]);
+
+  const filter = useCallback(() => {
+    let range = "";
+    let filterIds = Object.values(selectedFilterValues).flat();
 
     if (JSON.stringify(value) !== JSON.stringify([0, 100000000])) {
-      range += `range=${value.join('-')}`
+      range += `range=${value.join('-')}`;
     }
-    let query = []
+    let query = [];
     if (range) {
-      query.push(range)
+      query.push(range);
     } else if (filterIds.length === 1) {
-      window.location.replace(`/${category.slug}#${filterIds[0]}`)
-      getProduct()
-      return
+      window.location.replace(`/${category.slug}#${filterIds[0]}`);
+      getProduct();
+      return;
     }
     if (filterIds.length) {
-      query.push(`filterId=${filterIds.join("&filterId=")}`)
+      query.push(`filterId=${filterIds.join("&filterId=")}`);
     }
-    window.location.replace(`/${category.slug}#${query.join("&")}`)
-  }
+    window.location.replace(`/${category.slug}#${query.join("&")}`);
+  }, [category, selectedFilterValues, value]);
 
-  if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />
+  if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />;
 
   return (
     <>
@@ -79,7 +80,7 @@ const Category = ({ category, productFilter }) => {
         bg-[image:var(--image-url)] bg-no-repeat bg-center bg-cover
         justify-center xl:h-96 lg:h-72 md:h-60 h-32"
         style={{
-          '--image-url': `url(${category.image ? process.env.NEXT_PUBLIC_FILE_PATH + category.image.path : ""})`,
+          '--image-url': `url(${category.imageUrl || ""})`,
           backgroundSize: "100% 100%"
         }} >
       </div>
@@ -99,7 +100,7 @@ const Category = ({ category, productFilter }) => {
                 defaultSelectedKeys={new Set([
                   filter.filterValue.find(item => window.location.hash.includes(item.slug) || item.slug === productFilter)?.slug])}
                 onSelectionChange={(value) => {
-                  setSelectedFilterValues({ ...selectedFilterValues, [filter.id]: Array.from(value).filter(item => item) })
+                  setSelectedFilterValues(prevValues => ({ ...prevValues, [filter.id]: Array.from(value).filter(item => item) }));
                 }}
               >
                 {
@@ -158,6 +159,15 @@ const Category = ({ category, productFilter }) => {
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>
+            <Select label="Sắp xếp"
+              className="w-40"
+              labelPlacement="outside"
+              defaultSelectedKeys={[orderBy]}
+              onSelectionChange={value => setOrderBy(value.values().next().value)}>
+              <SelectItem key="createdAt:desc">Sản phẩm mới</SelectItem>
+              <SelectItem key="price:asc">Giá thấp đến cao</SelectItem>
+              <SelectItem key="price:desc">Giá cao đến thấp</SelectItem>
+            </Select>
             <Button color="primary" onClick={filter}>Tìm</Button>
           </div>
         </div>
@@ -205,7 +215,7 @@ const CategorySection = ({ products }) => {
         </> : ""
       }
     </div>
-  )
-}
+  );
+};
 
 export default Category;

@@ -35,6 +35,9 @@ export async function GET(req) {
   const { query } = queryString.parseUrl(req.url);
 
   let condition = {}
+  let orderBy = {
+    updatedAt: "desc"
+  }
   if (query) {
     page = parseInt(query.page) || 1
     size = parseInt(query.size) || 10
@@ -175,10 +178,22 @@ export async function GET(req) {
     if (query.productType) {
       condition.productType = query.productType
     }
+    switch (query.orderBy) {
+      case "createdAt:asc":
+        orderBy = {
+          createdAt: "asc"
+        }
+        break;
+      case "createdAt:desc":
+        orderBy = {
+          createdAt: "desc"
+        }
+        break;
+    }
   }
 
   try {
-    const result = await db.product.findMany({
+    let result = await db.product.findMany({
       select: {
         active: true,
         brandId: true,
@@ -198,17 +213,43 @@ export async function GET(req) {
         category: true,
         subCate: true,
         brand: true,
-        highlight: true
+        highlight: true,
+        imageUrl: true,
+        category: true,
+        subCate: true
       },
       where: condition,
-      orderBy: [
-        {
-          updatedAt: "desc"
-        }
-      ],
+      orderBy: orderBy,
       take: size,
       skip: (page - 1) * size
     })
+
+    if (query.orderBy === "price:asc") {
+      result = result.sort((a, b) => {
+        const priceA = a.saleDetails.length
+          ? Math.min(...a.saleDetails.map(sd => sd.price).filter(p => p !== null && p !== 0))
+          : Infinity;
+        const priceB = b.saleDetails.length
+          ? Math.min(...b.saleDetails.map(sd => sd.price).filter(p => p !== null && p !== 0))
+          : Infinity;
+        if (priceA === Infinity) return 1;
+        if (priceB === Infinity) return -1;
+        return priceA - priceB;
+      });
+    }
+    if (query.orderBy === "price:desc") {
+      result = result.sort((a, b) => {
+        const priceA = a.saleDetails.length
+          ? Math.max(...a.saleDetails.map(sd => sd.price).filter(p => p !== null))
+          : -Infinity;
+        const priceB = b.saleDetails.length
+          ? Math.max(...b.saleDetails.map(sd => sd.price).filter(p => p !== null))
+          : -Infinity;
+        if (priceA === Infinity) return -1;
+        if (priceB === Infinity) return 1;
+        return priceB - priceA;
+      });
+    }
 
     return NextResponse.json({ result, total: await db.product.count({ where: condition }) })
   } catch (e) {

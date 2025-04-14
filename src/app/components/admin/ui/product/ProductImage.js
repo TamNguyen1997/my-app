@@ -9,6 +9,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import update from "immutability-helper";
 import FlipMove from 'react-flip-move';
 import { useDrag, useDrop } from "react-dnd";
+import { v4 } from "uuid";
 
 const ProductImage = () => {
   const [, startTransition] = useTransition();
@@ -21,11 +22,11 @@ const ProductImage = () => {
     if (newImages.length > 10) {
       toast.error("Không thể thêm hình, đã đạt tối đa 10 hình")
     } else {
-      if (newImages.find(item => item.imageId === value.id)) {
-        newImages = newImages.filter(item => item.imageId !== value.id)
+      if (newImages.find(item => item.imageUrl === value.source_url)) {
+        newImages = newImages.filter(item => item.imageUrl !== value.source_url)
         toast.warning("Đã loại ảnh này")
       } else {
-        newImages = [...newImages, { imageId: value.id, image: value, productId: product.id }]
+        newImages = [...newImages, { imageId: v4(), imageUrl: value.source_url, productId: product.id }]
       }
     }
     setImages(newImages)
@@ -41,11 +42,11 @@ const ProductImage = () => {
       if (newImages.length >= 10) {
         toast.error("Không thể thêm hình, đã đạt tối đa 10 hình")
       } else {
-        if (newImages.find(item => item.imageId === value.id)) {
-          newImages = newImages.filter(item => item.imageId !== value.id)
+        if (newImages.find(item => item.imageId === value.id || item.imageUrl === value.source_url)) {
+          newImages = newImages.filter(item => item.imageId !== value.id && item.imageUrl !== value.source_url)
           toast.warning("Đã loại ảnh này")
         } else {
-          newImages = [...newImages, { imageId: value.id, image: value, productId: product.id }]
+          newImages = [...newImages, { imageUrl: value.source_url, productId: product.id }]
         }
       }
     });
@@ -56,6 +57,7 @@ const ProductImage = () => {
     onOpenChange()
   }
 
+  console.log(product.product_on_image)
   const moveRow = useCallback((dragIndex, hoverIndex) => {
     startTransition(() => {
       setImages((prevList) =>
@@ -76,7 +78,7 @@ const ProductImage = () => {
         <ImageDraggableList images={images} deleteItem={selectImage} moveRow={moveRow} />
 
         <div className="flex flex-row gap-2 px-3 py-4 justify-end">
-          <Button color="primary" onClick={onOpen} className="w-24">Chọn ảnh</Button>
+          <Button color="primary" onPress={onOpen} className="w-24">Chọn ảnh</Button>
         </div>
       </div>
 
@@ -176,8 +178,8 @@ const ImageItem = ({ img, onClick, deleteItem, index, moveRow }) => {
       `}
     >
       <img
-        src={`${process.env.NEXT_PUBLIC_FILE_PATH + img?.path}`}
-        alt={img?.alt}
+        src={`${img?.imageUrl}`}
+        alt={img?.imageUrl}
         className="aspect-auto object-cover rounded-t shrink-0"
         onClick={() => onClick(img)} />
 
@@ -205,7 +207,7 @@ const ImageDraggableList = ({ images, deleteItem, moveRow }) => {
               index={i}
               deleteItem={deleteItem}
               onClick={() => { }}
-              img={item.image}
+              img={item}
               moveRow={moveRow}
             />
           )

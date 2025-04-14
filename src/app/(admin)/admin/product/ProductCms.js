@@ -19,7 +19,7 @@ import {
   Tooltip,
 } from "@nextui-org/react"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { EditIcon, FileImage, Fingerprint, Plus, Search, Trash2 } from "lucide-react"
+import { EditIcon, FileImage, Plus, Search, Trash2 } from "lucide-react"
 import { toast, ToastContainer } from "react-toastify"
 import DeleteConfirmation from "@/components/admin/ui/DeleteConfirmation"
 import PaginationWithTotal from "@/components/PaginationWithTotal"
@@ -31,9 +31,10 @@ const quickUpdateProduct = async (product, value) => {
   })
 }
 
-const ProductCms = () => {
+const ProductCms = ({ categories = [] }) => {
   const [loadingState, setLoadingState] = useState("loading")
 
+  const [selectedCate, setSelectedCate] = useState({})
   const [condition, setCondition] = useState({})
   const [total, setTotal] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
@@ -60,7 +61,7 @@ const ProductCms = () => {
     const queryString = new URLSearchParams(filteredCondition).toString()
 
     await fetch(
-      `/api/products/?size=${rowsPerPage}&page=${page}&${queryString}`
+      `/api/products/v2?size=${rowsPerPage}&page=${page}&${queryString}`
     ).then(async (res) => {
       const data = await res.json()
       setProducts(data.result)
@@ -126,7 +127,7 @@ const ProductCms = () => {
               }} />
             </span>
             <span className="text-lg cursor-pointer text-green-400">
-              {product.imageId && <Tooltip showArrow content="Có thumbnail">
+              {(product.imageUrl) && <Tooltip showArrow content="Có thumbnail">
                 <FileImage />
               </Tooltip>}
             </span>
@@ -175,7 +176,7 @@ const ProductCms = () => {
       <DeleteConfirmation disclosure={deleteConfirmationDisclosure} onDelete={deleteProduct} />
       <DeleteConfirmation disclosure={deleteManyConfirmationDisclosure} onDelete={deleteMany} />
       <div className="flex flex-col gap-2 border-r min-h-full p-2">
-        <div className="flex gap-3">
+        <div className="flex gap-3 w-full">
           <Input
             label="ID/Tên"
             aria-label="ID/Tên"
@@ -217,8 +218,32 @@ const ProductCms = () => {
             <SelectItem key="true">Có thumbnail</SelectItem>
             <SelectItem key="false">Không có thumbnail</SelectItem>
           </Select>
+
+          <Select
+            label="Category"
+            labelPlacement="outside"
+            onSelectionChange={(value) => {
+              const categoryId = value.values().next().value
+              onConditionChange({ categoryId: categoryId })
+              setSelectedCate(categories.find(item => item.id === categoryId))
+            }}>
+            {
+              categories.map((category) => (<SelectItem key={category.id}>{category.name}</SelectItem>))
+            }
+          </Select>
+          <Select
+            isDisabled={!selectedCate?.subcates?.length}
+            label="Subcategory"
+            labelPlacement="outside"
+            onSelectionChange={(value) => {
+              onConditionChange({ subCateId: value.values().next().value })
+            }}>
+            {
+              selectedCate?.subcates?.map((subCate) => (<SelectItem key={subCate.id}>{subCate.name}</SelectItem>))
+            }
+          </Select>
           <div className="items-end flex min-h-full gap-2">
-            <Button onClick={getProduct} color="primary">
+            <Button onPress={getProduct} color="primary">
               <Search />
             </Button>
 
@@ -242,7 +267,7 @@ const ProductCms = () => {
             selectedKeys={selectedKeys}
             bottomContent={
               loadingState === "loading" ? null : (
-                <div className="w-full flex">
+                <div className="flex">
                   <PaginationWithTotal
                     rowsPerPage={rowsPerPage}
                     setRowsPerPage={setRowsPerPage}

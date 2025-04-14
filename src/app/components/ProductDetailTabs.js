@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import { Button } from '@nextui-org/react';
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -7,8 +8,12 @@ import TechnicalDetail from './TechnicalDetail';
 import parse from 'html-react-parser'
 import "./ProductDetailTabs.css"
 import "./blog/BlogDetail.css"
+import { getRecentlyView } from "@/lib/product";
+import Link from "next/link";
+import Image from "next/image";
 
 const ID = {
+  RECENTLY_VIEW: "RECENTLY_VIEW",
   DESCRIPTION: "DESCRIPTION",
   FEATURES: "FEATURES",
   SPECIFICATIONS: "SPECIFICATIONS",
@@ -17,7 +22,14 @@ const ID = {
   RELATED_ITEMS: "RELATED_ITEMS"
 };
 
-const TabContent = ({ id, product, description }) => {
+const TabContent = ({ id, product, description, relatedProducts }) => {
+
+  const [recentlyView, setRecentlyView] = useState([])
+
+  useEffect(() => {
+    setRecentlyView(getRecentlyView())
+  }, [])
+
   switch (id) {
     case ID.DESCRIPTION:
       return (
@@ -41,7 +53,7 @@ const TabContent = ({ id, product, description }) => {
               return (
                 <div className="text-sm" key={index}>
                   <div className="relative pb-[100%]">
-                    <img src={process.env.NEXT_PUBLIC_FILE_PATH + product?.image?.path} className="absolute inset-0 w-full h-full object-cover" />
+                    <img src={product?.imageUrl} className="absolute inset-0 w-full h-full object-cover" />
                   </div>
                   <p className="font-bold my-1.5">Ứng dụng Home & Garden</p>
                   <p>Ứng dụng Kärcher Home & Garden giúp bạn trở thành một chuyên gia làm sạch. Tận dụng kiến ​​thức sâu rộng về Kärcher của chúng tôi để có kết quả làm sạch hoàn hảo. Dịch vụ toàn diện tiện lợi - tất cả thông tin trên thiết bị, ứng dụng và cổng Dịch vụ của chúng tôi.</p>
@@ -72,7 +84,7 @@ const TabContent = ({ id, product, description }) => {
     case ID.RELATED_ITEMS:
       return (
         <div className="mb-9">
-          <RelatedProducts query={`?size=10&page=1&productType=PRODUCT&categoryId=${product.categoryId}`} />
+          <RelatedProducts relatedProducts={relatedProducts} />
         </div>
       )
     case ID.COMPONENT_PARTS:
@@ -81,17 +93,37 @@ const TabContent = ({ id, product, description }) => {
           <RelatedProducts query={`/?size=10&page=1&productType=COMPONENT_PART&productId=${product.id}`} />
         </div>
       )
+    case ID.RECENTLY_VIEW:
+      return (
+        <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
+          {recentlyView.map((item, index) => (
+            <Link href={`/${item.subCate?.slug}/${item.slug}`} className="hover:opacity-50" key={index}>
+              <div className="flex gap-3 items-center">
+                <Image
+                  width={200}
+                  height={200}
+                  src={`${item.imageUrl || "/default-featured-image.webp"}`}
+                  alt={item.imageAlt}
+                  className="w-16 h-16"
+                />
+                <p>{item.name}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )
     default:
       return <></>
   }
 }
 
-export default ({ product, description }) => {
+export default ({ product, description, relatedProducts }) => {
   const tabs = [
+    { id: ID.RECENTLY_VIEW, title: "Sản phẩm vừa xem" },
     { id: ID.DESCRIPTION, title: "Mô tả" },
     // { id: ID.FEATURES, title: "Tính năng và ưu điểm" },
     { id: ID.SPECIFICATIONS, title: "Thông số kỹ thuật" },
-    { id: ID.COMPONENT_PARTS, title: "Phụ kiện" },
+    // { id: ID.COMPONENT_PARTS, title: "Phụ kiện" },
     { id: ID.RELATED_ITEMS, title: "Sản phẩm liên quan" },
   ];
 
@@ -219,7 +251,7 @@ export default ({ product, description }) => {
                   {tab.title}
                 </div>
 
-                <TabContent id={tab.id} product={product} description={description} />
+                <TabContent id={tab.id} product={product} description={description} relatedProducts={relatedProducts} />
               </div>
             )
           })

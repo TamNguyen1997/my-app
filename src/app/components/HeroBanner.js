@@ -22,6 +22,7 @@ const responsive = {
     items: 1
   }
 }
+
 const HeroBanner = ({ banners }) => {
   return (
     <motion.div
@@ -33,10 +34,15 @@ const HeroBanner = ({ banners }) => {
       <Carousel responsive={responsive} infinite autoPlay autoPlaySpeed={5000}>
         {
           banners.reverse().map((banner, i) => {
-            return <Image key={i} width="1280" height="720"
+            return <Image
+              key={i} width="1280"
+              height="720"
               className="w-full h-full max-h-[500px]"
-              src={banner?.path && process.env.NEXT_PUBLIC_FILE_PATH ? process.env.NEXT_PUBLIC_FILE_PATH + banner.path : "/default-featured-image.webp"}
-              alt={banner?.alt} />
+              src={banner?.imageUrl || "/default-featured-image.webp"}
+              alt={banner?.alt || "Sao Việt"}
+              srcSet={`${banner?.imageUrl} 1280w, ${banner?.imageUrl.replace('1280', '640')} 640w`}
+              sizes="(max-width: 640px) 640px, 1280px"
+            />
           })
         }
       </Carousel>

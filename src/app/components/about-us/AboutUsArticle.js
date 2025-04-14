@@ -48,7 +48,7 @@ const AboutUsArticle = () => {
           <div
             className="text-[#196b00] text-[20px] text-center max-w-[800px] rounded-2xl p-[40px_20px] mb-[60px] mx-auto whitespace-pre-wrap"
             style={{
-              background: `url(/icon/quote-open.png) no-repeat left 15px top 12px,url(/icon/quote-close.png)
+              background: `url(/icon/quote-open.webp) no-repeat left 15px top 12px,url(/icon/quote-close.webp)
                     no-repeat right 15px bottom 15px,linear-gradient(290deg, #d5e135 25%, #59b747 105%)` }}
           >
             <p className="italic">

@@ -5,45 +5,49 @@ import "react-multi-carousel/lib/styles.css"
 import { motion } from "framer-motion";
 
 const logo = [
-  "/icon/client/BW.png",
-  "/icon/client/Fusion.png",
-  "/icon/client/Hilton.png",
-  "/icon/client/Hoiana.png",
-  "/icon/client/Hyatt.png",
-  "/icon/client/Inter.png",
-  "/icon/client/JW.png",
-  "/icon/client/Melia.png",
-  "/icon/client/Movenpick.png",
-  "/icon/client/Novotel.png",
-  "/icon/client/Pullman.png",
-  "/icon/client/Regent.png",
-  "/icon/client/Novotel.png",
-  "/icon/client/Sheraton.png",
-  "/icon/client/TheGrand.png",
-  "/icon/client/Wyndham.png",
-  "/icon/client/Caravelle.png",
-  "/icon/client/El-Gaucho.png",
-  "/icon/client/Gallery.png",
-  "/icon/client/Jollibee.png",
-  "/icon/client/Starbucks.png",
+  "/icon/client/BW.webp",
+  "/icon/client/Fusion.webp",
+  "/icon/client/Hilton.webp",
+  "/icon/client/Hoiana.webp",
+  "/icon/client/Hyatt.webp",
+  "/icon/client/Inter.webp",
+  "/icon/client/JW.webp",
+  "/icon/client/Melia.webp",
+  "/icon/client/Movenpick.webp",
+  "/icon/client/Novotel.webp",
+  "/icon/client/Pullman.webp",
+  "/icon/client/Regent.webp",
+  "/icon/client/Novotel.webp",
+  "/icon/client/Sheraton.webp",
+  "/icon/client/TheGrand.webp",
+  "/icon/client/Wyndham.webp",
+  "/icon/client/Caravelle.webp",
+  "/icon/client/El-Gaucho.webp",
+  "/icon/client/Gallery.webp",
+  "/icon/client/Jollibee.webp",
+  "/icon/client/Starbucks.webp",
 ]
 
 const responsive = {
   superLargeDesktop: {
     breakpoint: { max: 4000, min: 3000 },
-    items: 4
+    items: 4,
+    slidesToSlide: 4
   },
   desktop: {
     breakpoint: { max: 3000, min: 1024 },
-    items: 4
+    items: 4,
+    slidesToSlide: 4
   },
   tablet: {
     breakpoint: { max: 1024, min: 464 },
-    items: 3
+    items: 3,
+    slidesToSlide: 3
   },
   mobile: {
     breakpoint: { max: 464, min: 0 },
-    items: 2
+    items: 2,
+    slidesToSlide: 2
   }
 }
 
@@ -56,7 +60,7 @@ const Customer = () => {
       transition={{ duration: 0.7, delay: 0.3 }}
       viewport={{ once: true }}
       className="m-auto sm:w-3/4">
-      <Carousel infinite responsive={responsive} className="w-full items-center mb-6" autoPlaySpeed={3000} autoPlay arrows={false} showDots centerMode >
+      <Carousel infinite responsive={responsive} className="w-full items-center mb-6" autoPlaySpeed={3000} autoPlay arrows={false} centerMode >
         {
           logo.map((l, i) => <div className="p-3 w-full h-full m-auto items-center text-center content-center" key={i}>
             <Image loading="lazy"

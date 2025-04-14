@@ -27,4 +27,22 @@ const getOriginalPrice = (product) => {
   return <>{`${filteredSaleDetails[0]?.price.toLocaleString().replaceAll(",", ".")} - ${filteredSaleDetails[filteredSaleDetails.length - 1]?.price.toLocaleString().replaceAll(",", ".")}`} </>
 }
 
-export { getPrice, getOriginalPrice }
+const addRecentlyView = (product) => {
+  const items = [...getRecentlyView(), product];
+  let uniqueItems = []
+  for (let i = items.length - 1; uniqueItems.length <= 3 && i >= 0; i--) {
+    if (!uniqueItems.find(uniqueItem => {
+      return uniqueItem.id === items[i].id
+    })) {
+      uniqueItems.push(items[i])
+    }
+  }
+
+  localStorage.setItem('recentlyView', JSON.stringify(uniqueItems));
+}
+
+const getRecentlyView = () => {
+  return localStorage.getItem('recentlyView') ? JSON.parse(localStorage.getItem('recentlyView')) : [];
+}
+
+export { getPrice, getOriginalPrice, addRecentlyView, getRecentlyView }

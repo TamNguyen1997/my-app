@@ -4,62 +4,36 @@ import { Input } from '@nextui-org/react';
 import { LoaderIcon, Search } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import slugify from 'slugify';
 
 const blogCategories = {
-  "INFORMATION": {
-    slug: "kien-thuc-hay"
-  },
-  "NEWS": {
-    slug: "tin-tuc"
-  }
-}
+  INFORMATION: { slug: 'kien-thuc-hay' },
+  NEWS: { slug: 'tin-tuc' },
+};
 
 const SearchBar = () => {
   const wrapperRef = useRef(null);
-  const [isCategoriesLoading, setIsCategoriesLoading] = useState(false);
-  const [isProductsLoading, setIsProductsLoading] = useState(false);
-  const [isBlogsLoading, setIsBlogsLoading] = useState(false);
-  const [categories, setCategories] = useState([]);
-  const [products, setProducts] = useState([]);
-  const [blogs, setBlogs] = useState([]);
-  const [condition, setCondition] = useState({});
+  const [isLoading, setIsLoading] = useState({ categories: false, products: false, blogs: false });
+  const [results, setResults] = useState({ categories: [], products: [], blogs: [] });
+  const [query, setQuery] = useState('');
+
+  const queryString = useMemo(() => new URLSearchParams({ slug: slugify(query, { locale: 'vi' }).replace(/[()]/g, '') }), [query]);
 
   const onSearch = async (value) => {
-    setIsCategoriesLoading(true);
-    setIsProductsLoading(true);
-    setIsBlogsLoading(true)
-    const searchTerm = slugify(value || "", { locale: 'vi' }).replaceAll("(", "").replaceAll(")", "")
-    const queryString = new URLSearchParams({ slug: searchTerm });
+    setIsLoading({ categories: true, products: true, blogs: true });
 
-    fetch(`/api/categories/?size=${5}&page=${1}&${queryString}`).then(
-      async (res) => {
-        const data = await res.json();
-        setCategories(data.result);
-        setIsCategoriesLoading(false);
-      }
-    );
-
-    fetch(`/api/products/search/?size=${5}&page=${1}&searchTerm=${searchTerm}&includeCate=true`).then(
-      async (value) => {
-        const response = await value.json();
-        setProducts(response.result);
-        setIsBlogsLoading(false);
-      }
-    );
-
-    fetch(`/api/blogs/?size=${5}&page=${1}&${queryString}&excludeSupport=true`).then(
-      async (value) => {
-        const response = await value.json();
-        setBlogs(response.result);
-        setIsProductsLoading(false);
-      }
-    );
+    Promise.all([
+      fetch(`/api/categories/?size=5&page=1&${queryString}`).then(res => res.json()),
+      fetch(`/api/products/search/?size=5&page=1&searchTerm=${value}&includeCate=true`).then(res => res.json()),
+      fetch(`/api/blogs/?size=5&page=1&${queryString}&excludeSupport=true`).then(res => res.json()),
+    ]).then(([categories, products, blogs]) => {
+      setResults({ categories: categories.result, products: products.result, blogs: blogs.result });
+      setIsLoading({ categories: false, products: false, blogs: false });
+    });
   };
-  const onConditionChange = (value) => {
-    setCondition(Object.assign({}, condition, value));
-  };
+
+  const shouldShowResults = useMemo(() => query.length > 2, [query]);
 
   return (
     <div ref={wrapperRef} className="relative lg:w-72 md:w-60 xl:w-96 sm:w-44">
@@ -67,151 +41,41 @@ const SearchBar = () => {
         isClearable
         radius="lg"
         placeholder="Tìm sản phẩm..."
-        aria-label="Search"
-        startContent={
-          <Search className="hover:opacity-hover" strokeWidth={3}></Search>
-        }
-        value={condition.name}
+        startContent={<Search className="hover:opacity-hover" strokeWidth={3} />}
+        value={query}
         onValueChange={(value) => {
-          console.log(value)
-          onConditionChange({ name: value, slug: value, title: value, sku: value });
+          setQuery(value);
           if (value.length > 2) onSearch(value);
         }}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            window.location.replace(`/tim-kiem?key=${slugify(condition.name, { locale: 'vi' }).replaceAll("(", "").replaceAll(")", "")}`)
-          }
-        }}
-        onClear={() => onConditionChange({ name: '', slug: '', title: '' })}
+        onKeyDown={(e) => e.key === 'Enter' && query.trim() && window.location.replace(`/tim-kiem?key=${slugify(query, { locale: 'vi' }).replace(/[()]/g, '')}`)}
+        onClear={() => setQuery('')}
       />
-      {condition.name && condition.name.length > 2 && (
+      {shouldShowResults && (
         <div className="w-[400px] bg-white shadow-lg rounded-lg absolute top-full left-0 mt-2 overflow-hidden z-50">
-          <div className="px-4 py-2 bg-slate-200 border-b-1 border-slate-300">
-            <p className="text-slate-600">Có phải bạn đang muốn tìm</p>
-          </div>
-          {!isCategoriesLoading ? (
-            categories.length > 0 ? (
-              <div className="divide-y-small divide-slate-300">
-                {categories.map((category) => (
-                  <Link
-                    key={category.id}
-                    href={`/${category.slug}`}
-                    onClick={() => onConditionChange({ name: '', slug: '', title: '' })}
-                  >
-                    <div className="px-4 py-2 hover:bg-slate-50 cursor-pointer">
-                      {category.name}
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            ) : (
-              <div className="py-2 flex justify-center">
-                Không tìm thấy kết quả
-              </div>
-            )
-          ) : (
-            <div className="w-full p-2 flex justify-center items-center">
-              <LoaderIcon className="animate-spin" />
-            </div>
-          )}
-          <div className="px-4 py-2 bg-slate-200 border-b-1 border-t-1 border-slate-300">
-            <p className="text-slate-600">Sản phẩm gợi ý</p>
-          </div>
-          {!isProductsLoading ? (
-            products.length > 0 ? (
-              <div className="divide-y-small divide-slate-300 py-2">
-                {products.map((product) => {
-                  return (
-                    <div key={product.id}>
-                      <Link
-                        href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`}
-                        onClick={() => onConditionChange({ name: '', slug: '', title: '' })}
-                      >
-                        <div className="px-4 py-2 flex items-center gap-5 hover:bg-slate-50 cursor-pointer">
-                          {
-                            product.image ?
-                              <Image
-                                width={60}
-                                height={60}
-                                priority
-                                src={`${process.env.NEXT_PUBLIC_FILE_PATH +
-                                  product.image?.path
-                                  }`}
-                                alt={product?.name}
-                              /> : ""
-                          }
-                          <div className="">
-                            <h3 className="font-semibold text-slate-600">
-                              {product?.name}
-                            </h3>
-                            <p className="text-slate-400">
-                              {product.category?.name}
-                            </p>
-                          </div>
+          {[{ key: 'categories', label: 'Có phải bạn đang muốn tìm' },
+          { key: 'products', label: 'Sản phẩm gợi ý' },
+          { key: 'blogs', label: 'Blog gợi ý' }].map(({ key, label }) => (
+            <div key={key}>
+              <div className="px-4 py-2 bg-slate-200 border-b border-slate-300 text-slate-600">{label}</div>
+              {isLoading[key] ? (
+                <div className="w-full p-2 flex justify-center"><LoaderIcon className="animate-spin" /></div>
+              ) : results[key].length > 0 ? (
+                <div className="divide-y divide-slate-300 py-2">
+                  {results[key].map((item) => (
+                    <Link key={item.id} href={`/${key === 'blogs' ? blogCategories[item.blogCategory]?.slug : item.subCate?.slug || 'san-pham'}/${item.slug}`}>
+                      <div className="px-4 py-2 flex items-center gap-5 hover:bg-slate-50 cursor-pointer">
+                        {item.imageUrl || item.thumbnail ? <Image width={60} height={60} src={item.imageUrl || item.thumbnail} alt={item.name || item.title} /> : ''}
+                        <div>
+                          <h3 className="font-semibold text-slate-600">{item.name || item.title}</h3>
+                          {key === 'products' && <p className="text-slate-400">{item.category?.name}</p>}
                         </div>
-                      </Link>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="py-2 flex justify-center">
-                Không tìm thấy kết quả
-              </div>
-            )
-          ) : (
-            <div className="w-full p-2 flex justify-center items-center">
-              <LoaderIcon className="animate-spin" />
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              ) : <div className="py-2 flex justify-center">Không tìm thấy kết quả</div>}
             </div>
-          )}
-
-          <div className="px-4 py-2 bg-slate-200 border-b-1 border-t-1 border-slate-300">
-            <p className="text-slate-600">Blog gợi ý</p>
-          </div>
-          {!isBlogsLoading ? (
-            blogs.length > 0 ? (
-              <div className="divide-y-small divide-slate-300 py-2">
-                {blogs.map((blog) => {
-                  return (
-                    <div key={blog.id}>
-                      <Link
-                        href={`/${blogCategories[blog.blogCategory].slug}/${blog.slug}`}
-                        onClick={() => onConditionChange({ name: '', slug: '', title: '' })}
-                      >
-                        <div className="px-4 py-2 flex items-center gap-5 hover:bg-slate-50 cursor-pointer">
-                          {
-                            blog.thumbnail ?
-                              <Image
-                                width={60}
-                                height={60}
-                                priority
-                                src={`${process.env.NEXT_PUBLIC_FILE_PATH +
-                                  blog.thumbnail
-                                  }`}
-                                alt={blog.thumbnail}
-                              /> : ""
-                          }
-                          <div className="">
-                            <h3 className="font-semibold text-slate-600">
-                              {blog.title}
-                            </h3>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="py-2 flex justify-center">
-                Không tìm thấy kết quả
-              </div>
-            )
-          ) : (
-            <div className="w-full p-2 flex justify-center items-center">
-              <LoaderIcon className="animate-spin" />
-            </div>
-          )}
+          ))}
         </div>
       )}
     </div>

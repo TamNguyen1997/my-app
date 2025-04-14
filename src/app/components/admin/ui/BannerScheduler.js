@@ -139,9 +139,9 @@ const BannerScheduler = () => {
                     key={item.id}
                     itemData={item}
                     moveRow={moveScheduledRow}
-                    deleteImagePos={() => setValue(item.id, { imageId: null, image: null }, scheduledBanners, setScheduledBanners)}
+                    deleteImagePos={() => setValue(item.id, { imageUrl: null }, scheduledBanners, setScheduledBanners)}
                     isScheduled
-                    saveImage={(image) => setValue(item.id, { imageId: image.id, image: image }, scheduledBanners, setScheduledBanners)}
+                    saveImage={(image) => setValue(item.id, { imageUrl: image.source_url }, scheduledBanners, setScheduledBanners)}
                     setActiveFrom={(activeFrom) => setValue(item.id, { activeFrom: activeFrom }, scheduledBanners, setScheduledBanners)}
                     setActiveTo={(activeTo) => setValue(item.id, { activeTo: activeTo }, scheduledBanners, setScheduledBanners)}
                     setActive={(value) => setValue(item.id, { active: value }, scheduledBanners, setScheduledBanners)}
@@ -162,8 +162,8 @@ const BannerScheduler = () => {
                     key={item.id}
                     itemData={item}
                     moveRow={moveDefaultRow}
-                    deleteImagePos={() => setValue(item.id, { imageId: null, image: null }, defaultBanners, setDefaultBanners)}
-                    saveImage={(image) => setValue(item.id, { imageId: image.id, image: image }, defaultBanners, setDefaultBanners)}
+                    deleteImagePos={() => setValue(item.id, { imageUrl: null }, defaultBanners, setDefaultBanners)}
+                    saveImage={(image) => setValue(item.id, { imageUrl: image.source_url }, defaultBanners, setDefaultBanners)}
                   />
                 ))
               }

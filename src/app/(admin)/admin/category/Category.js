@@ -3,6 +3,7 @@
 import ImageCms from "@/app/components/admin/ui/ImageCms";
 import {
   Button, Input,
+  Link,
   Modal, ModalBody,
   ModalContent, ModalFooter,
   ModalHeader, Select, SelectItem, Spinner,
@@ -10,15 +11,19 @@ import {
   Table, TableBody,
   TableCell, TableColumn,
   TableHeader, TableRow,
-  useDisclosure
+  Tooltip,
+  useDisclosure,
+  Accordion, AccordionItem
 } from "@nextui-org/react";
-import { EditIcon, Search, Trash2 } from "lucide-react";
+import { EditIcon, Search, Trash2, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import slugify from "slugify"
 import PaginationWithTotal from "@/app/components/PaginationWithTotal";
 
 import { ToastContainer, toast } from 'react-toastify';
 import { v4 } from "uuid";
+import Image from "next/image";
+import { useForm } from "react-hook-form";
 
 const quickUpdate = async (category, value, setCategory) => {
   const res = await fetch(`/api/categories/${category.id}`, { method: "PUT", body: JSON.stringify(value) })
@@ -39,7 +44,7 @@ const Category = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [categoryId, setCategoryId] = useState(selectedCate.id)
   const [rowsPerPage, setRowsPerPage] = useState(10)
-
+  const [popularSearches, setPopularSearches] = useState([])
   const imageModal = useDisclosure()
 
   const [page, setPage] = useState(1);
@@ -57,13 +62,28 @@ const Category = () => {
     let filteredCondition = { ...condition }
     Object.keys(filteredCondition).forEach(key => filteredCondition[key] === undefined && delete filteredCondition[key])
     const queryString = new URLSearchParams(filteredCondition).toString()
-    fetch(`/api/categories/?size=${rowsPerPage}&page=${p}&${queryString}&includeImage=true&includeParentCategory=true`)
-      .then(async res => {
-        const data = await res.json()
-        setCategories(data.result)
-        setTotal(data.total)
-        setLoadingState("idle")
-      })
+    Promise.all([
+      fetch("/api/popular-searches").then(res => res.json()).then(json => setPopularSearches(json.result)),
+      fetch(`/api/categories/?size=${rowsPerPage}&page=${p}&${queryString}&includeImage=true&includeParentCategory=true`)
+        .then(async res => {
+          const data = await res.json()
+          setCategories(data.result)
+          setTotal(data.total)
+        })
+    ]).then(() => {
+      setLoadingState("idle")
+    })
+    Promise.all([
+      fetch("/api/popular-searches").then(res => res.json()).then(json => setPopularSearches(json.result)),
+      fetch(`/api/categories/?size=${rowsPerPage}&page=${p}&${queryString}&includeImage=true&includeParentCategory=true`)
+        .then(async res => {
+          const data = await res.json()
+          setCategories(data.result)
+          setTotal(data.total)
+        })
+    ]).then(() => {
+      setLoadingState("idle")
+    })
   }
   useEffect(() => {
     fetch(`/api/categories/?size=10000&page=1&type=CATE`).then(async res => {
@@ -160,6 +180,44 @@ const Category = () => {
     )
   }
 
+  const addPopularSearch = (data) => {
+    toast.promise(
+      fetch(`/api/popular-searches/`, { method: "POST", body: JSON.stringify(data) }).then(async (res) => {
+        getCategories()
+        if (!res.ok) {
+          throw new Error((await res.json()).message)
+        }
+      }),
+      {
+        pending: 'Đang thêm',
+        success: 'Đã thêm vào Tìm kiếm phổ biến',
+        error: {
+          render({ data }) {
+            return data.message
+          }
+        }
+      }
+    )
+  }
+  const deletePopularSearch = (id) => {
+    toast.promise(
+      fetch(`/api/popular-searches/${id}`, { method: "DELETE" }).then(async (res) => {
+        getCategories()
+        if (!res.ok) {
+          throw new Error((await res.json()).message)
+        }
+      }),
+      {
+        pending: 'Đang xóa',
+        success: 'Đã xóa Tìm kiếm phổ biến',
+        error: {
+          render({ data }) {
+            return data.message
+          }
+        }
+      }
+    )
+  }
   const renderCell = useCallback((category, columnKey) => {
     const cellValue = category[columnKey]
 
@@ -177,8 +235,15 @@ const Category = () => {
             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
               <EditIcon onClick={() => openModal(category)} />
             </span>
-            <span className="text-lg text-danger cursor-pointer active:opacity-50 pl-5">
-              <Trash2 onClick={() => { deleteCate(category.id) }} />
+            <span className="text-lg text-danger cursor-pointer active:opacity-50">
+              <span className="text-lg text-danger cursor-pointer active:opacity-50">
+                <Trash2 onClick={() => { deleteCate(category.id) }} />
+              </span>
+            </span>
+            <span className="text-lg text-green-500 cursor-pointer active:opacity-50">
+              <Tooltip content="Thêm vào Tìm kiếm phổ biến">
+                <Search onClick={() => addPopularSearch({ categoryId: category.id, keyword: category.name })} />
+              </Tooltip>
             </span>
           </div>
         )
@@ -192,9 +257,66 @@ const Category = () => {
     onOpen()
   }
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onKeywordAddSubmit = (data) => {
+    addPopularSearch({ keyword: data.keyword, url: data.url })
+  }
+
   return (
     <div className="flex flex-col gap-10">
-      <div className="flex gap-3 w-2/3">
+      <div className="w-1/2 shadow-md rounded-lg">
+        <Accordion isCompact={true}>
+          <AccordionItem key="1" aria-label="Tìm kiếm phổ biến" title="Tìm kiếm phổ biến" className="flex flex-col">
+            <div className="flex flex-wrap">
+              {popularSearches.map((item, index) => (
+                <div className="group" key={index}>
+                  <span className="bg-gray-100 text-gray-800 text-xs font-medium 
+                me-2 px-2.5 py-0.5 rounded-3xl dark:bg-gray-700 dark:text-gray-300 flex">
+                    <Link href="#">
+                      {item.keyword || item.category?.name}
+                    </Link>
+                    <span
+                      className="hidden group-hover:block animate-vote text-red-500 rounded-full hover:bg-white"
+                      onClick={() => deletePopularSearch(item.id)}><X /></span>
+                  </span>
+                </div>
+              ))}
+            </div>
+            <form className="flex gap-2 pt-7 pb-3 items-center" onSubmit={handleSubmit(onKeywordAddSubmit)}>
+              <div>
+                <Input label="Keyword phổ biến" className="pt-2"
+                  aria-label="Keyword phổ biến" isRequired
+                  {...register("keyword", {
+                    required: "Vui lòng điền keyword",
+                  })}
+                />
+                {errors.keyword && (
+                  <p className="text-red-500">{errors.keyword.message}</p>
+                )}
+              </div>
+              <div>
+                <Input label="URL" className="pt-2"
+                  aria-label="URL" isRequired
+                  {...register("url", {
+                    required: "Vui lòng điền URL",
+                  })}
+                />
+                {errors.url && (
+                  <p className="text-red-500">{errors.url.message}</p>
+                )}
+              </div>
+              <Button type="submit" color="primary">Thêm</Button>
+            </form>
+          </AccordionItem>
+        </Accordion>
+
+      </div>
+      <div className="flex gap-3">
         <Input label="ID/Tên category/Slug" className="pt-2"
           aria-label="ID/Tên category/Slug" labelPlacement="outside" defaultValue={condition.name}
           onValueChange={(value) => {
@@ -214,7 +336,32 @@ const Category = () => {
             SUB_CATE
           </SelectItem>
         </Select>
-
+        <Select
+          label="Tìm kiếm phổ biến"
+          labelPlacement="outside"
+          onSelectionChange={(value) =>
+            setCondition(Object.assign({}, condition, { excludePopularSearch: value.values().next().value }))}
+        >
+          <SelectItem key="true">
+            Tìm kiếm phổ biến
+          </SelectItem>
+          <SelectItem key="false">
+            Không thuộc tìm kiếm phổ biến
+          </SelectItem>
+        </Select>
+        <Select
+          label="Tìm kiếm phổ biến"
+          labelPlacement="outside"
+          onSelectionChange={(value) =>
+            setCondition(Object.assign({}, condition, { excludePopularSearch: value.values().next().value }))}
+        >
+          <SelectItem key="true">
+            Tìm kiếm phổ biến
+          </SelectItem>
+          <SelectItem key="false">
+            Không thuộc tìm kiếm phổ biến
+          </SelectItem>
+        </Select>
         <Switch className="pt-6  w-full"
           onValueChange={(value) => setCondition(Object.assign({}, condition, { active: value }))}>Active</Switch>
         <Switch className="pt-6 w-full"
@@ -367,16 +514,18 @@ const Category = () => {
                       ""
                   }
                   <div>
-                    <Button color="primary" onClick={imageModal.onOpen}>Chọn hình</Button>
+                    <Button color="primary" onPress={imageModal.onOpen}>Chọn hình</Button>
                   </div>
                   <div className="m-auto w-2/3">
                     {
-                      selectedCate.imageId ?
-                        <img
-                          className="w-full h-full"
-                          src={`${process.env.NEXT_PUBLIC_FILE_PATH + selectedCate?.image?.path}`}
-                        />
-                        : <></>
+                      selectedCate.imageUrl &&
+                      <Image
+                        className="w-full h-full"
+                        width={1280}
+                        height={500}
+                        alt={`${selectedCate?.imageUrl}`}
+                        src={`${selectedCate?.imageUrl}`}
+                      />
                     }
                   </div>
                 </ModalBody>
@@ -404,7 +553,8 @@ const Category = () => {
               <ModalHeader className="flex flex-col gap-1">Chọn hình</ModalHeader>
               <ModalBody>
                 <ImageCms disableDelete onImageClick={image => {
-                  setSelectedCate(Object.assign({}, selectedCate, { imageId: image.id, image: image }))
+                  console.log(image)
+                  setSelectedCate(Object.assign({}, selectedCate, { imageUrl: image.source_url }))
                   onClose()
                 }} />
               </ModalBody>

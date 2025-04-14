@@ -1,6 +1,7 @@
 import { db } from '@/app/db';
 import { NextResponse } from 'next/server';
 import queryString from 'query-string';
+import slugify from 'slugify';
 
 export async function GET(req) {
   let page = 1
@@ -10,6 +11,8 @@ export async function GET(req) {
   let condition = {
     active: true
   }
+  const searchTerm = slugify(query.searchTerm, { locale: 'vi' }).replace(/[()]/g, '');
+
   if (query) {
     page = parseInt(query.page) || 1
     size = parseInt(query.size) || 10
@@ -24,26 +27,28 @@ export async function GET(req) {
             OR: [
               {
                 name: {
-                  contains: query.searchTerm
+                  contains: query.searchTerm,
+                  mode: 'insensitive',
                 }
               },
               {
                 id: {
-                  contains: query.searchTerm
+                  contains: searchTerm
                 }
               },
               {
                 saleDetails: {
                   some: {
                     sku: {
-                      contains: query.searchTerm
+                      contains: searchTerm
                     }
                   }
                 }
               },
               {
                 slug: {
-                  contains: query.searchTerm
+                  contains: searchTerm,
+                  mode: 'insensitive',
                 }
               }
             ]
@@ -74,6 +79,7 @@ export async function GET(req) {
         category: true,
         subCate: true,
         brand: true,
+        imageUrl: true
       },
       where: condition,
       orderBy: [

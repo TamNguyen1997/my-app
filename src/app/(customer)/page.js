@@ -12,9 +12,6 @@ export const viewport = {
 export const dynamic = "force-dynamic"; // Forces dynamic rendering
 export const revalidate = 0;
 
-export const dynamic = "force-dynamic"; // Forces dynamic rendering
-export const revalidate = 0;
-
 export const metadata = {
   title: 'Dụng cụ vệ sinh Sao Việt',
   description: 'Dụng cụ vệ sinh Sao Việt',

@@ -185,6 +185,15 @@ const getBrandToProducts = async () => {
     "thuong-hieu-kimberly-clark",
     "thuong-hieu-kleen-tex"
   ].map(slug => db.product.findMany({
+    include: {
+      subCate: {
+        select: {
+          id: true,
+          name: true,
+          slug: true
+        }
+      },
+    },
     where: {
       active: true,
       categoryId: {

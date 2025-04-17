@@ -25,7 +25,8 @@ export async function POST(req) {
     await db.popular_search.create({
       data: {
         categoryId: json.categoryId,
-        keyword: json.keyword
+        keyword: json.keyword,
+        url: json.url,
       }
     })
     return NextResponse.json({ message: "Thành công" })

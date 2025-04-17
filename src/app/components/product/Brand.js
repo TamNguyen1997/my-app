@@ -31,7 +31,7 @@ const Brand = ({ params, productFilter }) => {
       setCategories(categories);
     }
     setIsLoading(false);
-  }, [params, productFilter]);
+  }, [params, productFilter, orderBy]);
 
   useEffect(() => {
     getProduct();

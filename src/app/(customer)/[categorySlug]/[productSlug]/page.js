@@ -75,7 +75,8 @@ const Page = async ({ params }) => {
       category: true,
       subCate: true,
       brand: true,
-      highlight: true
+      highlight: true,
+      imageUrl: true,
     },
     where: {
       active: true,

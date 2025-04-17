@@ -65,11 +65,9 @@ a img.aligncenter {
 
 .wp-caption img {
   border: 0 none;
-  height: auto;
   margin: 0;
   max-width: 98.5%;
   padding: 0;
-  width: auto;
 }
 
 .wp-caption p.wp-caption-text {

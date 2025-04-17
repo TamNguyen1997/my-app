@@ -23,6 +23,7 @@ import PaginationWithTotal from "@/app/components/PaginationWithTotal";
 import { ToastContainer, toast } from 'react-toastify';
 import { v4 } from "uuid";
 import Image from "next/image";
+import { useForm } from "react-hook-form";
 
 const quickUpdate = async (category, value, setCategory) => {
   const res = await fetch(`/api/categories/${category.id}`, { method: "PUT", body: JSON.stringify(value) })
@@ -256,18 +257,28 @@ const Category = () => {
     onOpen()
   }
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onKeywordAddSubmit = (data) => {
+    addPopularSearch({ keyword: data.keyword, url: data.url })
+  }
+
   return (
     <div className="flex flex-col gap-10">
       <div className="w-1/2 shadow-md rounded-lg">
         <Accordion isCompact={true}>
-          <AccordionItem key="1" aria-label="Tìm kiếm phổ biến" title="Tìm kiếm phổ biến">
+          <AccordionItem key="1" aria-label="Tìm kiếm phổ biến" title="Tìm kiếm phổ biến" className="flex flex-col">
             <div className="flex flex-wrap">
               {popularSearches.map((item, index) => (
                 <div className="group" key={index}>
                   <span className="bg-gray-100 text-gray-800 text-xs font-medium 
                 me-2 px-2.5 py-0.5 rounded-3xl dark:bg-gray-700 dark:text-gray-300 flex">
                     <Link href="#">
-                      {item.category?.name}
+                      {item.keyword || item.category?.name}
                     </Link>
                     <span
                       className="hidden group-hover:block animate-vote text-red-500 rounded-full hover:bg-white"
@@ -276,6 +287,31 @@ const Category = () => {
                 </div>
               ))}
             </div>
+            <form className="flex gap-2 pt-7 pb-3 items-center" onSubmit={handleSubmit(onKeywordAddSubmit)}>
+              <div>
+                <Input label="Keyword phổ biến" className="pt-2"
+                  aria-label="Keyword phổ biến" isRequired
+                  {...register("keyword", {
+                    required: "Vui lòng điền keyword",
+                  })}
+                />
+                {errors.keyword && (
+                  <p className="text-red-500">{errors.keyword.message}</p>
+                )}
+              </div>
+              <div>
+                <Input label="URL" className="pt-2"
+                  aria-label="URL" isRequired
+                  {...register("url", {
+                    required: "Vui lòng điền URL",
+                  })}
+                />
+                {errors.url && (
+                  <p className="text-red-500">{errors.url.message}</p>
+                )}
+              </div>
+              <Button type="submit" color="primary">Thêm</Button>
+            </form>
           </AccordionItem>
         </Accordion>
 

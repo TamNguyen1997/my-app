@@ -10,7 +10,7 @@ export async function generateMetadata({ params }) {
   return {
     title: category?.name,
     alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_DOMAIN}/${slug}/`,
+      canonical: `${process.env.NEXT_PUBLIC_DOMAIN}/${slug}`,
     },
   }
 }

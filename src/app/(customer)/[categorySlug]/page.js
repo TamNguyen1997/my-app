@@ -25,7 +25,7 @@ const Page = async ({ params }) => {
   if (category?.type === cate_type.SUB_CATE) {
     return <SubCategory params={slug} productFilter={filter} />
   }
-  return <Category category={category} productFilter={filter} />
+  return <Category category={category} productFilter={filter} subcates={category.subcates} />
 }
 
 export default Page;

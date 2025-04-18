@@ -4,14 +4,13 @@ import { useEffect, useState, useCallback } from "react";
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, Select, SelectItem, Slider, Spinner } from "@nextui-org/react";
 import ProductCard from "@/components/product/ProductCard";
 
-const Category = ({ category, productFilter }) => {
+const Category = ({ category, productFilter, subcates }) => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [value, setValue] = useState([0, 100000000]);
   const [orderBy, setOrderBy] = useState("");
   const [groupedData, setGroupData] = useState({});
   const [filters, setFilters] = useState([]);
-  const [subcates, setSubcates] = useState([]);
   const [selectedFilterValues, setSelectedFilterValues] = useState({});
   const [showAllSubCates, setShowAllSubCates] = useState(false);
 
@@ -20,15 +19,12 @@ const Category = ({ category, productFilter }) => {
     const res = await fetch(`/api/products/?active=true&page=1&size=10000&includeCate=true&categoryId=${category.id}&${hash && hash[1]?.includes("=") ? hash[1] : `filterId=${productFilter || hash[1] || ""}`}&${orderBy && `orderBy=${orderBy}`}`);
     if (res.ok) {
       const body = await res.json();
-      let subcates = [];
-      const groupData = Object.groupBy(body.result, (item) => item.subCate.id);
+      const groupData = subcates.reduce((acc, subcate) => {
+        acc[subcate.id] = body.result.filter(product => product.subCate && (product.subCate.id === subcate.id));
+        return acc;
+      }, {});
       setData(body.result);
       setGroupData(groupData);
-      Object.keys(groupData).forEach(item => {
-        const subCate = body.result.find(product => product.subCate.id === item)?.subCate;
-        subCate && subcates.push(subCate);
-      });
-      setSubcates(subcates);
     }
     setIsLoading(false);
   };
@@ -48,7 +44,7 @@ const Category = ({ category, productFilter }) => {
   useEffect(() => {
     getProduct();
     fetchFilters();
-  }, [category, productFilter, orderBy]);
+  }, [category.slug, productFilter, orderBy]);
 
   const filter = useCallback(() => {
     let range = "";
@@ -90,9 +86,9 @@ const Category = ({ category, productFilter }) => {
             [...subcates].splice(0, showAllSubCates ? subcates.length : 10).map(subcate => <Link key={subcate.id} href={`/${subcate.slug}`}><Button variant="ghost" color="default">{subcate.name}</Button></Link>)
           }
           {
-            showAllSubCates ?
+            subcates.length > 10 && (showAllSubCates ?
               <Button variant="ghost" color="danger" onClick={() => setShowAllSubCates(false)}>Ẩn bớt</Button> :
-              <Button variant="ghost" color="primary" onClick={() => setShowAllSubCates(true)}>Xem thêm</Button>
+              <Button variant="ghost" color="primary" onClick={() => setShowAllSubCates(true)}>Xem thêm</Button>)
           }
         </div>
         <div className="flex flex-wrap gap-2 p-3">
@@ -181,7 +177,9 @@ const Category = ({ category, productFilter }) => {
             <p className="m-auto pt-4 text-lg opacity-55">Không tìm thấy sản phẩm nào.</p> :
             <div className="w-full my-5 flex flex-col gap-4 p-2">
               {
-                [...Object.keys(groupedData)].splice(0, showAllSubCates ? Object.keys(groupedData).length : 10).map(key => <CategorySection products={groupedData[key].slice(0, 10)} key={key} />)
+                [...Object.keys(groupedData)]
+                  .splice(0, showAllSubCates ? Object.keys(groupedData).length : 10)
+                  .map(key => <CategorySection products={groupedData[key].slice(0, 10)} key={key} />)
               }
             </div>
         }
@@ -191,7 +189,7 @@ const Category = ({ category, productFilter }) => {
 };
 
 const CategorySection = ({ products }) => {
-  return (
+  return products.length > 0 && (
     <div>
       <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-2/3 md:w-1/3 h-[50px] m-auto shadow-md">
         <div className="m-auto text-black font-bold md:text-xl">

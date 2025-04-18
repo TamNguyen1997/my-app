@@ -13,6 +13,7 @@ const Category = ({ category, productFilter }) => {
   const [filters, setFilters] = useState([]);
   const [subcates, setSubcates] = useState([]);
   const [selectedFilterValues, setSelectedFilterValues] = useState({});
+  const [showAllSubCates, setShowAllSubCates] = useState(false);
 
   const getProduct = async () => {
     const hash = window.location.hash?.split('#');
@@ -74,7 +75,6 @@ const Category = ({ category, productFilter }) => {
 
   return (
     <>
-      <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/${category.slug}`} />
       <div
         className="flex flex-col items-center 
         bg-[image:var(--image-url)] bg-no-repeat bg-center bg-cover
@@ -87,7 +87,12 @@ const Category = ({ category, productFilter }) => {
       <div className="sm:w-9/12 mx-auto">
         <div className="flex flex-wrap gap-2 p-3">
           {
-            subcates.map(subcate => <Link key={subcate.id} href={`/${subcate.slug}`}><Button variant="ghost" color="default">{subcate.name}</Button></Link>)
+            [...subcates].splice(0, showAllSubCates ? subcates.length : 10).map(subcate => <Link key={subcate.id} href={`/${subcate.slug}`}><Button variant="ghost" color="default">{subcate.name}</Button></Link>)
+          }
+          {
+            showAllSubCates ?
+              <Button variant="ghost" color="danger" onClick={() => setShowAllSubCates(false)}>Ẩn bớt</Button> :
+              <Button variant="ghost" color="primary" onClick={() => setShowAllSubCates(true)}>Xem thêm</Button>
           }
         </div>
         <div className="flex flex-wrap gap-2 p-3">

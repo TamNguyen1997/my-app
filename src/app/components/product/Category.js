@@ -181,7 +181,7 @@ const Category = ({ category, productFilter }) => {
             <p className="m-auto pt-4 text-lg opacity-55">Không tìm thấy sản phẩm nào.</p> :
             <div className="w-full my-5 flex flex-col gap-4 p-2">
               {
-                Object.keys(groupedData).map(key => <CategorySection products={groupedData[key].slice(0, 10)} key={key} />)
+                [...Object.keys(groupedData)].splice(0, showAllSubCates ? Object.keys(groupedData).length : 10).map(key => <CategorySection products={groupedData[key].slice(0, 10)} key={key} />)
               }
             </div>
         }

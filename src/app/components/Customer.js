@@ -51,7 +51,7 @@ const responsive = {
   }
 }
 
-const Customer = () => {
+const Customer = React.memo(() => {
 
   return (
     <motion.div
@@ -79,6 +79,6 @@ const Customer = () => {
       </Carousel>
     </motion.div>
   )
-}
+})
 
 export default Customer

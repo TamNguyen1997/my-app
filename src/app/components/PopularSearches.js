@@ -3,7 +3,7 @@ import { Link } from "@nextui-org/react";
 import { motion } from "framer-motion";
 
 
-const PopularSearches = ({ popularSearches = [] }) => {
+const PopularSearches = React.memo(({ popularSearches = [] }) => {
   return (
     <motion.div
       initial={{ x: 200, opacity: 0 }}
@@ -14,7 +14,7 @@ const PopularSearches = ({ popularSearches = [] }) => {
       <h2 className="font-bold text-xl">Mọi người cũng tìm kiếm</h2>
       <div className="flex flex-wrap gap-2">
         {
-          [{ keyword: "1" }, { keyword: "2" }].map((item, index) => (
+          popularSearches.map((item, index) => (
             <Link href={`/${item.url || item.category?.slug}`} key={index} className="bg-gray-100 text-gray-800
                 me-2 px-2.5 py-0.5 rounded-3xl dark:bg-gray-700 dark:text-gray-300 flex">
               {item.keyword || item.category.name}
@@ -24,6 +24,6 @@ const PopularSearches = ({ popularSearches = [] }) => {
       </div>
     </motion.div>
   );
-}
+});
 
 export default PopularSearches

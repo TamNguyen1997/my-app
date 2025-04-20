@@ -73,25 +73,23 @@ const PopularItems = ({
 
 const ProductCards = ({ name, products, redirect, banner }) => {
   const CategoryDisplay = () => (
-    <>
-      <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center sm:w-2/3 md:w-1/3 min-w-[240px] h-[50px] m-auto shadow-md">
-        <div className="m-auto text-black font-bold md:text-xl">
-          {name}
-        </div>
-        {redirect ? (
-          <Link
-            isExternal
-            href={redirect}
-            className="flex justify-center items-center font-semibold w-[181px] text-black
-              h-[43px] rounded-[30px] border border-black hover:bg-[#FFD400] transition mx-auto"
-          >
-            Xem thêm
-          </Link>
-        ) : (
-          ""
-        )}
+    <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center sm:w-2/3 md:w-1/3 min-w-[240px] h-[50px] m-auto shadow-md">
+      <div className="m-auto text-black font-bold md:text-xl">
+        {name}
       </div>
-    </>
+      {redirect ? (
+        <Link
+          isExternal
+          href={redirect}
+          className="flex justify-center items-center font-semibold w-[181px] text-black
+              h-[43px] rounded-[30px] border border-black hover:bg-[#FFD400] transition mx-auto"
+        >
+          Xem thêm
+        </Link>
+      ) : (
+        ""
+      )}
+    </div>
   );
 
   const BannerDisplay = () => (
@@ -104,20 +102,18 @@ const ProductCards = ({ name, products, redirect, banner }) => {
     </div>
   );
   return (
-    <div>
-      <section className="rounded-tr-[50px] rounded-tl-[50px] pb-3">
-        <div className="p-3 pt-0 rounded-md">
-          <div className="py-3">
-            {banner ? <BannerDisplay /> : <CategoryDisplay />}
-          </div>
-          <div className="mx-auto lg:max-w-full [&_.react-multi-carousel-track]:pt-3 -mt-3">
-            <ProductCarousel
-              products={products}
-            />
-          </div>
+    <section className="rounded-tr-[50px] rounded-tl-[50px] pb-3">
+      <div className="p-3 pt-0 rounded-md">
+        <div className="py-3">
+          {banner ? <BannerDisplay /> : <CategoryDisplay />}
         </div>
-      </section>
-    </div>
+        <div className="mx-auto lg:max-w-full [&_.react-multi-carousel-track]:pt-3 -mt-3">
+          <ProductCarousel
+            products={products}
+          />
+        </div>
+      </div>
+    </section>
   );
 };
 

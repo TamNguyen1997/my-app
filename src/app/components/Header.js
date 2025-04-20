@@ -59,27 +59,25 @@ const Header = ({ headers }) => {
           </div>
         </div>
       </div>
-      <div className={`fixed w-full subcate-menu z-[10000] ${menuVisible ? 'visible' : 'invisible'}`} ref={menuRef} onMouseOver={() => setMenuVisible(true)} onMouseOut={() => setMenuVisible(false)}>
-        <div className="text-sm flex">
-          <div className="bg-white shadow-lg w-[240px] border rounded-bl-lg">
-            {headers?.map(category => (
-              <Link key={category.id} href={category.slug ? `/${category.slug}` : '#'}
-                onMouseOver={() => setHoveredCate(category)}
-                className={`items-center border-b hover:font-bold transition p-1.5 flex ${hoveredCate?.id === category.id && 'font-bold'}`}>
-                {category.slug && (category.slug !== "tin-tuc" && category.slug !== "kien-thuc-hay") && <img src={`/icon/header/${category.slug}.svg`} alt="" className="max-w-6 mr-2" />}
-                <span className="mr-2">{category.name}</span>
-                <ChevronRight size="15" className="ml-auto" />
-              </Link>
+      <div className={`text-sm flex fixed w-full subcate-menu z-[10000] ${menuVisible ? 'visible' : 'invisible'}`} ref={menuRef} onMouseOver={() => setMenuVisible(true)} onMouseOut={() => setMenuVisible(false)}>
+        <div className="bg-white shadow-lg w-[240px] border rounded-bl-lg">
+          {headers?.map(category => (
+            <Link key={category.id} href={category.slug ? `/${category.slug}` : '#'}
+              onMouseOver={() => setHoveredCate(category)}
+              className={`items-center border-b hover:font-bold transition p-1.5 flex ${hoveredCate?.id === category.id && 'font-bold'}`}>
+              {category.slug && (category.slug !== "tin-tuc" && category.slug !== "kien-thuc-hay") && <img src={`/icon/header/${category.slug}.svg`} alt="" className="max-w-6 mr-2" />}
+              <span className="mr-2">{category.name}</span>
+              <ChevronRight size="15" className="ml-auto" />
+            </Link>
+          ))}
+        </div>
+        {hoveredCate && hoveredCate.subcates?.length > 0 && (
+          <div className="bg-white shadow-lg grow border rounded-br-lg p-2 grid grid-rows-8 grid-flow-col">
+            {hoveredCate.subcates.map((subcate, i) => (
+              <Link key={i} className="p-1 hover:text-blue-500" href={`/${subcate.slug}`}>{subcate.name}</Link>
             ))}
           </div>
-          {hoveredCate && hoveredCate.subcates?.length > 0 && (
-            <div className="bg-white shadow-lg grow border rounded-br-lg p-2 grid grid-rows-8 grid-flow-col">
-              {hoveredCate.subcates.map((subcate, i) => (
-                <Link key={i} className="p-1 hover:text-blue-500" href={`/${subcate.slug}`}>{subcate.name}</Link>
-              ))}
-            </div>
-          )}
-        </div>
+        )}
       </div>
     </nav>
   );

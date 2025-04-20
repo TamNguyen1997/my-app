@@ -2,6 +2,7 @@
 import { Image } from "@nextui-org/react"
 import "react-multi-carousel/lib/styles.css"
 import { motion } from "framer-motion";
+import React from "react";
 
 const Introduction = React.memo(() => {
   return (

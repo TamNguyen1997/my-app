@@ -10,13 +10,15 @@ const Introduction = () => {
       whileInView={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.7, delay: 0.3 }}
       viewport={{ once: true }}
-      className="pb-[60px] mx-auto w-3/4 ">
+      className="pb-[60px] mx-auto lg:w-3/4 w-full"
+    >
       <Image
         src="introduction.avif"
         alt="introduction"
-        width={1440}
+        layout="responsive"
+        width="auto"
         height="auto"
-        sizes="(max-width: 768px) 100vw, 50vw"
+        sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw"
       />
     </motion.div>
   )

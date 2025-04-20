@@ -2,6 +2,10 @@
   font-family: "Open Sans", sans-serif !important;
 }
 
+*[style*="font-family:open-sans"] {
+  font-family: "Open Sans", sans-serif !important;
+}
+
 .alignnone {
   margin: 5px 20px 20px 0;
 }

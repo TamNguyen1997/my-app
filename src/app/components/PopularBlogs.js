@@ -45,33 +45,31 @@ export default function PopularBlogs({ blogs }) {
           blogs?.map((blog) => {
             return <div className="p-1" key={blog.id}>
               <Link href={`/tin-tuc/${blog.slug}`}>
-                <div className="hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)] rounded-[20px] transition">
-                  <Card>
-                    <CardHeader className="flex flex-col items-center justify-center h-64">
-                      <Image
-                        height={256}
-                        className="h-full w-full object-cover object-top"
-                        src={`${blog._embedded["wp:featuredmedia"]?.length ? blog._embedded["wp:featuredmedia"][0]["source_url"] : "/default-featured-image.webp"}`}
-                        alt="Thumbnail image"
-                      />
-                    </CardHeader>
-                    <Divider />
-                    <CardBody>
-                      <p className="line-clamp-3 h-28 w-full font-bold">
-                        {parse(blog.title.rendered)}
-                      </p>
+                <Card className="hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0px_10px_10px_rgba(0,0,0,0.15)] rounded-[20px] transition">
+                  <CardHeader className="flex flex-col items-center justify-center h-64">
+                    <Image
+                      height={256}
+                      className="h-full w-full object-cover object-top"
+                      src={`${blog._embedded["wp:featuredmedia"]?.length ? blog._embedded["wp:featuredmedia"][0]["source_url"] : "/default-featured-image.webp"}`}
+                      alt="Thumbnail image"
+                    />
+                  </CardHeader>
+                  <Divider />
+                  <CardBody>
+                    <p className="line-clamp-3 h-28 w-full font-bold">
+                      {parse(blog.title.rendered)}
+                    </p>
 
-                      <div className="w-full flex">
-                        <div className="italic">
-                          {new Date(blog.modified).toLocaleDateString("en-GB")}
-                        </div>
-                        <div className="text-sm text-[#6d6d6d] absolute right-2">
-                          {blog.yoast_head_json?.author}
-                        </div>
+                    <div className="w-full flex">
+                      <div className="italic">
+                        {new Date(blog.modified).toLocaleDateString("en-GB")}
                       </div>
-                    </CardBody>
-                  </Card>
-                </div>
+                      <div className="text-sm text-[#6d6d6d] absolute right-2">
+                        {blog.yoast_head_json?.author}
+                      </div>
+                    </div>
+                  </CardBody>
+                </Card>
               </Link>
             </div>
           })

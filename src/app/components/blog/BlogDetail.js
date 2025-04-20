@@ -1,8 +1,7 @@
 "use client"
 
-import { BreadcrumbItem, Breadcrumbs, Link, Spinner } from "@nextui-org/react";
+import { BreadcrumbItem, Breadcrumbs, Link } from "@nextui-org/react";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
 import parse from 'html-react-parser';
 
 import TableOfContent from "./TableOfContent"
@@ -38,27 +37,8 @@ const BlogContent = ({ blog }) => {
   </>)
 }
 
-const BlogDetail = ({ slug }) => {
-  const [blog, setBlog] = useState({})
-  const [relatedBlogs, setRelatedBlogs] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
-  const getBlog = async () => {
-    setIsLoading(true)
-    const res = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${slug}&_embed&categories_exclude=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}`)
-    const json = (await res.json())[0]
-    setBlog(json)
-    await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&categories=${json.categories?.join()}&exclude=${json.id}&per_page=4&categories_exclude=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}`)
-      .then(res => res.json())
-      .then(json => setRelatedBlogs(json))
-    setIsLoading(false)
-    window.scrollTo(0, 0)
-  }
-  useEffect(() => {
-    getBlog()
-  }, [slug])
-
-  if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />
-
+const BlogDetail = ({ slug, blog, relatedBlogs = [] }) => {
+  console.log("blog", relatedBlogs)
   return (
     <div className="bg-[#f6f6f6] font-open_san">
       <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/blog/${slug}`} />
@@ -118,7 +98,7 @@ const BlogDetail = ({ slug }) => {
                   return (
                     <div className="flex items-center pl-4 mb-2" key={index}>
                       <div className="w-[5px] h-[5px] min-w-[5px] bg-black rounded-full mr-2"></div>
-                      <Link href={`/kien-thuc-hay/${item.slug}`} className="hover:underline transition">{item.title.rendered}</Link>
+                      <Link href={`/kien-thuc-hay/${item.slug}`} className="hover:underline transition font-sans">{item.title.rendered}</Link>
                     </div>
                   )
                 })

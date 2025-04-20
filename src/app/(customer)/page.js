@@ -118,7 +118,7 @@ const getHighlightProducts = async () => {
         updatedAt: "desc"
       }
     ],
-    take: 7,
+    take: 5,
     skip: 0
   })
 }
@@ -154,7 +154,7 @@ const getHighlightCatesWithProducts = async () => {
 
 const getBlogs = async () => {
   let blogs = []
-  const res = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&per_page=3&categories_exclude=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}`)
+  const res = await fetch(`${process.env.WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&per_page=3&categories_exclude=${process.env.WORDPRESS_PRODUCT_CATEGORY_ID || ""}`)
   if (res.ok) blogs = await res.json()
   return blogs
 }
@@ -206,7 +206,7 @@ const getBrandToProducts = async () => {
         slug: slug
       }
     },
-    take: 7,
+    take: 5,
     skip: 0
   }))
   const brandProducts = await Promise.all(queries)

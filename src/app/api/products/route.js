@@ -175,6 +175,19 @@ export async function GET(req) {
       condition.imageId = null
     }
 
+
+    if (query.includeCate) {
+      condition = {
+        ...condition,
+        categoryId: {
+          not: null
+        },
+        subCateId: {
+          not: null
+        }
+      }
+    }
+
     if (query.productType) {
       condition.productType = query.productType
     }

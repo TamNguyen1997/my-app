@@ -14,12 +14,10 @@ const PopularSearches = ({ popularSearches = [] }) => {
       <h2 className="font-bold text-xl">Mọi người cũng tìm kiếm</h2>
       <div className="flex flex-wrap gap-2">
         {
-          popularSearches.map((item, index) => (
-            <Link href={`/${item.url || item.category?.slug}`} key={index}>
-              <span className="bg-gray-100 text-gray-800
+          [{ keyword: "1" }, { keyword: "2" }].map((item, index) => (
+            <Link href={`/${item.url || item.category?.slug}`} key={index} className="bg-gray-100 text-gray-800
                 me-2 px-2.5 py-0.5 rounded-3xl dark:bg-gray-700 dark:text-gray-300 flex">
-                {item.keyword || item.category.name}
-              </span>
+              {item.keyword || item.category.name}
             </Link>
           ))
         }

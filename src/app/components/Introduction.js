@@ -14,7 +14,7 @@ const Introduction = () => {
     >
       <Image
         src="introduction.avif"
-        alt="introduction"
+        alt="Dụng cụ vệ sinh Sao Việt"
         layout="responsive"
         width="auto"
         height="auto"

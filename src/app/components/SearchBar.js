@@ -64,7 +64,7 @@ const SearchBar = () => {
                   {results[key].map((item) => (
                     <Link key={item.id} href={`/${key === 'blogs' ? blogCategories[item.blogCategory]?.slug : item.subCate?.slug || 'san-pham'}/${item.slug}`}>
                       <div className="px-4 py-2 flex items-center gap-5 hover:bg-slate-50 cursor-pointer">
-                        {item.imageUrl || item.thumbnail ? <Image width={60} height={60} src={item.imageUrl || item.thumbnail} alt={item.name || item.title} /> : ''}
+                        {item.imageUrl || item.thumbnail ? <Image width={60} height={60} src={item.imageUrl || item.thumbnail} alt={item.name || item.title || "Tìm kiếm Dụng cụ vệ sinh Sao Việt"} /> : ''}
                         <div>
                           <h3 className="font-semibold text-slate-600">{item.name || item.title}</h3>
                           {key === 'products' && <p className="text-slate-400">{item.category?.name}</p>}

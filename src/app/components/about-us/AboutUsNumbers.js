@@ -64,7 +64,7 @@ const AboutUsNumbers = () => {
                     src={image}
                     width="1280"
                     height="720"
-                    alt=""
+                    alt="Dụng cụ vệ sinh Sao Việt"
                     className="w-full h-full object-cover rounded-[20px]"
                   />
                 </div>

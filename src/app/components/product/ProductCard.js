@@ -12,7 +12,7 @@ const ProductCard = ({ product }) => {
         height={200}
         srcSet={`${product.imageUrl}?w=400 400w, ${product.imageUrl}?w=800 800w`}
         src={product.imageUrl || "/default-featured-image.webp"}
-        alt={product.imageAlt}
+        alt={product.imageAlt || "Dụng cụ vệ sinh Sao Việt"}
         className="flex flex-col h-[250px] rounded-md overflow-hidden mx-auto"
         loading="eager"
         priority="true"

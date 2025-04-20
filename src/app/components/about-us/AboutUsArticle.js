@@ -89,7 +89,7 @@ const AboutUsArticle = () => {
                 width="450"
                 height="300"
                 src="/about-us/article-2.jpg"
-                alt="/about-us/article-2.jpg"
+                alt="Dụng cụ vệ sinh Sao Việt"
                 className="aspect-[16/9] object-cover w-full rounded mb-6"
               />
             </div>

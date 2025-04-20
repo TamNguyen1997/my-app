@@ -250,7 +250,7 @@ const ProductDetail = () => {
               product?.imageUrl &&
               <Image
                 src={`${product.imageUrl}`}
-                alt={`${product.imageAlt}`}
+                alt={`${product.imageAlt || "Dụng cụ vệ sinh Sao Việt"}`}
                 width="150"
                 height="100"
                 className="mx-auto"

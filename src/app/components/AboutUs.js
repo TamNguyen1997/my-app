@@ -33,7 +33,7 @@ export default function AboutUs() {
           src="/about-us/intro.png"
           width="1280"
           height="720"
-          alt=""
+          alt="Dụng cụ vệ sinh Sao Việt"
           className="w-full h-full object-cover"
         />
       </motion.div>
@@ -58,7 +58,7 @@ export default function AboutUs() {
           src="/about-us/mission.png"
           width="1280"
           height="720"
-          alt=""
+          alt="Dụng cụ vệ sinh Sao Việt"
           className="w-full h-full object-cover"
         />
       </motion.div>

@@ -114,8 +114,8 @@ export async function GET(req) {
     });
 
     if (query.id_name) {
-      const idNameQuery = slugify(query.id_name, { locale: 'vi' }).replace(/[()]/g, '');
-      condition.OR = ['name', 'id', 'slug'].map(field => ({ [field]: { contains: idNameQuery } }));
+      const slugifiedQuery = slugify(query.id_name, { locale: 'vi' }).replace(/[()]/g, '');
+      condition.OR = ['name', 'id', 'slug'].map(field => ({ [field]: { contains: field === "slug" ? slugifiedQuery : query.id_name } }));
     }
 
     if (query.sku) {
@@ -160,6 +160,8 @@ export async function GET(req) {
 
     if (productIds.length) condition.id = { in: productIds };
   }
+
+  console.log(condition.OR)
 
   try {
     const result = await db.product.findMany({

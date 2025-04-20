@@ -76,7 +76,7 @@ const AboutUsBanner = () => {
                   src={banner}
                   width="1280"
                   height="720"
-                  alt=""
+                  alt="Dụng cụ vệ sinh Sao Việt"
                   className="w-full h-full max-h-[600px] object-cover"
                 />
               })
@@ -92,7 +92,7 @@ const AboutUsBanner = () => {
               src={banner}
               width="1280"
               height="720"
-              alt=""
+              alt="Dụng cụ vệ sinh Sao Việt"
               className={`
                                 ${i == 1 ? 'col-start-1 col-end-3 h-[200px]' : i == 2 ? 'col-start-3 col-end-4 h-[200px]' : 'col-start-1 col-end-4 h-[300px]'}
                                 object-cover

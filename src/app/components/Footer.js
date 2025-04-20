@@ -58,7 +58,7 @@ const Footer = () => {
           <p className="font-bold">MẠNG XÃ HỘI</p>
           <div className="flex gap-3">
             <SocialIcon href="https://www.facebook.com/vesinhsaoviet/?ref=embed_page" Icon={Facebook} />
-            <SocialIcon href="https://www.tiktok.com/@vesinhsaoviet" Icon={() => <Image src="/Titkok-line.svg" className="text-white" height={30} width={30} />} />
+            <SocialIcon href="https://www.tiktok.com/@vesinhsaoviet" Icon={() => <Image src="/Titkok-line.svg" className="text-white" height={30} width={30} alt="Tikok Dụng cụ vệ sinh Sao Việt" />} />
             <SocialIcon href="http://bit.ly/youtube-saoviet" Icon={Youtube} />
           </div>
         </div>

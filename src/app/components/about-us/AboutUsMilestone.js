@@ -13,6 +13,7 @@ const AboutUsMilestone = () => {
         <Image
           width={1280}
           height={720}
+          alt="Dụng cụ vệ sinh Sao Việt"
           src='/about-us/history.png'
           className="w-full h-full object-cover"
         />

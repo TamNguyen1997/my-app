@@ -1,4 +1,5 @@
 import { nextui } from "@nextui-org/react"
+import { purgeCSSPlugin } from '@fullhuman/postcss-purgecss';
 
 module.exports = {
   darkMode: ["class"],
@@ -43,5 +44,13 @@ module.exports = {
       }
     },
   },
-  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography"), nextui()],
+  plugins: [
+    purgeCSSPlugin({
+      content: [
+        './src/app/**/*.{ts,tsx,js,jsx}',
+        "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"
+      ]
+    }),
+    require("tailwindcss-animate"), require("@tailwindcss/typography"), nextui()
+  ],
 } 

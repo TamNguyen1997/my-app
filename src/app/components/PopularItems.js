@@ -1,13 +1,13 @@
 "use client";
 
 import { Button, Link } from "@nextui-org/react";
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import "react-multi-carousel/lib/styles.css";
 import ProductCarousel from "@/components/product/ProductCarousel";
 import PopularBrandCard from "@/components/product/PopularBrandCard";
 import { motion } from "framer-motion";
 
-const PopularItems = ({
+const PopularItems = React.memo(({
   highlightProducts = [],
   highlightCatesWithProducts = [],
   brandToProducts = {}
@@ -69,9 +69,9 @@ const PopularItems = ({
     </motion.div>
 
   );
-}
+});
 
-const ProductCards = ({ name, products, redirect, banner }) => {
+const ProductCards = React.memo(({ name, products, redirect, banner }) => {
   const CategoryDisplay = () => (
     <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center sm:w-2/3 md:w-1/3 min-w-[240px] h-[50px] m-auto shadow-md">
       <div className="m-auto text-black font-bold md:text-xl">
@@ -115,6 +115,6 @@ const ProductCards = ({ name, products, redirect, banner }) => {
       </div>
     </section>
   );
-};
+});
 
 export default PopularItems

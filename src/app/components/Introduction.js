@@ -2,8 +2,9 @@
 import { Image } from "@nextui-org/react"
 import "react-multi-carousel/lib/styles.css"
 import { motion } from "framer-motion";
+import React from "react";
 
-const Introduction = () => {
+const Introduction = React.memo(() => {
   return (
     <motion.div
       initial={{ x: 200, opacity: 0 }}
@@ -22,6 +23,6 @@ const Introduction = () => {
       />
     </motion.div>
   )
-}
+});
 
 export default Introduction

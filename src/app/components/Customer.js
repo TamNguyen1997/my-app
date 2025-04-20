@@ -3,6 +3,7 @@ import { Image } from "@nextui-org/react"
 import Carousel from "react-multi-carousel"
 import "react-multi-carousel/lib/styles.css"
 import { motion } from "framer-motion";
+import React from "react";
 
 const logo = [
   "/icon/client/BW.webp",
@@ -51,7 +52,7 @@ const responsive = {
   }
 }
 
-const Customer = () => {
+const Customer = React.memo(() => {
 
   return (
     <motion.div
@@ -79,6 +80,6 @@ const Customer = () => {
       </Carousel>
     </motion.div>
   )
-}
+})
 
 export default Customer

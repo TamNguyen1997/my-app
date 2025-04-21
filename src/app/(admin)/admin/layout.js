@@ -10,7 +10,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <Sidebar />
-        <div className="p-4 sm:ml-64">
+        <div className="p-4 sm:ml-52">
           {children}
         </div>
       </body>

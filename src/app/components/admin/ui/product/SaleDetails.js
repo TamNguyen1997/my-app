@@ -1,5 +1,5 @@
 import { Button, Checkbox, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Snippet, useDisclosure } from "@nextui-org/react";
-import { FileImage, Trash2 } from "lucide-react";
+import { Cog, FileImage, Trash2 } from "lucide-react";
 import { useContext } from "react";
 import { v4 } from "uuid";
 import NewFilter from "@/components/admin/ui/product/NewFilter";
@@ -37,6 +37,7 @@ const SecondarySaleDetails = ({ saleDetail }) => {
               <Input
                 type="text"
                 label="SKU"
+                className="w-1/2"
                 defaultValue={detail.sku}
                 aria-label="SKU"
                 isRequired
@@ -128,6 +129,7 @@ const SecondarySaleDetails = ({ saleDetail }) => {
                 label="Tồn kho"
                 defaultValue={detail.inStock}
                 aria-label="Giá"
+                className="w-1/2"
                 min={0}
                 max={999999999}
                 onValueChange={value => handleDetailChange(detail.id, { inStock: parseInt(value) }, setProduct)}
@@ -189,6 +191,7 @@ const SaleDetails = () => {
                   <Input
                     type="text"
                     label="SKU"
+                    className="w-1/2"
                     defaultValue={detail.sku}
                     aria-label="SKU"
                     isRequired
@@ -278,6 +281,7 @@ const SaleDetails = () => {
                   <Input
                     type="number"
                     label="Tồn kho"
+                    className="w-1/2"
                     defaultValue={detail.inStock}
                     aria-label="Giá"
                     min={0}
@@ -305,9 +309,14 @@ const SaleDetails = () => {
                     <div className="text-lg text-danger cursor-pointer active:opacity-50 pl-5 float-right">
                       <Trash2 onClick={() => removeItem(detail.id, setProduct)} />
                     </div>
-                    <Snippet symbol="" className="!font-open_san !bg-white" copyIcon={false} content="Xem hình ảnh của thông số bán hàng">
-                      <Link className="text-lg text-success cursor-pointer active:opacity-50 float-right" href={`/admin/product/edit/${product.id}/sale-details/${detail.id}`}>
+                    <Snippet symbol="" className="!font-open_san !bg-white" hideCopyButton content="Xem hình ảnh của thông số bán hàng">
+                      <Link className="text-lg text-success cursor-pointer float-right" href={`/admin/product/edit/${product.id}/sale-details/${detail.id}/images/`}>
                         <FileImage />
+                      </Link>
+                    </Snippet>
+                    <Snippet symbol="" className="!font-open_san !bg-white" hideCopyButton content="Xem thông số kĩ thuật">
+                      <Link className="text-lg text-gray-500 cursor-pointer float-right" href={`/admin/product/edit/${product.id}/sale-details/${detail.id}/technicals/`}>
+                        <Cog />
                       </Link>
                     </Snippet>
                   </div>

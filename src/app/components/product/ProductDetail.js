@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { BreadcrumbItem, Breadcrumbs, Button, Link } from "@nextui-org/react";
 import SaleDetail from "@/components/SaleDetail";
 import ProductImageCarousel from "@/components/ProductImageCarousel";
@@ -8,75 +8,83 @@ import ProductDetailTabs from "@/components/ProductDetailTabs";
 import { motion } from "framer-motion";
 import { addRecentlyView } from "@/lib/product";
 
+export const ProductDetailContext = createContext();
+
 export default ({ product = {}, description, relatedProducts = [] }) => {
 
   const [images, setImages] = useState(product.product_on_image.map(item => item.imageUrl) || []);
+  const [selectedSaleDetail, setSelectedSaleDetail] = useState({});
+
   useEffect(() => {
     addRecentlyView(product)
   }, [product.id])
 
   return (
     <>
-      <div className="bg-[#ffed00] py-2.5">
-        <div className="container">
-          <Breadcrumbs
-            variant="light"
-            className="font-semibold mt-[15px]"
-            itemClasses={{
-              base: "[&>span]:text-black [&>span]:whitespace-normal"
-            }}
-          >
-            {
-              product.category ?
-                <BreadcrumbItem href={`/${product.category.slug}`}>{product.category.name}</BreadcrumbItem> : ""
-            }
-            {
-              product.subCate ?
-                <BreadcrumbItem href={`/${product.subCate ? product.subCate.slug : "san-pham"}`}>{product.subCate.name}</BreadcrumbItem> : ""
-            }
-            <BreadcrumbItem>{product.name}</BreadcrumbItem>
-          </Breadcrumbs>
+      <ProductDetailContext.Provider value={{
+        selectedSaleDetail, setSelectedSaleDetail
+      }}>
+        <div className="bg-[#ffed00] py-2.5">
+          <div className="container">
+            <Breadcrumbs
+              variant="light"
+              className="font-semibold mt-[15px]"
+              itemClasses={{
+                base: "[&>span]:text-black [&>span]:whitespace-normal"
+              }}
+            >
+              {
+                product.category ?
+                  <BreadcrumbItem href={`/${product.category.slug}`}>{product.category.name}</BreadcrumbItem> : ""
+              }
+              {
+                product.subCate ?
+                  <BreadcrumbItem href={`/${product.subCate ? product.subCate.slug : "san-pham"}`}>{product.subCate.name}</BreadcrumbItem> : ""
+              }
+              <BreadcrumbItem>{product.name}</BreadcrumbItem>
+            </Breadcrumbs>
+          </div>
         </div>
-      </div>
 
-      <div className="container py-[30px]">
+        <div className="container py-[30px]">
 
-        <motion.div
-          initial={{ y: 100, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.7 }}
-          viewport={{ once: true }}
-          className="flex flex-wrap items-start bg-[#f8f8f8] mb-5"
-        >
-          <div className="relative sm:w-7/12 md:w-8/12 w-full bg-white border-[3px] border-[#f8f8f8]">
-            <ProductImageCarousel items={images || product.product_on_image.map(item => item.imageUrl) || []} />
-          </div>
-
-          <div className="sm:w-5/12 md:w-4/12 w-full">
-            <div className="p-5 border-white border-b-[3px] bg-[#f8f8f8]">
-              <SaleDetail saleDetails={product.saleDetails || []} product={product} setImages={setImages} />
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.7 }}
+            viewport={{ once: true }}
+            className="flex flex-wrap items-start bg-[#f8f8f8] mb-5"
+          >
+            <div className="relative sm:w-7/12 md:w-8/12 w-full bg-white border-[3px] border-[#f8f8f8]">
+              <ProductImageCarousel items={images || product.product_on_image.map(item => item.imageUrl) || []} />
             </div>
-            <div className="text-sm p-5 bg-[#f8f8f8]">
-              <p className="mb-2.5">Bạn cần trợ giúp?</p>
-              <p className="font-bold mb-2.5">Đường dây nóng: 0902 366 617</p>
-              <Link isExternal href="https://zalo.me/0902366617" className="text-black w-full h-[45px]">
-                <Button className="text-sm font-bold uppercase bg-gradient-to-b from-[#ffed00] to-[#fff466] rounded-none w-full border border-[#e3e3e3] mb-2.5">
-                  Liên hệ
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </motion.div>
 
-        <motion.div
-          initial={{ y: 100, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.7 }}
-          viewport={{ once: true }}
-        >
-          <ProductDetailTabs product={product} description={description} relatedProducts={relatedProducts} />
-        </motion.div>
-      </div>
+            <div className="sm:w-5/12 md:w-4/12 w-full">
+              <div className="p-5 border-white border-b-[3px] bg-[#f8f8f8]">
+                <SaleDetail saleDetails={product.saleDetails || []} product={product} setImages={setImages} />
+              </div>
+              <div className="text-sm p-5 bg-[#f8f8f8]">
+                <p className="mb-2.5">Bạn cần trợ giúp?</p>
+                <p className="font-bold mb-2.5">Đường dây nóng: 0902 366 617</p>
+                <Link isExternal href="https://zalo.me/0902366617" className="text-black w-full h-[45px]">
+                  <Button className="text-sm font-bold uppercase bg-gradient-to-b from-[#ffed00] to-[#fff466] rounded-none w-full border border-[#e3e3e3] mb-2.5">
+                    Liên hệ
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.7 }}
+            viewport={{ once: true }}
+          >
+            <ProductDetailTabs product={product} description={description} relatedProducts={relatedProducts} />
+          </motion.div>
+        </div>
+      </ProductDetailContext.Provider>
     </>
   );
 };

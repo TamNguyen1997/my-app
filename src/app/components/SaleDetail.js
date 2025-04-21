@@ -3,6 +3,7 @@ import { Button, Input } from "@nextui-org/react";
 import { ShoppingCart } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { CartContext } from "@/context/CartProvider";
+import { ProductDetailContext } from "./product/ProductDetail";
 
 const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
   const [selectedDetail, setSelectedDetail] = useState(saleDetails[0] || {});
@@ -10,6 +11,7 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
   const [quantity, setQuantity] = useState(1);
 
   const { addItemToCart } = useContext(CartContext);
+  const { setSelectedSaleDetail } = useContext(ProductDetailContext);
 
   const onPrimarySelect = (key) => {
     const detail = saleDetails.find((detail) => detail.id === key);
@@ -31,9 +33,11 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
   useEffect(() => {
     if (selectedDetail.id && selectedSecondaryDetail.id) {
       setImages(selectedSecondaryDetail.sale_detail_on_image?.map((item) => item.imageUrl) || []);
+      setSelectedSaleDetail(selectedSecondaryDetail);
     }
     if (selectedDetail.id && !selectedSecondaryDetail.id) {
       setImages(selectedDetail.sale_detail_on_image?.map((item) => item.imageUrl) || []);
+      setSelectedSaleDetail(selectedDetail);
     }
   }, [selectedDetail, selectedSecondaryDetail]);
 

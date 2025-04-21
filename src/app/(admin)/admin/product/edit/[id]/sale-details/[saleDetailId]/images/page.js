@@ -20,7 +20,7 @@ const Page = async ({ params }) => {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">Sale Detail</h1>
+      <h1 className="text-2xl font-bold">Hình ảnh của thông số {saleDetailId}</h1>
       <div className="flex flex-col gap-4">
         <SaleDetailImages saleDetail={saleDetail} />
       </div>

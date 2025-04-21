@@ -22,7 +22,7 @@ const ID = {
   RELATED_ITEMS: "RELATED_ITEMS"
 };
 
-const TabContent = ({ id, product, description, relatedProducts }) => {
+const TabContent = ({ id, product, description, relatedProducts, technicalDetailForSaleDetail = [] }) => {
 
   const [recentlyView, setRecentlyView] = useState([])
 
@@ -68,7 +68,7 @@ const TabContent = ({ id, product, description, relatedProducts }) => {
         <div className="mb-9 items-center">
           <div>
             {
-              <TechnicalDetail data={product.technical_detail}></TechnicalDetail>
+              <TechnicalDetail data={product.technical_detail || []}></TechnicalDetail>
             }
           </div>
         </div>
@@ -201,7 +201,7 @@ export default ({ product, description, relatedProducts }) => {
   }
 
   return (
-    <div>
+    <>
       <div
         className="sticky top-0 z-10"
         style={{ top: `${headerHeight}px` }}
@@ -257,6 +257,6 @@ export default ({ product, description, relatedProducts }) => {
           })
         }
       </div>
-    </div>
+    </>
   )
 }

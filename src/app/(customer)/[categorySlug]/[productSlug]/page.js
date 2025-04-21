@@ -27,7 +27,8 @@ const Page = async ({ params }) => {
         include: {
           filter: true,
           filterValue: true,
-          sale_detail_on_image: true
+          sale_detail_on_image: true,
+          technical_detail_for_sale_detail: true
         }
       },
       image: true,

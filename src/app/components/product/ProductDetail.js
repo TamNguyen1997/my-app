@@ -46,7 +46,7 @@ export default ({ product = {}, description, relatedProducts = [] }) => {
           </div>
         </div>
 
-        <div className="container py-[30px]">
+        <div className="container w-[80%] lg:min-w-[75%] py-[30px]">
 
           <motion.div
             initial={{ y: 100, opacity: 0 }}
@@ -55,11 +55,11 @@ export default ({ product = {}, description, relatedProducts = [] }) => {
             viewport={{ once: true }}
             className="flex flex-wrap items-start bg-[#f8f8f8] mb-5"
           >
-            <div className="relative sm:w-7/12 md:w-8/12 w-full bg-white border-[3px] border-[#f8f8f8]">
+            <div className="relative sm:w-7/12 md:w-7/12 w-full bg-white border-[3px] border-[#f8f8f8]">
               <ProductImageCarousel items={images || product.product_on_image.map(item => item.imageUrl) || []} />
             </div>
 
-            <div className="sm:w-5/12 md:w-4/12 w-full">
+            <div className="sm:w-5/12 md:w-5/12 w-full">
               <div className="p-5 border-white border-b-[3px] bg-[#f8f8f8]">
                 <SaleDetail saleDetails={product.saleDetails || []} product={product} setImages={setImages} />
               </div>

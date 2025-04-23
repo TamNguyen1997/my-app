@@ -3,6 +3,7 @@ import { Button, Input } from "@nextui-org/react";
 import { ShoppingCart } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { CartContext } from "@/context/CartProvider";
+import parse from 'html-react-parser'
 import { ProductDetailContext } from "./product/ProductDetail";
 
 const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
@@ -133,7 +134,7 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
 
   return (
     <div>
-      <div className="m-[10px_0_18px]">
+      <div className="">
         <p className="text-[30px] font-extrabold">{product.name}</p>
         <p className="text-gray-500 text-small">
           SKU:{" "}
@@ -148,15 +149,15 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
           {`${getOriginalPrice()} đ`}
         </p>
       )}
-      <p className="text-[32px] font-medium text-[#b61a2d] mb-2.5">
+      <p className="text-[32px] font-medium text-[#b61a2d]">
         {getPrice() && getPrice() > 0 ? `${getPrice()} đ` : ""}
       </p>
-      <p className="text-sm mb-[30px]">
-        Đã bao gồm VAT, chưa bao gồm phí giao hàng
+      <p className="text-sm">
+        Đã bao gồm VAT, chưa bao gồm phí giao hàng.
       </p>
-      <p className="text-sm mb-2.5">Giao hàng trong vòng 1-3 ngày</p>
+      <p className="text-sm mb-2.5">Giao hàng trong vòng 1-3 ngày.</p>
 
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2">
         <div className="flex gap-2 flex-wrap">
           {saleDetails
             .filter(
@@ -197,7 +198,17 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
             </Button>
           ))}
         </div>
-
+        {
+          product.promotion &&
+          <div>
+            <p className="text-red-500 font-bold ">Khuyến mãi:</p>
+            <div className="bg-white h-28 border rounded-lg p-1">
+              {
+                parse(product.promotion || "")
+              }
+            </div>
+          </div>
+        }
         <Input
           type="number"
           label="Số lượng"
@@ -230,7 +241,7 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

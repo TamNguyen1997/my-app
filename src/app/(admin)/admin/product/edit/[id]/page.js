@@ -12,6 +12,8 @@ import ProductImage from "@/app/components/admin/ui/product/ProductImage";
 import { useParams } from "next/navigation";
 import { product_type } from "@prisma/client";
 import { toast, ToastContainer } from "react-toastify";
+import { useEditor } from "@tiptap/react";
+import { editorConfig } from "@/lib/editor";
 
 export const ProductContext = createContext();
 
@@ -23,6 +25,7 @@ const ProductCms = () => {
   const [subCategories, setSubCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [filters, setFilters] = useState([]);
+  const editor = useEditor(editorConfig(""))
 
   // Fetch product details and related data
   const getProduct = useCallback(async () => {
@@ -61,6 +64,9 @@ const ProductCms = () => {
     };
 
     getFilters();
+    if (product.promotion && editor) {
+      editor.commands.setContent(product.promotion);
+    }
   }, [product.subCateId, product.categoryId]);
 
   // Delete product
@@ -97,6 +103,7 @@ const ProductCms = () => {
           productId: product.productId,
           metaTitle: product.metaTitle,
           metaDescription: product.metaDescription,
+          promotion: editor?.getHTML() || product.promotion,
         },
         saleDetails: product.saleDetails,
         productOnImages: newProductOnImage,
@@ -116,7 +123,7 @@ const ProductCms = () => {
   return (
     <>
       <ToastContainer containerId="ProductDetailPage" />
-      <ProductContext.Provider value={{ product, setProduct, categories, brands, subCategories, filters, setFilters }}>
+      <ProductContext.Provider value={{ product, setProduct, categories, brands, subCategories, filters, setFilters, editor }}>
         <Tabs>
           <Tab title="Thông tin chung">
             <Card>

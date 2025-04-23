@@ -56,6 +56,8 @@ const Page = async ({ params }) => {
     productDescription = productDescriptionJson[0]?.content?.rendered
   }
 
+  console.log(product.promotion)
+
   const relatedProducts = await db.product.findMany({
     select: {
       active: true,

@@ -6,15 +6,15 @@ import { parseDate } from "@internationalized/date";
 import { ProductContext } from "../../../../(admin)/admin/product/edit/[id]/page"
 import { toast } from "react-toastify";
 import Image from "next/image";
+import RichTextEditor from "@/app/components/admin/ui/RichTextArea"
 
 const getDateString = (isoDate) =>
   parseDate(new Date(isoDate).toISOString().split("T")[0]);
 
 const ProductDetail = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const { categories, brands, subCategories, product, setProduct } = useContext(ProductContext)
+  const { categories, brands, subCategories, product, setProduct, editor } = useContext(ProductContext)
   const [productImage, setProductImage] = useState(product.image || {})
-
   const selectImage = (value) => {
     const newProduct = { ...product, ...{ imageUrl: value.source_url } }
     setProduct({ ...newProduct })
@@ -240,6 +240,26 @@ const ProductDetail = () => {
               label="Alt"
               onValueChange={(value) => setProduct(Object.assign({}, product, { imageAlt: value }))}
               value={product?.imageAlt} />
+            <div>
+              <label for="Chương trình khuyến mãi" >Chương trình khuyến mãi</label>
+              <RichTextEditor id="Chương trình khuyến mãi" editor={editor} disable={{
+                image: true,
+                video: true,
+                table: true,
+                font: true,
+                highlight: true,
+                subscript: true,
+                superscript: true,
+                replace: true,
+                breakLine: true,
+                button: true,
+                indent: true,
+                copy: true,
+                checkbox: true,
+                multicheckbox: true,
+                code: true,
+              }} />
+            </div>
             <div>
               <Button color="primary" onPress={onOpen} className="w-24 float-right">Chọn ảnh</Button>
             </div>

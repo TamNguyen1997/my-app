@@ -29,6 +29,7 @@ export async function POST(req) {
       weight: body.product.weight || 0,
       metaTitle: body.product.metaTitle,
       metaDescription: body.product.metaDescription,
+      promotion: body.product.promotion,
     }
 
     const saleDetails = body.saleDetails?.map(item => {

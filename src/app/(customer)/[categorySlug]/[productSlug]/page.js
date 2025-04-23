@@ -48,7 +48,7 @@ const Page = async ({ params }) => {
     notFound()
   }
   let productDescription = ""
-  const productPostResponse = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${params.productSlug}&categories=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}`);
+  const productPostResponse = await fetch(`${process.env.WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${params.productSlug}`);
   if (productPostResponse.ok) {
     const productDescriptionJson = await productPostResponse.json();
     productDescription = productDescriptionJson[0]?.content?.rendered

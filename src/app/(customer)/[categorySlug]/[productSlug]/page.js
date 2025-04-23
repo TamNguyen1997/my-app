@@ -3,6 +3,9 @@ import { db } from '@/app/db';
 import { product_type } from "@prisma/client";
 import { notFound } from "next/navigation";
 
+export const dynamic = "force-dynamic"; // Forces dynamic rendering
+export const revalidate = 0;
+
 export async function generateMetadata({ params }) {
   const product = await db.product.findFirst({ where: { slug: params.productSlug } })
   return {

@@ -37,10 +37,17 @@ const BlogContent = ({ blog }) => {
   </>)
 }
 
-const BlogDetail = ({ slug, blog, relatedBlogs = [] }) => {
+const getSlug = (category) => {
+  return category === "INFORMATION" ? "/kien-thuc-hay" : "/tin-tuc";
+}
+
+const getTitle = (category) => {
+  return category === "INFORMATION" ? "Kiến thức hay" : "Tin tức";
+}
+
+const BlogDetail = ({ slug, blog, relatedBlogs = [], category = "INFORMATION" }) => {
   return (
     <div className="bg-[#f6f6f6] font-open_san">
-      <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/blog/${slug}`} />
       <div className="bg-opacity-40 py-6">
         <div className="container">
           <Breadcrumbs
@@ -50,7 +57,7 @@ const BlogDetail = ({ slug, blog, relatedBlogs = [] }) => {
               base: "[&>span]:text-[#23b701] last:[&>span]:text-black [&>span]:whitespace-normal"
             }}
           >
-            <BreadcrumbItem href="/blog">Blog</BreadcrumbItem>
+            <BreadcrumbItem href={`${getSlug(category)}`}>{getTitle(category)}</BreadcrumbItem>
             <BreadcrumbItem>
               {blog.title ? parse(blog.title.rendered || blog.title) : ""}
             </BreadcrumbItem>

@@ -19,7 +19,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
 
   const tableHeaders = [
     {
-      key: "id",
+      key: "displayId",
       title: "ID giá trị filter"
     },
     {

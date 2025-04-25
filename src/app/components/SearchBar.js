@@ -4,7 +4,7 @@ import { Input } from '@nextui-org/react';
 import { LoaderIcon, Search } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import slugify from 'slugify';
 
 const blogCategories = {
@@ -17,6 +17,7 @@ const SearchBar = () => {
   const [isLoading, setIsLoading] = useState({ categories: false, products: false, blogs: false });
   const [results, setResults] = useState({ categories: [], products: [], blogs: [] });
   const [query, setQuery] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
 
   const queryString = useMemo(() => new URLSearchParams({ slug: slugify(query, { locale: 'vi' }).replace(/[()]/g, '') }), [query]);
 
@@ -24,7 +25,7 @@ const SearchBar = () => {
     setIsLoading({ categories: true, products: true, blogs: true });
 
     Promise.all([
-      fetch(`/api/categories/?size=5&page=1&${queryString}`).then(res => res.json()),
+      fetch(`/api/categories/?size=3&page=1&${queryString}`).then(res => res.json()),
       fetch(`/api/products/search/?size=5&page=1&searchTerm=${value}&includeCate=true`).then(res => res.json()),
       fetch(`/api/blogs/?size=5&page=1&${queryString}&excludeSupport=true`).then(res => res.json()),
     ]).then(([categories, products, blogs]) => {
@@ -34,6 +35,19 @@ const SearchBar = () => {
   };
 
   const shouldShowResults = useMemo(() => query.length > 2, [query]);
+
+  const getLink = useCallback((key, item) => {
+    switch (key) {
+      case 'categories':
+        return `/${item.slug}`;
+      case 'products':
+        return `/${item.subCate?.slug}/${item.slug}`;
+      case 'blogs':
+        return `/${blogCategories[item.blogCategory]?.slug}/${item.slug}`;
+      default:
+        return '/';
+    }
+  }, [results, queryString]);
 
   return (
     <div ref={wrapperRef} className="relative lg:w-72 md:w-60 xl:w-96 sm:w-44">
@@ -49,8 +63,14 @@ const SearchBar = () => {
         }}
         onKeyDown={(e) => e.key === 'Enter' && query.trim() && window.location.replace(`/tim-kiem?key=${slugify(query, { locale: 'vi' }).replace(/[()]/g, '')}`)}
         onClear={() => setQuery('')}
+        onFocus={() => {
+          setIsFocused(true);
+        }}
+        onBlur={() => {
+          setIsFocused(false);
+        }}
       />
-      {shouldShowResults && (
+      {shouldShowResults && isFocused && (
         <div className="w-[400px] bg-white shadow-lg rounded-lg absolute top-full left-0 mt-2 overflow-hidden z-50">
           {[{ key: 'categories', label: 'Có phải bạn đang muốn tìm' },
           { key: 'products', label: 'Sản phẩm gợi ý' },
@@ -62,7 +82,7 @@ const SearchBar = () => {
               ) : results[key].length > 0 ? (
                 <div className="divide-y divide-slate-300 py-2">
                   {results[key].map((item) => (
-                    <Link key={item.id} href={`/${key === 'blogs' ? blogCategories[item.blogCategory]?.slug : item.subCate?.slug || 'san-pham'}/${item.slug}`}>
+                    <Link key={item.id} href={`${getLink(key, item)}`}>
                       <div className="px-4 py-2 flex items-center gap-5 hover:bg-slate-50 cursor-pointer">
                         {item.imageUrl || item.thumbnail ? <Image width={60} height={60} src={item.imageUrl || item.thumbnail} alt={item.name || item.title || "Tìm kiếm Dụng cụ vệ sinh Sao Việt"} /> : ''}
                         <div>

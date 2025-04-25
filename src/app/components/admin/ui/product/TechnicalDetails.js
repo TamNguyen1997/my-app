@@ -32,8 +32,9 @@ const TechnicalDetails = () => {
   }
 
   const deleteDetail = (id) => {
-    setTechnicalDetails(technicalDetails.filter(item => item.id !== id))
-    setProduct({ ...product, technical_detail: technicalDetails })
+    const newTechnicalDetails = [...technicalDetails]
+    setTechnicalDetails(newTechnicalDetails.filter(item => item.id !== id))
+    setProduct({ ...product, technical_detail: newTechnicalDetails })
   }
 
   const newFilterModal = useDisclosure()

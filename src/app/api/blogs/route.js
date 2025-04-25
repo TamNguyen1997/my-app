@@ -23,108 +23,19 @@ export async function POST(req) {
 
 export async function GET(req) {
   try {
-    let page = 1
-    let size = 10
-
     const { query } = queryString.parseUrl(req.url);
 
-    let condition = {}
+    let page = query.page ? parseInt(query.page) : 1
+    let size = query.size ? parseInt(query.size) : 10
 
-    if (query) {
-      page = parseInt(query.page) || 1
-      size = parseInt(query.size) || 10
-    }
-    if (query.excludeSupport) {
-      condition.NOT = [{
-        slug: {
-          in: ["ho-tro", "chinh-sach-bao-mat", "hop-tac-ban-hang", "chinh-sach-doi-tra", "chinh-sach-bao-hanh",
-            "huong-dan-mua-hang", "hinh-thuc-thanh-toan", "hinh-thuc-van-chuyen", "doi-tac", "khach-hang"]
-        }
-      }
-      ]
-    }
+    const res = await fetch(`${process.env.WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&search=${query.searchTerm}&per_page=${size}&page=${page}&categories=${[process.env.NEXT_PUBLIC_WORDPRESS_POST_NEWS_ID, process.env.NEXT_PUBLIC_WORDPRESS_POST_INFORMATION_ID].join(",")}`)
+    const totalBlog = res.headers.get('X-WP-Total')
 
-    if (query.active) {
-      condition.active = query.active === 'true'
-    }
-    if (query.activeDate === 'true') {
-      condition.activeFrom = {
-        lte: new Date()
-      }
-    }
-    if (query.blogCategory) {
-      condition.blogCategory = query.blogCategory
-    }
+    const result = await res.json()
 
-    if (query.blogSubCategory && query.blogSubCategory !== "undefined") {
-      condition.blogSubCategory = query.blogSubCategory
-    }
-
-    if (query.slug) {
-      condition.slug = {
-        search: `${query.slug.trim().replaceAll(" ", " & ")}:*`
-      }
-    }
-
-    if (query.search) {
-      condition.OR = [
-        {
-          slug: {
-            search: `${query.search.trim().replaceAll(" ", " & ")}:*`
-          }
-        },
-        {
-          title: {
-            search: `${query.search.trim().replaceAll(" ", " & ")}:*`
-          }
-        }
-      ]
-    }
-
-    let orderBy = {}
-
-    if (query.orderBy) {
-      switch (orderBy) {
-        case 'createdAt:asc':
-          orderBy = { createdAt: 'asc' }
-          break;
-        case 'createdAt:desc':
-        default:
-          orderBy = { createdAt: 'desc' }
-          break;
-      }
-    }
-
-    const result = await db.blog.findMany({
-      select: {
-        id: true,
-        blogId: true,
-        title: true,
-        slug: true,
-        thumbnail: true,
-        altThumb: true,
-        metaTitle: true,
-        metaDescription: true,
-        keyword: true,
-        active: true,
-        activeFrom: true,
-        description: true,
-        author: true,
-        summary: true,
-        createdAt: true,
-        updatedAt: true,
-        type: true,
-        blogCategory: true,
-        blogSubCategory: true,
-      },
-      where: condition,
-      take: size,
-      skip: (page - 1) * size,
-      orderBy: orderBy
-    })
     return NextResponse.json({
       result,
-      total: await db.blog.count({ where: condition })
+      total: totalBlog
     })
   } catch (e) {
     console.log(e)

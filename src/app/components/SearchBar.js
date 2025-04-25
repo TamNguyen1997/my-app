@@ -6,11 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import slugify from 'slugify';
-
-const blogCategories = {
-  INFORMATION: { slug: 'kien-thuc-hay' },
-  NEWS: { slug: 'tin-tuc' },
-};
+import parse from 'html-react-parser';
 
 const SearchBar = () => {
   const wrapperRef = useRef(null);
@@ -27,11 +23,14 @@ const SearchBar = () => {
     Promise.all([
       fetch(`/api/categories/?size=3&page=1&${queryString}`).then(res => res.json()),
       fetch(`/api/products/search/?size=5&page=1&searchTerm=${value}&includeCate=true`).then(res => res.json()),
-      fetch(`/api/blogs/?size=5&page=1&${queryString}&excludeSupport=true`).then(res => res.json()),
-    ]).then(([categories, products, blogs]) => {
-      setResults({ categories: categories.result, products: products.result, blogs: blogs.result });
-      setIsLoading({ categories: false, products: false, blogs: false });
+    ]).then(([categories, products]) => {
+      setResults(prev => ({ ...prev, categories: categories.result, products: products.result }));
+      setIsLoading(prev => ({ ...prev, categories: false, products: false }));
     });
+    fetch(`/api/blogs/?size=3&page=1&searchTerm=${value}`).then(res => res.json()).then(json => {
+      setResults(prev => ({ ...prev, blogs: json.result }))
+      setIsLoading(prev => ({ ...prev, blogs: false }));
+    })
   };
 
   const shouldShowResults = useMemo(() => query.length > 2, [query]);
@@ -43,7 +42,7 @@ const SearchBar = () => {
       case 'products':
         return `/${item.subCate?.slug}/${item.slug}`;
       case 'blogs':
-        return `/${blogCategories[item.blogCategory]?.slug}/${item.slug}`;
+        return item.categories?.includes(process.env.NEXT_PUBLIC_WORDPRESS_POST_NEWS_ID) ? `/tin-tuc/${item.slug}` : `/kien-thuc-hay/${item.slug}`;
       default:
         return '/';
     }
@@ -81,16 +80,8 @@ const SearchBar = () => {
                 <div className="w-full p-2 flex justify-center"><LoaderIcon className="animate-spin" /></div>
               ) : results[key].length > 0 ? (
                 <div className="divide-y divide-slate-300 py-2">
-                  {results[key].map((item) => (
-                    <Link key={item.id} href={`${getLink(key, item)}`}>
-                      <div className="px-4 py-2 flex items-center gap-5 hover:bg-slate-50 cursor-pointer">
-                        {item.imageUrl || item.thumbnail ? <Image width={60} height={60} src={item.imageUrl || item.thumbnail} alt={item.name || item.title || "Tìm kiếm Dụng cụ vệ sinh Sao Việt"} /> : ''}
-                        <div>
-                          <h3 className="font-semibold text-slate-600">{item.name || item.title}</h3>
-                          {key === 'products' && <p className="text-slate-400">{item.category?.name}</p>}
-                        </div>
-                      </div>
-                    </Link>
+                  {results[key].map((item, i) => (
+                    key === "blogs" ? <BlogSearchItem key={item.id} item={item} url={getLink(key, item)} /> : <DefaultSearchItem key={item.id} item={item} url={getLink(key, item)} type={key} />
                   ))}
                 </div>
               ) : <div className="py-2 flex justify-center">Không tìm thấy kết quả</div>}
@@ -101,5 +92,33 @@ const SearchBar = () => {
     </div>
   );
 };
+
+const DefaultSearchItem = ({ item, url, type }) => {
+  return (
+    <Link key={item.id} href={`${url}`}>
+      <div className="px-4 py-2 flex items-center gap-5 hover:bg-slate-50 cursor-pointer">
+        {item.imageUrl || item.thumbnail ? <Image width={60} height={60} src={item.imageUrl || item.thumbnail} alt={item.name || item.title || "Tìm kiếm Dụng cụ vệ sinh Sao Việt"} /> : ''}
+        <div>
+          <h3 className="font-semibold text-slate-600">{item.name || item.title}</h3>
+          {type === 'products' && <p className="text-slate-400">{item.category?.name}</p>}
+        </div>
+      </div>
+    </Link>
+  )
+};
+
+const BlogSearchItem = ({ item, url }) => {
+  return (
+    <Link key={item.id} href={`${url}`}>
+      <div className="px-4 py-2 flex items-center gap-5 hover:bg-slate-50 cursor-pointer">
+        <Image width={60} height={60} src={`${item._embedded["wp:featuredmedia"]?.length ? item._embedded["wp:featuredmedia"][0]["source_url"] : "/default-featured-image.webp"}`} alt={item.title.rendered} />
+        <div>
+          <h3 className="font-semibold text-slate-600">{parse(item.title.rendered)}</h3>
+        </div>
+      </div>
+    </Link>
+  )
+}
+
 
 export default SearchBar;

@@ -88,7 +88,7 @@ const SearchBlog = () => {
   }, [total, rowsPerPage]);
 
   const getBlog = () => {
-    fetch(`/api/blogs/?excludeSupport=true&size=${rowsPerPage}&page=${page}&slug=${searchParams.get("key")}`).then(async res => {
+    fetch(`/api/blogs/?size=${rowsPerPage}&page=${page}&slug=${searchParams.get("key")}`).then(async res => {
       if (res.ok) {
         const body = await res.json()
         setData(body.result)

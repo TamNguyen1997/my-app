@@ -12,10 +12,13 @@ import {
   Button
 } from "@nextui-org/react"
 import { Trash2 } from "lucide-react";
+import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { v4 } from "uuid";
 
 const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, filterId }) => {
+
+  const [isSaving, setIsSaving] = useState(false)
 
   const tableHeaders = [
     {
@@ -63,14 +66,16 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
   }
 
   const onSave = async () => {
+    setIsSaving(true)
+    toast.warning("Đang lưu...", { containerId: "FilterProduct" })
     let res
 
     let filterValues = filter.filterValue ? filter.filterValue.map(item => {
       return {
         ...item,
-        brands: item.brands ? item.brands.map(b => b.id) : [],
-        categories: item.categories ? item.categories.map(cate => cate.id) : [],
-        subCategories: item.subCategories ? item.subCategories.map(subcate => subcate.id) : [],
+        brands: item.brands ? item.brands.map(b => ({ brandId: b.id, filterValueId: item.id })) : [],
+        categories: item.categories ? item.categories.map(cate => ({ categoryId: cate.id, filterValueId: item.id })) : [],
+        subCategories: item.subCategories ? item.subCategories.map(subcate => ({ categoryId: subcate.id, filterValueId: item.id })) : [],
       }
     }) : []
 
@@ -87,23 +92,37 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
         window.location.replace(`/admin/filter/edit/${body.id}`)
       } else {
         const body = await res.json()
-        toast.error(body.message)
+        toast.error(body.message, { containerId: "FilterProduct" })
       }
     } else {
       res = await fetch(`/api/filters/${filterId}`, {
         method: "PUT",
         body: JSON.stringify({
-          ...filter,
-          filterValue: filterValues
+          displayId: filter.displayId,
+          active: filter.active,
+          name: filter.name,
         })
       })
+
+      if (res.ok && filterValues.length > 0) {
+        toast.success("Cập nhật Filter thành công", { containerId: "FilterProduct" })
+        toast.warning("Tiến hành cập nhật giá trị filter...", { containerId: "FilterProduct" })
+
+        res = await fetch(`/api/filters/${filterId}/filter-values`, {
+          method: "PUT",
+          body: JSON.stringify({
+            filterValues: filterValues
+          })
+        })
+      }
     }
 
     if (res.ok) {
-      window.location.replace(`/admin/filter/edit/${filter.id}`)
+      toast.success("Cập nhật thành công", { containerId: "FilterProduct" })
     } else {
-      toast.error("Không thể cập nhật")
+      toast.error("Không thể cập nhật", { containerId: "FilterProduct" })
     }
+    setIsSaving(false)
   }
 
   const addNewFilterValue = () => {
@@ -133,9 +152,9 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
 
     const res = await fetch(`/api/filter-value/${valueId}`, { method: "DELETE" })
     if (res.ok) {
-      toast.success("Đã xóa")
+      toast.success("Đã xóa", { containerId: "FilterProduct" })
     } else {
-      toast.error("Không thể xóa")
+      toast.error("Không thể xóa", { containerId: "FilterProduct" })
     }
   }
 
@@ -226,7 +245,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer containerId="FilterProduct" />
       <div className="flex flex-col gap-2 min-h-full">
         <div className="px-1 py-2 border-default-200">
           <Table
@@ -271,8 +290,8 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
           <div className="flex gap-5">
             <Link href="/admin/filter">Quay về</Link>
             <Link href="/admin/filter/edit/new">Thêm filter</Link>
-            <Button color="primary" className="ml-auto" onClick={onSave}>Lưu</Button>
-            <Button color="default" variant="ghost" className="">Xoá</Button>
+            <Button color="primary" className="ml-auto" onClick={onSave} isDisabled={isSaving}>Lưu</Button>
+            <Button color="danger" variant="ghost" className="">Xoá</Button>
           </div>
         </div>
       </div>

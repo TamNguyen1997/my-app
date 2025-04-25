@@ -4,7 +4,7 @@ import { useContext, useState } from "react"
 import { v4 } from "uuid"
 import NewFilter from "./NewFilter"
 import { FilterValueSelect } from "./NewFilterValue"
-import { ProductContext } from "@/app/(admin)/admin/product/edit/[id]/page"
+import { ProductContext } from "@/app/(admin)/admin/product/edit/[id]/default"
 
 const TechnicalDetails = () => {
   const { product, filters, setFilters, setProduct } = useContext(ProductContext)
@@ -32,8 +32,8 @@ const TechnicalDetails = () => {
   }
 
   const deleteDetail = (id) => {
-    const newTechnicalDetails = [...technicalDetails]
-    setTechnicalDetails(newTechnicalDetails.filter(item => item.id !== id))
+    const newTechnicalDetails = [...technicalDetails].filter(item => item.id !== id)
+    setTechnicalDetails(newTechnicalDetails)
     setProduct({ ...product, technical_detail: newTechnicalDetails })
   }
 

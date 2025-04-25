@@ -1,166 +1,77 @@
-"use client"
+import { cate_type } from "@prisma/client";
+import Default from "./default";
+import { db } from "@/app/db";
 
-import {
-  Button,
-  Card, CardBody, Spinner, Tab, Tabs,
-} from "@nextui-org/react"
-import { createContext, useEffect, useState } from "react"
-import SaleDetails from "@/app/components/admin/ui/product/SaleDetails";
-import TechnicalDetails from "@/app/components/admin/ui/product/TechnicalDetails";
-import ProductDetail from "@/app/components/admin/ui/product/ProductDetail";
-import ProductImage from "@/app/components/admin/ui/product/ProductImage";
-import { useParams } from "next/navigation";
-import { product_type } from "@prisma/client";
-import { useEditor } from "@tiptap/react";
-import { editorConfig } from "@/lib/editor";
-import { toast, ToastContainer } from "react-toastify";
-
-export const ProductContext = createContext();
-
-const ProductCms = () => {
-  const { id } = useParams()
-  const [isLoading, setIsLoading] = useState(true)
-  const [product, setProduct] = useState({})
-
-  const [categories, setCategories] = useState([])
-  const [subCategories, setSubCategories] = useState([])
-  const [brands, setBrands] = useState([])
-  const [filters, setFilters] = useState([])
-
-  useEffect(() => {
-    const getFilters = async () => {
-      const res = await fetch(`/api/filters/?size=100000&page=1&categoryIds=${product.subCateId}&categoryIds=${product.categoryId}`)
-      if (res.ok) {
-        setFilters((await res.json()).result)
-      }
-      setIsLoading(false)
-    }
-
-    if (product.subCateId) {
-      getFilters()
-    }
-  }, [product.subCateId])
-
-  const editor = useEditor(editorConfig())
-
-  useEffect(() => {
-    const getProduct = async () => {
-      setIsLoading(true)
-      await Promise.all([
-        fetch('/api/categories?type=CATE&size=10000&page=1').then(res => res.json()).then(json => setCategories(json.result)),
-        fetch('/api/brands').then(res => res.json()).then(setBrands),
-        fetch('/api/categories?type=SUB_CATE&size=10000&page=1').then(res => res.json()).then(json => setSubCategories(json.result)),
-      ])
-
-      if (id && id !== 'new') {
-        const res = await fetch(`/api/products/${id}?includeSale=true`).then(res => res.json())
-        setProduct(res)
-        editor.commands.setContent(res.description)
-      }
-      setIsLoading(false)
-    }
-
-    if (editor) {
-      getProduct()
-    }
-  }, [id, editor])
-
-
-  const deleteProduct = async () => {
-    if (window.confirm("Bạn có chắc chắn muốn xoá sản phẩm này không?")) {
-      setIsLoading(true)
-      const res = await fetch(`/api/products/${id}`, { method: "DELETE" })
-      if (res.ok) {
-        window.location.replace('/admin/product')
-      }
-      setIsLoading(false)
-    }
+export async function generateMetadata({ params }) {
+  const product = await db.product.findFirst({ where: { id: params.id } })
+  return {
+    title: product?.metaTitle || product?.name || "Sản phẩm của Dụng cụ vệ sinh Sao Việt",
   }
+}
 
-  const onSave = async () => {
-    const newProductOnImage = product.product_on_image?.map((item, i) => ({ ...item, order: i })) || []
-    const res = await fetch(`/api/products/v2`,
-      {
-        method: "POST",
-        body: JSON.stringify({
-          product: {
-            id: product.id,
-            name: product.name,
-            slug: product.slug || slugify(body.product.name, { locale: 'vi' }).replaceAll("(", "").replaceAll(")", "").toLowerCase(),
-            imageAlt: product.imageAlt,
-            imageUrl: product.imageUrl,
-            active: product.active,
-            highlight: product.highlight,
-            description: editor.getHTML(),
-            categoryId: product.categoryId,
-            subCateId: product.subCateId,
-            quantity: product.quantity,
-            brandId: product.brandId,
-            productType: product.productType || product_type.PRODUCT,
-            width: product.width || 0,
-            length: product.length || 0,
-            height: product.height || 0,
-            weight: product.weight || 0,
-            productId: product.productId,
-            metaTitle: product.metaTitle,
-            metaDescription: product.metaDescription,
+const Page = async ({ params }) => {
+
+  const [product, allCategories, brands] = await Promise.all([
+    db.product.findFirst({
+      where: {
+        OR: [
+          { id: params.id },
+          { slug: params.id }
+        ]
+      },
+      include: {
+        technical_detail: {
+          include: {
+            filterValue: true,
+            filter: true
+          }
+        },
+        saleDetails: {
+          include: {
+            filter: true,
+            filterValue: true
+          }
+        },
+        image: true,
+        category: true,
+        subCate: true,
+        product_on_image: {
+          orderBy: {
+            order: 'asc'
           },
-          saleDetails: product.saleDetails,
-          productOnImages: newProductOnImage,
-          technicalDetails: product.technical_detail
-        })
-      })
-    if (res.ok) {
-      toast.success("Cập nhật sản phẩm thành công", { containerId: "ProductDetailPage" })
-    } else {
-      toast.error("Không thể cập nhật sản phẩm", { containerId: "ProductDetailPage" })
+        },
+        brand: true
+      }
+    }),
+    db.category.findMany({}),
+    db.brand.findMany({}),
+
+  ])
+
+  const allCategoryIds = allCategories.map(item => item.id)
+  const filters = await db.filter.findMany({
+    include: {
+      filterValue: true
+    },
+    where: {
+      filterValue: {
+        some: {
+          category_on_filter_value: {
+            some: {
+              categoryId: { in: allCategoryIds }
+            }
+          }
+        }
+      }
     }
-  }
+  })
 
-  if (isLoading || !product) return <Spinner className="w-full h-full m-auto p-12" />
+  const categories = allCategories.filter(item => item.type === cate_type.CATEGORY)
 
+  const subCategories = allCategories.filter(item => item.type === cate_type.SUB_CATE)
   return (
-    <>
-      <ToastContainer containerId="ProductDetailPage" />
-      <ProductContext.Provider value={{ product, setProduct, categories, brands, subCategories, filters, setFilters, editor }}>
-        <Tabs>
-          <Tab title="Thông tin chung">
-            <Card>
-              <CardBody>
-                <ProductDetail />
-              </CardBody>
-            </Card>
-          </Tab>
-          <Tab title="Hình ảnh" key="image">
-            <Card>
-              <CardBody>
-                <ProductImage />
-              </CardBody>
-            </Card>
-          </Tab>
-          <Tab title="Thông số kĩ thuật" key="technical">
-            <Card>
-              <CardBody>
-                <TechnicalDetails />
-              </CardBody>
-            </Card>
-          </Tab>
-          <Tab title="Thông số bán hàng" key="sale">
-            <Card>
-              <CardBody>
-                <SaleDetails />
-              </CardBody>
-            </Card>
-          </Tab>
-        </Tabs>
-      </ProductContext.Provider>
-
-      <div className="pt-4 float-right sticky bottom-0">
-        <Button onPress={onSave} color="primary" isDisabled={isLoading}>Lưu</Button>
-        <Button onPress={deleteProduct} color="danger" isDisabled={isLoading}>Xoá sản phẩm</Button>
-      </div>
-    </>
+    <Default initProduct={product} categories={categories} subCategories={subCategories} brands={brands} initFilters={filters} />
   )
 }
 
-export default ProductCms
+export default Page

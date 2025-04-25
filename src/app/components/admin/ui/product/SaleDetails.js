@@ -4,7 +4,7 @@ import { useContext } from "react"
 import { v4 } from "uuid"
 import NewFilter from "@/components/admin/ui/product/NewFilter"
 import { FilterValueSelect } from "./NewFilterValue"
-import { ProductContext } from "../../../../(admin)/admin/product/edit/[id]/page"
+import { ProductContext } from "../../../../(admin)/admin/product/edit/[id]/default"
 import crypto from "crypto";
 
 const removeItem = (id, product, setProduct) => {

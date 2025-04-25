@@ -19,7 +19,7 @@ const Header = ({ headers }) => {
   return (
     <nav className="bg-black border-gray-200 dark:bg-gray-900 header">
       <div className="w-full h-full flex">
-        <div className="max-w-screen-xl flex items-center justify-between mx-auto sm:pl-10 pl-4">
+        <div className="flex items-center justify-between sm:pl-10 pl-4">
           <Link href="/" className="pr-4">
             <Image
               src="/saoviet.webp"
@@ -33,7 +33,7 @@ const Header = ({ headers }) => {
             />
           </Link>
         </div>
-        <div className="w-[80%] rounded-tl-[50px] rounded-bl-[50px] bg-[#FFD400]">
+        <div className="w-full rounded-tl-[50px] rounded-bl-[50px] bg-[#FFD400]">
           <div className="pl-9 p-3 flex gap-7">
             <div className="w-full max-w-[397px] flex items-center gap-3">
               <SearchBar />

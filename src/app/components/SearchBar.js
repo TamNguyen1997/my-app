@@ -4,7 +4,7 @@ import { Input } from '@nextui-org/react';
 import { LoaderIcon, Search } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import slugify from 'slugify';
 import parse from 'html-react-parser';
 
@@ -14,6 +14,19 @@ const SearchBar = () => {
   const [results, setResults] = useState({ categories: [], products: [], blogs: [] });
   const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        setIsFocused(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const queryString = useMemo(() => new URLSearchParams({ slug: slugify(query, { locale: 'vi' }).replace(/[()]/g, '') }), [query]);
 
@@ -62,12 +75,7 @@ const SearchBar = () => {
         }}
         onKeyDown={(e) => e.key === 'Enter' && query.trim() && window.location.replace(`/tim-kiem?key=${slugify(query, { locale: 'vi' }).replace(/[()]/g, '')}`)}
         onClear={() => setQuery('')}
-        onFocus={() => {
-          setIsFocused(true);
-        }}
-        onBlur={() => {
-          setIsFocused(false);
-        }}
+        onFocus={() => setIsFocused(true)}
       />
       {shouldShowResults && isFocused && (
         <div className="w-[400px] bg-white shadow-lg rounded-lg absolute top-full left-0 mt-2 overflow-hidden z-50">

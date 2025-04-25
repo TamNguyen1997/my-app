@@ -69,6 +69,7 @@ const Filter = () => {
   }
 
   const deleteFilter = async (id) => {
+    if (!window.confirm("Bạn có chắc muốn xóa filter này không?")) return
     await fetch(`/api/filters/${id}`, { method: "DELETE" })
     getFilter()
   }

@@ -145,6 +145,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
   }
 
   const removeFilterValue = async (valueId) => {
+    if (!confirm("Bạn có chắc muốn xóa không?")) return
     setFilter({
       ...filter,
       filterValue: structuredClone(filter.filterValue || [])?.filter?.(filterValue => filterValue.id !== valueId)

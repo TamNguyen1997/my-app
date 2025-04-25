@@ -54,6 +54,7 @@ const ImagePicker = ({ onImageClick, disableDelete, reload, highlights, showHigh
     setIsLoading(false)
   }
   const deleteImage = async (image) => {
+    if (window.confirm("Bạn có chắc muốn xóa hình này không?")) return
     setIsLoading(true)
     const res = await fetch(`/api/images/wordpress/${image.id}`, {
       method: 'DELETE'

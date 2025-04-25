@@ -52,36 +52,29 @@ const ImagePicker = ({
     fetchImages();
   }, [refresh, reload, size, page]);
 
-  const fetchImages = async () => {
-    setIsLoading(true);
-    try {
-      const res = await fetch(`/api/images/wordpress/?search=${search || ""}&size=${size}&page=${page}`);
-      const json = await res.json();
-      setImages(json.result || []);
-      setTotal(json.total);
-    } catch (error) {
-      console.error("Error fetching images:", error);
-    } finally {
-      setIsLoading(false);
+  const getImages = async () => {
+    setIsLoading(true)
+    await fetch(`/api/images/wordpress/?search=${search || ""}&size=${size}&page=${page}`).then(async res => {
+      const json = await res.json()
+      setImages(json.result || [])
+      setTotal(json.total)
+    })
+    setIsLoading(false)
+  }
+  const deleteImage = async (image) => {
+    if (window.confirm("Bạn có chắc muốn xóa hình này không?")) return
+    setIsLoading(true)
+    const res = await fetch(`/api/images/wordpress/${image.id}`, {
+      method: 'DELETE'
+    })
+    if (res.ok) {
+      setRefresh(!refresh)
+    } else {
+      const json = await res.json()
+      toast.error(json.message, { containerId: "image-picker" })
     }
-  };
-
-  const handleDeleteImage = async (image) => {
-    setIsLoading(true);
-    try {
-      const res = await fetch(`/api/images/wordpress/${image.id}`, { method: "DELETE" });
-      if (res.ok) {
-        setRefresh(!refresh);
-      } else {
-        const json = await res.json();
-        toast.error(json.message, { containerId: "image-picker" });
-      }
-    } catch (error) {
-      console.error("Error deleting image:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    setIsLoading(false)
+  }
 
   const handleEditImage = async (data) => {
     try {

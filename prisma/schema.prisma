@@ -178,9 +178,10 @@ model sale_detail_on_image {
 }
 
 model filter {
-  id     String  @id @default(dbgenerated("gen_random_uuid()"))
-  name   String  @default("")
-  active Boolean @default(false)
+  id        String  @id @default(dbgenerated("gen_random_uuid()"))
+  name      String  @default("")
+  active    Boolean @default(false)
+  displayId String  @unique @default(dbgenerated("gen_random_uuid()")) @map("display_id")
 
   createdAt        DateTime           @default(now()) @map("created_at")
   updatedAt        DateTime           @default(now()) @updatedAt @map("updated_at")
@@ -190,11 +191,12 @@ model filter {
 }
 
 model filter_value {
-  id       String  @id @default(dbgenerated("gen_random_uuid()"))
-  value    String  @default("")
-  slug     String?
-  filter   filter  @relation(fields: [filterId], references: [id])
-  filterId String  @map("filter_id")
+  id        String  @id @default(dbgenerated("gen_random_uuid()"))
+  displayId String  @unique @default(dbgenerated("gen_random_uuid()")) @map("display_id")
+  value     String  @default("")
+  slug      String?
+  filter    filter  @relation(fields: [filterId], references: [id])
+  filterId  String  @map("filter_id")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")

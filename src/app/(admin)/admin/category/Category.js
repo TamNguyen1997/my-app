@@ -161,6 +161,7 @@ const Category = () => {
   }
 
   const deleteCate = (id) => {
+    if (!window.confirm("Bạn có chắc chắn muốn xóa không?")) return
     toast.promise(
       fetch(`/api/categories/${id}`, { method: "DELETE" }).then(async (res) => {
         getCategories()
@@ -200,23 +201,25 @@ const Category = () => {
     )
   }
   const deletePopularSearch = (id) => {
-    toast.promise(
-      fetch(`/api/popular-searches/${id}`, { method: "DELETE" }).then(async (res) => {
-        getCategories()
-        if (!res.ok) {
-          throw new Error((await res.json()).message)
-        }
-      }),
-      {
-        pending: 'Đang xóa',
-        success: 'Đã xóa Tìm kiếm phổ biến',
-        error: {
-          render({ data }) {
-            return data.message
+    if (window.confirm("Bạn có chắc chắn muốn xóa không?")) {
+      toast.promise(
+        fetch(`/api/popular-searches/${id}`, { method: "DELETE" }).then(async (res) => {
+          getCategories()
+          if (!res.ok) {
+            throw new Error((await res.json()).message)
+          }
+        }),
+        {
+          pending: 'Đang xóa',
+          success: 'Đã xóa Tìm kiếm phổ biến',
+          error: {
+            render({ data }) {
+              return data.message
+            }
           }
         }
-      }
-    )
+      )
+    }
   }
   const renderCell = useCallback((category, columnKey) => {
     const cellValue = category[columnKey]

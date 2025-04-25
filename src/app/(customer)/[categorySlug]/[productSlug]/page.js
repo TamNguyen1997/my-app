@@ -3,6 +3,9 @@ import { db } from '@/app/db';
 import { product_type } from "@prisma/client";
 import { notFound } from "next/navigation";
 
+export const dynamic = "force-dynamic"; // Forces dynamic rendering
+export const revalidate = 0;
+
 export async function generateMetadata({ params }) {
   const product = await db.product.findFirst({ where: { slug: params.productSlug } })
   return {
@@ -50,7 +53,7 @@ const Page = async ({ params }) => {
     notFound()
   }
   let productDescription = ""
-  const productPostResponse = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${params.productSlug}&categories=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID}`);
+  const productPostResponse = await fetch(`${process.env.WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${params.productSlug}`);
   if (productPostResponse.ok) {
     const productDescriptionJson = await productPostResponse.json();
     productDescription = productDescriptionJson[0]?.content?.rendered

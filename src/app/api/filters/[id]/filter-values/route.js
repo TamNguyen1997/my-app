@@ -106,3 +106,68 @@ export async function POST(req, { params }) {
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }
+
+export async function PUT(req, { params }) {
+  try {
+    const data = await req.json()
+    const filterValues = data.filterValues || []
+    if (filterValues.length === 0) {
+      return NextResponse.json({ message: "No filter values provided" }, { status: 400 })
+    }
+
+    const filterValueIds = filterValues.map(filterValue => filterValue.id)
+
+    await db.$transaction(async tx => {
+      await Promise.all([
+        tx.brand_on_filter_value.deleteMany({
+          where: { filterValueId: { in: filterValueIds } }
+        }),
+        tx.category_on_filter_value.deleteMany({
+          where: { filterValueId: { in: filterValueIds } }
+        }),
+      ])
+
+      await Promise.all([
+        ...filterValues.map(filterValue => {
+          return tx.filter_value.upsert({
+            where: { id: filterValue.id },
+            update: {
+              displayId: filterValue.displayId,
+              value: filterValue.value,
+              slug: filterValue.slug,
+              active: filterValue.active,
+            },
+            create: {
+              displayId: filterValue.displayId,
+              value: filterValue.value,
+              slug: filterValue.slug,
+              active: filterValue.active,
+              filterId: params.id,
+            }
+          })
+        })
+      ])
+    })
+
+    await db.$transaction(async tx => {
+      const brands = filterValues.map(filterValue => filterValue.brands).flat()
+      const categories = [
+        ...filterValues.map(filterValue => filterValue.categories).flat(),
+        ...filterValues.map(filterValue => filterValue.subCategories).flat()
+      ]
+
+      if (brands.length > 0) {
+        await tx.brand_on_filter_value.createMany({ data: brands })
+      }
+
+      if (categories.length > 0) {
+        await tx.category_on_filter_value.createMany({ data: categories })
+      }
+    })
+
+    return NextResponse.json({ message: "Update successfully" }, { status: 200 })
+  } catch (e) {
+    console.log(e)
+    return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
+  }
+}

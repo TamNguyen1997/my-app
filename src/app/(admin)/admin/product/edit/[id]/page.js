@@ -71,9 +71,13 @@ const ProductCms = () => {
 
   // Delete product
   const deleteProduct = async () => {
-    const res = await fetch(`/api/products/${id}`, { method: "DELETE" });
-    if (res.ok) {
-      window.location.replace('/admin/product');
+    if (window.confirm("Bạn có chắc chắn muốn xoá sản phẩm này không?")) {
+      setIsLoading(true)
+      const res = await fetch(`/api/products/${id}`, { method: "DELETE" })
+      if (res.ok) {
+        window.location.replace('/admin/product')
+      }
+      setIsLoading(false)
     }
   };
 
@@ -111,8 +115,7 @@ const ProductCms = () => {
       })
     });
     if (res.ok) {
-      const body = await res.json();
-      window.location.replace(`/admin/product/edit/${body.id}`);
+      toast.success("Cập nhật sản phẩm thành công", { containerId: "ProductDetailPage" })
     } else {
       toast.error("Không thể cập nhật sản phẩm", { containerId: "ProductDetailPage" });
     }
@@ -157,8 +160,8 @@ const ProductCms = () => {
       </ProductContext.Provider>
 
       <div className="pt-4 float-right sticky bottom-0">
-        <Button onPress={onSave} color="primary">Lưu</Button>
-        <Button onPress={deleteProduct} color="danger">Xoá sản phẩm</Button>
+        <Button onPress={onSave} color="primary" isDisabled={isLoading}>Lưu</Button>
+        <Button onPress={deleteProduct} color="danger" isDisabled={isLoading}>Xoá sản phẩm</Button>
       </div>
     </>
   );

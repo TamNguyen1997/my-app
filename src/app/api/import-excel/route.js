@@ -29,8 +29,8 @@ async function validateImportTechnicalDetail(
 ) {
   const [product, filter, filterValue] = await Promise.all([
     db.product.findUnique({ where: { id: productId } }),
-    db.filter.findUnique({ where: { id: filterId } }),
-    db.filter_value.findUnique({ where: { id: filterValueId } }),
+    db.filter.findUnique({ where: { displayId: filterId } }),
+    db.filter_value.findUnique({ where: { displayId: filterValueId } }),
   ])
 
   return {
@@ -207,6 +207,14 @@ async function importTechnicalDetail(worksheet) {
         )
       }
 
+      const filter = await tx.filter.findUnique({
+        where: { displayId: filterId }
+      })
+
+      const filterValue = await tx.filter_value.findUnique({
+        where: { displayId: filterValueId }
+      })
+
       const existingRecord = await tx.technical_detail.findFirst({
         where: {
           productId: productId,
@@ -224,10 +232,10 @@ async function importTechnicalDetail(worksheet) {
           connect: { id: productId },
         },
         filter: {
-          connect: { id: filterId },
+          connect: { id: filter.id },
         },
         filterValue: {
-          connect: { id: filterValueId },
+          connect: { id: filterValue.id },
         },
       }
 
@@ -300,7 +308,7 @@ async function importSaleDetail(worksheet) {
 
     if (filterValueId) {
       const filterValue = await db.filter_value.findUnique({
-        where: { id: filterValueId },
+        where: { displayId: filterValueId },
       })
 
       if (!filterValue) {

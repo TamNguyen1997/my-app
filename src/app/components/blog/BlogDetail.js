@@ -38,7 +38,6 @@ const BlogContent = ({ blog }) => {
 }
 
 const BlogDetail = ({ slug, blog, relatedBlogs = [] }) => {
-  console.log("blog", relatedBlogs)
   return (
     <div className="bg-[#f6f6f6] font-open_san">
       <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/blog/${slug}`} />

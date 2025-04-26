@@ -21,7 +21,7 @@ import {
 } from "@nextui-org/react";
 import { EditIcon, Search, X } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
-import { ProductContext } from "@/app/(admin)/admin/product/edit/[id]/page";
+import { ProductContext } from "@/app/(admin)/admin/product/edit/[id]/default";
 import Image from "next/image";
 import parse from "html-react-parser";
 import { useForm } from "react-hook-form";

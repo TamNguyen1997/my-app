@@ -3,7 +3,7 @@ import ImageCms from "../ImageCms"
 import { useContext, useState, forwardRef, useRef, useTransition, useCallback, useEffect } from "react"
 import { ToastContainer, toast } from 'react-toastify';
 import { X } from "lucide-react";
-import { ProductContext } from "../../../../(admin)/admin/product/edit/[id]/page"
+import { ProductContext } from "../../../../(admin)/admin/product/edit/[id]/default"
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import update from "immutability-helper";

@@ -1,6 +1,9 @@
 import { BlogDetail } from "@/components/blog/BlogDetail"
 import { notFound } from "next/navigation"
 
+export const dynamic = "force-dynamic"; // Forces dynamic rendering
+export const revalidate = 0;
+
 export async function generateMetadata({ params }) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${params._id}&_embed`)
   if (!res.ok) {

@@ -3,7 +3,7 @@ import slugify from "slugify"
 import ImageCms from "../ImageCms"
 import { useCallback, useContext, useState } from "react"
 import { parseDate } from "@internationalized/date";
-import { ProductContext } from "../../../../(admin)/admin/product/edit/[id]/page"
+import { ProductContext } from "../../../../(admin)/admin/product/edit/[id]/default"
 import { toast } from "react-toastify";
 import Image from "next/image";
 import RichTextEditor from "@/app/components/admin/ui/RichTextArea"

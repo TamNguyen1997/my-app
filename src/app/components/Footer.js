@@ -44,6 +44,9 @@ const Footer = () => {
             { href: "/lien-he", text: "Liên hệ", external: true },
             { href: "https://drive.google.com/drive/folders/1NJf3OdCXKGx23H9acc867UrQMGdq5vWM", text: "Tài liệu doanh nghiệp", external: true },
           ]} />
+          <Link href="https://drive.google.com/drive/folders/1NJf3OdCXKGx23H9acc867UrQMGdq5vWM" className="text-white" isExternal="true" rel="nofollow">
+            Tài liệu doanh nghiệp
+          </Link>
         </div>
 
         <div className="p-3 flex flex-col gap-3 lg:col-span-2">

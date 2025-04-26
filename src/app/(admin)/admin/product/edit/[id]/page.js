@@ -66,7 +66,7 @@ const Page = async ({ params }) => {
     }
   })
 
-  const categories = allCategories.filter(item => item.type === cate_type.CATEGORY)
+  const categories = allCategories.filter(item => item.type === cate_type.CATE)
 
   const subCategories = allCategories.filter(item => item.type === cate_type.SUB_CATE)
   return (

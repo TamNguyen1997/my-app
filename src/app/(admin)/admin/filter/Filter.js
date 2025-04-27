@@ -112,32 +112,11 @@ const Filter = () => {
   return (
     <>
       <div className="flex flex-col space-y-4 min-h-full p-2">
-        <div className="flex gap-3">
-          <Input label="Tên filter" aria-label="Tên filter" labelPlacement="outside"
+        <div className="flex gap-3 md:w-1/2">
+          <Input label="Tìm kiếm filter" aria-label="Tìm kiếm filter" labelPlacement="outside"
             isClearable
             onValueChange={(value) => {
               if (value.length > 2 || value.length === 0) onConditionChange({ id_name: value })
-            }}
-          />
-
-          <Input label="Tên giá trị filter" aria-label="Tên giá trị filter" labelPlacement="outside"
-            isClearable
-            onValueChange={(value) => {
-              if (value.length > 2 || value.length === 0) onConditionChange({ filterValueName: value })
-            }}
-          />
-
-          <Input label="ID filter" aria-label="ID filter" labelPlacement="outside"
-            isClearable
-            onValueChange={(value) => {
-              if (value.length > 2 || value.length === 0) onConditionChange({ id: value })
-            }}
-          />
-
-          <Input label="ID giá trị filter" aria-label="ID giá trị filter" labelPlacement="outside"
-            isClearable
-            onValueChange={(value) => {
-              if (value.length > 2 || value.length === 0) onConditionChange({ filterValueId: value })
             }}
           />
 

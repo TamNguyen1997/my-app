@@ -143,12 +143,44 @@ const getFilters = async (query) => {
       OR: [
         {
           name: {
-            search: `${query.id_name.trim().replaceAll(" ", " & ")}:*`
+            contains: query.id_name,
+            mode: 'insensitive',
           }
         },
         {
           id: {
-            search: `${query.id_name.trim().replaceAll(" ", " & ")}:*`
+            contains: query.id_name,
+            mode: 'insensitive',
+          }
+        },
+        {
+          filterValue: {
+            some: {
+              slug: {
+                contains: query.id_name,
+                mode: 'insensitive',
+              }
+            }
+          }
+        },
+        {
+          filterValue: {
+            some: {
+              displayId: {
+                contains: query.id_name,
+                mode: 'insensitive',
+              }
+            }
+          }
+        },
+        {
+          filterValue: {
+            some: {
+              id: {
+                contains: query.id_name,
+                mode: 'insensitive',
+              }
+            }
           }
         }
       ]

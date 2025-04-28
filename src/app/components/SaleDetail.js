@@ -75,6 +75,7 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
           ? selectedDetail
           : saleDetails[0];
 
+    if (!detail) return 0;
     return detail?.promotionalPrice > 0
       ? formatPrice(detail.promotionalPrice)
       : formatPrice(detail.price);

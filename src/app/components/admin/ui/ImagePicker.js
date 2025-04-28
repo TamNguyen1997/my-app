@@ -52,7 +52,7 @@ const ImagePicker = ({
     fetchImages();
   }, [refresh, reload, size, page]);
 
-  const getImages = async () => {
+  const fetchImages = async () => {
     setIsLoading(true)
     await fetch(`/api/images/wordpress/?search=${search || ""}&size=${size}&page=${page}`).then(async res => {
       const json = await res.json()
@@ -61,7 +61,7 @@ const ImagePicker = ({
     })
     setIsLoading(false)
   }
-  const deleteImage = async (image) => {
+  const handleDeleteImage = async (image) => {
     if (window.confirm("Bạn có chắc muốn xóa hình này không?")) return
     setIsLoading(true)
     const res = await fetch(`/api/images/wordpress/${image.id}`, {

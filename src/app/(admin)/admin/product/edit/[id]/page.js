@@ -70,7 +70,7 @@ const Page = async ({ params }) => {
 
   const subCategories = allCategories.filter(item => item.type === cate_type.SUB_CATE)
   return (
-    <Default initProduct={product} categories={categories} subCategories={subCategories} brands={brands} initFilters={filters} />
+    <Default initProduct={product || {}} categories={categories} subCategories={subCategories} brands={brands} initFilters={filters} />
   )
 }
 

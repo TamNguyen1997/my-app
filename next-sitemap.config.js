@@ -1,10 +1,10 @@
-import { config } from 'dotenv';
+require('dotenv').config();  // Load environment variables
+const { db } = require("./src/app/db/index.js");
 
-config();
-import { db } from "./src/app/db/index.js"
+const siteUrl = process.env.NEXT_PUBLIC_DOMAIN || 'http://localhost:3000';
 
-export default {
-  siteUrl: process.env.NEXT_PUBLIC_DOMAIN || 'http://localhost:3000',
+module.exports = {
+  siteUrl,
   generateRobotsTxt: false,
   sitemapSize: 5000,
   priority: 0.9,
@@ -17,83 +17,98 @@ export default {
     '/not-found*'
   ],
   transform: async (config, path) => {
-    let field = {
-      loc: path, // => this will be exported as http(s)://<config.siteUrl>/<path>
+    const field = {
+      loc: path,
       changefreq: config.changefreq,
       priority: config.priority,
       lastmod: config.autoLastmod ? new Date().toISOString() : undefined,
-      alternateRefs: config.alternateRefs ?? [],
-    }
-    if (path.endsWith("/kien-thuc-hay") || path.endsWith("/tin-tuc") || path.endsWith("ve-chung-toi") || path.includes("/ho-tro/")) {
-      field.priority = 0.7
+      alternateRefs: config.alternateRefs || [],
+    };
+
+    if (
+      path.endsWith("/kien-thuc-hay") ||
+      path.endsWith("/tin-tuc") ||
+      path.endsWith("ve-chung-toi") ||
+      path.includes("/ho-tro/")
+    ) {
+      field.priority = 0.7;
     }
 
-    return field
+    return field;
   },
   robotsTxtOptions: {
     additionalSitemaps: [
-      `${process.env.NEXT_PUBLIC_DOMAIN}/server-sitemap.xml`,
+      `${siteUrl}/server-sitemap.xml`,
     ],
   },
   additionalPaths: async (config) => {
     const products = await db.product.findMany({
       where: {
         active: true,
-        NOT: {
-          subCateId: null,
-          categoryId: null,
-          brandId: null
-        }
-      }, include: { subCate: true }
+        subCateId: { not: null },
+        categoryId: { not: null },
+        brandId: { not: null },
+      },
+      include: { subCate: true },
     });
 
-    const categories = await db.category.findMany({ where: { active: true } })
+    const categories = await db.category.findMany({ where: { active: true } });
 
-    const mappedProducts = products.filter(item => item.subCate?.slug).map((product) => ({
-      loc: `${process.env.NEXT_PUBLIC_DOMAIN}/${product.subCate?.slug || "san-pham"}/${product.slug}`,
-      changefreq: "daily",
-      priority: 1,
-      lastmod: product.updatedAt || new Date().toISOString(),
-      alternateRefs: config.alternateRefs ?? [],
-    }));
+    const mappedProducts = products
+      .filter(item => item.subCate && item.subCate.slug)
+      .map(product => ({
+        loc: `${siteUrl}/${product.subCate.slug}/${product.slug}`,
+        changefreq: "daily",
+        priority: 1,
+        lastmod: product.updatedAt || new Date().toISOString(),
+        alternateRefs: config.alternateRefs || [],
+      }));
 
     const mappedCategories = categories.map(category => ({
-      loc: `${process.env.NEXT_PUBLIC_DOMAIN}/${category?.slug}`,
+      loc: `${siteUrl}/${category.slug}`,
       changefreq: "weekly",
       priority: config.priority,
       lastmod: category.updatedAt || new Date().toISOString(),
-      alternateRefs: config.alternateRefs ?? [],
-    }))
+      alternateRefs: config.alternateRefs || [],
+    }));
 
-    let page = 1
-    let total = 1;
-
-    let blogs = []
+    let page = 1;
+    let totalPages = 1;
+    const blogs = [];
 
     do {
-      const res = await fetch(`${process.env.WORDPRESS_URL}/wp-json/wp/v2/posts?per_page=100&page=${page}&categories=${process.env.NEXT_PUBLIC_WORDPRESS_POST_NEWS_ID}&categories=${process.env.NEXT_PUBLIC_WORDPRESS_POST_INFORMATION_ID}`);
-      blogs.push(...await res.json());
-      page++
-      total = res.headers.get('X-WP-TotalPages');
-    } while (total > page)
-    const mappedBlogs = blogs.map(blog =>
-    ({
+      const res = await fetch(
+        `${process.env.WORDPRESS_URL}/wp-json/wp/v2/posts?per_page=100&page=${page}&categories=${process.env.NEXT_PUBLIC_WORDPRESS_POST_NEWS_ID},${process.env.NEXT_PUBLIC_WORDPRESS_POST_INFORMATION_ID}`
+      );
 
-      loc: `${process.env.NEXT_PUBLIC_DOMAIN}/${blog.categories.includes(process.env.NEXT_PUBLIC_WORDPRESS_POST_NEWS_ID) ? 'tin-tuc' : 'kien-thuc-hay'}/${blog.slug}`,
+      blogs.push(...await res.json());
+
+      const total = res.headers.get("X-WP-TotalPages");
+      totalPages = parseInt(total, 10) || 1;
+      page++;
+    } while (page <= totalPages);
+
+    const mappedBlogs = blogs.map(blog => ({
+      loc: `${siteUrl}/${blog.categories.includes(parseInt(process.env.NEXT_PUBLIC_WORDPRESS_POST_NEWS_ID))
+        ? "tin-tuc"
+        : "kien-thuc-hay"
+        }/${blog.slug}`,
       changefreq: "daily",
       priority: config.priority,
       lastmod: blog.modified || new Date().toISOString(),
-      alternateRefs: config.alternateRefs ?? [],
+      alternateRefs: config.alternateRefs || [],
+    }));
 
-    })
-    )
-    return [...mappedProducts, ...mappedCategories, ...mappedBlogs,
-    {
-      loc: '/',
-      changefreq: 'daily',
-      priority: 1.0,
-      lastmod: new Date().toISOString(),
-    }
-    ]
-  }
-}
+    return [
+      ...mappedProducts,
+      ...mappedCategories,
+      ...mappedBlogs,
+      {
+        loc: '/',
+        changefreq: 'daily',
+        priority: 1.0,
+        lastmod: new Date().toISOString(),
+      },
+    ];
+  },
+};

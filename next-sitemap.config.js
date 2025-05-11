@@ -1,8 +1,9 @@
 require('dotenv').config();  // Load environment variables
-const { db } = require("./src/app/db/index.js");
+const { PrismaClient } = require("@prisma/client");
 
 const siteUrl = process.env.NEXT_PUBLIC_DOMAIN || 'http://localhost:3000';
 
+const db = new PrismaClient()
 module.exports = {
   siteUrl,
   generateRobotsTxt: false,

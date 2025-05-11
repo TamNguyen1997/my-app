@@ -5,7 +5,7 @@ import { db } from "./src/app/db/index.js"
 
 export default {
   siteUrl: process.env.NEXT_PUBLIC_DOMAIN || 'http://localhost:3000',
-  generateRobotsTxt: true,
+  generateRobotsTxt: false,
   sitemapSize: 5000,
   priority: 0.9,
   changefreq: "weekly",

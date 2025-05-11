@@ -20,7 +20,7 @@ export const ProductContext = createContext();
 const Default = ({ initProduct = {}, categories = [], subCategories = [], brands = [], initFilters = [] }) => {
   const { id } = useParams()
   const [isLoading, setIsLoading] = useState(false)
-  const [product, setProduct] = useState(initProduct)
+  const [product, setProduct] = useState(initProduct || {})
 
   const [filters, setFilters] = useState(initFilters)
 

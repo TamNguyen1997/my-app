@@ -17,11 +17,11 @@ const defaultResponsive = {
     items: 4,
   },
   tablet: {
-    breakpoint: { max: 1024, min: 350 },
+    breakpoint: { max: 1024, min: 750 },
     items: 3,
   },
   mobile: {
-    breakpoint: { max: 350, min: 0 },
+    breakpoint: { max: 750, min: 0 },
     items: 2,
   },
 };

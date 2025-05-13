@@ -28,21 +28,24 @@ const getOriginalPrice = (product) => {
 }
 
 const addRecentlyView = (product) => {
-  const items = [...getRecentlyView(), product];
-  let uniqueItems = []
-  for (let i = items.length - 1; uniqueItems.length <= 3 && i >= 0; i--) {
-    if (!uniqueItems.find(uniqueItem => {
-      return uniqueItem.id === items[i].id
-    })) {
-      uniqueItems.push(items[i])
-    }
+
+  let uniqueItems = [product, ...getRecentlyView().filter(item => item.id !== product.id)];
+
+  if (uniqueItems.length > 4) {
+    uniqueItems.pop()
   }
 
   localStorage.setItem('recentlyView', JSON.stringify(uniqueItems));
 }
 
 const getRecentlyView = () => {
-  return localStorage.getItem('recentlyView') ? JSON.parse(localStorage.getItem('recentlyView')) : [];
+  let items = localStorage.getItem('recentlyView') ? JSON.parse(localStorage.getItem('recentlyView')) : [];
+
+  if (items.length > 4) {
+    items.pop()
+  }
+
+  return items;
 }
 
 export { getPrice, getOriginalPrice, addRecentlyView, getRecentlyView }

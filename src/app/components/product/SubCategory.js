@@ -44,7 +44,7 @@ const SubCategory = ({ params, productFilter }) => {
       .then(json => {
         setFilters(json.result.filter(item => item.filterValue.length))
       })
-  }, []);
+  }, [page]);
 
   const filter = () => {
     let range = ""

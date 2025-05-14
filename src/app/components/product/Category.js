@@ -23,7 +23,10 @@ const Category = ({ category, productFilter, subcates }) => {
         acc[subcate.id] = body.result.filter(product => product.subCate && (product.subCate.id === subcate.id));
         return acc;
       }, {});
-      setData(body.result);
+      const [minPrice, maxPrice] = value;
+      let result = body.result.filter(item => item.saleDetails.find(sd => sd.showPrice && sd.price >= minPrice & sd.price <= maxPrice));
+
+      setData(result);
       setGroupData(groupData);
     }
     setIsLoading(false);
@@ -44,7 +47,7 @@ const Category = ({ category, productFilter, subcates }) => {
   useEffect(() => {
     getProduct();
     fetchFilters();
-  }, [category.slug, productFilter, orderBy]);
+  }, [category.slug, productFilter, orderBy, value]);
 
   const filter = useCallback(() => {
     let range = "";

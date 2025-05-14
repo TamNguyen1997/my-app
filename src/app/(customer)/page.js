@@ -5,6 +5,7 @@ import Customer from "@/components/Customer";
 import Introduction from "@/components/Introduction";
 import PopularSearches from "@/components/PopularSearches";
 import { db } from "@/app/db"
+import { ORGANIZATION_SCHEMA, WEBSITE_SCHEMA } from "@/lib/schema";
 
 export const viewport = {
   viewport: 'initial-scale=1.0, width=device-width',
@@ -19,6 +20,14 @@ export const metadata = {
     canonical: process.env.NEXT_PUBLIC_DOMAIN,
   }
 }
+
+const jsonLdSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    WEBSITE_SCHEMA, ORGANIZATION_SCHEMA
+  ]
+};
+
 const Page = async () => {
   const banners = await getBanners()
   const highlighProducts = await getHighlightProducts()
@@ -29,6 +38,10 @@ const Page = async () => {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }}
+      />
       <HeroBanner banners={banners} />
       <PopularItems
         highlightProducts={highlighProducts}

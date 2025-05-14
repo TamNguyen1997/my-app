@@ -1,4 +1,18 @@
 import BlogOverview from "@/components/blog/BlogOverview"
+import { WEBSITE_SCHEMA, getBreadcrumbSchema, getWebPageSchema } from "@/lib/schema"
+
+const jsonLdSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    WEBSITE_SCHEMA,
+    getWebPageSchema('kien-thuc-hay', 'Kiến thức hay', 'Kiến thức hay',
+      getBreadcrumbSchema([
+        {
+          name: 'Kiến thức hay', slug: 'kien-thuc-hay'
+        }
+      ]))
+  ]
+}
 
 export const metadata = {
   title: 'Kiến thức hay',
@@ -10,6 +24,10 @@ export const metadata = {
 
 const Information = () => {
   return (<>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }}
+    />
     <BlogOverview activeCategory="INFORMATION" activeTag="" />
   </>)
 };

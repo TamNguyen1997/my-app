@@ -1,5 +1,6 @@
 import { BlogDetail } from "@/components/blog/BlogDetail"
 import { notFound } from "next/navigation"
+import { WEBSITE_SCHEMA, getWebPageSchema, getBreadcrumbSchema } from "@/lib/schema"
 
 export const dynamic = "force-dynamic"; // Forces dynamic rendering
 export const revalidate = 0;
@@ -33,8 +34,29 @@ const Information = async ({ params }) => {
 
   const relatedBlogRes = await fetch(`${process.env.WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&categories=${blog.categories?.join()}&exclude=${blog.id}&per_page=4&categories_exclude=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID || ""}`)
 
+  const jsonLdSchema = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      WEBSITE_SCHEMA,
+      getWebPageSchema(`kien-thuc-hay/${params._id}`, blog.title.rendered, blog.title.rendered,
+        getBreadcrumbSchema([
+          {
+            name: 'Kiến thức hay', slug: 'kien-thuc-hay'
+          },
+          {
+            name: blog.title.rendered, slug: params._id
+          }
+        ]))
+    ]
+  }
   return (
-    <BlogDetail slug={params._id.toString()} category="INFORMATION" blog={blog} relatedBlogs={relatedBlogRes.ok && (await relatedBlogRes.json())} />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }}
+      />
+      <BlogDetail slug={params._id.toString()} category="INFORMATION" blog={blog} relatedBlogs={relatedBlogRes.ok && (await relatedBlogRes.json())} />
+    </>
   )
 };
 

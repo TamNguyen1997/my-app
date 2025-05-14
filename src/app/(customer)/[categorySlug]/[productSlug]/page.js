@@ -2,6 +2,7 @@ import ProductDetail from "@/app/components/product/ProductDetail";
 import { db } from '@/app/db';
 import { product_type } from "@prisma/client";
 import { notFound } from "next/navigation";
+import { WEBSITE_SCHEMA, getProductSchema, getBreadcrumbSchema } from "@/lib/schema"
 
 export const dynamic = "force-dynamic"; // Forces dynamic rendering
 export const revalidate = 0;
@@ -49,7 +50,7 @@ const Page = async ({ params }) => {
       active: true
     }
   })
-  if (!product) {
+  if (!product || !product.category || !product.subCate || !product.brand) {
     notFound()
   }
   let productDescription = ""
@@ -58,8 +59,6 @@ const Page = async ({ params }) => {
     const productDescriptionJson = await productPostResponse.json();
     productDescription = productDescriptionJson[0]?.content?.rendered
   }
-
-  console.log(product.promotion)
 
   const relatedProducts = await db.product.findMany({
     select: {
@@ -100,7 +99,33 @@ const Page = async ({ params }) => {
     take: 10,
     skip: 0
   })
-  return <ProductDetail product={product} description={productDescription} relatedProducts={relatedProducts} />
+
+  const productImages = [product.imageUrl, ...product.product_on_image.map(item => item.imageUrl)].filter(item => item)
+
+  const jsonLdSchema = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      WEBSITE_SCHEMA,
+      getBreadcrumbSchema([
+        {
+          name: product.subCate.name, slug: product.subCate.slug
+        },
+        {
+          name: product.name, slug: product.slug
+        },
+        getProductSchema(product, productImages)
+      ]),
+    ]
+  }
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }}
+      />
+      <ProductDetail product={product} description={productDescription} relatedProducts={relatedProducts} />
+    </>
+  )
 }
 
 export default Page;

@@ -8,7 +8,8 @@ export async function generateMetadata({ params }) {
   const [slug] = params.categorySlug.split("_")
   const category = await db.category.findFirst({ where: { slug: slug } })
   return {
-    title: category?.name,
+    title: category?.metaTitle || category?.name,
+    description: category?.metaDescription || category?.description,
     alternates: {
       canonical: `${process.env.NEXT_PUBLIC_DOMAIN}/${slug}`,
     },

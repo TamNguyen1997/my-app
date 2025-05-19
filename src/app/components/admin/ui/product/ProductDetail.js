@@ -37,7 +37,6 @@ const ProductDetail = () => {
         credentials: "omit"
       })
     if (!existingPostResponse.ok) {
-      console.log(existingPostResponse.status)
       toast.error("Có lỗi xảy ra khi kiểm tra bài viết sản phẩm")
     } else {
       const existingPost = await existingPostResponse.json()

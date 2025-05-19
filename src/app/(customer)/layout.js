@@ -9,7 +9,7 @@ export default async function RootLayout({ children }) {
   const headers = getHeaders()
   return (
     <html lang="vi">
-      <meta name="robots" content="index,follow" />
+      <meta name="robots" content={process.env.INDEX_FOLLOW || "noindex,nofollow"} />
       <meta name="google-site-verification" content="bnj-0vSnMlKuLmNzj5kleHIQ2Sk85O1ZqwB4-fGPIHo" />
       <body className='font-roboto'>
         <CartProvider>

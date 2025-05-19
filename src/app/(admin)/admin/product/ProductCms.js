@@ -119,9 +119,7 @@ const ProductCms = ({ categories = [] }) => {
 
   const massUpdate = async (value) => {
     const productsToUpdate = selectedKeys === "all" ? products.map(product => product.id) : [...selectedKeys]
-    console.log(productsToUpdate)
     const responses = await Promise.all(productsToUpdate.map(id => quickUpdateProduct({ id }, value)))
-    console.log(responses)
     const errors = responses.filter(res => !res.ok)
     if (errors.length) {
       const errorMessages = await Promise.all(errors.map(res => res.json()))
@@ -180,7 +178,6 @@ const ProductCms = ({ categories = [] }) => {
     setCondition((prevCondition) => ({ ...prevCondition, ...value }))
   }
 
-  console.log(selectedKeys)
   return (
     <>
       <ToastContainer />

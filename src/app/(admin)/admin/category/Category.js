@@ -556,7 +556,6 @@ const Category = () => {
               <ModalHeader className="flex flex-col gap-1">Chọn hình</ModalHeader>
               <ModalBody>
                 <ImageCms disableDelete onImageClick={image => {
-                  console.log(image)
                   setSelectedCate(Object.assign({}, selectedCate, { imageUrl: image.source_url }))
                   onClose()
                 }} />

@@ -162,8 +162,6 @@ export async function GET(req) {
     if (productIds.length) condition.id = { in: productIds };
   }
 
-  console.log(condition.OR)
-
   try {
     const result = await db.product.findMany({
       select: {

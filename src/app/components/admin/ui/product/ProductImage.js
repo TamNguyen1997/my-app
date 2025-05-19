@@ -57,7 +57,6 @@ const ProductImage = () => {
     onOpenChange()
   }
 
-  console.log(product.product_on_image)
   const moveRow = useCallback((dragIndex, hoverIndex) => {
     startTransition(() => {
       setImages((prevList) =>

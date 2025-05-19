@@ -1,4 +1,4 @@
-import { Button, DatePicker, Input, Link, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Switch, useDisclosure } from "@nextui-org/react"
+import { Button, DatePicker, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Switch, useDisclosure } from "@nextui-org/react"
 import slugify from "slugify"
 import ImageCms from "../ImageCms"
 import { useCallback, useContext, useState } from "react"
@@ -6,15 +6,15 @@ import { parseDate } from "@internationalized/date";
 import { ProductContext } from "../../../../(admin)/admin/product/edit/[id]/default"
 import { toast } from "react-toastify";
 import Image from "next/image";
+import RichTextEditor from "@/app/components/admin/ui/RichTextArea"
 
 const getDateString = (isoDate) =>
   parseDate(new Date(isoDate).toISOString().split("T")[0]);
 
 const ProductDetail = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const { categories, brands, subCategories, product, setProduct } = useContext(ProductContext)
+  const { categories, brands, subCategories, product, setProduct, editor } = useContext(ProductContext)
   const [productImage, setProductImage] = useState(product.image || {})
-
   const selectImage = (value) => {
     const newProduct = { ...product, ...{ imageUrl: value.source_url } }
     setProduct({ ...newProduct })
@@ -73,7 +73,7 @@ const ProductDetail = () => {
             type="text"
             label="ID sản phẩm"
             aria-label="ID sản phẩm"
-            value={product.id}
+            value={product.id || ""}
             isReadOnly
             onValueChange={(value) => {
               setProduct({ ...product, id: value })
@@ -84,7 +84,7 @@ const ProductDetail = () => {
               type="text"
               label="Tên sản phẩm"
               aria-label="Tên sản phẩm"
-              value={product.name}
+              value={product.name || ""}
               isRequired
               onValueChange={(value) => {
                 let newValue = { ...product, name: value }
@@ -100,7 +100,7 @@ const ProductDetail = () => {
             type="text"
             label="Slug"
             aria-label="Slug"
-            value={product.slug}
+            value={product.slug || ""}
             isRequired
             disabled
           />
@@ -116,7 +116,7 @@ const ProductDetail = () => {
             type="number"
             label="Khối lượng (g)"
             aria-label="Khối lượng"
-            value={product.weight}
+            value={product.weight || 0}
             min={0}
             max={999}
             onValueChange={(value) => setProduct(Object.assign({}, product, { weight: parseInt(value) }))}
@@ -125,7 +125,7 @@ const ProductDetail = () => {
             type="number"
             label="Chiều dài (cm)"
             aria-label="Chiều dài"
-            value={product.length}
+            value={product.length || 0}
             min={0}
             max={999}
             onValueChange={(value) => setProduct(Object.assign({}, product, { length: parseInt(value) }))}
@@ -134,7 +134,7 @@ const ProductDetail = () => {
             type="number"
             label="Chiều rộng (cm)"
             aria-label="Chiều rộng"
-            value={product.width}
+            value={product.width || 0}
             min={0}
             max={999}
             onValueChange={(value) => setProduct(Object.assign({}, product, { width: parseInt(value) }))}
@@ -143,7 +143,7 @@ const ProductDetail = () => {
             type="number"
             label="Chiều cao (cm)"
             aria-label="Chiều cao"
-            value={product.height}
+            value={product.height || 0}
             min={0}
             max={999}
             onValueChange={(value) => setProduct(Object.assign({}, product, { height: parseInt(value) }))}
@@ -204,14 +204,14 @@ const ProductDetail = () => {
               type="text"
               label="Meta title"
               aria-label="Meta title"
-              value={product.metaTitle}
+              value={product.metaTitle || ""}
               onValueChange={(value) => setProduct(Object.assign({}, product, { metaTitle: value }))}
             />
             <Input
               type="text"
               label="Meta description"
               aria-label="Meta description"
-              value={product.metaDescription}
+              value={product.metaDescription || ""}
               onValueChange={(value) => setProduct(Object.assign({}, product, { metaDescription: value }))}
             />
             {
@@ -234,12 +234,32 @@ const ProductDetail = () => {
             <Input type="text"
               aria-label="URL thumbnail"
               label="Hình ảnh thumbnail"
-              value={product?.imageUrl} isReadOnly />
+              value={product?.imageUrl || ""} isReadOnly />
             <Input type="text"
               aria-label="Alt"
               label="Alt"
               onValueChange={(value) => setProduct(Object.assign({}, product, { imageAlt: value }))}
-              value={product?.imageAlt} />
+              value={product?.imageAlt || ""} />
+            <div>
+              <label htmlFor="Chương trình khuyến mãi" >Chương trình khuyến mãi</label>
+              <RichTextEditor id="Chương trình khuyến mãi" editor={editor} disable={{
+                image: true,
+                video: true,
+                table: true,
+                font: true,
+                highlight: true,
+                subscript: true,
+                superscript: true,
+                replace: true,
+                breakLine: true,
+                button: true,
+                indent: true,
+                copy: true,
+                checkbox: true,
+                multicheckbox: true,
+                code: true,
+              }} />
+            </div>
             <div>
               <Button color="primary" onPress={onOpen} className="w-24 float-right">Chọn ảnh</Button>
             </div>

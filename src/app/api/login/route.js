@@ -47,6 +47,11 @@ export async function POST(req) {
       maxAge: 60 * 60 * 24,
       path: "/",
     });
+    response.cookies.set("role", `${user.role}`, {
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24,
+      path: "/",
+    });
 
     return response;
   } catch (e) {

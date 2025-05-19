@@ -70,7 +70,7 @@ import {
   TbColumnInsertRight,
 } from "react-icons/tb";
 
-const RichTextEditor = ({ editor }) => {
+const RichTextEditor = ({ editor, disable = {} }) => {
   const [fontSize, setFontSize] = useState(16)
   const [fontFamily, setFontFamily] = useState("Open Sans")
   return (
@@ -80,7 +80,7 @@ const RichTextEditor = ({ editor }) => {
           className={`
             relative border rounded-t-lg before:content-[''] before:absolute before:inset-0 before:bg-gray-100 before:z-[-1] before:rounded-t-lg
           `}>
-          <BlogToolBar editor={editor} fontSize={fontSize} setFontSize={setFontSize} fontFamily={fontFamily} setFontFamily={setFontFamily} />
+          <BlogToolBar editor={editor} fontSize={fontSize} setFontSize={setFontSize} fontFamily={fontFamily} setFontFamily={setFontFamily} disable={disable} />
         </div>
       </div>
       <div className="p-3 border rounded-b-lg bg-white prose !max-w-full font-open_san">
@@ -119,7 +119,7 @@ const TEXT_COLOR = {
   "#FFBF00": "bg-[#FFBF00]",
 };
 
-const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily }) => {
+const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily, disable = {} }) => {
   const iconClassName =
     "border w-6 h-6 justify-items-center items-center bg-white border";
   const imageModal = useDisclosure();
@@ -295,7 +295,7 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
           </div>
         </Tooltip>
 
-        <Tooltip showArrow content="Code (Ctrl + E)">
+        {!disable.code && <Tooltip showArrow content="Code (Ctrl + E)">
           <div
             className={`${iconClassName} ${editor.isActive("code") ? "opacity-25" : ""
               }`}
@@ -303,7 +303,7 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
           >
             <RiCodeSSlashLine className="w-full h-full" />
           </div>
-        </Tooltip>
+        </Tooltip>}
 
         <div className="pr-5"></div>
 
@@ -377,7 +377,7 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
           </div>
         </Tooltip>
 
-        <Tooltip showArrow content="Blockquote (Ctrl + Shift + B)">
+        {!disable.quote && <Tooltip showArrow content="Blockquote (Ctrl + Shift + B)">
           <div
             className={`${iconClassName} ${editor.isActive("bulletList") ? "opacity-25" : ""
               }`}
@@ -385,7 +385,7 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
           >
             <RiDoubleQuotesL className="w-full h-full" />
           </div>
-        </Tooltip>
+        </Tooltip>}
 
         <Tooltip showArrow content="Left align (Ctrl + Shift + L)">
           <div
@@ -429,17 +429,17 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
 
         <div className="pr-5"></div>
 
-        <Tooltip showArrow content="Image">
+        {!disable.image && <Tooltip showArrow content="Image">
           <div className={iconClassName} onClick={imageModal.onOpen}>
             <RiImage2Fill className="w-full h-full" />
           </div>
-        </Tooltip>
+        </Tooltip>}
 
-        <Tooltip showArrow content="Link Youtube">
+        {!disable.video && <Tooltip showArrow content="Link Youtube">
           <div className={iconClassName} onClick={addYoutubeVideo}>
             <RiVideoFill className="w-full h-full" />
           </div>
-        </Tooltip>
+        </Tooltip>}
 
         <Tooltip showArrow content="Link">
           <div className={iconClassName} onClick={linkModal.onOpen}>
@@ -449,16 +449,16 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
 
         <div className="pr-5"></div>
 
-        <Tooltip showArrow content="Break (Ctrl/Shift + Enter)">
+        {!disable.breakLine && <Tooltip showArrow content="Break (Ctrl/Shift + Enter)">
           <div
             className={iconClassName}
             onClick={() => editor.chain().focus().setHardBreak().run()}
           >
             <RiTextWrap className="w-full h-full" />
           </div>
-        </Tooltip>
+        </Tooltip>}
 
-        <Tooltip showArrow content="Highlight (Ctrl + Shift + H)">
+        {!disable.highlight && <Tooltip showArrow content="Highlight (Ctrl + Shift + H)">
           <div
             className={`${iconClassName} ${editor.isActive("highlight") ? "opacity-25" : ""
               }`}
@@ -466,9 +466,9 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
           >
             <LucideHighlighter className="w-full h-full" />
           </div>
-        </Tooltip>
+        </Tooltip>}
 
-        <Tooltip showArrow content="Subscript (Ctrl + ,)">
+        {!disable.subscript && <Tooltip showArrow content="Subscript (Ctrl + ,)">
           <div
             className={`${iconClassName} ${editor.isActive("subscript") ? "opacity-25" : ""
               }`}
@@ -476,9 +476,9 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
           >
             <RiSubscript2 className="w-full h-full" />
           </div>
-        </Tooltip>
+        </Tooltip>}
 
-        <Tooltip showArrow content="Superscript (Ctrl + .)">
+        {!disable.superscript && <Tooltip showArrow content="Superscript (Ctrl + .)">
           <div
             className={`${iconClassName} ${editor.isActive("superscript") ? "opacity-25" : ""
               }`}
@@ -486,11 +486,11 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
           >
             <RiSuperscript2 className="w-full h-full" />
           </div>
-        </Tooltip>
+        </Tooltip>}
 
         <div className="pr-5"></div>
 
-        <Tooltip showArrow content="Line checkbox">
+        {!disable.checkbox && <Tooltip showArrow content="Line checkbox">
           <div
             className={`${iconClassName} ${editor.isActive("taskList") ? "opacity-25" : ""
               }`}
@@ -498,9 +498,9 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
           >
             <RiCheckboxLine className="w-full h-full" />
           </div>
-        </Tooltip>
+        </Tooltip>}
 
-        <Tooltip showArrow content="Multiple checkbox">
+        {!disable.multicheckbox && <Tooltip showArrow content="Multiple checkbox">
           <div
             className={`${iconClassName} ${!editor.can().splitListItem("taskItem") ? "opacity-10" : ""
               }`}
@@ -512,7 +512,7 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
           >
             <RiCheckboxMultipleFill className="w-full h-full" />
           </div>
-        </Tooltip>
+        </Tooltip>}
       </div>
       <div className="flex flex-wrap [&>div]:mt-1.5 [&>div]:ml-0.5">
         <div
@@ -521,7 +521,7 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
             background: selectedTextColor,
           }}
         ></div>
-        <Tooltip showArrow content="Text color">
+        {!disable.textColor && <Tooltip showArrow content="Text color">
           <div
             className={`${iconClassName} ${editor.isActive("italic") ? "opacity-25" : ""
               }`}
@@ -570,11 +570,11 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
               ""
             )}
           </div>
-        </Tooltip>
+        </Tooltip>}
 
         <div className="pr-5"></div>
 
-        <Popover placement="bottom" showArrow={true}>
+        {!disable.table && <Popover placement="bottom" showArrow={true}>
           <Tooltip showArrow content="Insert table">
             <div>
               <PopoverTrigger>
@@ -636,9 +636,9 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
               </div>
             </div>
           </PopoverContent>
-        </Popover>
+        </Popover>}
 
-        <Tooltip showArrow content="Delete table">
+        {!disable.table && <Tooltip showArrow content="Delete table">
           <div
             className={`${iconClassName} ${editor.isActive("italic") ? "opacity-25" : ""
               }`}
@@ -661,9 +661,9 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
               <path d="m16 21 5-5" />
             </svg>
           </div>
-        </Tooltip>
+        </Tooltip>}
 
-        <Tooltip showArrow content="Delete column">
+        {!disable.table && <Tooltip showArrow content="Delete column">
           <div
             className={`${iconClassName} ${editor.isActive("italic") ? "opacity-25" : ""
               }`}
@@ -671,9 +671,9 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
           >
             <TbColumnRemove className="w-full h-full" />
           </div>
-        </Tooltip>
+        </Tooltip>}
 
-        <Tooltip showArrow content="Add column before">
+        {!disable.table && <Tooltip showArrow content="Add column before">
           <div
             className={`${iconClassName} ${editor.isActive("italic") ? "opacity-25" : ""
               }`}
@@ -681,9 +681,9 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
           >
             <TbColumnInsertRight className="w-full h-full" />
           </div>
-        </Tooltip>
+        </Tooltip>}
 
-        <Tooltip showArrow content="Add column after">
+        {!disable.table && <Tooltip showArrow content="Add column after">
           <div
             className={`${iconClassName} ${editor.isActive("italic") ? "opacity-25" : ""
               }`}
@@ -691,9 +691,9 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
           >
             <TbColumnInsertLeft className="w-full h-full" />
           </div>
-        </Tooltip>
+        </Tooltip>}
 
-        <Tooltip showArrow content="Add row before">
+        {!disable.table && <Tooltip showArrow content="Add row before">
           <div
             className={`${iconClassName} ${editor.isActive("italic") ? "opacity-25" : ""
               }`}
@@ -701,10 +701,10 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
           >
             <TbRowInsertBottom className="w-full h-full" />
           </div>
-        </Tooltip>
+        </Tooltip>}
 
         {/* ----------------------------------------------- */}
-        <Tooltip showArrow content="Add row after">
+        {!disable.table && <Tooltip showArrow content="Add row after">
           <div
             className={`${iconClassName} ${editor.isActive("italic") ? "opacity-25" : ""
               }`}
@@ -712,10 +712,10 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
           >
             <TbRowInsertTop className="w-full h-full" />
           </div>
-        </Tooltip>
+        </Tooltip>}
         {/* ----------------------------------------------- */}
 
-        <Tooltip showArrow content="Delete row">
+        {!disable.table && <Tooltip showArrow content="Delete row">
           <div
             className={`${iconClassName} ${editor.isActive("italic") ? "opacity-25" : ""
               }`}
@@ -723,9 +723,9 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
           >
             <TbRowRemove className="w-full h-full" />
           </div>
-        </Tooltip>
+        </Tooltip>}
 
-        <Tooltip showArrow content="Merge cells">
+        {!disable.table && <Tooltip showArrow content="Merge cells">
           <div
             className={`${iconClassName} ${editor.isActive("italic") ? "opacity-25" : ""
               }`}
@@ -733,9 +733,9 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
           >
             <TableCellsMerge className="w-full h-full" />
           </div>
-        </Tooltip>
+        </Tooltip>}
 
-        <Tooltip showArrow content="Split cell">
+        {!disable.table && <Tooltip showArrow content="Split cell">
           <div
             className={`${iconClassName} ${editor.isActive("italic") ? "opacity-25" : ""
               }`}
@@ -743,11 +743,11 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
           >
             <TableCellsSplit className="w-full h-full" />
           </div>
-        </Tooltip>
+        </Tooltip>}
         {/* ----------------------------------------------- */}
 
         <div className="pr-5"></div>
-        <Popover placement="bottom" showArrow={true}>
+        {!disable.replace && <Popover placement="bottom" showArrow={true}>
           <Tooltip showArrow content="Replace">
             <div>
               <PopoverTrigger>
@@ -793,9 +793,9 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
               </div>
             </div>
           </PopoverContent>
-        </Popover>
+        </Popover>}
 
-        <Popover placement="bottom" showArrow={true}>
+        {!disable.button && <Popover placement="bottom" showArrow={true}>
           <Tooltip showArrow content="Add button">
             <div>
               <PopoverTrigger>
@@ -828,27 +828,27 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
               </div>
             </div>
           </PopoverContent>
-        </Popover>
+        </Popover>}
 
-        <Tooltip showArrow content="Indent (Tab)">
+        {!disable.indent && <Tooltip showArrow content="Indent (Tab)">
           <div
             className={iconClassName}
             onClick={() => editor.commands.indent()}
           >
             <RiIndentIncrease className="w-full h-full" />
           </div>
-        </Tooltip>
+        </Tooltip>}
 
-        <Tooltip showArrow content="Outdent (Shift + Tab)">
+        {!disable.indent && <Tooltip showArrow content="Outdent (Shift + Tab)">
           <div
             className={iconClassName}
             onClick={() => editor.commands.outdent()}
           >
             <RiIndentDecrease className="w-full h-full" />
           </div>
-        </Tooltip>
+        </Tooltip>}
 
-        <Tooltip showArrow content="Copy (Ctrl + C)">
+        {!disable.copy && <Tooltip showArrow content="Copy (Ctrl + C)">
           <div
             className={iconClassName}
             onClick={() => {
@@ -873,9 +873,9 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
           >
             <RiFileCopy2Line className="w-full h-full" />
           </div>
-        </Tooltip>
+        </Tooltip>}
 
-        <Tooltip showArrow content="Paste (Ctrl + V)">
+        {!disable.copy && <Tooltip showArrow content="Paste (Ctrl + V)">
           <div
             className={iconClassName}
             onClick={() => {
@@ -893,10 +893,10 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
           >
             <RiFileCopy2Fill className="w-full h-full" />
           </div>
-        </Tooltip>
+        </Tooltip>}
         {/* ----------------------------------------------- */}
       </div>
-      <div className="flex flex-wrap [&>div]:mt-1.5 [&>div]:ml-0.5 w-full">
+      {!disable.font && <div className="flex flex-wrap [&>div]:mt-1.5 [&>div]:ml-0.5 w-full">
         <Tooltip showArrow content="Choose font">
           <select
             value={fontFamily}
@@ -918,7 +918,7 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily 
             onChange={e => handleFontSizeChange(e.target.value)}
           />
         </Tooltip>
-      </div>
+      </div>}
 
       <div className="w-1/4"></div>
       <Modal

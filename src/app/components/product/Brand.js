@@ -20,18 +20,21 @@ const Brand = ({ params, productFilter }) => {
     const res = await fetch(`/api/products/?active=true&page=1&size=10000&includeCate=true&${orderBy && `orderBy=${orderBy}`}&brandId=${params}&${hash && hash[1]?.includes("=") ? hash[1] : `filterId=${productFilter || hash[1] || ""}`}`);
     if (res.ok) {
       const body = await res.json();
-      setData(body.result);
+      const [minPrice, maxPrice] = value;
+      let result = body.result.filter(item => item.saleDetails.find(sd => sd.showPrice && sd.price >= minPrice & sd.price <= maxPrice));
+
+      setData(result);
       let categories = [];
-      const temp = Object.groupBy(body.result, (item) => item.categoryId);
+      const temp = Object.groupBy(result, (item) => item.categoryId);
       setGroupData(temp);
       Object.keys(temp).forEach(item => {
-        const category = body.result.find(product => product.categoryId === item)?.category;
+        const category = result.find(product => product.categoryId === item)?.category;
         category && categories.push(category);
       });
       setCategories(categories);
     }
     setIsLoading(false);
-  }, [params, productFilter, orderBy]);
+  }, [params, productFilter, orderBy, value]);
 
   useEffect(() => {
     getProduct();
@@ -46,7 +49,7 @@ const Brand = ({ params, productFilter }) => {
         setSelectedFilterValues(temp);
         setFilters(result);
       });
-  }, [params, productFilter, getProduct]);
+  }, [params, productFilter, getProduct, value]);
 
   const filter = useCallback(() => {
     let range = "";
@@ -181,7 +184,7 @@ const Brand = ({ params, productFilter }) => {
 const BrandSection = ({ products }) => {
   return (
     <div>
-      <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-2/3 md:w-1/3 h-[50px] m-auto shadow-md">
+      <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-2/3 lg:w-1/3 h-[50px] m-auto shadow-md">
         <div className="m-auto text-black font-bold md:text-xl">
           {products[0].category?.name}
         </div>

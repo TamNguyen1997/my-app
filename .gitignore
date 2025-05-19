@@ -38,5 +38,8 @@ next-env.d.ts
 
 .vercel
 /src/app/redirects/*
-output.log
+output*.log
 /src/lib/constant/index.js
+/public/robots.txt
+/public/sitemap*.xml
+/src/app/robots.txt

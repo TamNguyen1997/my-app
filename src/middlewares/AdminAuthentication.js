@@ -1,6 +1,4 @@
-import {
-  NextResponse
-} from "next/server";
+import { NextResponse } from "next/server";
 
 export const AdminAuthentication = (next) => {
   return async (request, _next) => {
@@ -9,7 +7,8 @@ export const AdminAuthentication = (next) => {
     if (pathname.startsWith("/admin")) {
       const userCookie = request.cookies.get("user");
 
-      if (!userCookie) {
+      const role = request.cookies.get("role");
+      if (!userCookie || !role || role.value === "undefined") {
         const url = request.nextUrl.clone();
         url.pathname = "/login";
         return NextResponse.redirect(url);

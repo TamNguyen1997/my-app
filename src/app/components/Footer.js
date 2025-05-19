@@ -41,7 +41,7 @@ const Footer = () => {
             { href: "/ho-tro/chinh-sach-doi-tra", text: "Đổi trả" },
             { href: "/ho-tro/chinh-sach-bao-mat", text: "Bảo mật thông tin" },
             { href: "https://docs.google.com/forms/d/e/1FAIpQLSfbYULWGzXgkpcHs5LnCOpgB6inG3zWxR47ocWoZF-MGTfwlw/viewform", text: "Hợp tác bán hàng", external: true },
-            { href: "/lien-he", text: "Liên hệ", external: true },
+            { href: "/lien-he", text: "Liên hệ", external: true }
           ]} />
           <Link href="https://drive.google.com/drive/folders/1NJf3OdCXKGx23H9acc867UrQMGdq5vWM" className="text-white" isExternal="true" rel="nofollow">
             Tài liệu doanh nghiệp

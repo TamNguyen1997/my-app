@@ -24,7 +24,7 @@ const Default = ({ initProduct = {}, categories = [], subCategories = [], brands
 
   const [filters, setFilters] = useState(initFilters)
 
-  const editor = useEditor(editorConfig())
+  const editor = useEditor(editorConfig(initProduct.promotion))
 
   const deleteProduct = async () => {
     if (window.confirm("Bạn có chắc chắn muốn xoá sản phẩm này không?")) {
@@ -64,6 +64,7 @@ const Default = ({ initProduct = {}, categories = [], subCategories = [], brands
             productId: product.productId,
             metaTitle: product.metaTitle,
             metaDescription: product.metaDescription,
+            promotion: editor.getHTML() || product.promotion
           },
           saleDetails: product.saleDetails,
           productOnImages: newProductOnImage,

@@ -1,6 +1,4 @@
-import {
-  NextResponse
-} from "next/server";
+import { NextResponse } from "next/server";
 
 export const AdminAuthorization = (next) => {
   return async (request, _next) => {
@@ -24,7 +22,8 @@ export const AdminAuthorization = (next) => {
 
         const [userId, username] = userCookie.value.split(":");
 
-        if (!userId || !username) {
+        const role = request.cookies.get("role");
+        if (!userId || !username || !role || role.value === "undefined") {
           return NextResponse.json(
             { message: "Unauthorized: Invalid session." },
             { status: 401 }

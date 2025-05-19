@@ -3,3 +3,4 @@ Disallow: /404/
 Disallow: /admin/*
 Disallow: /login
 Disallow: /wordpress-prod*
+Disallow: /

@@ -1,10 +1,11 @@
 "use client";
 import { Button, Input } from "@nextui-org/react";
-import { ShoppingCart } from "lucide-react";
-import { useContext, useEffect, useState } from "react";
+import { Gift, ShoppingCart } from "lucide-react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { CartContext } from "@/context/CartProvider";
 import parse from 'html-react-parser'
 import { ProductDetailContext } from "./product/ProductDetail";
+import "./SaleDetail.css"
 
 const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
   const [selectedDetail, setSelectedDetail] = useState(saleDetails[0] || {});
@@ -30,6 +31,12 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
     const detail = saleDetails.find((detail) => detail.id === key);
     setSelectedSecondaryDetail(detail);
   };
+
+  const getPromotion = useCallback(() => {
+    if (!product.promotion) return [];
+    const matches = product.promotion.match(/<p\b[^>]*>[\s\S]*?<\/p>/gi);
+    return matches;
+  }, [product])
 
   useEffect(() => {
     if (selectedDetail.id && selectedSecondaryDetail.id) {
@@ -135,15 +142,14 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
 
   return (
     <div>
-      <div className="">
-        <p className="text-[30px] font-extrabold">{product.name}</p>
-        <p className="text-gray-500 text-small">
-          SKU:{" "}
-          {selectedSecondaryDetail.sku ||
-            selectedDetail.sku ||
-            saleDetails[0]?.sku}
-        </p>
-      </div>
+
+      <p className="text-[30px] font-extrabold">{product.name}</p>
+      <p className="text-gray-500 text-small">
+        SKU:{" "}
+        {selectedSecondaryDetail.sku ||
+          selectedDetail.sku ||
+          saleDetails[0]?.sku}
+      </p>
 
       {getOriginalPrice() && (
         <p className="line-through decoration-red-500 text-small opacity-50">
@@ -156,7 +162,7 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
       <p className="text-sm">
         Đã bao gồm VAT, chưa bao gồm phí giao hàng.
       </p>
-      <p className="text-sm mb-2.5">Giao hàng trong vòng 1-3 ngày.</p>
+      <p className="text-sm">Giao hàng trong vòng 1-3 ngày.</p>
 
       <div className="flex flex-col gap-2">
         <div className="flex gap-2 flex-wrap">
@@ -200,12 +206,18 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
           ))}
         </div>
         {
-          product.promotion &&
-          <div>
-            <p className="text-red-500 font-bold ">Khuyến mãi:</p>
-            <div className="bg-white h-28 border rounded-lg p-1">
+          getPromotion().length > 0 &&
+          <div className="border rounded-md bg-white box-ribbon ">
+            <h2 class="ribbon-wrap">
+              <div class="ribbon">
+                <a href="#" className="mr-[180px] md:mr-[120px] lg:mr-[160px]">
+                  Khuyến mãi:
+                </a>
+              </div>
+            </h2>
+            <div className="px-2 overflow-auto text-sm py-2 flex flex-col gap-2">
               {
-                parse(product.promotion || "")
+                getPromotion().map((p, index) => parse(`<div class="flex gap-3"><div class="rounded-full bg-blue-400 w-4 h-4 text-xs text-white text-center">${index + 1}</div>` + p + "</div>"))
               }
             </div>
           </div>
@@ -219,30 +231,24 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
           min={1}
           max={999}
         />
-        <div className="flex lg:flex-nowrap flex-wrap">
-          <div className="pr-3 pb-3">
-            <Button
-              color="primary"
-              fullWidth
-              isDisabled={!getPrice()}
-              onClick={(evt) => handleAddToCart(evt, true)}
-            >
-              Mua ngay <ShoppingCart />
-            </Button>
-          </div>
-          <div className="pb-3">
-            <Button
-              color="primary"
-              fullWidth
-              isDisabled={!getPrice()}
-              onClick={(evt) => handleAddToCart(evt)}
-            >
-              Thêm vào giỏ hàng
-            </Button>
-          </div>
+        <div className="flex lg:flex-nowrap flex-wrap gap-3 mx-auto">
+          <Button
+            color="primary"
+            isDisabled={!getPrice()}
+            onClick={(evt) => handleAddToCart(evt, true)}
+          >
+            Mua ngay <ShoppingCart />
+          </Button>
+          <Button
+            color="primary"
+            isDisabled={!getPrice()}
+            onClick={(evt) => handleAddToCart(evt)}
+          >
+            Thêm vào giỏ hàng
+          </Button>
         </div>
       </div>
-    </div >
+    </div>
   );
 };
 

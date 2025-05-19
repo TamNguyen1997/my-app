@@ -56,7 +56,7 @@ const TabContent = ({ id, product, description, relatedProducts, technicalDetail
                     <img src={product?.imageUrl} className="absolute inset-0 w-full h-full object-cover" />
                   </div>
                   <p className="font-bold my-1.5">Ứng dụng Home & Garden</p>
-                  <p>Ứng dụng Kärcher Home & Garden giúp bạn trở thành một chuyên gia làm sạch. Tận dụng kiến ​​thức sâu rộng về Kärcher của chúng tôi để có kết quả làm sạch hoàn hảo. Dịch vụ toàn diện tiện lợi - tất cả thông tin trên thiết bị, ứng dụng và cổng Dịch vụ của chúng tôi.</p>
+                  <p>Ứng dụng Kärcher Home & Garden giúp bạn trở thành một chuyên gia làm sạch. Tận dụng kiến ​thức sâu rộng về Kärcher của chúng tôi để có kết quả làm sạch hoàn hảo. Dịch vụ toàn diện tiện lợi - tất cả thông tin trên thiết bị, ứng dụng và cổng Dịch vụ của chúng tôi.</p>
                 </div>
               )
             })
@@ -121,9 +121,7 @@ export default ({ product, description, relatedProducts }) => {
   const tabs = [
     { id: ID.RECENTLY_VIEW, title: "Sản phẩm vừa xem" },
     { id: ID.DESCRIPTION, title: "Mô tả" },
-    // { id: ID.FEATURES, title: "Tính năng và ưu điểm" },
     { id: ID.SPECIFICATIONS, title: "Thông số kỹ thuật" },
-    // { id: ID.COMPONENT_PARTS, title: "Phụ kiện" },
     { id: ID.RELATED_ITEMS, title: "Sản phẩm liên quan" },
   ];
 
@@ -207,7 +205,7 @@ export default ({ product, description, relatedProducts }) => {
         style={{ top: `${headerHeight}px` }}
       >
         <div className="relative bg-white tab-header">
-          <div className="flex items-center w-full overflow-auto tab-header-content">
+          <div className="flex items-center w-full overflow-auto tab-header-content flex-wrap">
             {
               tabs.map((tab, index) => {
                 return (

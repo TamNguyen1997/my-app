@@ -357,25 +357,30 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily,
 
         <div className="pr-5"></div>
 
-        <Tooltip showArrow content="Ordered list (Ctrl + Alt + 7)">
-          <div
-            className={`${iconClassName} ${editor.isActive("orderedList") ? "opacity-25" : ""
-              }`}
-            onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          >
-            <RiListOrdered className="w-full h-full" />
-          </div>
-        </Tooltip>
+        {
+          !disable.orderedList &&
+          <>
+            <Tooltip showArrow content="Ordered list (Ctrl + Alt + 7)">
+              <div
+                className={`${iconClassName} ${editor.isActive("orderedList") ? "opacity-25" : ""
+                  }`}
+                onClick={() => editor.chain().focus().toggleOrderedList().run()}
+              >
+                <RiListOrdered className="w-full h-full" />
+              </div>
+            </Tooltip>
+            <Tooltip showArrow content="Bullet list (Ctrl + Alt + 8)">
+              <div
+                className={`${iconClassName} ${editor.isActive("bulletList") ? "opacity-25" : ""
+                  }`}
+                onClick={() => editor.chain().focus().toggleBulletList().run()}
+              >
+                <RiListUnordered className="w-full h-full" />
+              </div>
+            </Tooltip>
+          </>
+        }
 
-        <Tooltip showArrow content="Bullet list (Ctrl + Alt + 8)">
-          <div
-            className={`${iconClassName} ${editor.isActive("bulletList") ? "opacity-25" : ""
-              }`}
-            onClick={() => editor.chain().focus().toggleBulletList().run()}
-          >
-            <RiListUnordered className="w-full h-full" />
-          </div>
-        </Tooltip>
 
         {!disable.quote && <Tooltip showArrow content="Blockquote (Ctrl + Shift + B)">
           <div
@@ -386,46 +391,50 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily,
             <RiDoubleQuotesL className="w-full h-full" />
           </div>
         </Tooltip>}
+        {
+          !disable.textAlign &&
+          <>
+            <Tooltip showArrow content="Left align (Ctrl + Shift + L)">
+              <div
+                className={`${iconClassName} ${editor.isActive({ textAlign: "left" }) ? "opacity-25" : ""
+                  }`}
+                onClick={() => editor.chain().focus().setTextAlign("left").run()}
+              >
+                <RiAlignLeft className="w-full h-full" />
+              </div>
+            </Tooltip>
 
-        <Tooltip showArrow content="Left align (Ctrl + Shift + L)">
-          <div
-            className={`${iconClassName} ${editor.isActive({ textAlign: "left" }) ? "opacity-25" : ""
-              }`}
-            onClick={() => editor.chain().focus().setTextAlign("left").run()}
-          >
-            <RiAlignLeft className="w-full h-full" />
-          </div>
-        </Tooltip>
+            <Tooltip showArrow content="Center align (Ctrl + Shift + E)">
+              <div
+                className={`${iconClassName} ${editor.isActive({ textAlign: "center" }) ? "opacity-25" : ""
+                  }`}
+                onClick={() => editor.chain().focus().setTextAlign("center").run()}
+              >
+                <RiAlignCenter className="w-full h-full" />
+              </div>
+            </Tooltip>
 
-        <Tooltip showArrow content="Center align (Ctrl + Shift + E)">
-          <div
-            className={`${iconClassName} ${editor.isActive({ textAlign: "center" }) ? "opacity-25" : ""
-              }`}
-            onClick={() => editor.chain().focus().setTextAlign("center").run()}
-          >
-            <RiAlignCenter className="w-full h-full" />
-          </div>
-        </Tooltip>
+            <Tooltip showArrow content="Right align (Ctrl + Shift + R)">
+              <div
+                className={`${iconClassName} ${editor.isActive({ textAlign: "right" }) ? "opacity-25" : ""
+                  }`}
+                onClick={() => editor.chain().focus().setTextAlign("right").run()}
+              >
+                <RiAlignRight className="w-full h-full" />
+              </div>
+            </Tooltip>
 
-        <Tooltip showArrow content="Right align (Ctrl + Shift + R)">
-          <div
-            className={`${iconClassName} ${editor.isActive({ textAlign: "right" }) ? "opacity-25" : ""
-              }`}
-            onClick={() => editor.chain().focus().setTextAlign("right").run()}
-          >
-            <RiAlignRight className="w-full h-full" />
-          </div>
-        </Tooltip>
-
-        <Tooltip showArrow content="Justify (Ctrl + Shift + J)">
-          <div
-            className={`${iconClassName} ${editor.isActive({ textAlign: "justify" }) ? "opacity-25" : ""
-              }`}
-            onClick={() => editor.chain().focus().setTextAlign("justify").run()}
-          >
-            <RiAlignJustify className="w-full h-full" />
-          </div>
-        </Tooltip>
+            <Tooltip showArrow content="Justify (Ctrl + Shift + J)">
+              <div
+                className={`${iconClassName} ${editor.isActive({ textAlign: "justify" }) ? "opacity-25" : ""
+                  }`}
+                onClick={() => editor.chain().focus().setTextAlign("justify").run()}
+              >
+                <RiAlignJustify className="w-full h-full" />
+              </div>
+            </Tooltip>
+          </>
+        }
 
         <div className="pr-5"></div>
 
@@ -515,12 +524,12 @@ const BlogToolBar = ({ editor, fontSize, setFontSize, fontFamily, setFontFamily,
         </Tooltip>}
       </div>
       <div className="flex flex-wrap [&>div]:mt-1.5 [&>div]:ml-0.5">
-        <div
+        {!disable.textColor && <div
           className={`border w-10 rounded-large h-6`}
           style={{
             background: selectedTextColor,
           }}
-        ></div>
+        ></div>}
         {!disable.textColor && <Tooltip showArrow content="Text color">
           <div
             className={`${iconClassName} ${editor.isActive("italic") ? "opacity-25" : ""

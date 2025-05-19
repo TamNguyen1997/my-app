@@ -257,6 +257,10 @@ const ProductDetail = () => {
                 checkbox: true,
                 multicheckbox: true,
                 code: true,
+                textColor: true,
+                orderedList: true,
+                quote: true,
+                textAlign: true
               }} />
             </div>
             <div>

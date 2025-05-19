@@ -49,7 +49,7 @@ const Page = async () => {
         brandToProducts={brandToProducts} />
       <Introduction />
       <PopularBlogs blogs={blogs} />
-      <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-2/3 md:w-1/3 min-w-[300px] h-[50px] m-auto shadow-md">
+      <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center w-full lg:w-1/3 md:w-1/2 min-w-[300px] h-[50px] m-auto shadow-md">
         <p className="m-auto text-black font-bold md:text-xl">KHÁCH HÀNG SAO VIỆT</p>
       </div>
       <Customer />

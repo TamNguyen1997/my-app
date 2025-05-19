@@ -2,6 +2,7 @@
 
 import {
   Button,
+  Link,
   Modal,
   ModalBody,
   ModalContent,
@@ -10,7 +11,7 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import ImageCms from "../ImageCms";
-import { useState, useRef, useCallback, forwardRef } from "react";
+import { useState, useRef, useCallback, forwardRef, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { X } from "lucide-react";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
@@ -21,21 +22,28 @@ import { v4 as uuidv4 } from "uuid";
 
 const MAX_IMAGES = 10;
 
-const SaleDetailImages = ({ saleDetail }) => {
+const SaleDetailImages = ({ saleDetail, productId }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const [images, setImages] = useState(saleDetail.sale_detail_on_image || []);
 
   const updateProductImages = (newImages) => {
-    console.log(newImages)
     setImages(newImages);
+    sessionStorage.setItem(`${productId}-${saleDetail.id}`, JSON.stringify(newImages));
   };
+
+  useEffect(() => {
+    const sessionImages = sessionStorage.getItem(`${productId}-${saleDetail.id}`)
+    if (sessionImages?.length > 0) {
+      setImages(JSON.parse(sessionImages))
+    }
+  }, [])
 
   const handleImageSelection = (value) => {
     const imageExists = images.some((item) => item.imageUrl === value.source_url);
 
     if (images.length >= MAX_IMAGES && !imageExists) {
-      toast.error("Không thể thêm hình, đã đạt tối đa 10 hình");
+      toast.error("Không thể thêm hình, đã đạt tối đa 10 hình", { containerId: `sale-detail-${saleDetail.id}` });
       return;
     }
 
@@ -47,7 +55,7 @@ const SaleDetailImages = ({ saleDetail }) => {
       ];
 
     toast[imageExists ? "warning" : "success"](
-      imageExists ? "Đã loại ảnh này" : "Đã thêm ảnh"
+      imageExists ? "Đã loại ảnh này" : "Đã thêm ảnh", { containerId: `sale-detail-${saleDetail.id}` }
     );
     updateProductImages(newImages);
   };
@@ -55,7 +63,7 @@ const SaleDetailImages = ({ saleDetail }) => {
   const deleteImage = (image) => {
     const newImages = images.filter((item) => item.imageUrl !== image.imageUrl);
     updateProductImages(newImages);
-    toast.success("Đã xóa ảnh");
+    toast.success("Đã xóa ảnh", { containerId: `sale-detail-${saleDetail.id}` });
   };
 
   const handleUploadSuccess = (uploads) => {
@@ -68,7 +76,7 @@ const SaleDetailImages = ({ saleDetail }) => {
       );
 
       if (newImages.length >= MAX_IMAGES && !imageExists) {
-        toast.error("Không thể thêm hình, đã đạt tối đa 10 hình");
+        toast.error("Không thể thêm hình, đã đạt tối đa 10 hình", { containerId: `sale-detail-${saleDetail.id}` });
         return;
       }
 
@@ -105,15 +113,15 @@ const SaleDetailImages = ({ saleDetail }) => {
     });
 
     if (res.ok) {
-      toast.success("Cập nhật thành công");
+      toast.success("Cập nhật thành công", { containerId: `sale-detail-${saleDetail.id}` });
     } else {
-      toast.error("Không thể cập nhật sản phẩm");
+      toast.error("Không thể cập nhật sản phẩm", { containerId: `sale-detail-${saleDetail.id}` });
     }
   }
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer containerId={`sale-detail-${saleDetail.id}`} />
       <div className="gap-3 p-5">
         <ImageDraggableList
           images={images}
@@ -121,6 +129,11 @@ const SaleDetailImages = ({ saleDetail }) => {
           moveRow={moveRow}
         />
         <div className="flex flex-row gap-2 px-3 py-4 justify-end">
+          <Link href={`/admin/product/edit/${productId}/?tab=sale`}>
+            <Button variant="ghost">
+              Trở về sản phẩm
+            </Button>
+          </Link>
           <Button onPress={onOpen} className="w-24">
             Chọn ảnh
           </Button>

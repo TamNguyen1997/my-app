@@ -36,7 +36,7 @@ export default function PopularBlogs({ blogs }) {
       viewport={{ once: true }}
       className="pb-[60px] m-auto sm:w-3/4 px-2">
 
-      <div className="bg-black rounded-tr-[50px] rounded-bl-[50px] flex items-center w-1/3 min-w-[222px] h-[50px] m-auto">
+      <div className="bg-black rounded-tr-[50px] rounded-bl-[50px] flex items-center w-full md:w-1/2 min-w-[240px] lg:w-1/3 h-[50px] m-auto">
         <Link href="/" className="m-auto text-white font-bold text-xl">BÀI VIẾT NỔI BẬT</Link>
       </div>
 

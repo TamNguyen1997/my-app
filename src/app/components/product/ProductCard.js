@@ -5,7 +5,7 @@ import Image from "next/image"
 const ProductCard = ({ product }) => {
   return (
     <Link
-      className="group-hover:opacity-50 border hover:-translate-y-3 hover:shadow-md transition bg-white max-w-[300px] flex flex-col h-full"
+      className="group-hover:opacity-50 border hover:-translate-y-3 hover:shadow-md transition bg-white max-w-[300px] flex flex-col h-full max-h-[350px]"
       href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`}>
       <Image
         width={200}
@@ -13,14 +13,16 @@ const ProductCard = ({ product }) => {
         srcSet={`${product.imageUrl}?w=400 400w, ${product.imageUrl}?w=800 800w`}
         src={product.imageUrl || "/default-featured-image.webp"}
         alt={product.imageAlt || "Dụng cụ vệ sinh Sao Việt"}
-        className="flex flex-col h-[250px] rounded-md overflow-hidden mx-auto"
+        className="flex flex-col lg:h-[250px] h-[200px] rounded-md overflow-hidden mx-auto"
         loading="eager"
         priority="true"
       />
-      <p
-        className="w-full grow mx-auto border-b py-3 sm:text-base text-lg text-gray-700 line-clamp-3 font-roboto text-center">
-        {product.name}
-      </p>
+      <div className="py-3 border-b w-full h-20">
+        <p
+          className="px-2 grow mx-auto sm:text-base text-lg text-gray-700 line-clamp-2 font-roboto text-center">
+          {product.name}
+        </p>
+      </div>
       <div className="py-2 h-16 w-full">
         {getPrice(product) ? (
           <>

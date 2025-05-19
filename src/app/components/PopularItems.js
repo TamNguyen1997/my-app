@@ -73,7 +73,7 @@ const PopularItems = React.memo(({
 
 const ProductCards = React.memo(({ name, products, redirect, banner }) => {
   const CategoryDisplay = () => (
-    <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center sm:w-2/3 md:w-1/3 min-w-[240px] h-[50px] m-auto shadow-md">
+    <div className="bg-[#FFD400] rounded-tr-[50px] rounded-bl-[50px] flex items-center sm:w-full md:w-1/2 min-w-[240px] h-[50px] m-auto shadow-md">
       <div className="m-auto text-black font-bold md:text-xl">
         {name}
       </div>

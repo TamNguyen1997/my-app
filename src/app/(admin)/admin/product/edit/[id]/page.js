@@ -10,7 +10,6 @@ export async function generateMetadata({ params }) {
 }
 
 const Page = async ({ params }) => {
-
   const [product, allCategories, brands] = await Promise.all([
     db.product.findFirst({
       where: {

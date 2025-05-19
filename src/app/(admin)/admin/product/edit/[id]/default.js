@@ -14,6 +14,7 @@ import { product_type } from "@prisma/client";
 import { useEditor } from "@tiptap/react";
 import { editorConfig } from "@/lib/editor";
 import { toast, ToastContainer } from "react-toastify";
+import { useSearchParams } from 'next/navigation';
 
 export const ProductContext = createContext();
 
@@ -21,7 +22,7 @@ const Default = ({ initProduct = {}, categories = [], subCategories = [], brands
   const { id } = useParams()
   const [isLoading, setIsLoading] = useState(false)
   const [product, setProduct] = useState(initProduct || {})
-
+  const [selected] = useState(useSearchParams().get('tab') || 'default');
   const [filters, setFilters] = useState(initFilters)
 
   const editor = useEditor(editorConfig(initProduct.promotion))
@@ -94,8 +95,8 @@ const Default = ({ initProduct = {}, categories = [], subCategories = [], brands
     <>
       <ToastContainer containerId="ProductDetailPage" />
       <ProductContext.Provider value={{ product, setProduct, categories, brands, subCategories, filters, setFilters, editor }}>
-        <Tabs>
-          <Tab title="Thông tin chung">
+        <Tabs defaultSelectedKey={selected}>
+          <Tab title="Thông tin chung" key="default">
             <Card>
               <CardBody>
                 <ProductDetail />

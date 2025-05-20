@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from '@nextui-org/react';
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import RelatedProducts from "@/components/RelatedProducts";
@@ -28,6 +28,16 @@ const TabContent = ({ id, product, description, relatedProducts, technicalDetail
 
   useEffect(() => {
     setRecentlyView(getRecentlyView())
+  }, [])
+
+
+  const getImageUrl = useCallback((url) => {
+    if (url) {    
+      let url = "https://dungcuvesinhsaoviet.com/wordpress-prod/wp-content/uploads/gallery/product/ban-chai-cha-roan-gach-fg9b5600bla-1png.png";
+      let newUrl = url.substring(url.indexOf('/gallery'));
+      return `${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-content/uploads/${newUrl}`;
+    }
+    return "/default-featured-image.webp";
   }, [])
 
   switch (id) {
@@ -102,7 +112,7 @@ const TabContent = ({ id, product, description, relatedProducts, technicalDetail
                 <Image
                   width={200}
                   height={200}
-                  src={`${item.imageUrl || "/default-featured-image.webp"}`}
+                  src={`${getImageUrl(item.imageUrl)|| "/default-featured-image.webp"}`}
                   alt={item.imageAlt || "Dụng cụ vệ sinh Sao Việt"}
                   className="w-16 h-16"
                 />

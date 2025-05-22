@@ -35,8 +35,10 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
   const getPromotion = useCallback(() => {
     if (!product.promotion) return [];
     const matches = product.promotion.match(/<p\b[^>]*>[\s\S]*?<\/p>/gi);
-    return matches;
+    return matches.map(item => item.replace(/<(\w+)[^>]*>\s*<\/\1>/g, '')).filter(item => item.length > 0);
   }, [product])
+
+  console.log(getPromotion())
 
   useEffect(() => {
     if (selectedDetail.id && selectedSecondaryDetail.id) {

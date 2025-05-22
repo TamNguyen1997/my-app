@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useEffect, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 import { BreadcrumbItem, Breadcrumbs, Button, Link } from "@nextui-org/react";
 import SaleDetail from "@/components/SaleDetail";
 import ProductImageCarousel from "@/components/ProductImageCarousel";
@@ -19,6 +19,18 @@ export default ({ product = {}, description, relatedProducts = [] }) => {
     addRecentlyView(product)
   }, [product.id])
 
+  const getImages = useCallback(() => {
+    if (product.product_on_image.map(item => item.imageUrl).length > 0) {
+      return product.product_on_image.map(item => item.imageUrl)
+    }
+    if (images.length > 0) {
+      return images
+    }
+    if (product.imageUrl) {
+      return [product.imageUrl]
+    }
+    return []
+  }, [images, product.product_on_image])
   return (
     <>
       <ProductDetailContext.Provider value={{
@@ -56,7 +68,7 @@ export default ({ product = {}, description, relatedProducts = [] }) => {
               className="flex flex-wrap items-start bg-[#f8f8f8] mb-5"
             >
               <div className="relative bg-white border-[3px] border-[#f8f8f8] w-full">
-                <ProductImageCarousel items={images || product.product_on_image.map(item => item.imageUrl) || product.imageUrl ? [product.imageUrl] : []} />
+                <ProductImageCarousel items={getImages()} />
                 <div className="md:hidden bg-white">
                   <div className="p-5 border-white border-b-[3px] bg-[#f8f8f8]">
                     <SaleDetail saleDetails={product.saleDetails || []} product={product} setImages={setImages} />

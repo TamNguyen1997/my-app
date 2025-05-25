@@ -18,13 +18,12 @@ export default ({ product = {}, description, relatedProducts = [] }) => {
   useEffect(() => {
     addRecentlyView(product)
   }, [product.id])
-
   const getImages = useCallback(() => {
-    if (product.product_on_image.map(item => item.imageUrl).length > 0) {
-      return product.product_on_image.map(item => item.imageUrl)
-    }
     if (images.length > 0) {
       return images
+    }
+    if (product.product_on_image.map(item => item.imageUrl).length > 0) {
+      return product.product_on_image.map(item => item.imageUrl)
     }
     if (product.imageUrl) {
       return [product.imageUrl]

@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "./ImageCms.css";
 import {
   Button,
@@ -45,8 +45,6 @@ const ImagePicker = ({
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { register, handleSubmit, formState: { errors } } = useForm();
   const { product } = useContext(ProductContext) || {};
-
-  const pages = useMemo(() => (total ? Math.ceil(total / size) : 0), [total, size]);
 
   useEffect(() => {
     fetchImages();
@@ -177,7 +175,7 @@ const ImagePicker = ({
             showControls
             showShadow
             page={page}
-            total={pages}
+            total={total}
             onChange={(page) => setPage(page)}
           />
         </div>

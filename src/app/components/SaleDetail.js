@@ -236,14 +236,14 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
         <div className="flex lg:flex-nowrap flex-wrap gap-3 mx-auto">
           <Button
             color="primary"
-            isDisabled={!getPrice()}
+            isDisabled={getPrice() <= 0}
             onClick={(evt) => handleAddToCart(evt, true)}
           >
             Mua ngay <ShoppingCart />
           </Button>
           <Button
             color="primary"
-            isDisabled={!getPrice()}
+            isDisabled={getPrice() <= 0}
             onClick={(evt) => handleAddToCart(evt)}
           >
             Thêm vào giỏ hàng

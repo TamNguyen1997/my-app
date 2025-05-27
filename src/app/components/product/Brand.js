@@ -21,7 +21,10 @@ const Brand = ({ params, productFilter }) => {
     if (res.ok) {
       const body = await res.json();
       const [minPrice, maxPrice] = value;
-      let result = body.result.filter(item => item.saleDetails.find(sd => sd.showPrice && sd.price >= minPrice & sd.price <= maxPrice));
+      let result = body.result.filter(item => item.saleDetails.find(sd => {
+        if (!sd.showPrice) return true
+        return sd.showPrice && sd.price >= minPrice & sd.price <= maxPrice
+      }));
 
       setData(result);
       let categories = [];

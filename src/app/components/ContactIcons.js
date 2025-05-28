@@ -24,7 +24,7 @@ const ContactIcons = () => {
           </Link>
         </li>
         <li>
-          <Link href="tel:0902802979">
+          <Link href="tel:0903802979">
             <span className="relative flex bg-[#FFD400] rounded-full">
               <Image src="/icon/phone.webp" width={48} height={48} alt="phone" />
               <span className="motion-safe:animate-ping-delay absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>

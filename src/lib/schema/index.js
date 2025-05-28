@@ -23,7 +23,7 @@ export const ORGANIZATION_SCHEMA = {
   },
   "contactPoint": {
     "@type": "ContactPoint",
-    "telephone": "0902802979",
+    "telephone": "0903802979",
     "contactType": "Hỗ trợ khách hàng",
     "areaServed": "VN",
     "availableLanguage": ["Vietnamese"]

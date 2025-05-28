@@ -35,8 +35,8 @@ const Contact = () => {
                 <span className="block mb-2 font-bold">
                   Hotline
                 </span>
-                <Link className="text-black text-small" href="tel:0902802979">
-                  090 280 2979
+                <Link className="text-black text-small" href="tel:0903802979">
+                  090 380 2979
                 </Link>
               </div>
             </div>

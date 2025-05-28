@@ -27,7 +27,7 @@ const Footer = () => {
             </div>
             <div className="flex gap-2">
               <PhoneCall className="text-[#FFD400]" size="24" />
-              <Link href="tel:0902802979" className="text-white">Hotline: 090 280 2979</Link>
+              <Link href="tel:0903802979" className="text-white">Hotline: 090 380 2979</Link>
             </div>
           </div>
         </div>

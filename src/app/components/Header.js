@@ -1,12 +1,12 @@
 "use client";
 
 import { ShoppingCart, Menu, ChevronRight } from "lucide-react";
-import Link from "next/link";
 import { useEffect, useState, useContext, useRef, useMemo } from "react";
 import SearchBar from "@/components/SearchBar";
 import { CartContext } from "@/context/CartProvider";
 import "./Header.css";
 import Image from "next/image";
+import { Link } from "@nextui-org/react";
 
 const Header = ({ headers }) => {
   const [hoveredCate, setHoveredCate] = useState(null);
@@ -51,7 +51,7 @@ const Header = ({ headers }) => {
             <div className="hidden md:flex items-center text-sm gap-10 uppercase">
               <Link href="/tin-tuc">Tin tức</Link>
               <Link href="/kien-thuc-hay">Kiến thức hay</Link>
-              <Link href="tel:0902802979" className="font-bold">Hotline: 090 280 2979</Link>
+              <Link href="tel:0903802979" className="font-bold">Hotline: 090 380 2979</Link>
             </div>
           </div>
           <div className="pl-9">

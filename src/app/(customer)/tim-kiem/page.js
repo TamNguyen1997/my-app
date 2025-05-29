@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { getTotalPages } from "@/lib/pagination"
-import { Link, Pagination, Tab, Tabs } from "@nextui-org/react";
+import { Button, Link, Pagination, Tab, Tabs } from "@nextui-org/react";
 import { Suspense } from 'react'
 import ProductCard from "@/components/product/ProductCard"
 import BlogItem from "@/app/components/blog/BlogItem";
@@ -76,34 +76,32 @@ const SearchBlog = () => {
   const rowsPerPage = 10
   const [data, setData] = useState([])
   const searchParams = useSearchParams()
-  const [total, setTotal] = useState(0)
-  const [page, _] = useState(parseInt(searchParams.get("page") || "1"))
-
+  const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"))
+  const [endContent, setEndContent] = useState(false)
+  const [total, setTotal] = useState(1)
   useEffect(() => {
     getBlog()
   }, [page, searchParams]);
 
-  const pages = useMemo(() => {
-    return getTotalPages(total, rowsPerPage)
-  }, [total, rowsPerPage]);
-
   const getBlog = () => {
-    fetch(`/api/blogs/?size=${rowsPerPage}&page=${page}&slug=${searchParams.get("key")}`).then(async res => {
-      if (res.ok) {
-        const body = await res.json()
-        setData(body.result)
-        setTotal(body.total)
-      }
-    })
+    const wordpressCateIds = [process.env.NEXT_PUBLIC_WORDPRESS_POST_NEWS_ID, process.env.NEXT_PUBLIC_WORDPRESS_POST_INFORMATION_ID]
+    fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&categories=${wordpressCateIds.join()}&per_page=${rowsPerPage}&page=${page}&status=publish`)
+      .then(res => {
+        setTotal(res.headers.get("x-wp-total"))
+        return res.json()
+      })
+      .then(json => {
+        setData([...data, ...json])
+      }).catch(err => setEndContent(true))
   }
 
   return (
     <>
       {
-        total === 0 ? <NotFound key={searchParams.get("key")} /> :
+        data.length === 0 ? <NotFound key={searchParams.get("key")} /> :
           <>
             <p className="font-bold p-2">
-              Tìm thấy {total} kết quả.
+              Tìm thấy {data.length} kết quả.
             </p>
             {
               data?.length ? <>
@@ -116,21 +114,13 @@ const SearchBlog = () => {
                     })
                   }
                 </div>
-                {
-                  pages > 1 ? <div className="flex w-full justify-center">
-                    <Pagination
-                      isCompact
-                      showControls
-                      showShadow
-                      page={page}
-                      total={pages}
-                      onChange={(page) => {
-                        setPage(page)
-                        navigate(`/tim-kiem?key=${searchParams.get("key")}&page=${page}`)
-                      }}
-                    />
-                  </div> : ""
-                }
+                {total > data.length && <Button
+                  className="flex justify-center items-center font-semibold w-[181px] h-[43px] rounded-[30px] text-black bg-white
+                border border-black hover:bg-[#FFD400] transition mx-auto text-large"
+                  onClick={() => setPage(page + 1)}
+                >
+                  Xem thêm
+                </Button>}
               </> : ""
             }
           </>

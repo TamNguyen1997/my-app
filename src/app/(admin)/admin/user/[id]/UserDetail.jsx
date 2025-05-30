@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { toast, ToastContainer } from "react-toastify";
 import { getCookie } from "cookies-next";
 import { user_role } from "@prisma/client";
+import Link from "next/link";
 const UserDetail = () => {
   const params = useParams();
   const [isChangingPassword, setIsChangingPassword] = useState(false);
@@ -233,12 +234,12 @@ const UserDetail = () => {
                       getUser().username === "admin"
                         ? {}
                         : {
-                            required: "Vui lòng điền password",
-                            minLength: {
-                              value: 6,
-                              message: "Password phải có ít nhất 6 kí tự",
-                            },
-                          }
+                          required: "Vui lòng điền password",
+                          minLength: {
+                            value: 6,
+                            message: "Password phải có ít nhất 6 kí tự",
+                          },
+                        }
                     )}
                     status={errors.password ? "error" : "default"}
                   />
@@ -293,7 +294,15 @@ const UserDetail = () => {
             )}
           </div>
 
-          <Button color="success" type="submit" className="mt-4">
+          <Link href="/admin/user">
+            <Button
+              color="default"
+              className="mt-4"
+            >
+              Quay lại
+            </Button>
+          </Link>
+          <Button color="success" type="submit" className="mt-4 ms-2">
             Cập nhật
           </Button>
         </form>

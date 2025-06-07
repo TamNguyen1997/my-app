@@ -183,8 +183,8 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
               <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                   {
-                    tableHeaders.map(col =>
-                      <th scope="col" className={`max-w-[150px] whitespace-normal text-center last:w-[50px] [&:nth-last-child(2)]:w-[90px]
+                    tableHeaders.map((col, i) =>
+                      <th scope="col" key={i} className={`max-w-[150px] whitespace-normal text-center last:w-[50px] [&:nth-last-child(2)]:w-[90px]
                       ${col.required && "after:content-['*'] after:text-[#f31260]"} px-6 py-3`}>
                         {col.title}
                       </th>

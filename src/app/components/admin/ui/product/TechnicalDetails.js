@@ -1,4 +1,4 @@
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Spinner, useDisclosure } from "@nextui-org/react"
+import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, useDisclosure } from "@nextui-org/react"
 import { Trash2 } from "lucide-react"
 import { useContext, useState } from "react"
 import { v4 } from "uuid"
@@ -48,14 +48,9 @@ const TechnicalDetails = () => {
         (!product.categoryId || !product.brandId || !product.subCateId) &&
         <p className="text-red-600 text-small">Sản phẩm phải có category, sub-category và thương hiệu mới có thể có giá trị filter</p>
       }
-      <div>
+      <div className="w-1/2 mx-auto">
         {
           technicalDetails.map((item, i) => <div className="flex gap-2 pt-3" key={i}>
-            <Input
-              label="Filter ID"
-              value={item.filterId}
-              readOnly
-            />
             <Select label="Filter"
               selectedKeys={[item.filterId]}
               onSelectionChange={(value) => {
@@ -73,7 +68,10 @@ const TechnicalDetails = () => {
               </SelectItem>
 
               {
-                filters.map(item => <SelectItem key={item.id}>{item.name}</SelectItem>)
+                filters.map(item => <SelectItem key={item.id} textValue={item.name}>
+                  <p>{item.name}</p>
+                  <p className="text-xs text-gray-500">{item.id}</p>
+                </SelectItem>)
               }
             </Select>
             <Modal

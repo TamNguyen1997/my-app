@@ -100,12 +100,6 @@ const FilterValueSelect = ({
   const newFilterValueModal = useDisclosure()
   return (
     <>
-      <Input
-        label="Giá trị filter ID"
-        value={detail.filterValueId}
-        isDisabled={!getFilter() || !getFilter().id || !categoryId || !brandId || !subCategoryId}
-        readOnly
-      />
       <Select label="Giá trị filter"
         isDisabled={!getFilter() || !getFilter().id || !categoryId || !brandId || !subCategoryId}
         selectedKeys={[detail.filterValueId]}
@@ -125,7 +119,10 @@ const FilterValueSelect = ({
           </div>
         </SelectItem>
         {
-          getFilter()?.filterValue?.map(item => <SelectItem key={item.id}>{item.value}</SelectItem>)
+          getFilter()?.filterValue?.map(item => <SelectItem key={item.id} textValue={item.value}>
+            <p>{item.value}</p>
+            <p className="text-xs text-gray-500">{item.displayId}</p>
+          </SelectItem>)
         }
       </Select>
 

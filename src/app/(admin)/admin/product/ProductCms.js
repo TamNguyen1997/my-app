@@ -65,7 +65,7 @@ const ProductCms = ({ categories = [] }) => {
       setLoadingState("idle")
     } catch (error) {
       setLoadingState("idle")
-      toast.error("An error occurred while fetching the products.")
+      toast.error("An error occurred while fetching the products.", { containerId: "ProductCmsToast" })
     }
   }, [page, rowsPerPage, condition])
 
@@ -85,17 +85,17 @@ const ProductCms = ({ categories = [] }) => {
       )
       responses.forEach(async (res) => {
         if (res.ok) {
-          toast.success("Deleted product successfully")
+          toast.success("Deleted product successfully", { containerId: "ProductCmsToast" })
         } else {
           const body = await res.json()
-          toast.error(body.message)
+          toast.error(body.message, { containerId: "ProductCmsToast" })
         }
       })
       setSelectedKeys([])
       deleteManyConfirmationDisclosure.onClose()
       fetchProducts()
     } catch (error) {
-      toast.error("An error occurred while deleting products.")
+      toast.error("An error occurred while deleting products.", { containerId: "ProductCmsToast" })
     }
   }
 
@@ -104,15 +104,15 @@ const ProductCms = ({ categories = [] }) => {
     try {
       const res = await fetch(`/api/products/${productIdToDelete}`, { method: "DELETE" })
       if (res.ok) {
-        toast.success("Deleted product successfully")
+        toast.success("Deleted product successfully", { containerId: "ProductCmsToast" })
         fetchProducts()
         deleteConfirmationDisclosure.onClose()
       } else {
         const body = await res.json()
-        toast.error(body.message)
+        toast.error(body.message, { containerId: "ProductCmsToast" })
       }
     } catch (error) {
-      toast.error("An error occurred while deleting the product.")
+      toast.error("An error occurred while deleting the product.", { containerId: "ProductCmsToast" })
     }
     setProductIdToDelete()
   }
@@ -180,7 +180,7 @@ const ProductCms = ({ categories = [] }) => {
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer containerId="ProductCmsToast" />
       <DeleteConfirmation disclosure={deleteConfirmationDisclosure} onDelete={deleteProduct} />
       <DeleteConfirmation disclosure={deleteManyConfirmationDisclosure} onDelete={deleteMany} />
       <div className="flex flex-col gap-2 border-r min-h-full p-2">

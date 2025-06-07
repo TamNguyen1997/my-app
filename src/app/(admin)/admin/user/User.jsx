@@ -139,7 +139,7 @@ const User = () => {
   useEffect(() => {
     fetchUsers();
 
-    return () => {};
+    return () => { };
   }, [page]);
 
   return (
@@ -179,7 +179,7 @@ const User = () => {
             {[
               { key: "username", title: "Username" },
               { key: "email", title: "Email" },
-              { key: "name", title: "Name" },
+              { key: "name", title: "Tên" },
               { key: "active", title: "Active" },
               {
                 key: "edit",
@@ -374,10 +374,10 @@ const User = () => {
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="flat" onPress={onClose}>
-                  Close
+                  Đóng
                 </Button>
                 <Button color="success" type="submit">
-                  Create
+                  Tạo
                 </Button>
               </ModalFooter>
             </form>

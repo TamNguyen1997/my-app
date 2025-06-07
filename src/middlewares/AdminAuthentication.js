@@ -14,6 +14,12 @@ export const AdminAuthentication = (next) => {
         return NextResponse.redirect(url);
       }
 
+      if (pathname === "/admin/user" && role.value !== "ADMIN") {
+        const url = request.nextUrl.clone();
+        url.pathname = "/admin";
+        return NextResponse.redirect(url);
+      }
+
       const [userId, username] = userCookie.value.split(":");
 
       if (!userId || !username) {

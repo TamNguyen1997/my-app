@@ -12,7 +12,7 @@ export const Role = (next) => {
           const method = request.method;
           if (method === "DELETE" && role.value === user_role.MANAGER) {
             return NextResponse.json(
-              { message: "Permission Denied" },
+              { message: "Bạn không có quyền xoá tài nguyên này!" },
               { status: 403 }
             );
           }

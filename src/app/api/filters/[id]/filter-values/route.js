@@ -138,6 +138,7 @@ export async function PUT(req, { params }) {
               active: filterValue.active,
             },
             create: {
+              id: filterValue.id,
               displayId: filterValue.displayId,
               value: filterValue.value,
               slug: filterValue.slug,
@@ -155,7 +156,6 @@ export async function PUT(req, { params }) {
         ...filterValues.map(filterValue => filterValue.categories).flat(),
         ...filterValues.map(filterValue => filterValue.subCategories).flat()
       ]
-
       if (brands.length > 0) {
         await tx.brand_on_filter_value.createMany({ data: brands })
       }

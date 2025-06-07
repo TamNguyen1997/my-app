@@ -19,11 +19,16 @@ import { v4 } from "uuid";
 const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, filterId }) => {
 
   const [isSaving, setIsSaving] = useState(false)
-
+  const selectionList = {
+    categories: categories,
+    subCategories: subCategories,
+    brands: brands
+  }
   const tableHeaders = [
     {
       key: "displayId",
-      title: "ID giá trị filter"
+      title: "ID giá trị filter",
+      required: true
     },
     {
       key: "value",
@@ -51,7 +56,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
     },
     {
       key: "active",
-      title: "Trạng thái active"
+      title: "active"
     },
     {
       key: "actions",
@@ -67,7 +72,6 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
 
   const onSave = async () => {
     setIsSaving(true)
-    toast.warning("Đang lưu...", { containerId: "FilterProduct" })
     let res
 
     let filterValues = filter.filterValue ? filter.filterValue.map(item => {
@@ -80,47 +84,53 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
     }) : []
 
     if (!filter.createdAt) {
-      res = await fetch(`/api/filters/`, {
+      toast.promise(fetch(`/api/filters/`, {
         method: "POST",
         body: JSON.stringify({
           ...filter,
           filterValue: filterValues
         })
-      })
-      if (res.ok) {
-        const body = await res.json()
-        window.location.replace(`/admin/filter/edit/${body.id}`)
-      } else {
-        const body = await res.json()
-        toast.error(body.message, { containerId: "FilterProduct" })
-      }
+      }), {
+        pending: "Đang tạo filter...",
+        success: {
+          async render({ data }) {
+            const body = await data.json()
+            window.location.replace(`/admin/filter/edit/${body.id}`)
+            return `Tạo filter thành công với ID`;
+          }
+        },
+        error: "Không thể tạo filter"
+      }, { containerId: "FilterProduct" })
     } else {
-      res = await fetch(`/api/filters/${filterId}`, {
-        method: "PUT",
-        body: JSON.stringify({
-          displayId: filter.displayId,
-          active: filter.active,
-          name: filter.name,
-        })
-      })
-
-      if (res.ok && filterValues.length > 0) {
-        toast.success("Cập nhật Filter thành công", { containerId: "FilterProduct" })
-        toast.warning("Tiến hành cập nhật giá trị filter...", { containerId: "FilterProduct" })
-
-        res = await fetch(`/api/filters/${filterId}/filter-values`, {
+      toast.promise(
+        fetch(`/api/filters/${filterId}`, {
           method: "PUT",
           body: JSON.stringify({
-            filterValues: filterValues
+            displayId: filter.displayId,
+            active: filter.active,
+            name: filter.name,
           })
-        })
-      }
-    }
-
-    if (res.ok) {
-      toast.success("Cập nhật thành công", { containerId: "FilterProduct" })
-    } else {
-      toast.error("Không thể cập nhật", { containerId: "FilterProduct" })
+        }).then(() => toast.promise(
+          fetch(`/api/filters/${filterId}/filter-values`, {
+            method: "PUT",
+            body: JSON.stringify({
+              filterValues: filterValues
+            })
+          }),
+          {
+            pending: "Đang cập nhật giá trị filter...",
+            success: "Cập nhật giá trị filter thành công",
+            error: "Không thể cập nhật giá trị filter"
+          },
+          { containerId: "FilterProduct" }
+        )),
+        {
+          pending: "Đang cập nhật filter...",
+          success: "Cập nhật filter thành công",
+          error: "Không thể cập nhật filter"
+        },
+        { containerId: "FilterProduct" }
+      )
     }
     setIsSaving(false)
   }
@@ -151,140 +161,230 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
       filterValue: structuredClone(filter.filterValue || [])?.filter?.(filterValue => filterValue.id !== valueId)
     });
 
-    const res = await fetch(`/api/filter-value/${valueId}`, { method: "DELETE" })
-    if (res.ok) {
-      toast.success("Đã xóa", { containerId: "FilterProduct" })
-    } else {
-      toast.error("Không thể xóa", { containerId: "FilterProduct" })
-    }
+    toast.promise(
+      fetch(`/api/filter-value/${valueId}`, { method: "DELETE" }),
+      {
+        pending: "Đang xóa...",
+        success: "Đã xóa",
+        error: "Không thể xóa"
+      },
+      { containerId: "FilterProduct" }
+    )
   }
 
-  const renderCell = (filterValue, columnKey) => {
-    const cellValue = filterValue[columnKey]
-
-    const selectionList = {
-      categories: categories,
-      subCategories: subCategories,
-      brands: brands
-    }
-    switch (columnKey) {
-      case "actions":
-        return (
-          <div className="flex justify-center text-danger">
-            <Trash2 onClick={() => removeFilterValue(filterValue?.id)} className="cursor-pointer" />
-          </div>
-        )
-      case "active":
-        return (
-          <div className="flex justify-center">
-            <Switch
-              aria-label={columnKey}
-              defaultSelected={cellValue}
-              onValueChange={(value) => onCellValueChange(filterValue?.id, { [columnKey]: value })}
-              className="[&>span:last-of-type]:m-0"
-            />
-          </div>
-        )
-      case "categories":
-      case "subCategories":
-      case "brands":
-        return (
-          <Select
-            aria-label={columnKey}
-            selectionMode="multiple"
-            labelPlacement="outside"
-            isMultiline
-            onSelectionChange={(value) => {
-              if (Array.from(value)?.includes("all")) return;
-              onCellValueChange(filterValue?.id, { [columnKey]: Array.from(value).map(item => ({ id: item })) })
-            }}
-            defaultSelectedKeys={
-              (filterValue[columnKey] ? filterValue[columnKey].map(v => v.id) : [])
-            }
-            className={`${columnKey === "brands" ? "min-w-[140px]" : "min-w-[200px] max-w-[200px]"}`}
-          >
-            <SelectItem textValue="All" key="all" onClick={() => {
-              if (selectionList[columnKey]?.length === filterValue[columnKey]?.length) {
-                onCellValueChange(filterValue?.id, { [columnKey]: [] });
-              } else {
-                onCellValueChange(filterValue?.id, { [columnKey]: selectionList[columnKey].map(item => ({ id: item.id })) });
-              }
-            }}>
-              <div className="font-bold w-full flex justify-between">
-                All
-                {
-                  selectionList[columnKey]?.length === filterValue[columnKey]?.length ?
-                    <span className="absolute top-1/2 -translate-y-1/2 right-2 text-inherit w-3 h-3 flex-shrink-0">
-                      <svg viewBox="0 0 17 18">
-                        <polyline fill="none" points="1 9 7 14 15 4" stroke="currentColor" strokeDasharray="22" strokeDashoffset="44" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" style={{ transition: "stroke-dashoffset 200ms" }}></polyline>
-                      </svg>
-                    </span>
-                    : ""
-                }
-              </div>
-            </SelectItem>
-            {
-              selectionList[columnKey].map((item) =>
-                <SelectItem textValue={item.name} title={item.name} key={item.id}>
-                  {item.name}
-                </SelectItem>
-              )
-            }
-          </Select>
-        )
-      default:
-        return (
-          <Input
-            aria-label={columnKey}
-            defaultValue={cellValue}
-            onValueChange={(value) => onCellValueChange(filterValue?.id, { [columnKey]: value })}
-            className="min-w-[80px]"
-          />
-        );
-    }
-  }
 
   return (
     <>
       <ToastContainer containerId="FilterProduct" />
       <div className="flex flex-col gap-2 min-h-full">
         <div className="px-1 py-2 border-default-200">
-          <Table
-            aria-label="Thêm giá trị filter"
-            bottomContent={
-              <Button color="default" variant="ghost" onClick={() => addNewFilterValue()}>
-                Thêm giá trị filter
-              </Button>
-            }
-          >
-            <TableHeader>
-              {
-                tableHeaders.map(col =>
-                  <TableColumn
-                    key={col.key}
-                    text-value={col.title}
-                    aria-label={col.title}
-                    className={`
-                      max-w-[150px] whitespace-normal text-center last:w-[50px] [&:nth-last-child(2)]:w-[90px]
-                      ${col.required && "after:content-['*'] after:text-[#f31260]"}
-                    `}
-                  >
-                    {col.title}
-                  </TableColumn>
-                )
-              }
-            </TableHeader>
-            <TableBody
-              items={filter.filterValue || []}
-              emptyContent={"Không có giá trị filter nào"}
-              loadingContent={<Spinner label="Loading..." />}>
-              {(item) => (
-                <TableRow key={item.id}>
-                  {(columnKey) => <TableCell className="px-1.5 last:pr-0">{renderCell(item, columnKey)}</TableCell>}
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+          <div class="relative overflow-x-auto">
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+              <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                  {
+                    tableHeaders.map(col =>
+                      <th scope="col" className={`max-w-[150px] whitespace-normal text-center last:w-[50px] [&:nth-last-child(2)]:w-[90px]
+                      ${col.required && "after:content-['*'] after:text-[#f31260]"} px-6 py-3`}>
+                        {col.title}
+                      </th>
+                    )
+                  }
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  filter.filterValue?.map((item, i) => (
+                    <tr key={i}>
+                      <td scope="row" class="px-2 py-2 min-w-[80px]">
+                        <Input
+                          defaultValue={item?.displayId}
+                          onValueChange={(value) => onCellValueChange(item?.id, { displayId: value })}
+                          className="min-w-[80px]"
+                        />
+                      </td>
+                      <td class="px-2 py-2">
+                        <Input
+                          defaultValue={item?.value}
+                          onValueChange={(value) => onCellValueChange(item?.id, { value: value })}
+                          className="min-w-[80px]"
+                        />
+                      </td>
+                      <td class="px-2 py-2">
+                        <Input
+                          defaultValue={item?.slug}
+                          onValueChange={(value) => onCellValueChange(item?.id, { slug: value })}
+                          className="min-w-[80px]"
+                        />
+                      </td>
+                      <td class="px-2 py-2">
+                        <Select
+                          selectionMode="multiple"
+                          labelPlacement="outside"
+                          isMultiline
+                          onSelectionChange={(value) => {
+                            if (Array.from(value)?.includes("all")) return;
+                            onCellValueChange(item?.id, { brands: Array.from(value).map(item => ({ id: item })) })
+                          }}
+                          selectedKeys={
+                            (item.brands ? item.brands.map(v => v.id) : [])
+                          }
+                          className={`w-[220px]`}
+                        >
+                          <SelectItem
+                            textValue="All"
+                            key="all"
+                            onClick={() => {
+                              const allIds = selectionList.brands?.map(item => ({ id: item.id })) || [];
+                              const selectedIds = item.brands || [];
+                              if (selectedIds.length === allIds.length) {
+                                onCellValueChange(item?.id, { brands: [] });
+                              } else {
+                                onCellValueChange(item?.id, { brands: allIds });
+                              }
+                            }}
+                          >
+                            <div className="font-bold w-full flex justify-between">
+                              All
+                              {
+                                selectionList.brands?.length === item.brands?.length ?
+                                  <span className="absolute top-1/2 -translate-y-1/2 right-2 text-inherit w-3 h-3 flex-shrink-0">
+                                    <svg viewBox="0 0 17 18">
+                                      <polyline fill="none" points="1 9 7 14 15 4" stroke="currentColor" strokeDasharray="22" strokeDashoffset="44" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" style={{ transition: "stroke-dashoffset 200ms" }}></polyline>
+                                    </svg>
+                                  </span>
+                                  : ""
+                              }
+                            </div>
+                          </SelectItem>
+                          {
+                            selectionList.brands.map((item) =>
+                              <SelectItem textValue={item.name} title={item.name} key={item.id}>
+                                {item.name}
+                              </SelectItem>
+                            )
+                          }
+                        </Select>
+                      </td>
+                      <td class="px-2 py-2">
+                        <Select
+                          selectionMode="multiple"
+                          labelPlacement="outside"
+                          isMultiline
+                          onSelectionChange={(value) => {
+                            // Prevent direct selection of "all" via keyboard/mouse
+                            if (Array.from(value)?.includes("all")) return;
+                            onCellValueChange(item?.id, { categories: Array.from(value).map(item => ({ id: item })) })
+                          }}
+                          selectedKeys={
+                            (item.categories ? item.categories.map(v => v.id) : [])
+                          }
+                          className="w-[220px]"
+                        >
+                          <SelectItem
+                            textValue="All"
+                            key="all"
+                            onClick={() => {
+                              const allIds = selectionList.categories?.map(item => ({ id: item.id })) || [];
+                              const selectedIds = item.categories || [];
+                              if (selectedIds.length === allIds.length) {
+                                onCellValueChange(item?.id, { categories: [] });
+                              } else {
+                                onCellValueChange(item?.id, { categories: allIds });
+                              }
+                            }}
+                          >
+                            <div className="font-bold w-full flex justify-between">
+                              All
+                              {
+                                selectionList.categories?.length === item.categories?.length ?
+                                  <span className="absolute top-1/2 -translate-y-1/2 right-2 text-inherit w-3 h-3 flex-shrink-0">
+                                    <svg viewBox="0 0 17 18">
+                                      <polyline fill="none" points="1 9 7 14 15 4" stroke="currentColor" strokeDasharray="22" strokeDashoffset="44" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" style={{ transition: "stroke-dashoffset 200ms" }}></polyline>
+                                    </svg>
+                                  </span>
+                                  : ""
+                              }
+                            </div>
+                          </SelectItem>
+                          {
+                            selectionList.categories.map((item) =>
+                              <SelectItem textValue={item.name} title={item.name} key={item.id}>
+                                {item.name}
+                              </SelectItem>
+                            )
+                          }
+                        </Select>
+                      </td>
+                      <td class="px-2 py-2">
+                        <Select
+                          selectionMode="multiple"
+                          labelPlacement="outside"
+                          isMultiline
+                          onSelectionChange={(value) => {
+                            // Prevent direct selection of "all" via keyboard/mouse
+                            if (Array.from(value)?.includes("all")) return;
+                            onCellValueChange(item?.id, { subCategories: Array.from(value).map(item => ({ id: item })) })
+                          }}
+                          selectedKeys={
+                            (item.subCategories ? item.subCategories.map(v => v.id) : [])
+                          }
+                          className="w-[220px]"
+                        >
+                          <SelectItem
+                            textValue="All"
+                            key="all"
+                            onClick={() => {
+                              const allIds = selectionList.subCategories?.map(item => ({ id: item.id })) || [];
+                              const selectedIds = item.subCategories || [];
+                              if (selectedIds.length === allIds.length) {
+                                onCellValueChange(item?.id, { subCategories: [] });
+                              } else {
+                                onCellValueChange(item?.id, { subCategories: allIds });
+                              }
+                            }}
+                          >
+                            <div className="font-bold w-full flex justify-between">
+                              All
+                              {
+                                selectionList.subCategories?.length === item.subCategories?.length ?
+                                  <span className="absolute top-1/2 -translate-y-1/2 right-2 text-inherit w-3 h-3 flex-shrink-0">
+                                    <svg viewBox="0 0 17 18">
+                                      <polyline fill="none" points="1 9 7 14 15 4" stroke="currentColor" strokeDasharray="22" strokeDashoffset="44" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" style={{ transition: "stroke-dashoffset 200ms" }}></polyline>
+                                    </svg>
+                                  </span>
+                                  : ""
+                              }
+                            </div>
+                          </SelectItem>
+                          {
+                            selectionList.subCategories.map((item) =>
+                              <SelectItem textValue={item.name} title={item.name} key={item.id}>
+                                {item.name}
+                              </SelectItem>
+                            )
+                          }
+                        </Select>
+                      </td>
+                      <td className="px-2 py-2 justify-center">
+                        <Switch
+                          defaultSelected={item?.active}
+                          onValueChange={(value) => onCellValueChange(item?.id, { active: value })}
+                          className="[&>span:last-of-type]:m-0"
+                        />
+                      </td>
+                      <td className="justify-center text-danger">
+                        <Trash2 onClick={() => removeFilterValue(filterValue?.id)} className="cursor-pointer" />
+                      </td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </table>
+            <Button color="default" variant="ghost" onClick={() => addNewFilterValue()} className="w-full mt-2">
+              Thêm giá trị filter
+            </Button>
+          </div>
         </div>
 
         <div>

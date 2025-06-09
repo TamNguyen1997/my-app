@@ -51,29 +51,32 @@ const TechnicalDetails = () => {
       <div className="w-1/2 mx-auto">
         {
           technicalDetails.map((item, i) => <div className="flex gap-2 pt-3" key={i}>
-            <Select label="Filter"
-              selectedKeys={[item.filterId]}
-              onSelectionChange={(value) => {
-                if (value.values().next().value !== "new") {
-                  onSelectionChange({ filterId: value.values().next().value }, item.id)
-                }
-              }}
-            >
-              <SelectItem textValue="Thêm filter" key="new" onClick={() => {
-                newFilterModal.onOpen()
-              }}>
-                <div className="font-bold w-full flex justify-between">
-                  Thêm filter
-                </div>
-              </SelectItem>
+            <div className="flex flex-col gap-1 w-full">
+              <Select label="Filter"
+                selectedKeys={[item.filterId]}
+                onSelectionChange={(value) => {
+                  if (value.values().next().value !== "new") {
+                    onSelectionChange({ filterId: value.values().next().value }, item.id)
+                  }
+                }}
+              >
+                <SelectItem textValue="Thêm filter" key="new" onClick={() => {
+                  newFilterModal.onOpen()
+                }}>
+                  <div className="font-bold w-full flex justify-between">
+                    Thêm filter
+                  </div>
+                </SelectItem>
 
-              {
-                filters.map(item => <SelectItem key={item.id} textValue={item.name}>
-                  <p>{item.name}</p>
-                  <p className="text-xs text-gray-500">{item.id}</p>
-                </SelectItem>)
-              }
-            </Select>
+                {
+                  filters.map(item => <SelectItem key={item.id} textValue={item.name}>
+                    <p>{item.name}</p>
+                    <p className="text-xs text-gray-500">{item.displayId}</p>
+                  </SelectItem>)
+                }
+              </Select>
+              <p className="text-xs text-gray-500">{filters.find(f => f.id === item.filterId)?.displayId}</p>
+            </div>
             <Modal
               scrollBehavior="inside"
               size="xl"

@@ -15,8 +15,8 @@ const Filter = () => {
 
   const tableHeaders = [
     {
-      key: "id",
-      title: "ID"
+      key: "displayId",
+      title: "ID Filter"
     },
     {
       key: "name",
@@ -33,6 +33,10 @@ const Filter = () => {
     {
       key: "brandCount",
       title: "Số lượng thương hiệu"
+    },
+    {
+      key: "filterValueCount",
+      title: "Số lượng filter value"
     },
     {
       key: "active",
@@ -104,6 +108,8 @@ const Filter = () => {
             <Switch onClick={() => updateFilter(filter.id, !filter.active)} defaultSelected={filter.active} />
           </div>
         );
+      case "filterValueCount":
+        return filter._count?.filterValue ? filter._count.filterValue : 0;
       default:
         return cellValue
     }

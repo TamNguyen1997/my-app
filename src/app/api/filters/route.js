@@ -154,6 +154,12 @@ const getFilters = async (query) => {
           }
         },
         {
+          displayId: {
+            contains: query.id_name,
+            mode: 'insensitive',
+          }
+        },
+        {
           filterValue: {
             some: {
               slug: {
@@ -196,7 +202,12 @@ const getFilters = async (query) => {
       ],
       where: condition,
       include: {
-        filterValue: true
+        filterValue: true,
+        _count: {
+          select: {
+            filterValue: true
+          }
+        }
       },
       skip: (page - 1) * size,
       take: size
@@ -235,7 +246,6 @@ const getFilters = async (query) => {
         },
         distinct: ["brandId"]
       })
-
 
       result[i].categoryCount = categoryCount.length || 0
       result[i].brandCount = brandCount.length || 0

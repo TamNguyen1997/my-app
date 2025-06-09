@@ -48,7 +48,7 @@ const Filter = () => {
           <Input
             type="text"
             label="ID filter"
-            defaultValue={filter.id}
+            defaultValue={filter.displayId}
             labelPlacement="outside-left"
             isRequired
             className="[&_label]:grow"

@@ -156,11 +156,15 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
 
   const removeFilterValue = async (valueId) => {
     if (!confirm("Bạn có chắc muốn xóa không?")) return
+    const filterToDelete = filter.filterValue?.find(item => item.id === valueId);
     setFilter({
       ...filter,
       filterValue: structuredClone(filter.filterValue || [])?.filter?.(filterValue => filterValue.id !== valueId)
     });
 
+    if (!filterToDelete.createdAt) {
+      return
+    }
     toast.promise(
       fetch(`/api/filter-value/${valueId}`, { method: "DELETE" }),
       {
@@ -374,7 +378,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
                         />
                       </td>
                       <td className="justify-center text-danger">
-                        <Trash2 onClick={() => removeFilterValue(filterValue?.id)} className="cursor-pointer" />
+                        <Trash2 onClick={() => removeFilterValue(item?.id)} className="cursor-pointer" />
                       </td>
                     </tr>
                   ))

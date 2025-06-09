@@ -1,4 +1,4 @@
-import { Button, DatePicker, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Switch, useDisclosure } from "@nextui-org/react"
+import { Button, DatePicker, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Switch, useDisclosure, user } from "@nextui-org/react"
 import slugify from "slugify"
 import ImageCms from "../ImageCms"
 import { useCallback, useContext, useState } from "react"
@@ -7,6 +7,8 @@ import { ProductContext } from "../../../../(admin)/admin/product/edit/[id]/defa
 import { toast } from "react-toastify";
 import Image from "next/image";
 import RichTextEditor from "@/app/components/admin/ui/RichTextArea"
+import Cookies from "js-cookie";
+import { user_role } from "@prisma/client";
 
 const getDateString = (isoDate) =>
   parseDate(new Date(isoDate).toISOString().split("T")[0]);
@@ -64,6 +66,10 @@ const ProductDetail = () => {
     }
   }
 
+  const getEditPermission = useCallback(() => {
+    const role = Cookies.get("role");
+    return user_role.ADMIN === role;
+  }, [product]);
   return (
     <>
       <div className="flex flex-col gap-3">
@@ -101,7 +107,10 @@ const ProductDetail = () => {
             aria-label="Slug"
             value={product.slug || ""}
             isRequired
-            disabled
+            isDisabled={getEditPermission()}
+            onValueChange={(value) => {
+              setProduct({ ...product, slug: slugify(value, { locale: "vi" }).toLowerCase().replaceAll("(", "").replaceAll(")", "") })
+            }}
           />
         </div>
         <div className="flex gap-10">
@@ -169,9 +178,11 @@ const ProductDetail = () => {
               isDisabled={getSubCate().length === 0}
               selectedKeys={new Set([product.subCateId || ""])}
               isRequired
-              onSelectionChange={(value) =>
-                setProduct(Object.assign({}, product, { subCateId: value.size ? value.values().next().value : null }))
-              }
+              onSelectionChange={(value) => {
+                const subCateId = value.size ? value.values().next().value : null;
+                const subCategory = getSubCate().find(item => item.id === subCateId);
+                setProduct(Object.assign({}, product, { subCateId: subCateId, categoryId: subCategory?.cateId }))
+              }}
             >
               {
                 getSubCate().map((subCategory) => (

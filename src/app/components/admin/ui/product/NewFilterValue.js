@@ -100,31 +100,34 @@ const FilterValueSelect = ({
   const newFilterValueModal = useDisclosure()
   return (
     <>
-      <Select label="Giá trị filter"
-        isDisabled={!getFilter() || !getFilter().id || !categoryId || !brandId || !subCategoryId}
-        selectedKeys={[detail.filterValueId]}
-        onSelectionChange={value => {
-          if (value.values().next().value !== "new") {
-            onSelectionChange({ filterValueId: value.values().next().value }, detail.id, product, setProduct)
+      <div className="flex flex-col gap-1 w-full">
+        <Select label="Giá trị filter"
+          isDisabled={!getFilter() || !getFilter().id || !categoryId || !brandId || !subCategoryId}
+          selectedKeys={[detail.filterValueId]}
+          onSelectionChange={value => {
+            if (value.values().next().value !== "new") {
+              onSelectionChange({ filterValueId: value.values().next().value }, detail.id, product, setProduct)
+            }
+          }}
+        >
+          <SelectItem
+            textValue="Thêm mới"
+            key="new" onClick={() => {
+              newFilterValueModal.onOpen()
+            }}>
+            <div className="font-bold w-full flex justify-between">
+              Thêm
+            </div>
+          </SelectItem>
+          {
+            getFilter()?.filterValue?.map(item => <SelectItem key={item.id} textValue={item.value}>
+              <p>{item.value}</p>
+              <p className="text-xs text-gray-500">{item.displayId}</p>
+            </SelectItem>)
           }
-        }}
-      >
-        <SelectItem
-          textValue="Thêm mới"
-          key="new" onClick={() => {
-            newFilterValueModal.onOpen()
-          }}>
-          <div className="font-bold w-full flex justify-between">
-            Thêm
-          </div>
-        </SelectItem>
-        {
-          getFilter()?.filterValue?.map(item => <SelectItem key={item.id} textValue={item.value}>
-            <p>{item.value}</p>
-            <p className="text-xs text-gray-500">{item.displayId}</p>
-          </SelectItem>)
-        }
-      </Select>
+        </Select>
+        <p className="text-gray-500 text-xs">{getFilter()?.filterValue?.find(fv => fv.id === detail.filterValueId)?.displayId}</p>
+      </div>
 
       <Modal
         scrollBehavior="inside"

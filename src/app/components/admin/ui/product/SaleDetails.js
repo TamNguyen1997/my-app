@@ -197,35 +197,40 @@ const SaleDetails = () => {
                     isRequired
                     onValueChange={value => handleDetailChange(detail.id, { sku: value }, setProduct)}
                   />
-                  <Select
-                    label="Filter"
-                    selectedKeys={[detail.filterId]}
-                    isRequired
-                    onSelectionChange={value => {
-                      const selectedValue = value.values().next().value;
-                      if (selectedValue !== "new") {
-                        handleDetailChange(detail.id, { filterId: selectedValue }, setProduct);
-                      } else {
-                        newFilterModal.onOpen();
-                      }
-                    }}
-                  >
-                    <SelectItem textValue="Thêm filter" key="new">
-                      <div className="font-bold w-full flex justify-between">
-                        Thêm filter
-                      </div>
-                    </SelectItem>
-                    {filters?.map(item => (
-                      <SelectItem key={item.id} textValue={item.name}>
-                        <p>
-                          {item.name}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {item.id}
-                        </p>
+                  <div className="flex flex-col w-full gap-1">
+                    <Select
+                      label="Filter"
+                      selectedKeys={[detail.filterId]}
+                      isRequired
+                      onSelectionChange={value => {
+                        const selectedValue = value.values().next().value;
+                        if (selectedValue !== "new") {
+                          handleDetailChange(detail.id, { filterId: selectedValue }, setProduct);
+                        } else {
+                          newFilterModal.onOpen();
+                        }
+                      }}
+                    >
+                      <SelectItem textValue="Thêm filter" key="new">
+                        <div className="font-bold w-full flex justify-between">
+                          Thêm filter
+                        </div>
                       </SelectItem>
-                    ))}
-                  </Select>
+                      {filters?.map(item => (
+                        <SelectItem key={item.id} textValue={item.name}>
+                          <p>
+                            {item.name}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {item.id}
+                          </p>
+                        </SelectItem>
+                      ))}
+                    </Select>
+                    <p className="text-gray-500 text-xs">
+                      {filters?.find(f => f.id === detail.filterId)?.displayId}
+                    </p>
+                  </div>
 
                   <Modal
                     scrollBehavior="inside"

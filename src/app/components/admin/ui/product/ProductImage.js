@@ -22,8 +22,8 @@ const ProductImage = () => {
     if (newImages.length > 10) {
       toast.error("Không thể thêm hình, đã đạt tối đa 10 hình")
     } else {
-      if (newImages.find(item => item.imageUrl === value.source_url)) {
-        newImages = newImages.filter(item => item.imageUrl !== value.source_url)
+      if (newImages.find(item => item.imageUrl === value.source_url || item.imageUrl === value.imageUrl)) {
+        newImages = newImages.filter(item => item.imageUrl !== value.source_url && item.imageUrl !== value.imageUrl)
         toast.warning("Đã loại ảnh này")
       } else {
         newImages = [...newImages, { imageId: v4(), imageUrl: value.source_url, productId: product.id }]

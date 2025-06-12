@@ -166,7 +166,11 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
       return
     }
     toast.promise(
-      fetch(`/api/filter-value/${valueId}`, { method: "DELETE" }),
+      fetch(`/api/filter-value/${valueId}`, { method: "DELETE" }).then(async (res) => {
+        if (!res.ok) {
+          throw new Error((await res.json()).message || "Không thể xóa giá trị filter");
+        }
+      }),
       {
         pending: "Đang xóa...",
         success: "Đã xóa",

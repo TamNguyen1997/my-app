@@ -71,6 +71,13 @@ const Default = ({ initProduct = {}, categories = [], subCategories = [], brands
           productOnImages: newProductOnImage,
           technicalDetails: product.technical_detail
         })
+      }).then(async res => {
+        if (res.ok) {
+          return res.json()
+        } else {
+          const body = await res.json()
+          throw new Error(body.message || "Đã có lỗi xảy ra khi lưu sản phẩm")
+        }
       })
 
     toast.promise(res, {
@@ -84,8 +91,7 @@ const Default = ({ initProduct = {}, categories = [], subCategories = [], brands
       error: {
         render({ data }) {
           setIsLoading(false)
-          console.log(data)
-          return "Đã có lỗi xảy ra, vui lòng thử lại"
+          return data.message || "Đã có lỗi xảy ra khi lưu sản phẩm"
         }
       }
     })

@@ -1,7 +1,7 @@
 import { db } from '@/app/db';
 import { NextResponse } from 'next/server';
 import crypto from "crypto";
-import { product_type, sale_detail_type } from "@prisma/client";
+import { product_type, sale_detail_type, user_role } from "@prisma/client";
 import queryString from 'query-string';
 import slugify from 'slugify';
 
@@ -66,9 +66,42 @@ export async function POST(req) {
         productId: productBody.id
       }
     })
-    !body.product.id ?
-      await db.product.create({ data: productBody }) :
-      await db.product.update({ where: { id: body.product.id }, data: productBody })
+    if (body.product.id) {
+      const existingProduct = await db.product.findFirst({ where: { id: body.product.id } });
+      if (!existingProduct) {
+        return NextResponse.json({ message: `Không tìm thấy sản phẩm ${body.product.id} để cập nhật` }, { status: 404 });
+      }
+
+      const role = req.cookies.get("role");
+      if (!role?.value || role?.value !== user_role.ADMIN) {
+        return NextResponse.json({ message: "Bạn không có quyền cập nhật slug sản phẩm này" }, { status: 403 });
+      }
+
+      const updatedProduct = await db.product.update({ where: { id: body.product.id }, data: productBody })
+
+      if (existingProduct.slug !== updatedProduct.slug) {
+        const wordpressPostRes = await fetch(`${process.env.WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${existingProduct.slug}&status=any`, {
+          method: "GET",
+          headers: {
+            'Authorization': `Basic ${Buffer.from(`${process.env.WORDPRESS_ADMIN_USER}:${process.env.WORDPRESS_ADMIN_PASSWORD}`).toString('base64')}`
+          },
+        }).then(res => res.json());
+
+        if (wordpressPostRes && wordpressPostRes.length === 1) {
+          const wordpressPost = wordpressPostRes[0];
+          await fetch(`${process.env.WORDPRESS_URL}/wp-json/wp/v2/posts/${wordpressPost.id}`, {
+            method: "PUT",
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Basic ${Buffer.from(`${process.env.WORDPRESS_ADMIN_USER}:${process.env.WORDPRESS_ADMIN_PASSWORD}`).toString('base64')}`
+            },
+            body: JSON.stringify({ slug: updatedProduct.slug })
+          });
+        }
+      }
+    } else {
+      await db.product.create({ data: productBody })
+    }
 
     await db.sale_detail.deleteMany({ where: { productId: productBody.id, NOT: [{ saleDetailId: null }] } })
     await db.sale_detail.deleteMany({ where: { productId: productBody.id } })

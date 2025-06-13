@@ -24,7 +24,9 @@ const History = () => {
 
     e.target.value = null;
     if (!file) {
-      toast.error(UPLOAD_MESSAGE.FILE_NOT_SELECTED);
+      toast.error(UPLOAD_MESSAGE.FILE_NOT_SELECTED, {
+        containerId: "ImportExportContainer",
+      });
       return;
     }
 
@@ -32,7 +34,9 @@ const History = () => {
       type === null ||
       !["category", "product", "technical_detail", "sale_detail"].includes(type)
     ) {
-      toast.error(UPLOAD_MESSAGE.UPLOAD_TYPE_ERROR);
+      toast.error(UPLOAD_MESSAGE.UPLOAD_TYPE_ERROR, {
+        containerId: "ImportExportContainer",
+      });
       return;
     }
 
@@ -40,7 +44,9 @@ const History = () => {
       const ext = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
 
       if (ext !== ".xlsx" && ext !== ".xls") {
-        toast.error(UPLOAD_MESSAGE.INVALID_FILE_TYPE);
+        toast.error(UPLOAD_MESSAGE.INVALID_FILE_TYPE, {
+          containerId: "ImportExportContainer",
+        });
       } else {
         await handleUpload(file);
       }
@@ -59,13 +65,19 @@ const History = () => {
       const uploadData = await uploadRes.json();
 
       if (!uploadRes.ok) {
-        toast.error(uploadData.message || UPLOAD_MESSAGE.FILE_UPLOAD_FAILED);
+        toast.error(uploadData.message || UPLOAD_MESSAGE.FILE_UPLOAD_FAILED, {
+          containerId: "ImportExportContainer",
+        });
         return;
       }
 
-      toast.success(uploadData.message || UPLOAD_MESSAGE.FILE_UPLOAD_SUCCESS);
+      toast.success(uploadData.message || UPLOAD_MESSAGE.FILE_UPLOAD_SUCCESS, {
+        containerId: "ImportExportContainer",
+      });
 
-      toast.info(UPLOAD_MESSAGE.PROCESSING);
+      toast.info(UPLOAD_MESSAGE.PROCESSING, {
+        containerId: "ImportExportContainer",
+      });
       //---------------------------------------
       if (type === "category") {
         const importRes = await fetch(`/api/import`, {
@@ -75,10 +87,14 @@ const History = () => {
         const importData = await importRes.json();
 
         if (!importRes.ok) {
-          toast.error(importData.message || IMPORT_MESSAGE.IMPORT_FAILED);
+          toast.error(importData.message || IMPORT_MESSAGE.IMPORT_FAILED, {
+            containerId: "ImportExportContainer",
+          });
           return;
         }
-        toast.success(importData.message || IMPORT_MESSAGE.IMPORT_SUCCESS);
+        toast.success(importData.message || IMPORT_MESSAGE.IMPORT_SUCCESS, {
+          containerId: "ImportExportContainer",
+        });
       } else {
         const importRes = await fetch(`/api/import-excel?type=${type}`, {
           method: "POST",
@@ -87,15 +103,21 @@ const History = () => {
         const importData = await importRes.json();
 
         if (!importRes.ok) {
-          toast.error(importData.message || IMPORT_MESSAGE.IMPORT_FAILED);
+          toast.error(importData.message || IMPORT_MESSAGE.IMPORT_FAILED, {
+            containerId: "ImportExportContainer",
+          });
           return;
         }
 
-        toast.success(importData.message || IMPORT_MESSAGE.IMPORT_SUCCESS);
+        toast.success(importData.message || IMPORT_MESSAGE.IMPORT_SUCCESS, {
+          containerId: "ImportExportContainer",
+        });
       }
     } catch (error) {
       console.error(error);
-      toast.error(IMPORT_MESSAGE.IMPORT_FAILED);
+      toast.error(IMPORT_MESSAGE.IMPORT_FAILED, {
+        containerId: "ImportExportContainer",
+      });
     } finally {
       setRefreshData((prev) => !prev);
     }
@@ -103,13 +125,17 @@ const History = () => {
 
   const handleExport = async () => {
     if (!selectedRange) {
-      toast.error(EXPORT_MESSAGE.SELECT_RANGE_ERROR);
+      toast.error(EXPORT_MESSAGE.SELECT_RANGE_ERROR, {
+        containerId: "ImportExportContainer",
+      });
       return;
     }
 
     const { start, end } = selectedRange;
 
-    toast.info(EXPORT_MESSAGE.EXPORT_IN_PROGRESS);
+    toast.info(EXPORT_MESSAGE.EXPORT_IN_PROGRESS, {
+      containerId: "ImportExportContainer",
+    });
 
     try {
       const res = await fetch(`/api/export-excel?start=${start}&end=${end}`);
@@ -125,13 +151,19 @@ const History = () => {
         link.click();
         link.parentNode.removeChild(link);
 
-        toast.success(EXPORT_MESSAGE.EXPORT_SUCCESS);
+        toast.success(EXPORT_MESSAGE.EXPORT_SUCCESS, {
+          containerId: "ImportExportContainer",
+        });
       } else {
         const { message } = await res.json();
-        toast.error(`Export failed: ${message}`);
+        toast.error(`Export failed: ${message}`, {
+          containerId: "ImportExportContainer",
+        });
       }
     } catch (error) {
-      toast.error(EXPORT_MESSAGE.EXPORT_FAILED);
+      toast.error(EXPORT_MESSAGE.EXPORT_FAILED, {
+        containerId: "ImportExportContainer",
+      });
     }
   };
 
@@ -155,7 +187,7 @@ const History = () => {
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer containerId="ImportExportContainer" />
       <div className="flex flex-col gap-2 border-r min-h-full p-2 pt-40">
         <HistoryList refreshData={refreshData} onGetTotal={getTotal} />
 

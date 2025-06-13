@@ -19,14 +19,14 @@ export async function POST(req) {
 
         let brandOnFilterValues = filterValue["brands"].map(item => ({
           filterValueId: filterValueId,
-          brandId: item
+          brandId: item.brandId
         }))
 
         let categoryOnFilterValues = [
           ...Array.from(new Set(filterValue["categories"])),
           ...Array.from(new Set(filterValue["subCategories"]))]
           .map(item => ({
-            categoryId: item,
+            categoryId: item.categoryId,
             filterValueId: filterValueId
           }))
 

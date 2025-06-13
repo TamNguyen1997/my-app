@@ -193,7 +193,7 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
               </div>
             ))}
         </div>
-        {/* <div>
+        <div>
           {getSecondaryDetails().map((sDetail) => (
             <Button
               color="default"
@@ -204,7 +204,7 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
               {sDetail.filterValue.value}
             </Button>
           ))}
-        </div> */}
+        </div>
         {
           getPromotion().length > 0 &&
           <div className="border rounded-md bg-white box-ribbon ">

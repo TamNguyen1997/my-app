@@ -25,136 +25,136 @@ const handleDetailChange = (id, value, setProduct) => {
   }));
 };
 
-// const SecondarySaleDetails = ({ saleDetail }) => {
-//   const newFilterModal = useDisclosure();
-//   const { product, filters, setFilters, setProduct } = useContext(ProductContext);
+const SecondarySaleDetails = ({ saleDetail }) => {
+  const newFilterModal = useDisclosure();
+  const { product, filters, setFilters, setProduct } = useContext(ProductContext);
 
-//   return (
-//     <div className="flex flex-col gap-2">
-//       {product.saleDetails?.filter(item => item.saleDetailId === saleDetail.id).map(detail => (
-//         <div className="flex" key={detail.id}>
-//           <div className="w-11/12">
-//             <div className="flex gap-2">
-//               <Input
-//                 type="text"
-//                 label="SKU"
-//                 className="w-1/2"
-//                 defaultValue={detail.sku}
-//                 aria-label="SKU"
-//                 isRequired
-//                 onValueChange={value => handleDetailChange(detail.id, { sku: value }, setProduct)}
-//               />
-//               <Select
-//                 label="Filter"
-//                 isRequired
-//                 selectedKeys={[detail.filterId]}
-//                 onSelectionChange={value => {
-//                   const selectedValue = value.values().next().value;
-//                   if (selectedValue !== "new") {
-//                     handleDetailChange(detail.id, { filterId: selectedValue }, setProduct);
-//                   } else {
-//                     newFilterModal.onOpen();
-//                   }
-//                 }}
-//               >
-//                 <SelectItem textValue="Thêm filter" key="new">
-//                   <div className="font-bold w-full flex justify-between">
-//                     Thêm filter
-//                   </div>
-//                 </SelectItem>
-//                 {filters?.map(item => (
-//                   <SelectItem key={item.id}>{item.name}</SelectItem>
-//                 ))}
-//               </Select>
+  return (
+    <div className="flex flex-col gap-2">
+      {product.saleDetails?.filter(item => item.saleDetailId === saleDetail.id).map(detail => (
+        <div className="flex" key={detail.id}>
+          <div className="w-11/12">
+            <div className="flex gap-2">
+              <Input
+                type="text"
+                label="SKU"
+                className="w-1/2"
+                defaultValue={detail.sku}
+                aria-label="SKU"
+                isRequired
+                onValueChange={value => handleDetailChange(detail.id, { sku: value }, setProduct)}
+              />
+              <Select
+                label="Filter"
+                isRequired
+                selectedKeys={[detail.filterId]}
+                onSelectionChange={value => {
+                  const selectedValue = value.values().next().value;
+                  if (selectedValue !== "new") {
+                    handleDetailChange(detail.id, { filterId: selectedValue }, setProduct);
+                  } else {
+                    newFilterModal.onOpen();
+                  }
+                }}
+              >
+                <SelectItem textValue="Thêm filter" key="new">
+                  <div className="font-bold w-full flex justify-between">
+                    Thêm filter
+                  </div>
+                </SelectItem>
+                {filters?.map(item => (
+                  <SelectItem key={item.id}>{item.name}</SelectItem>
+                ))}
+              </Select>
 
-//               <Modal
-//                 scrollBehavior="inside"
-//                 size="xl"
-//                 isOpen={newFilterModal.isOpen}
-//                 onOpenChange={newFilterModal.onOpenChange}
-//               >
-//                 <ModalContent>
-//                   {(onClose) => (
-//                     <>
-//                       <ModalHeader className="flex flex-col gap-1">Filter mới</ModalHeader>
-//                       <ModalBody>
-//                         <NewFilter
-//                           filters={filters}
-//                           setFilters={setFilters}
-//                           callback={(value) => {
-//                             handleDetailChange(detail.id, { filterId: value }, setProduct);
-//                             onClose();
-//                           }}
-//                         />
-//                       </ModalBody>
-//                       <ModalFooter>
-//                         <Button color="danger" variant="light" onPress={onClose}>
-//                           Đóng
-//                         </Button>
-//                       </ModalFooter>
-//                     </>
-//                   )}
-//                 </ModalContent>
-//               </Modal>
+              <Modal
+                scrollBehavior="inside"
+                size="xl"
+                isOpen={newFilterModal.isOpen}
+                onOpenChange={newFilterModal.onOpenChange}
+              >
+                <ModalContent>
+                  {(onClose) => (
+                    <>
+                      <ModalHeader className="flex flex-col gap-1">Filter mới</ModalHeader>
+                      <ModalBody>
+                        <NewFilter
+                          filters={filters}
+                          setFilters={setFilters}
+                          callback={(value) => {
+                            handleDetailChange(detail.id, { filterId: value }, setProduct);
+                            onClose();
+                          }}
+                        />
+                      </ModalBody>
+                      <ModalFooter>
+                        <Button color="danger" variant="light" onPress={onClose}>
+                          Đóng
+                        </Button>
+                      </ModalFooter>
+                    </>
+                  )}
+                </ModalContent>
+              </Modal>
 
-//               <FilterValueSelect
-//                 detail={detail}
-//                 getFilter={() => filters.find(filter => filter.id === detail.filterId)}
-//                 filters={filters}
-//                 brandId={product.brandId}
-//                 categoryId={product.categoryId}
-//                 subCategoryId={product.subCateId}
-//                 onSelectionChange={(value, detailId) => handleDetailChange(detailId, { filterValueId: value.filterValueId }, setProduct)}
-//               />
-//               <Input
-//                 type="number"
-//                 label="Giá"
-//                 defaultValue={detail.price}
-//                 aria-label="Giá"
-//                 min={0}
-//                 max={999999999}
-//                 isRequired
-//                 onValueChange={value => handleDetailChange(detail.id, { price: parseInt(value) }, setProduct)}
-//               />
-//               <Input
-//                 type="number"
-//                 label="Giá giảm"
-//                 defaultValue={detail.promotionalPrice}
-//                 aria-label="Giá"
-//                 min={0}
-//                 max={999999999}
-//                 onValueChange={value => handleDetailChange(detail.id, { promotionalPrice: parseInt(value) }, setProduct)}
-//               />
-//               <Input
-//                 type="number"
-//                 label="Tồn kho"
-//                 defaultValue={detail.inStock}
-//                 aria-label="Giá"
-//                 className="w-1/2"
-//                 min={0}
-//                 max={999999999}
-//                 onValueChange={value => handleDetailChange(detail.id, { inStock: parseInt(value) }, setProduct)}
-//               />
-//               <Checkbox
-//                 className="w-full"
-//                 isSelected={detail.showPrice}
-//                 onValueChange={value => handleDetailChange(detail.id, { showPrice: value }, setProduct)}
-//               >
-//                 Hiện giá
-//               </Checkbox>
-//             </div>
-//           </div>
+              <FilterValueSelect
+                detail={detail}
+                getFilter={() => filters.find(filter => filter.id === detail.filterId)}
+                filters={filters}
+                brandId={product.brandId}
+                categoryId={product.categoryId}
+                subCategoryId={product.subCateId}
+                onSelectionChange={(value, detailId) => handleDetailChange(detailId, { filterValueId: value.filterValueId }, setProduct)}
+              />
+              <Input
+                type="number"
+                label="Giá"
+                defaultValue={detail.price}
+                aria-label="Giá"
+                min={0}
+                max={999999999}
+                isRequired
+                onValueChange={value => handleDetailChange(detail.id, { price: parseInt(value) }, setProduct)}
+              />
+              <Input
+                type="number"
+                label="Giá giảm"
+                defaultValue={detail.promotionalPrice}
+                aria-label="Giá"
+                min={0}
+                max={999999999}
+                onValueChange={value => handleDetailChange(detail.id, { promotionalPrice: parseInt(value) }, setProduct)}
+              />
+              <Input
+                type="number"
+                label="Tồn kho"
+                defaultValue={detail.inStock}
+                aria-label="Giá"
+                className="w-1/2"
+                min={0}
+                max={999999999}
+                onValueChange={value => handleDetailChange(detail.id, { inStock: parseInt(value) }, setProduct)}
+              />
+              <Checkbox
+                className="w-full"
+                isSelected={detail.showPrice}
+                onValueChange={value => handleDetailChange(detail.id, { showPrice: value }, setProduct)}
+              >
+                Hiện giá
+              </Checkbox>
+            </div>
+          </div>
 
-//           <div className="pt-3 pl-3">
-//             <div className="text-lg text-danger cursor-pointer active:opacity-50 pl-5 float-right">
-//               <Trash2 onClick={() => removeItem(detail.id, setProduct)} />
-//             </div>
-//           </div>
-//         </div>
-//       ))}
-//     </div>
-//   );
-// };
+          <div className="pt-3 pl-3">
+            <div className="text-lg text-danger cursor-pointer active:opacity-50 pl-5 float-right">
+              <Trash2 onClick={() => removeItem(detail.id, setProduct)} />
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 const SaleDetails = () => {
   const { product, filters, setFilters, setProduct } = useContext(ProductContext);
@@ -310,7 +310,7 @@ const SaleDetails = () => {
                   </Checkbox>
 
                   <div className="flex text-center items-center">
-                    {/* <Button onClick={() => {
+                    <Button onClick={() => {
                       const newSaleDetails = [
                         ...product.saleDetails,
                         { id: v4(), type: "TEXT", saleDetailId: detail.id, productId: product.id, price: 0, sku: crypto.randomBytes(3).toString("hex") }
@@ -318,7 +318,7 @@ const SaleDetails = () => {
                       setProduct(prevProduct => ({ ...prevProduct, saleDetails: newSaleDetails }));
                     }}>
                       Thêm
-                    </Button> */}
+                    </Button>
                     <div className="text-lg text-danger cursor-pointer active:opacity-50 pl-5 float-right">
                       <Trash2 onClick={() => removeItem(detail.id, setProduct)} />
                     </div>
@@ -335,6 +335,9 @@ const SaleDetails = () => {
                   </div>
                 </div>
               </div>
+            </div>
+            <div className="p-5 flex flex-col gap-1">
+              <SecondarySaleDetails saleDetail={detail} />
             </div>
           </div>
         ))}

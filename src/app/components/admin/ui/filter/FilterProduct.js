@@ -154,6 +154,29 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
     });
   }
 
+  const deleteFilter = async () => {
+    if (!window.confirm("Bạn có chắc muốn xóa filter này không?")) return
+
+    toast.promise(
+      fetch(`/api/filters/${filter.id}`, { method: "DELETE" }).then(async (res) => {
+        if (!res.ok) {
+          throw new Error((await res.json()).message || "Không thể xóa giá trị filter");
+        }
+      }),
+      {
+        pending: "Đang xóa...",
+        success: {
+          render() {
+            window.location.replace("/admin/filter")
+            return "Đã xóa filter thành công";
+          }
+        },
+        error: "Không thể xóa"
+      },
+      { containerId: "FilterProduct" }
+    )
+  }
+
   const removeFilterValue = async (valueId) => {
     if (!confirm("Bạn có chắc muốn xóa không?")) return
     const filterToDelete = filter.filterValue?.find(item => item.id === valueId);
@@ -186,9 +209,9 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
       <ToastContainer containerId="FilterProduct" />
       <div className="flex flex-col gap-2 min-h-full">
         <div className="px-1 py-2 border-default-200">
-          <div class="relative overflow-x-auto">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-              <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <div className="relative overflow-x-auto">
+            <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                   {
                     tableHeaders.map((col, i) =>
@@ -204,28 +227,28 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
                 {
                   filter.filterValue?.map((item, i) => (
                     <tr key={i}>
-                      <td scope="row" class="px-2 py-2 min-w-[80px]">
+                      <td scope="row" className="px-2 py-2 min-w-[80px]">
                         <Input
                           defaultValue={item?.displayId}
                           onValueChange={(value) => onCellValueChange(item?.id, { displayId: value })}
                           className="min-w-[80px]"
                         />
                       </td>
-                      <td class="px-2 py-2">
+                      <td className="px-2 py-2">
                         <Input
                           defaultValue={item?.value}
                           onValueChange={(value) => onCellValueChange(item?.id, { value: value })}
                           className="min-w-[80px]"
                         />
                       </td>
-                      <td class="px-2 py-2">
+                      <td className="px-2 py-2">
                         <Input
                           defaultValue={item?.slug}
                           onValueChange={(value) => onCellValueChange(item?.id, { slug: value })}
                           className="min-w-[80px]"
                         />
                       </td>
-                      <td class="px-2 py-2">
+                      <td className="px-2 py-2">
                         <Select
                           selectionMode="multiple"
                           labelPlacement="outside"
@@ -274,7 +297,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
                           }
                         </Select>
                       </td>
-                      <td class="px-2 py-2">
+                      <td className="px-2 py-2">
                         <Select
                           selectionMode="multiple"
                           labelPlacement="outside"
@@ -324,7 +347,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
                           }
                         </Select>
                       </td>
-                      <td class="px-2 py-2">
+                      <td className="px-2 py-2">
                         <Select
                           selectionMode="multiple"
                           labelPlacement="outside"
@@ -400,7 +423,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
             <Link href="/admin/filter">Quay về</Link>
             <Link href="/admin/filter/edit/new">Thêm filter</Link>
             <Button color="primary" className="ml-auto" onClick={onSave} isDisabled={isSaving}>Lưu</Button>
-            <Button color="danger" variant="ghost" className="">Xoá</Button>
+            <Button color="danger" variant="ghost" onClick={deleteFilter}>Xoá</Button>
           </div>
         </div>
       </div>

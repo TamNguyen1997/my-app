@@ -7,10 +7,12 @@ export async function DELETE(req, { params }) {
       await tx.category_on_filter_value.deleteMany({ where: { filterValue: { filterId: params.id } } })
       await tx.brand_on_filter_value.deleteMany({ where: { filterValue: { filterId: params.id } } })
       await tx.filter_value.deleteMany({ where: { filterId: params.id } })
-      await tx.filter.delete({ where: { id: params.id } })
+      await tx.filter.deleteMany({ where: { id: params.id } })
     })
-    return NextResponse.json(await db.filter.delete({ where: { id: params.id } }))
+
+    return NextResponse.json({ message: "Delete successfully" }, { status: 200 })
   } catch (e) {
+    console.log(e)
     return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
   }
 }

@@ -66,6 +66,7 @@ export async function POST(req) {
         productId: productBody.id
       }
     })
+
     if (body.product.id) {
       const existingProduct = await db.product.findFirst({ where: { id: body.product.id } });
       if (!existingProduct) {
@@ -102,20 +103,89 @@ export async function POST(req) {
       await db.product.create({ data: productBody })
     }
 
-    await db.sale_detail.deleteMany({ where: { productId: productBody.id, NOT: [{ saleDetailId: null }] } })
-    await db.sale_detail.deleteMany({ where: { productId: productBody.id } })
-    if (saleDetails?.length) {
-      await db.sale_detail.createMany({ data: saleDetails })
+    saleDetails?.forEach(async item => {
+      await db.sale_detail.upsert({
+        where: { id: item.id },
+        update: {
+          productId: item.productId,
+          value: item.value,
+          price: item.price,
+          type: item.type,
+          saleDetailId: item.saleDetailId,
+          filterId: item.filterId,
+          filterValueId: item.filterValueId,
+          sku: item.sku,
+          promotionalPrice: item.promotionalPrice,
+          showPrice: item.showPrice,
+          inStock: item.inStock || 0,
+        },
+        create: {
+          productId: item.productId,
+          value: item.value,
+          price: item.price,
+          type: item.type,
+          saleDetailId: item.saleDetailId,
+          filterId: item.filterId,
+          filterValueId: item.filterValueId,
+          sku: item.sku,
+          promotionalPrice: item.promotionalPrice,
+          showPrice: item.showPrice,
+          inStock: item.inStock || 0,
+        }
+      });
+    })
+
+    const saleDetailIds = saleDetails?.map(item => item.id)
+    if (!saleDetailIds || saleDetailIds.length === 0) {
+      await db.sale_detail.deleteMany({ where: { productId: productBody.id } });
+    } else {
+      await db.sale_detail.deleteMany({ where: { productId: productBody.id, id: { notIn: saleDetailIds } } });
     }
 
-    await db.technical_detail.deleteMany({ where: { productId: productBody.id } })
-    if (technicalDetails?.length) {
-      await db.technical_detail.createMany({ data: technicalDetails })
+    technicalDetails?.forEach(async item => {
+      await db.technical_detail.upsert({
+        where: { id: item.id },
+        update: {
+          productId: item.productId,
+          filterId: item.filterId,
+          filterValueId: item.filterValueId,
+        },
+        create: {
+          productId: item.productId,
+          filterId: item.filterId,
+          filterValueId: item.filterValueId,
+        }
+      });
+    })
+
+    const technicalDetailIds = technicalDetails?.map(item => item.id)
+    if (!technicalDetailIds || technicalDetailIds.length === 0) {
+      await db.technical_detail.deleteMany({ where: { productId: productBody.id } });
+    } else {
+      await db.technical_detail.deleteMany({ where: { productId: productBody.id, id: { notIn: technicalDetailIds } } });
     }
 
-    await db.product_on_image.deleteMany({ where: { productId: productBody.id } })
-    if (productOnImages?.length) {
-      await db.product_on_image.createMany({ data: productOnImages })
+    productOnImages.forEach(async item => {
+      await db.product_on_image.upsert({
+        where: { productId_imageId: { productId: productBody.id, imageId: item.imageId } },
+        update: {
+          order: item.order,
+          imageUrl: item.imageUrl,
+        },
+        create: {
+          order: item.order,
+          imageId: item.imageId,
+          imageUrl: item.imageUrl,
+          productId: productBody.id
+        }
+      });
+    })
+
+    const productOnImageIds = productOnImages.map(item => item.imageId)
+    if (!productOnImageIds || productOnImageIds.length === 0) {
+      await db.product_on_image.deleteMany({ where: { productId: productBody.id } });
+    } else {
+      await db.product_on_image.deleteMany({ where: { productId: productBody.id, imageId: { notIn: productOnImageIds } } });
     }
 
     return NextResponse.json({ id: productBody.id })

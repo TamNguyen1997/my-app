@@ -210,8 +210,8 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
         {
           getPromotion().length > 0 &&
           <div className="border rounded-md bg-white box-ribbon ">
-            <h2 class="ribbon-wrap">
-              <div class="ribbon">
+            <h2 className="ribbon-wrap">
+              <div className="ribbon">
                 <a href="#" className="mr-[180px] md:mr-[120px] lg:mr-[160px]">
                   Khuyến mãi:
                 </a>
@@ -219,7 +219,7 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
             </h2>
             <div className="px-2 overflow-auto text-sm py-2 flex flex-col gap-2">
               {
-                getPromotion().map((p, index) => parse(`<div class="flex gap-3"><div class="rounded-full bg-blue-400 w-4 h-4 text-xs text-white text-center">${index + 1}</div>` + p + "</div>"))
+                getPromotion().map((p, index) => parse(`<div className="flex gap-3"><div className="rounded-full bg-blue-400 w-4 h-4 text-xs text-white text-center">${index + 1}</div>` + p + "</div>"))
               }
             </div>
           </div>

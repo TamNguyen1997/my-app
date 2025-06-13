@@ -7,9 +7,6 @@ import PopularSearches from "@/components/PopularSearches";
 import { db } from "@/app/db"
 import { ORGANIZATION_SCHEMA, WEBSITE_SCHEMA } from "@/lib/schema";
 
-export const viewport = {
-  viewport: 'initial-scale=1.0, width=device-width',
-}
 export const dynamic = "force-dynamic"; // Forces dynamic rendering
 export const revalidate = 0;
 
@@ -37,7 +34,7 @@ const Page = async () => {
   const brandToProducts = await getBrandToProducts()
 
   return (
-    <>
+    <div className="overflow-x-hidden">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }}
@@ -54,7 +51,7 @@ const Page = async () => {
       </div>
       <Customer />
       <PopularSearches popularSearches={popularSearches} className="pb-10" />
-    </>
+    </div>
   );
 }
 

@@ -17,7 +17,7 @@ const SuccessPayment = () => {
           Cảm ơn quý khách đã hoàn tất thanh toán.
         </h2>
         <p className="text-gray-500 dark:text-gray-400 mb-6 md:mb-8">Đơn hàng đang được xử lý. Chúng tôi sẽ liên hệ lại với quý khách trong thời gian sớm nhất!</p>
-        <div class="items-center space-x-4">
+        <div className="items-center space-x-4">
           <Link isExternal href="/" title="" className="inline-flex items-center gap-2 text-sm font-medium text-primary-700 underline hover:no-underline dark:text-primary-500">
             Tiếp tục mua hàng
             <svg className="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

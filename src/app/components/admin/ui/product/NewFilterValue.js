@@ -1,4 +1,4 @@
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Switch, useDisclosure } from "@nextui-org/react"
+import { Autocomplete, AutocompleteItem, Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Switch, useDisclosure } from "@nextui-org/react"
 import { useForm } from "react-hook-form"
 import { v4 } from "uuid"
 
@@ -101,16 +101,18 @@ const FilterValueSelect = ({
   return (
     <>
       <div className="flex flex-col gap-1 w-full">
-        <Select label="Giá trị filter"
+        <Autocomplete label="Giá trị filter"
+          placeholder="Tìm giá trị filter"
           isDisabled={!getFilter() || !getFilter().id || !categoryId || !brandId || !subCategoryId}
-          selectedKeys={[detail.filterValueId]}
+          selectedKey={detail.filterValueId}
           onSelectionChange={value => {
-            if (value.values().next().value !== "new") {
-              onSelectionChange({ filterValueId: value.values().next().value }, detail.id, product, setProduct)
+            if (value !== "new") {
+              onSelectionChange({ filterValueId: value }, detail.id, product, setProduct)
             }
           }}
+          size="lg"
         >
-          <SelectItem
+          <AutocompleteItem
             textValue="Thêm mới"
             key="new" onClick={() => {
               newFilterValueModal.onOpen()
@@ -118,14 +120,14 @@ const FilterValueSelect = ({
             <div className="font-bold w-full flex justify-between">
               Thêm
             </div>
-          </SelectItem>
+          </AutocompleteItem>
           {
-            getFilter()?.filterValue?.map(item => <SelectItem key={item.id} textValue={item.value}>
+            getFilter()?.filterValue?.map(item => <AutocompleteItem key={item.id} textValue={item.value}>
               <p>{item.value}</p>
               <p className="text-xs text-gray-500">{item.displayId}</p>
-            </SelectItem>)
+            </AutocompleteItem>)
           }
-        </Select>
+        </Autocomplete>
         <p className="text-gray-500 text-xs">{getFilter()?.filterValue?.find(fv => fv.id === detail.filterValueId)?.displayId}</p>
       </div>
 

@@ -1,4 +1,4 @@
-import { Button, Checkbox, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Snippet, useDisclosure } from "@nextui-org/react";
+import { Autocomplete, AutocompleteItem, Button, Checkbox, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Snippet, useDisclosure } from "@nextui-org/react";
 import { Cog, FileImage, Trash2 } from "lucide-react";
 import { useContext } from "react";
 import { v4 } from "uuid";
@@ -30,42 +30,41 @@ const SecondarySaleDetails = ({ saleDetail }) => {
   const { product, filters, setFilters, setProduct } = useContext(ProductContext);
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-1">
       {product.saleDetails?.filter(item => item.saleDetailId === saleDetail.id).map(detail => (
         <div className="flex" key={detail.id}>
-          <div className="w-11/12">
+          <div className="w-10/12">
             <div className="flex gap-2">
-              <Input
-                type="text"
-                label="SKU"
-                className="w-1/2"
-                defaultValue={detail.sku}
-                aria-label="SKU"
-                isRequired
-                onValueChange={value => handleDetailChange(detail.id, { sku: value }, setProduct)}
-              />
-              <Select
+              <Autocomplete
                 label="Filter"
-                isRequired
-                selectedKeys={[detail.filterId]}
+                placeholder="Tìm filter"
+                selectedKey={detail.filterId}
                 onSelectionChange={value => {
-                  const selectedValue = value.values().next().value;
-                  if (selectedValue !== "new") {
-                    handleDetailChange(detail.id, { filterId: selectedValue }, setProduct);
-                  } else {
-                    newFilterModal.onOpen();
+                  if (value !== "new") {
+                    handleDetailChange(detail.id, { filterId: value }, setProduct);
                   }
                 }}
+                size="lg"
               >
-                <SelectItem textValue="Thêm filter" key="new">
+                <AutocompleteItem textValue="Thêm filter" key="new"
+                  onClick={() => {
+                    newFilterModal.onOpen()
+                  }}>
                   <div className="font-bold w-full flex justify-between">
                     Thêm filter
                   </div>
-                </SelectItem>
+                </AutocompleteItem>
                 {filters?.map(item => (
-                  <SelectItem key={item.id}>{item.name}</SelectItem>
+                  <AutocompleteItem key={item.id} textValue={item.name}>
+                    <p>
+                      {item.name}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {item.id}
+                    </p>
+                  </AutocompleteItem>
                 ))}
-              </Select>
+              </Autocomplete>
 
               <Modal
                 scrollBehavior="inside"
@@ -136,7 +135,7 @@ const SecondarySaleDetails = ({ saleDetail }) => {
                 onValueChange={value => handleDetailChange(detail.id, { inStock: parseInt(value) }, setProduct)}
               />
               <Checkbox
-                className="w-full"
+                className="w-full content-center"
                 isSelected={detail.showPrice}
                 onValueChange={value => handleDetailChange(detail.id, { showPrice: value }, setProduct)}
               >
@@ -183,7 +182,7 @@ const SaleDetails = () => {
           Thêm thông số
         </Button>
       </div>
-      <div className="flex flex-col gap-2 p-2">
+      <div className="flex flex-col gap-4">
         {product.saleDetails?.filter(item => !item.saleDetailId).map(detail => (
           <div key={detail.id}>
             <div className="flex">
@@ -199,35 +198,32 @@ const SaleDetails = () => {
                     onValueChange={value => handleDetailChange(detail.id, { sku: value }, setProduct)}
                   />
                   <div className="flex flex-col w-full gap-1">
-                    <Select
+                    <Autocomplete
                       label="Filter"
-                      selectedKeys={[detail.filterId]}
+                      selectedKey={detail.filterId}
                       isRequired
                       onSelectionChange={value => {
-                        const selectedValue = value.values().next().value;
-                        if (selectedValue !== "new") {
-                          handleDetailChange(detail.id, { filterId: selectedValue }, setProduct);
-                        } else {
-                          newFilterModal.onOpen();
+                        if (value !== "new") {
+                          handleDetailChange(detail.id, { filterId: value }, setProduct);
                         }
                       }}
                     >
-                      <SelectItem textValue="Thêm filter" key="new">
+                      <AutocompleteItem textValue="Thêm filter" key="new" onClick={() => newFilterModal.onOpen()}>
                         <div className="font-bold w-full flex justify-between">
                           Thêm filter
                         </div>
-                      </SelectItem>
+                      </AutocompleteItem>
                       {filters?.map(item => (
-                        <SelectItem key={item.id} textValue={item.name}>
+                        <AutocompleteItem key={item.id} textValue={item.name}>
                           <p>
                             {item.name}
                           </p>
                           <p className="text-xs text-gray-500">
                             {item.id}
                           </p>
-                        </SelectItem>
+                        </AutocompleteItem>
                       ))}
-                    </Select>
+                    </Autocomplete>
                     <p className="text-gray-500 text-xs">
                       {filters?.find(f => f.id === detail.filterId)?.displayId}
                     </p>
@@ -336,7 +332,7 @@ const SaleDetails = () => {
                 </div>
               </div>
             </div>
-            <div className="p-5 flex flex-col gap-1">
+            <div className="ml-36 pt-1 flex flex-col gap-1">
               <SecondarySaleDetails saleDetail={detail} />
             </div>
           </div>

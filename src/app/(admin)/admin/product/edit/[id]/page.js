@@ -44,7 +44,6 @@ const Page = async ({ params }) => {
     }),
     db.category.findMany({}),
     db.brand.findMany({}),
-
   ])
 
   const allCategoryIds = allCategories.map(item => item.id)
@@ -83,8 +82,8 @@ const Page = async ({ params }) => {
   })
 
   const categories = allCategories.filter(item => item.type === cate_type.CATE)
-
   const subCategories = allCategories.filter(item => item.type === cate_type.SUB_CATE)
+
   return (
     <Default initProduct={product || {}} categories={categories} subCategories={subCategories} brands={brands} initFilters={filters} />
   )

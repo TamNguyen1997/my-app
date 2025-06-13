@@ -17,7 +17,7 @@ import {
 import { Search } from "lucide-react";
 import { history_status } from "@prisma/client";
 
-const HistoryList = ({ refreshData, onGetTotal }) => {
+const HistoryList = ({ refreshData }) => {
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
@@ -39,7 +39,6 @@ const HistoryList = ({ refreshData, onGetTotal }) => {
       setLoadingState("idle");
       setTotalPages(result.totalPages);
       setHistories(result.data);
-      onGetTotal(result.totalProduct);
       result.currentPage !== page && setPage(result.currentPage);
     } catch (error) {
       console.error(error);
@@ -49,7 +48,7 @@ const HistoryList = ({ refreshData, onGetTotal }) => {
   useEffect(() => {
     fetchImportHistory();
 
-    return () => {};
+    return () => { };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, refreshData]);
 

@@ -11,11 +11,10 @@ import HistoryList from "./_components/HistoryList";
 
 import { DownloadIcon, UploadIcon } from "lucide-react";
 
-const History = () => {
+const History = ({ totalProducts = 0, totalSaleDetails = 0, totalTechnicalDetails = 0 }) => {
   const inputRef = useRef(null);
   const [type, setType] = useState("product");
   const [refreshData, setRefreshData] = useState(false);
-  const [total, setTotal] = useState([]);
   const [ranges, setRanges] = useState([]);
   const [selectedRange, setSelectedRange] = useState();
 
@@ -138,7 +137,7 @@ const History = () => {
     });
 
     try {
-      const res = await fetch(`/api/export-excel?start=${start}&end=${end}`);
+      const res = await fetch(`/api/export-excel?start=${start}&end=${end}&type=${type}`);
 
       if (res.ok) {
         const blob = await res.blob();
@@ -167,11 +166,12 @@ const History = () => {
     }
   };
 
-  const getTotal = useCallback((total) => {
-    setTotal(total);
-  }, []);
-
   useEffect(() => {
+    const total = type === "product"
+      ? totalProducts
+      : type === "sale_detail"
+        ? totalSaleDetails
+        : totalTechnicalDetails;
     const createRanges = () => {
       const newRanges = [];
       for (let i = 0; i < total; i += 1000) {
@@ -183,13 +183,13 @@ const History = () => {
     };
 
     createRanges();
-  }, [total]);
+  }, [type]);
 
   return (
     <>
       <ToastContainer containerId="ImportExportContainer" />
       <div className="flex flex-col gap-2 border-r min-h-full p-2 pt-40">
-        <HistoryList refreshData={refreshData} onGetTotal={getTotal} />
+        <HistoryList refreshData={refreshData} />
 
         <div className="flex gap-2 items-center justify-between mt-10 flex-wrap">
           <div className="flex items-center gap-2">

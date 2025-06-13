@@ -146,8 +146,7 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
       <p className="text-[30px] font-extrabold">{product.name}</p>
       <p className="text-gray-500 text-small">
         SKU:{" "}
-        {selectedSecondaryDetail.sku ||
-          selectedDetail.sku ||
+        {selectedDetail.sku ||
           saleDetails[0]?.sku}
       </p>
 

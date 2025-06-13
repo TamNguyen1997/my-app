@@ -50,7 +50,16 @@ const Page = async ({ params }) => {
   const allCategoryIds = allCategories.map(item => item.id)
   const filters = await db.filter.findMany({
     include: {
-      filterValue: true
+      filterValue: {
+        orderBy: [
+          {
+            value: "asc"
+          },
+          {
+            displayId: "asc"
+          }
+        ]
+      }
     },
     where: {
       filterValue: {
@@ -62,7 +71,15 @@ const Page = async ({ params }) => {
           }
         }
       }
-    }
+    },
+    orderBy: [
+      {
+        name: "asc"
+      },
+      {
+        displayId: "asc"
+      }
+    ]
   })
 
   const categories = allCategories.filter(item => item.type === cate_type.CATE)

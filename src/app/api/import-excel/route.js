@@ -5,6 +5,7 @@ import { history_status } from "@prisma/client"
 import { IMPORT_MESSAGE } from "@/constants/message"
 import slugify from "slugify"
 import crypto from "crypto";
+import { v4 } from "uuid"
 
 async function validateProduct(cateId, subCateId, brandId) {
   const [cate, subCate, brand] = await Promise.all([
@@ -256,11 +257,13 @@ async function importTechnicalDetail(worksheet) {
 async function importSaleDetail(worksheet) {
   const requiredColumnIndexes = {
     productId: 0,
-    sku: 1,
     price: 2,
     showPrice: 4,
     inStock: 7,
   }
+
+  const skuIndex = 1
+  const parentSaleSkuColumnIndex = 8
 
   for (const [index, row] of worksheet.entries()) {
     const rowData = Object.values(row)
@@ -278,10 +281,11 @@ async function importSaleDetail(worksheet) {
     }
 
     const productId = rowData[requiredColumnIndexes.productId].toString()
-    const sku = rowData[requiredColumnIndexes.sku].toString()
+    const sku = rowData[skuIndex]?.toString() || v4()
     const price = rowData[requiredColumnIndexes.price]
     const showPrice = rowData[requiredColumnIndexes.showPrice]
     const inStock = rowData[requiredColumnIndexes.inStock]
+    const parentSaleDetailSku = rowData[parentSaleSkuColumnIndex]
 
     const { isProductValid } = await validateImportSaleDetail(productId)
 
@@ -338,6 +342,12 @@ async function importSaleDetail(worksheet) {
     if (filterValueId) {
       dataObj.filterValue = {
         connect: { id: filterValueId },
+      }
+    }
+
+    if (parentSaleDetailSku) {
+      dataObj.saleDetail = {
+        connect: { sku: parentSaleDetailSku },
       }
     }
 

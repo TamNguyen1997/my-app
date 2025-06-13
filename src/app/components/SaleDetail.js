@@ -174,8 +174,8 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
                 item.filterValue &&
                 item.filterId
             )
-            .map((detail) => (
-              <div key={detail.id} className="flex flex-col gap-1">
+            .map((detail, i) => (
+              <div key={i} className="flex flex-col gap-1">
                 {detail.type === "COLOR" ? (
                   <div
                     className={getColor(detail, selectedDetail.id)}
@@ -193,7 +193,7 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
               </div>
             ))}
         </div>
-        <div>
+        {/* <div>
           {getSecondaryDetails().map((sDetail) => (
             <Button
               color="default"
@@ -204,7 +204,7 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
               {sDetail.filterValue.value}
             </Button>
           ))}
-        </div>
+        </div> */}
         {
           getPromotion().length > 0 &&
           <div className="border rounded-md bg-white box-ribbon ">

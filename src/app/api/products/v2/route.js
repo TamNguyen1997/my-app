@@ -74,13 +74,11 @@ export async function POST(req) {
 
       const role = req.cookies.get("role");
 
+      const updatedProduct = await db.product.update({ where: { id: body.product.id }, data: productBody })
       if (existingProduct.slug !== updatedProduct.slug) {
         if (!role?.value || role?.value !== user_role.ADMIN) {
           return NextResponse.json({ message: "Bạn không có quyền cập nhật slug sản phẩm này" }, { status: 403 });
         }
-
-        const updatedProduct = await db.product.update({ where: { id: body.product.id }, data: productBody })
-
         const wordpressPostRes = await fetch(`${process.env.WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${existingProduct.slug}&status=any`, {
           method: "GET",
           headers: {

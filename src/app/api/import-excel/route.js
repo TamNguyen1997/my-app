@@ -295,18 +295,34 @@ async function importSaleDetail(worksheet) {
       )
     }
 
+
+    const dataObj = {
+      sku: sku,
+      price: price,
+      promotionalPrice: showPrice === "T" ? null : rowData[3],
+      showPrice: showPrice === "T",
+      product: {
+        connect: { id: productId },
+      },
+      inStock: inStock,
+    }
+
     const filterId = rowData[5]
     const filterValueId = rowData[6]
 
     if (filterId) {
       const filter = await db.filter.findUnique({
-        where: { id: filterId },
+        where: { displayId: filterId },
       })
 
       if (!filter) {
         throw new Error(
           `"Line ${index + 1}": ${IMPORT_MESSAGE.FILTER_VALUE_NOT_FOUND}`
         )
+      }
+
+      dataObj.filter = {
+        connect: { id: filter.id },
       }
     }
 
@@ -320,32 +336,22 @@ async function importSaleDetail(worksheet) {
           `"Line ${index + 1}": ${IMPORT_MESSAGE.FILTER_VALUE_NOT_FOUND}`
         )
       }
-    }
 
-    const dataObj = {
-      sku: sku,
-      price: price,
-      promotionalPrice: showPrice === "T" ? null : rowData[3],
-      showPrice: showPrice === "T",
-      product: {
-        connect: { id: productId },
-      },
-      inStock: inStock,
-    }
-
-    if (filterId) {
-      dataObj.filter = {
-        connect: { id: filterId },
-      }
-    }
-
-    if (filterValueId) {
       dataObj.filterValue = {
-        connect: { id: filterValueId },
+        connect: { id: filterValue.id },
       }
     }
 
     if (parentSaleDetailSku) {
+      const parentSaleDetail = await db.sale_detail.findUnique({
+        where: { sku: parentSaleDetailSku },
+      })
+      if (!parentSaleDetail) {
+        throw new Error(
+          `"Line ${index + 1}": Không tìm thấy sale detail với SKU "${parentSaleDetailSku}"`
+        )
+      }
+
       dataObj.saleDetail = {
         connect: { sku: parentSaleDetailSku },
       }
@@ -358,7 +364,8 @@ async function importSaleDetail(worksheet) {
         await db.sale_detail.create({ data: dataObj })
       }
     } catch (error) {
-      console.log(error)
+      console.error(`Error importing sale detail at line ${index + 1}`)
+      console.log(rowData)
       throw new Error(IMPORT_MESSAGE.DATABASE_ERROR)
     }
   }

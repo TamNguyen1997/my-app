@@ -30,7 +30,7 @@ const Filter = () => {
       ])
 
       if (id && id !== 'new') {
-        await fetch(`/api/filters/${id}/filter-values`).then(res => res.json()).then(json => {
+        await fetch(`/api/filters/${id}/filter-values?size=1000`).then(res => res.json()).then(json => {
           setFilter(json)
         })
       }

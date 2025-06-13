@@ -39,15 +39,11 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
   }, [product])
 
   useEffect(() => {
-    if (selectedDetail.id && selectedSecondaryDetail.id) {
-      setImages(selectedSecondaryDetail.sale_detail_on_image?.map((item) => item.imageUrl) || []);
-      setSelectedSaleDetail(selectedSecondaryDetail);
-    }
-    if (selectedDetail.id && !selectedSecondaryDetail.id) {
+    if (selectedDetail.id) {
       setImages(selectedDetail.sale_detail_on_image?.map((item) => item.imageUrl) || []);
       setSelectedSaleDetail(selectedDetail);
     }
-  }, [selectedDetail, selectedSecondaryDetail]);
+  }, [selectedDetail]);
 
   const getVariant = (id, selected) => (id === selected ? "solid" : "ghost");
 

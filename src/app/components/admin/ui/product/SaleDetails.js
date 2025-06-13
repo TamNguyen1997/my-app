@@ -9,6 +9,7 @@ import crypto from "crypto";
 import Link from "next/link";
 
 const removeItem = (id, setProduct) => {
+  if (!window.confirm("Bạn có chắc chắn muốn xóa thông số này?")) return;
   setProduct(prevProduct => ({
     ...prevProduct,
     saleDetails: prevProduct.saleDetails.filter(item => item.id !== id)

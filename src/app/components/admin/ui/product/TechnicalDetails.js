@@ -32,6 +32,7 @@ const TechnicalDetails = () => {
   }
 
   const deleteDetail = (id) => {
+    if (!window.confirm("Bạn có chắc chắn muốn xóa thông số này?")) return
     const newTechnicalDetails = [...technicalDetails].filter(item => item.id !== id)
     setTechnicalDetails(newTechnicalDetails)
     setProduct({ ...product, technical_detail: newTechnicalDetails })

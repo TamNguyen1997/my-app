@@ -115,7 +115,7 @@ const TechnicalDetails = () => {
               product={product}
               setProduct={setProduct}
               onSelectionChange={onSelectionChange} />
-            <div className="relative flex items-center pt-5">
+            <div className="relative items-center">
               <span className="text-lg text-danger cursor-pointer active:opacity-50 pl-5">
                 <Trash2 onClick={() => deleteDetail(item.id)} />
               </span>

@@ -14,7 +14,7 @@ export default function AboutUs() {
   return (
     <div>
       <motion.div
-        initial={{ x: -200, opacity: 0 }}
+        initial={{ x: -50, opacity: 0 }}
         whileInView={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.7, delay: 0.3 }}
         viewport={{ once: true }}
@@ -23,7 +23,7 @@ export default function AboutUs() {
       </motion.div>
 
       <motion.div
-        initial={{ x: -200, opacity: 0 }}
+        initial={{ x: -50, opacity: 0 }}
         whileInView={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.7, delay: 0.3 }}
         viewport={{ once: true }}
@@ -48,7 +48,7 @@ export default function AboutUs() {
       </motion.div>
 
       <motion.div
-        initial={{ x: -200, opacity: 0 }}
+        initial={{ x: -50, opacity: 0 }}
         whileInView={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.7, delay: 0.3 }}
         viewport={{ once: true }}
@@ -66,7 +66,7 @@ export default function AboutUs() {
       <AboutUsArticle />
 
       <motion.div
-        initial={{ x: -200, opacity: 0 }}
+        initial={{ x: -50, opacity: 0 }}
         whileInView={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.7, delay: 0.3 }}
         viewport={{ once: true }}

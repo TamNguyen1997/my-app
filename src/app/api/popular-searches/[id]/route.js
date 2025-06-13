@@ -13,7 +13,6 @@ export async function DELETE(req, { params }) {
     })
     return NextResponse.json({ message: "Thành công" })
   } catch (e) {
-    console.log(new Date())
     console.log(`Không thể xóa popular search ID ${params.id}`, e)
     return NextResponse.json({ message: "Không thể xóa" }, { status: 400 })
   }

@@ -8,7 +8,7 @@ const AboutUsArticle = () => {
     <div className="bg-white pt-[100px] pb-10">
       <div className="container">
         <motion.div
-          initial={{ x: -200, opacity: 0 }}
+          initial={{ x: -50, opacity: 0 }}
           whileInView={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.7, delay: 0.3 }}
           viewport={{ once: true }}
@@ -39,7 +39,7 @@ const AboutUsArticle = () => {
         </motion.div>
 
         <motion.div
-          initial={{ x: 200, opacity: 0 }}
+          initial={{ x: 50, opacity: 0 }}
           whileInView={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.7, delay: 0.3 }}
           viewport={{ once: true }}
@@ -60,7 +60,7 @@ const AboutUsArticle = () => {
           </div>
         </motion.div>
         <motion.div
-          initial={{ x: -200, opacity: 0 }}
+          initial={{ x: -50, opacity: 0 }}
           whileInView={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.7, delay: 0.3 }}
           viewport={{ once: true }}

@@ -10,7 +10,7 @@ import "./BlogDetail.css"
 const BlogContent = ({ blog }) => {
   return (<>
     <motion.div
-      initial={{ x: -100, opacity: 0 }}
+      initial={{ x: -50, opacity: 0 }}
       whileInView={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.7 }}
       viewport={{ once: true }}
@@ -20,7 +20,7 @@ const BlogContent = ({ blog }) => {
     </motion.div>
 
     <motion.div
-      initial={{ y: -200, opacity: 0 }}
+      initial={{ y: -50, opacity: 0 }}
       whileInView={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.7, delay: 0.3 }}
       viewport={{ once: true }}

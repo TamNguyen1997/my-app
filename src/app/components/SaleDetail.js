@@ -38,8 +38,6 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
     return matches.map(item => item.replace(/<(\w+)[^>]*>\s*<\/\1>/g, '')).filter(item => item.length > 0);
   }, [product])
 
-  console.log(getPromotion())
-
   useEffect(() => {
     if (selectedDetail.id && selectedSecondaryDetail.id) {
       setImages(selectedSecondaryDetail.sale_detail_on_image?.map((item) => item.imageUrl) || []);

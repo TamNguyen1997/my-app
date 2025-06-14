@@ -1,5 +1,6 @@
 import { Autocomplete, AutocompleteItem, Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Switch, useDisclosure } from "@nextui-org/react"
 import { useForm } from "react-hook-form"
+import { toast, ToastContainer } from "react-toastify"
 import { v4 } from "uuid"
 
 const NewFilterValue = ({ filterId, filters, setFilters, categoryId, subCategoryId, brandId, callback }) => {
@@ -20,6 +21,9 @@ const NewFilterValue = ({ filterId, filters, setFilters, categoryId, subCategory
       })
     })
     if (res.ok) {
+      toast.success("Thêm giá trị giá trị filter thành công", {
+        containerId: "new-filter-value-toast"
+      })
       if (setFilters) {
         let newFilters = filters
         newFilters.forEach(item => {
@@ -32,10 +36,14 @@ const NewFilterValue = ({ filterId, filters, setFilters, categoryId, subCategory
       }
     } else {
       console.log(res.status)
+      toast.error("Không thể thêm giá trị filter", {
+        containerId: "new-filter-value-toast"
+      })
     }
   }
 
   return <>
+    <ToastContainer containerId="new-filter-value-toast" />
     <form className="flex flex-col gap-3" onSubmit={handleSubmit(onSave)}>
       <div className="flex flex-col space-y-4 border rounded-2xl shadow-sm max-w-[444px] p-3 pb-5 gap-3">
         <div>

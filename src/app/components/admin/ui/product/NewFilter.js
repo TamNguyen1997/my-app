@@ -14,18 +14,22 @@ const NewFilter = ({ filters, setFilters, callback }) => {
   const onSave = async (data) => {
     const res = await fetch("/api/filters", { method: "POST", body: JSON.stringify(data) })
     if (res.ok) {
-      toast.success("Đã thêm filter")
+      toast.success("Đã thêm filter", {
+        containerId: "new-filter-container"
+      })
       if (filters && setFilters) {
         setFilters([...filters, data])
         callback(data.id)
       }
     } else {
-      toast.error("Không thể thêm filter")
+      toast.error("Không thể thêm filter", {
+        containerId: "new-filter-container"
+      })
     }
   }
 
   return <>
-    <ToastContainer />
+    <ToastContainer containerId="new-filter-container" />
     <form className="flex flex-col gap-3" onSubmit={handleSubmit(onSave)}>
       <div className="flex flex-col space-y-4 border rounded-2xl shadow-sm max-w-[444px] p-3 pb-5 gap-3">
         <div>

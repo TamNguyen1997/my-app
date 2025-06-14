@@ -261,6 +261,7 @@ const SaleDetails = () => {
 
                   <FilterValueSelect
                     detail={detail}
+                    setFilters={setFilters}
                     getFilter={() => filters.find(filter => filter.id === detail.filterId)}
                     filters={filters}
                     brandId={product.brandId}

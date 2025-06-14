@@ -46,7 +46,6 @@ const Page = async ({ params }) => {
     db.brand.findMany({}),
   ])
 
-  const allCategoryIds = allCategories.map(item => item.id)
   const filters = await db.filter.findMany({
     include: {
       filterValue: {
@@ -61,15 +60,24 @@ const Page = async ({ params }) => {
       }
     },
     where: {
-      filterValue: {
-        some: {
-          category_on_filter_value: {
+      OR: [
+        {
+          filterValue: {
             some: {
-              categoryId: { in: allCategoryIds }
+              category_on_filter_value: {
+                some: {
+                  categoryId: product?.subCateId || product?.categoryId,
+                }
+              }
             }
           }
+        },
+        {
+          id: {
+            in: [...product?.technical_detail?.map(item => item.filterId), ...product?.saleDetails.map(item => item.filterId)] || []
+          }
         }
-      }
+      ]
     },
     orderBy: [
       {

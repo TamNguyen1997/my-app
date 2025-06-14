@@ -1,10 +1,6 @@
 "use client"
 
 import {
-  Spinner, Table,
-  TableCell, TableColumn,
-  TableHeader, TableRow,
-  TableBody,
   Input,
   Link,
   Switch,
@@ -12,13 +8,10 @@ import {
   Button
 } from "@nextui-org/react"
 import { Trash2 } from "lucide-react";
-import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { v4 } from "uuid";
 
 const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, filterId }) => {
-
-  const [isSaving, setIsSaving] = useState(false)
   const selectionList = {
     categories: categories,
     subCategories: subCategories,
@@ -71,8 +64,6 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
   }
 
   const onSave = async () => {
-    setIsSaving(true)
-    let res
 
     let filterValues = filter.filterValue ? filter.filterValue.map(item => {
       return {
@@ -132,7 +123,6 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
         { containerId: "FilterProduct" }
       )
     }
-    setIsSaving(false)
   }
 
   const addNewFilterValue = () => {
@@ -422,7 +412,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
           <div className="flex gap-5">
             <Link href="/admin/filter">Quay về</Link>
             <Link href="/admin/filter/edit/new">Thêm filter</Link>
-            <Button color="primary" className="ml-auto" onClick={onSave} isDisabled={isSaving}>Lưu</Button>
+            <Button color="primary" className="ml-auto" onClick={onSave}>Lưu</Button>
             <Button color="danger" variant="ghost" onClick={deleteFilter}>Xoá</Button>
           </div>
         </div>

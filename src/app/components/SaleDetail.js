@@ -196,7 +196,7 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
               variant={getVariant(sDetail.id, selectedSecondaryDetail.id)}
               onPress={() => onSecondarySelect(sDetail.id)}
             >
-              {sDetail.filterValue.value}
+              {sDetail.filterValue?.value}
             </Button>
           ))}
         </div>

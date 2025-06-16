@@ -34,6 +34,28 @@ const Page = async ({ params }) => {
     return <CategoryNotFound />
   }
 
+  const filters = await db.filter.findMany({
+    where: {
+      active: true,
+      filterValue: {
+        some: {
+          category_on_filter_value: {
+            some: {
+              categoryId: category.id
+            }
+          }
+        }
+      }
+    },
+    include: {
+      filterValue: {
+        where: {
+          active: true
+        }
+      }
+    }
+  })
+
   const categoryBreadCrumbSchema = getBreadcrumbSchema([
     { name: category.name, slug: category.slug },
   ])
@@ -47,7 +69,9 @@ const Page = async ({ params }) => {
       dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
     />
     {
-      category?.type === cate_type.SUB_CATE ? <SubCategory params={slug} productFilter={filter} /> : <Category category={category} productFilter={filter} subcates={category.subcates} />
+      category?.type === cate_type.SUB_CATE ?
+        <SubCategory params={slug} productFilter={filter} filters={filters.filter(item => item.filterValue.length > 0)} /> :
+        <Category category={category} productFilter={filter} subcates={category.subcates} filters={filters.filter(item => item.filterValue.length > 0)} />
     }
   </>
 

@@ -4,13 +4,12 @@ import { useEffect, useState, useCallback } from "react";
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, Select, SelectItem, Slider, Spinner } from "@nextui-org/react";
 import ProductCard from "@/components/product/ProductCard";
 
-const Category = ({ category, productFilter, subcates }) => {
+const Category = ({ category, productFilter, subcates, filters = [], product = [] }) => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [value, setValue] = useState([0, 100000000]);
   const [orderBy, setOrderBy] = useState("");
   const [groupedData, setGroupData] = useState({});
-  const [filters, setFilters] = useState([]);
   const [selectedFilterValues, setSelectedFilterValues] = useState({});
   const [showAllSubCates, setShowAllSubCates] = useState(false);
 
@@ -32,21 +31,8 @@ const Category = ({ category, productFilter, subcates }) => {
     setIsLoading(false);
   };
 
-  const fetchFilters = async () => {
-    const res = await fetch(`/api/filters/?categoryId=${category.id}&active=true`);
-    const json = await res.json();
-    const result = json.result.filter(item => item.filterValue.length);
-    let temp = {};
-    result.forEach(item => {
-      temp[item.id] = [];
-    });
-    setSelectedFilterValues(temp);
-    setFilters(result);
-  };
-
   useEffect(() => {
     getProduct();
-    fetchFilters();
   }, [category.slug, productFilter, orderBy, value]);
 
   const filter = useCallback(() => {
@@ -59,15 +45,12 @@ const Category = ({ category, productFilter, subcates }) => {
     let query = [];
     if (range) {
       query.push(range);
-    } else if (filterIds.length === 1) {
-      window.location.replace(`/${category.slug}#${filterIds[0]}`);
-      getProduct();
-      return;
     }
     if (filterIds.length) {
       query.push(`filterId=${filterIds.join("&filterId=")}`);
     }
     window.location.replace(`/${category.slug}#${query.join("&")}`);
+    getProduct()
   }, [category, selectedFilterValues, value]);
 
   if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />;
@@ -102,14 +85,14 @@ const Category = ({ category, productFilter, subcates }) => {
                 className="max-w-[200px]"
                 selectionMode="multiple"
                 defaultSelectedKeys={new Set([
-                  filter.filterValue.find(item => window.location.hash.includes(item.slug) || item.slug === productFilter)?.slug])}
+                  filter.filterValue.find(item => window.location.hash.includes(item.displayId) || item.displayId === productFilter)?.displayId])}
                 onSelectionChange={(value) => {
                   setSelectedFilterValues(prevValues => ({ ...prevValues, [filter.id]: Array.from(value).filter(item => item) }));
                 }}
               >
                 {
-                  filter.filterValue.filter(item => item.slug).map((item, i) =>
-                    <SelectItem key={item.slug}>{item.value}</SelectItem>
+                  filter.filterValue.filter(item => item.displayId).map((item, i) =>
+                    <SelectItem key={item.displayId}>{item.value}</SelectItem>
                   )
                 }
               </Select>

@@ -22,12 +22,44 @@ const jsonLdSchema = {
   ]
 }
 
-export default function Page() {
+export default async function Page() {
+  const brand = await db.brand.findFirst({
+    where: {
+      slug: "thuong-hieu-kleen-tex"
+    }
+  })
+
+  if (!brand) {
+    notFound()
+  }
+
+  const filters = await db.filter.findMany({
+    where: {
+      active: true,
+      filterValue: {
+        some: {
+          brand_on_filter_value: {
+            some: {
+              brandId: brand.id
+            }
+          }
+        }
+      }
+    },
+    include: {
+      filterValue: {
+        where: {
+          active: true
+        }
+      }
+    }
+  })
+
   return (<>
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }}
     />
-    <BrandPage brand="thuong-hieu-kleen-tex" bg="bg-[url(/brand/banner/1440_290_Banner_Cate_Kleen_tex.png)]" />
+    <BrandPage brand="thuong-hieu-kleen-tex" bg="bg-[url(/brand/banner/1440_290_Banner_Cate_Kleen_tex.png)]" filters={filters} />
   </>)
 }

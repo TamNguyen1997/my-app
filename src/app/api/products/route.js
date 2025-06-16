@@ -108,46 +108,28 @@ export async function GET(req) {
     if (query.filterId) {
       const saleDetails = await db.sale_detail.findMany({
         where: {
-          OR: [
-            {
-              filterValueId: {
-                in: typeof query.filterId === 'string' ? [query.filterId] : query.filterId
-              }
-            }, {
-              filterValue: {
-                slug: {
-                  in: typeof query.filterId === 'string' ? [query.filterId] : query.filterId
-                }
-              }
+          filterValue: {
+            displayId: {
+              in: typeof query.filterId === 'string' ? [query.filterId] : query.filterId
             }
-          ]
+          }
         }
       })
       const saleDetailProductIds = saleDetails.map(item => item.productId)
 
       const technicalDetails = await db.technical_detail.findMany({
         where: {
-          OR: [
-            {
-              filterValueId: {
-                in: typeof query.filterId === 'string' ? [query.filterId] : query.filterId
-              }
-            },
-            {
-              filterValue: {
-                slug: {
-                  in: typeof query.filterId === 'string' ? [query.filterId] : query.filterId
-                }
-              }
+          filterValue: {
+            displayId: {
+              in: typeof query.filterId === 'string' ? [query.filterId] : query.filterId
             }
-          ]
+          }
         }
       })
 
       const technicalDetailsProductIds = technicalDetails.map(item => item.productId)
 
       const intersection = Array.from(new Set([...saleDetailProductIds, ...technicalDetailsProductIds]))
-
 
       if (!intersection.length) {
         return NextResponse.json({ result: [], total: 0 })

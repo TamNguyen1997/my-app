@@ -7,7 +7,7 @@ import { navigate } from "@/lib/utils";
 
 const rowsPerPage = 20;
 
-const SubCategory = ({ params, productFilter }) => {
+const SubCategory = ({ params, productFilter, filters = [] }) => {
   const [data, setData] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [category, setCategory] = useState({ name: "" })
@@ -15,7 +15,6 @@ const SubCategory = ({ params, productFilter }) => {
   const [orderBy, setOrderBy] = useState("")
   const searchParams = useSearchParams()
   const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"))
-  const [filters, setFilters] = useState([])
   const [endContent, setEndContent] = useState(false)
   const [filterIds, setFilterIds] = useState([])
 
@@ -40,9 +39,6 @@ const SubCategory = ({ params, productFilter }) => {
     getProduct()
     fetch(`/api/filters/?categoryId=${params}&active=true`)
       .then(res => res.json())
-      .then(json => {
-        setFilters(json.result.filter(item => item.filterValue.length))
-      })
   }, [page]);
 
   const filter = () => {

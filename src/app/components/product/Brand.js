@@ -4,14 +4,13 @@ import { useEffect, useState, useCallback } from "react";
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, Select, SelectItem, Slider, Spinner } from "@nextui-org/react";
 import ProductCard from "@/components/product/ProductCard";
 
-const Brand = ({ params, productFilter }) => {
+const Brand = ({ params, productFilter, filters = [] }) => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [orderBy, setOrderBy] = useState("");
   const [value, setValue] = useState([0, 100000000]);
   const [groupedData, setGroupData] = useState({});
   const [categories, setCategories] = useState([]);
-  const [filters, setFilters] = useState([]);
   const [selectedFilterValues, setSelectedFilterValues] = useState({});
 
   const getProduct = useCallback(async () => {
@@ -41,17 +40,6 @@ const Brand = ({ params, productFilter }) => {
 
   useEffect(() => {
     getProduct();
-    fetch(`/api/filters/?categoryId=${params}&active=true`)
-      .then((res) => res.json())
-      .then(json => {
-        const result = json.result.filter(item => item.filterValue.length);
-        let temp = {};
-        result.forEach(item => {
-          temp[item.id] = [];
-        });
-        setSelectedFilterValues(temp);
-        setFilters(result);
-      });
   }, [params, productFilter, getProduct, value]);
 
   const filter = useCallback(() => {

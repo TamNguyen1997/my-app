@@ -1,5 +1,6 @@
 import BrandPage from "@/components/BrandPage";
 import { WEBSITE_SCHEMA, ORGANIZATION_SCHEMA, getBreadcrumbSchema, getBrandSchema } from "@/lib/schema"
+import { notFound } from "next/navigation";
 
 export const metadata = {
   title: 'Thương hiệu Moerman',
@@ -22,14 +23,46 @@ const jsonLdSchema = {
   ]
 }
 
-export default function Page() {
+export default async function Page() {
+  const brand = await db.brand.findFirst({
+    where: {
+      slug: "thuong-hieu-moerman"
+    }
+  })
+
+  if (!brand) {
+    notFound()
+  }
+
+  const filters = await db.filter.findMany({
+    where: {
+      active: true,
+      filterValue: {
+        some: {
+          brand_on_filter_value: {
+            some: {
+              brandId: brand.id
+            }
+          }
+        }
+      }
+    },
+    include: {
+      filterValue: {
+        where: {
+          active: true
+        }
+      }
+    }
+  })
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }}
       />
-      <BrandPage brand="thuong-hieu-moerman" bg="bg-[url(/brand/banner/1440_290_Banner_Cate_Moerman.png)]" />
+      <BrandPage brand="thuong-hieu-moerman" bg="bg-[url(/brand/banner/1440_290_Banner_Cate_Moerman.png)]" filters={filters} />
     </>
   )
 }

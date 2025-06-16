@@ -1,3 +1,4 @@
+import { db } from '@/app/db';
 import BrandPage from "@/components/BrandPage";
 import { WEBSITE_SCHEMA, ORGANIZATION_SCHEMA, getBreadcrumbSchema, getBrandSchema } from "@/lib/schema"
 import { db } from "@/app/db"

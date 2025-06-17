@@ -19,6 +19,17 @@ const jsonLdSchema = {
 export const metadata = {
   title: 'Hướng dẫn sử dụng',
   description: 'Hướng dẫn sử dụng',
+  openGraph: {
+    title: 'Hướng dẫn sử dụng',
+    description: 'Hướng dẫn sử dụng',
+    url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,
+        alt: 'Hướng dẫn sử dụng',
+      }
+    ]
+  },
 }
 
 const News = () => {

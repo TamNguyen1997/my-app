@@ -62,7 +62,7 @@ export default async function Page() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }}
       />
-      <BrandPage brand="thuong-hieu-ghibli" bg="bg-[url(/brand/banner/1440_290_Banner_Cate_Ghibli.png)]" filters={filters} />
+      <BrandPage brand="thuong-hieu-ghibli" bg="bg-[url(/brand/banner/1440_290_Banner_Cate_Ghibli.png)]" filters={filters.filter(item => item.filterValue.length > 0)} />
     </>
   )
 }

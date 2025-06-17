@@ -18,7 +18,7 @@ export async function generateMetadata({ params }) {
     openGraph: {
       title: category?.metaTitle || category?.name,
       description: category?.metaDescription || category?.description,
-      url: `${process.env.NEXT_PUBLIC_DOMAIN}/${slug}`,
+      url: product?.imageUrl || `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,
       images: [
         {
           url: category?.imageUrl || `${process.env.NEXT_PUBLIC_DOMAIN}/default-category-image.png`,

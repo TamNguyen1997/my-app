@@ -8,7 +8,7 @@ export const metadata = {
   openGraph: {
     title: 'Thương hiệu Ghibli',
     description: 'Thương hiệu Ghibli',
-    url: `${process.env.NEXT_PUBLIC_DOMAIN}/thuong-hieu-ghibli`,
+    url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/banner/1440_290_Banner_Cate_Ghibli.png`,
     images: [
       {
         url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/banner/1440_290_Banner_Cate_Ghibli.png`,

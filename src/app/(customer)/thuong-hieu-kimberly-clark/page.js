@@ -8,7 +8,7 @@ export const metadata = {
   openGraph: {
     title: 'Thương hiệu Kimberly Clark',
     description: 'Thương hiệu Kimberly Clark',
-    url: `${process.env.NEXT_PUBLIC_DOMAIN}/thuong-hieu-kimberly-clark`,
+    url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/banner/1440_290_Banner_Kimberly.png`,
     images: [
       {
         url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/banner/1440_290_Banner_Kimberly.png`,

@@ -18,10 +18,10 @@ export async function generateMetadata({ params }) {
     openGraph: {
       title: product?.metaTitle || product?.name || "Dụng cụ vệ sinh Sao Việt",
       description: product?.metaDescription,
-      url: `${process.env.NEXT_PUBLIC_DOMAIN}/${params.categorySlug}/${params.productSlug}`,
+      url: product?.imageUrl || `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,
       images: [
         {
-          url: product?.imageUrl || `${process.env.NEXT_PUBLIC_DOMAIN}/default-product-image.png`,
+          url: product?.imageUrl || `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,
           width: 1440,
           height: 290,
           alt: product?.name || 'Dụng cụ vệ sinh Sao Việt',

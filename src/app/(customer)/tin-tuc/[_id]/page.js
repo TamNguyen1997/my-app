@@ -24,7 +24,7 @@ export async function generateMetadata({ params }) {
       url: `${process.env.NEXT_PUBLIC_DOMAIN}/tin-tuc/${params._id}`,
       images: [
         {
-          url: blog?.yoast_head_json?.og_image[0]?.url || `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,
+          url: blog?._embedded["wp:featuredmedia"]?.length ? item._embedded["wp:featuredmedia"][0]["source_url"] : `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,
           alt: blog?.title?.rendered || 'Tin tức',
         }
       ]

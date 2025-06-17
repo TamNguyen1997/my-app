@@ -8,7 +8,7 @@ export const metadata = {
   openGraph: {
     title: 'Thương hiệu Mapa',
     description: 'Thương hiệu Mapa',
-    url: `${process.env.NEXT_PUBLIC_DOMAIN}/thuong-hieu-mapa`,
+    url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/banner/1440_290_Banner_Cate_Mappa.png`,
     images: [
       {
         url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/banner/1440_290_Banner_Cate_Mappa.png`,

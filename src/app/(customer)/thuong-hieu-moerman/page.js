@@ -9,7 +9,7 @@ export const metadata = {
   openGraph: {
     title: 'Thương hiệu Moerman',
     description: 'Thương hiệu Moerman',
-    url: `${process.env.NEXT_PUBLIC_DOMAIN}/thuong-hieu-moerman`,
+    url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/banner/1440_290_Banner_Cate_Mappa.png`,
     images: [
       {
         url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/banner/1440_290_Banner_Cate_Moerman.png`,

@@ -9,7 +9,7 @@ export const metadata = {
   openGraph: {
     title: 'Thương hiệu Rubbermaid',
     description: 'Thương hiệu Rubbermaid',
-    url: `${process.env.NEXT_PUBLIC_DOMAIN}/thuong-hieu-moerman`,
+    url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/banner/1440_290_Banner_RBM.png`,
     images: [
       {
         url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/banner/1440_290_Banner_RBM.png`,

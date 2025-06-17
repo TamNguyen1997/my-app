@@ -23,7 +23,7 @@ export const metadata = {
   openGraph: {
     title: 'Kiến thức hay',
     description: 'Kiến thức hay',
-    url: `${process.env.NEXT_PUBLIC_DOMAIN}/kien-thuc-hay`,
+    url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,
     images: [
       {
         url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,

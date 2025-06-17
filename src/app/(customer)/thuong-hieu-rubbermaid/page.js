@@ -6,6 +6,19 @@ import { notFound } from "next/navigation";
 export const metadata = {
   title: 'Thương hiệu Rubbermaid',
   description: 'Thương hiệu Rubbermaid',
+  openGraph: {
+    title: 'Thương hiệu Rubbermaid',
+    description: 'Thương hiệu Rubbermaid',
+    url: `${process.env.NEXT_PUBLIC_DOMAIN}/thuong-hieu-moerman`,
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/banner/1440_290_Banner_RBM.png`,
+        width: 1440,
+        height: 290,
+        alt: 'Thương hiệu Rubbermaid', 
+      }
+    ]
+  }
 }
 
 const jsonLdSchema = {

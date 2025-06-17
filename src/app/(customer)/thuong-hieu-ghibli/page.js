@@ -5,6 +5,19 @@ import { WEBSITE_SCHEMA, ORGANIZATION_SCHEMA, getBreadcrumbSchema, getBrandSchem
 export const metadata = {
   title: 'Thương hiệu Ghibli',
   description: 'Thương hiệu Ghibli',
+  openGraph: {
+    title: 'Thương hiệu Ghibli',
+    description: 'Thương hiệu Ghibli',
+    url: `${process.env.NEXT_PUBLIC_DOMAIN}/thuong-hieu-ghibli`,
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/banner/1440_290_Banner_Cate_Ghibli.png`,
+        width: 1440,
+        height: 290,
+        alt: 'Thương hiệu Ghibli',
+      }
+    ]
+  }
 }
 
 const jsonLdSchema = {

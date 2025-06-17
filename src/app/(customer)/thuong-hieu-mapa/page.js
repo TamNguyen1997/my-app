@@ -5,6 +5,19 @@ import { WEBSITE_SCHEMA, ORGANIZATION_SCHEMA, getBreadcrumbSchema, getBrandSchem
 export const metadata = {
   title: 'Thương hiệu Mapa',
   description: 'Thương hiệu Mapa',
+  openGraph: {
+    title: 'Thương hiệu Mapa',
+    description: 'Thương hiệu Mapa',
+    url: `${process.env.NEXT_PUBLIC_DOMAIN}/thuong-hieu-mapa`,
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/banner/1440_290_Banner_Cate_Mappa.png`,
+        width: 1440,
+        height: 290,
+        alt: 'Thương hiệu Mapa', 
+      }
+    ]
+  }
 }
 
 const jsonLdSchema = {

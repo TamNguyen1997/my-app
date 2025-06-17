@@ -15,6 +15,20 @@ export async function generateMetadata({ params }) {
   return {
     title: blog?.yoast_head_json?.og_title,
     description: blog?.yoast_head_json?.og_description,
+    alternates: {
+      canonical: `${process.env.NEXT_PUBLIC_DOMAIN}/tin-tuc/${params._id}`
+    },
+    openGraph: {
+      title: blog?.yoast_head_json?.og_title,
+      description: blog?.yoast_head_json?.og_description,
+      url: `${process.env.NEXT_PUBLIC_DOMAIN}/tin-tuc/${params._id}`,
+      images: [
+        {
+          url: blog?.yoast_head_json?.og_image[0]?.url || `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,
+          alt: blog?.title?.rendered || 'Tin tức',
+        }
+      ]
+    }
   }
 }
 

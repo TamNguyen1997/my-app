@@ -65,25 +65,22 @@ const getHeaders = async () => {
     }
   ]
 
+  const slugs = [
+          "dung-cu-ve-sinh-kinh",
+          "dung-cu-ve-sinh",
+          "hop-thung-dung-do-da-nang",
+          "xe-day-phuc-vu",
+          "khan",
+          "gang-tay-chuyen-dung",
+          "cac-thiet-bi-khac",
+        ]
+
   const headers = await db.category.findMany({
     where: {
       slug: {
-        in: [
-          "khan",
-          "hop-thung-dung-do-da-nang",
-          "xe-day-phuc-vu",
-          "gang-tay-chuyen-dung",
-          "dung-cu-ve-sinh",
-          "cac-thiet-bi-khac",
-          "dung-cu-ve-sinh-kinh"
-        ]
+        in: slugs
       }
     },
-    orderBy: [
-      {
-        updatedAt: "desc"
-      }
-    ],
     select: {
       id: true,
       name: true,
@@ -98,7 +95,7 @@ const getHeaders = async () => {
     }
   })
 
-  return [brandCategory, ...headers, ...utilities]
+  return [brandCategory, ...headers.sort((a,b) => {return slugs.indexOf(a.slug) - slugs.indexOf(b.slug);}), ...utilities]
 }
 
 const BRANDS = [

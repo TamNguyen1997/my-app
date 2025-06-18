@@ -28,12 +28,12 @@ import { useForm } from "react-hook-form";
 const quickUpdate = async (category, value, setCategory) => {
   const res = await fetch(`/api/categories/${category.id}`, { method: "PUT", body: JSON.stringify(value) })
   if (res.ok) {
-    toast.success("Đã cập nhật")
+    toast.success("Đã cập nhật", { containerId: "CategoryContainerId" })
     if (setCategory) {
       setCategory(await res.json())
     }
   } else {
-    toast.error(`Không thể cập nhật: ${(await res.json()).message}`)
+    toast.error(`Không thể cập nhật: ${(await res.json()).message}`, { containerId: "CategoryContainerId" })
   }
 }
 
@@ -131,6 +131,9 @@ const Category = () => {
               return `Không thể cập nhật: ${data.message}`
             }
           }
+        },
+        {
+          containerId: "CategoryContainerId"
         }
       )
     } else {
@@ -149,6 +152,9 @@ const Category = () => {
               return `Không thể cập nhật: ${data.message}`
             }
           }
+        },
+        {
+          containerId: "CategoryContainerId"
         }
       )
     }
@@ -177,6 +183,9 @@ const Category = () => {
             return data.message
           }
         }
+      },
+      {
+        containerId: "CategoryContainerId"
       }
     )
   }
@@ -197,6 +206,9 @@ const Category = () => {
             return data.message
           }
         }
+      },
+      {
+        containerId: "CategoryContainerId"
       }
     )
   }
@@ -217,6 +229,9 @@ const Category = () => {
               return data.message
             }
           }
+        },
+        {
+          containerId: "CategoryContainerId"
         }
       )
     }
@@ -569,7 +584,7 @@ const Category = () => {
           )}
         </ModalContent>
       </Modal>
-      <ToastContainer />
+      <ToastContainer containerId="CategoryContainerId" />
     </div>
   );
 };

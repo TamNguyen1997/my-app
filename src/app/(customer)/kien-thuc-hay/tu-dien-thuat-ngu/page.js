@@ -20,11 +20,25 @@ const jsonLdSchema = {
 export const metadata = {
   title: 'Từ điển thuật ngữ',
   description: 'Từ điển thuật ngữ',
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_DOMAIN}/kien-thuc-hay/tu-dien-thuat-ngu`,
+  },
+  openGraph: {
+    title: 'Từ điển thuật ngữ',
+    description: 'Từ điển thuật ngữ',
+    url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,
+        alt: 'Từ điển thuật ngữ',
+      }
+    ]
+  }
 }
 
-export default () => {
+const Terminology = () => {
   return (
-    <>
+    <>z
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }}
@@ -33,3 +47,5 @@ export default () => {
     </>
   )
 };
+
+export default Terminology;

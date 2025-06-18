@@ -6,6 +6,19 @@ import { notFound } from "next/navigation";
 export const metadata = {
   title: 'Thương hiệu Moerman',
   description: 'Thương hiệu Moerman',
+  openGraph: {
+    title: 'Thương hiệu Moerman',
+    description: 'Thương hiệu Moerman',
+    url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/banner/1440_290_Banner_Cate_Mappa.png`,
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/banner/1440_290_Banner_Cate_Moerman.png`,
+        width: 1440,
+        height: 290,
+        alt: 'Thương hiệu Moerman', 
+      }
+    ]
+  }
 }
 
 const jsonLdSchema = {

@@ -10,11 +10,24 @@ export const revalidate = 0;
 export async function generateMetadata({ params }) {
   const product = await db.product.findFirst({ where: { slug: params.productSlug } })
   return {
-    title: product?.metaTitle || product?.name || "Sản phẩm của Dụng cụ vệ sinh Sao Việt",
+    title: product?.metaTitle || product?.name || "Dụng cụ vệ sinh Sao Việt",
     description: product?.metaDescription,
     alternates: {
       canonical: `${process.env.NEXT_PUBLIC_DOMAIN}/${params.categorySlug}/${params.productSlug}`,
     },
+    openGraph: {
+      title: product?.metaTitle || product?.name || "Dụng cụ vệ sinh Sao Việt",
+      description: product?.metaDescription,
+      url: product?.imageUrl || `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,
+      images: [
+        {
+          url: product?.imageUrl || `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,
+          width: 1440,
+          height: 290,
+          alt: product?.name || 'Dụng cụ vệ sinh Sao Việt',
+        }
+      ]
+    }
   }
 }
 

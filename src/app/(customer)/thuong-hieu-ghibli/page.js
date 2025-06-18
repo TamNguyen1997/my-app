@@ -5,6 +5,19 @@ import { WEBSITE_SCHEMA, ORGANIZATION_SCHEMA, getBreadcrumbSchema, getBrandSchem
 export const metadata = {
   title: 'Thương hiệu Ghibli',
   description: 'Thương hiệu Ghibli',
+  openGraph: {
+    title: 'Thương hiệu Ghibli',
+    description: 'Thương hiệu Ghibli',
+    url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/banner/1440_290_Banner_Cate_Ghibli.png`,
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/banner/1440_290_Banner_Cate_Ghibli.png`,
+        width: 1440,
+        height: 290,
+        alt: 'Thương hiệu Ghibli',
+      }
+    ]
+  }
 }
 
 const jsonLdSchema = {
@@ -62,7 +75,7 @@ export default async function Page() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }}
       />
-      <BrandPage brand="thuong-hieu-ghibli" bg="bg-[url(/brand/banner/1440_290_Banner_Cate_Ghibli.png)]" filters={filters} />
+      <BrandPage brand="thuong-hieu-ghibli" bg="bg-[url(/brand/banner/1440_290_Banner_Cate_Ghibli.png)]" filters={filters.filter(item => item.filterValue.length > 0)} />
     </>
   )
 }

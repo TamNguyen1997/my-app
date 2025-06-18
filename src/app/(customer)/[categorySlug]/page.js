@@ -15,6 +15,19 @@ export async function generateMetadata({ params }) {
     alternates: {
       canonical: `${process.env.NEXT_PUBLIC_DOMAIN}/${slug}`,
     },
+    openGraph: {
+      title: category?.metaTitle || category?.name,
+      description: category?.metaDescription || category?.description,
+      url: product?.imageUrl || `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,
+      images: [
+        {
+          url: category?.imageUrl || `${process.env.NEXT_PUBLIC_DOMAIN}/default-category-image.png`,
+          width: 1440,
+          height: 290,
+          alt: category?.name || 'Dụng cụ vệ sinh Sao Việt',
+        }
+      ]
+    }
   }
 }
 

@@ -15,6 +15,19 @@ export const metadata = {
   description: 'Dụng cụ vệ sinh Sao Việt',
   alternates: {
     canonical: process.env.NEXT_PUBLIC_DOMAIN,
+  },
+  openGraph: {
+    title: 'Dụng cụ vệ sinh Sao Việt',
+    description: 'Dụng cụ vệ sinh Sao Việt',
+    url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,
+        width: 1200,
+        height: 630,
+        alt: 'Dụng cụ vệ sinh Sao Việt',
+      }
+    ]
   }
 }
 

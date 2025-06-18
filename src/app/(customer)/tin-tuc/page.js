@@ -20,6 +20,17 @@ export const metadata = {
   alternates: {
     canonical: `${process.env.NEXT_PUBLIC_DOMAIN}/tin-tuc`,
   },
+  openGraph: {
+    title: 'Tin tức',
+    description: 'Tin tức',
+    url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,
+        alt: 'Tin tức',
+      }
+    ]
+  }
 }
 
 export default function Page() {

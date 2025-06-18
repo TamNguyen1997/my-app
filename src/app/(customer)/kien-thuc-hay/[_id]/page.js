@@ -17,6 +17,17 @@ export async function generateMetadata({ params }) {
     description: blog?.yoast_head_json?.og_description,
     alternates: {
       canonical: `${process.env.NEXT_PUBLIC_DOMAIN}/kien-thuc-hay/${params._id}`
+    },
+    openGraph: {
+      title: blog?.yoast_head_json?.og_title,
+      description: blog?.yoast_head_json?.og_description,
+      url: `${process.env.NEXT_PUBLIC_DOMAIN}/kien-thuc-hay/${params._id}`,
+      images: [
+        {
+          url: blog._embedded["wp:featuredmedia"]?.length ? item._embedded["wp:featuredmedia"][0]["source_url"] : `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,
+          alt: blog?.title?.rendered || 'Kiến thức hay',
+        }
+      ]
     }
   }
 }

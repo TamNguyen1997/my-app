@@ -5,6 +5,19 @@ import { WEBSITE_SCHEMA, ORGANIZATION_SCHEMA, getBreadcrumbSchema, getBrandSchem
 export const metadata = {
   title: 'Thương hiệu Kleen-Tex',
   description: 'Thương hiệu Kleen-Tex',
+  openGraph: {
+    title: 'Thương hiệu Kleen-Tex',
+    description: 'Thương hiệu Kleen-Tex',
+    url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/banner/1440_290_Banner_Cate_Kleen_tex.png`,
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/banner/1440_290_Banner_Cate_Kleen_tex.png`,
+        width: 1440,
+        height: 290,
+        alt: 'Thương hiệu Kleen-Tex',
+      }
+    ]
+  }
 }
 
 const jsonLdSchema = {

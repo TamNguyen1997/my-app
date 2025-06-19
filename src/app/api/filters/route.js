@@ -78,12 +78,12 @@ const getFilters = async (query) => {
               OR: [
                 {
                   slug: {
-                    in: query.categoryIds
+                    in: query.categoryIds || []
                   },
                 },
                 {
                   id: {
-                    in: query.categoryIds
+                    in: query.categoryIds || []
                   }
                 }
               ]

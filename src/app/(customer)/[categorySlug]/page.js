@@ -54,7 +54,7 @@ const Page = async ({ params }) => {
         some: {
           category_on_filter_value: {
             some: {
-              categoryId: category.id
+              categoryId: category.id || ""
             }
           }
         }

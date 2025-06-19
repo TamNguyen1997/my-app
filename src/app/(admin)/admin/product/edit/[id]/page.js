@@ -66,7 +66,7 @@ const Page = async ({ params }) => {
             some: {
               category_on_filter_value: {
                 some: {
-                  categoryId: product?.subCateId || product?.categoryId,
+                  categoryId: product?.subCateId || product?.categoryId || "",
                 }
               }
             }
@@ -74,7 +74,7 @@ const Page = async ({ params }) => {
         },
         {
           id: {
-            in: [...product?.technical_detail?.map(item => item.filterId), ...product?.saleDetails.map(item => item.filterId)] || []
+            in: [...product?.technical_detail?.map(item => item.filterId), ...product?.saleDetails.map(item => item.filterId)].filter(item => item) || []
           }
         }
       ]

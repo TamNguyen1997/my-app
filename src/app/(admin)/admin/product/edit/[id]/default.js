@@ -94,6 +94,8 @@ const Default = ({ initProduct = {}, categories = [], subCategories = [], brands
           return data.message || "Đã có lỗi xảy ra khi lưu sản phẩm"
         }
       }
+    }, {
+      containerId: "ProductDetailPage",
     })
   }
 

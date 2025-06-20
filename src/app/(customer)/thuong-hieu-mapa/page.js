@@ -1,6 +1,7 @@
 import { db } from '@/app/db';
 import BrandPage from "@/components/BrandPage";
 import { WEBSITE_SCHEMA, ORGANIZATION_SCHEMA, getBreadcrumbSchema, getBrandSchema } from "@/lib/schema"
+import { notFound } from 'next/navigation';
 
 export const metadata = {
   title: 'Thương hiệu Mapa',
@@ -14,7 +15,7 @@ export const metadata = {
         url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/banner/1440_290_Banner_Cate_Mappa.png`,
         width: 1440,
         height: 290,
-        alt: 'Thương hiệu Mapa', 
+        alt: 'Thương hiệu Mapa',
       }
     ]
   }

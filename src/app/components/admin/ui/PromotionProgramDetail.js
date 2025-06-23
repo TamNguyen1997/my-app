@@ -1,25 +1,25 @@
 "use client"
 
-import { Accordion, Autocomplete } from "@mui/material";
-import { AccordionItem, AutocompleteItem, Input, Textarea } from "@heroui/react";
+import { Input, Textarea, Autocomplete, AutocompleteItem } from "@heroui/react";
+import { Accordion, AccordionItem } from "@heroui/accordion";
 import { cate_type } from "@prisma/client";
 import { X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
-const PromotionProgramDetail = ({ promotionProgram = {}, allProducts = [], allCategories = [], allSaleDetails = [] }) => {
+const PromotionProgramDetail = ({ promotionProgram = {}, allProducts = [], allCategories = [], allSubcategories = [], allSaleDetails = [] }) => {
   const [name, setName] = useState(promotionProgram.name || "");
   const [promotion, setPromotion] = useState(promotionProgram.promotion || "");
 
   const [selectedCategoryIds, setSelectedCategoryIds] = useState(promotionProgram.category?.filter(item => item.type === cate_type.CATE).map(item => item.id) || []);
   const [selectedSubCategoryIds, setSelectedSubCategoryIds] = useState(promotionProgram.category?.filter(item => item.type === cate_type.SUB_CATE).map(item => item.id) || []);
   const [selectedProductIds, setSelectedProductIds] = useState(promotionProgram.product?.map(item => item.id) || []);
-  const [saleDetail, setSaleDetail] = useState(promotionProgram.saleDetail?.map(item => item.id) || []);
-  
+  const [selectedSaleDetailIds, setSelectedSaleDetailIds] = useState(promotionProgram.saleDetail?.map(item => item.id) || []);
+
   return (
     <>
       <div className="flex flex-col gap-3 pb-3">
-        <Input 
+        <Input
           label="Tên chương trình khuyến mãi"
           placeholder="Nhập tên chương trình khuyến mãi"
           width={"50%"}
@@ -27,19 +27,22 @@ const PromotionProgramDetail = ({ promotionProgram = {}, allProducts = [], allCa
           isRequired
         />
 
-        <Textarea 
+        <Textarea
           label="Nội dung chương trình khuyến mãi"
           placeholder="Nhập nội dung chương trình khuyến mãi"
           defaultValue={promotion}
         />
       </div>
-      <Accordion>
+      <Accordion variant="splitted">
         <AccordionItem value="category" title="Category" aria-label="Category" key="category">
-          <div className="md:flex gap-3">
-            <Autocomplete onSelectionChange={(id) => setSelectedCategoryIds(prev => [...prev, id])}>
+          <div className="grid md:grid-cols-3 gap-3 p-3">
+            <Autocomplete selectedKey={[]} onSelectionChange={(id) => setSelectedCategoryIds(prev => [...prev, id])}
+              label="Tìm category"
+              aria-label="Tìm category"
+              className="col-span-1">
               {
-                allCategories.filter(item => item.type === cate_type.CATE && selectedCategoryIds.includes(id => id !== item.id)).map((category, i) => (
-                  <AutocompleteItem key={category.id}>
+                allCategories.filter(item => !selectedCategoryIds.includes(item.id)).map((category, i) => (
+                  <AutocompleteItem key={category.id} aria-label={category.name} label={category.name}>
                     <p>{category.name}</p>
                     <p className="text-sm">{category.slug}</p>
                   </AutocompleteItem>
@@ -47,12 +50,11 @@ const PromotionProgramDetail = ({ promotionProgram = {}, allProducts = [], allCa
               }
             </Autocomplete>
 
-            <div>
-              <div className="grid grid-cols-4 md:grid-cols-2">
+            <div className="col-span-2 border-l-2 pl-2">
+              <div className="flex gap-3 flex-wrap">
                 {selectedCategoryIds.map((categoryId, index) => (
                   <div className="group" key={index}>
-                    <span className="bg-gray-100 text-gray-800 text-xs font-medium 
-                  me-2 px-2.5 py-0.5 rounded-3xl dark:bg-gray-700 dark:text-gray-300 flex">
+                    <span className="bg-gray-100 text-gray-800 text-sm font-medium me-2 flex p-2.5 rounded-3xl dark:bg-gray-700 dark:text-gray-300">
                       <Link href="#">
                         {allCategories.find(item => item.id === categoryId)?.name || "Unknown Category"}
                       </Link>
@@ -66,9 +68,108 @@ const PromotionProgramDetail = ({ promotionProgram = {}, allProducts = [], allCa
             </div>
           </div>
         </AccordionItem>
-        {/* <AccordionItem value="sub-category" title="Sub-category" aria-label="Sub-category"></AccordionItem>
-        <AccordionItem value="product" title="Sản phẩm" aria-label="Sản phẩm"></AccordionItem>
-        <AccordionItem value="sale-detail" title="Thông số bán hàng" aria-label="Thông số bán hàng"></AccordionItem> */}
+        <AccordionItem value="sub-category" title="Sub-category" aria-label="Sub-category" key="sub-category">
+          <div className="grid md:grid-cols-3 gap-3 p-3">
+            <Autocomplete selectedKey={[]} onSelectionChange={(id) => setSelectedSubCategoryIds(prev => [...prev, id])}
+              label="Tìm sub-category"
+              aria-label="Tìm sub-category"
+              className="col-span-1">
+              {
+                allSubcategories.filter(item => !selectedSubCategoryIds.includes(item.id)).map((subCate, i) => (
+                  <AutocompleteItem key={subCate.id} aria-label={subCate.name} label={subCate.name}>
+                    <p>{subCate.name}</p>
+                    <p className="text-sm">{subCate.slug}</p>
+                  </AutocompleteItem>
+                ))
+              }
+            </Autocomplete>
+
+            <div className="col-span-2 border-l-2 pl-2">
+              <div className="flex gap-3 flex-wrap">
+                {selectedSubCategoryIds.map((subCateId, index) => (
+                  <div className="group" key={index}>
+                    <span className="bg-gray-100 text-gray-800 text-sm font-medium me-2 flex p-2.5 rounded-3xl dark:bg-gray-700 dark:text-gray-300">
+                      <Link href="#">
+                        {allCategories.find(item => item.id === subCateId)?.name || "Unknown Sub Category"}
+                      </Link>
+                      <span
+                        className="hidden group-hover:block animate-vote text-red-500 rounded-full hover:bg-white"
+                        onClick={() => setSelectedSubCategoryIds(prev => prev.filter(item => item !== subCateId))}><X /></span>
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </AccordionItem>
+        <AccordionItem value="Sản phẩm" title="Sản phẩm" aria-label="Sản phẩm" key="product">
+          <div className="grid md:grid-cols-3 gap-3 p-3">
+            <Autocomplete selectedKey={[]} onSelectionChange={(id) => setSelectedSubCategoryIds(prev => [...prev, id])}
+              label="Tìm sản phẩm"
+              aria-label="Tìm sản phẩm"
+              className="col-span-1">
+              {
+                allProducts.filter(item => !selectedProductIds.includes(item.id)).map((product, i) => (
+                  <AutocompleteItem key={product.id} aria-label={product.name} label={product.name}>
+                    <p>{product.name}</p>
+                    <p className="text-sm">{product.slug}</p>
+                  </AutocompleteItem>
+                ))
+              }
+            </Autocomplete>
+
+            <div className="col-span-2 border-l-2 pl-2">
+              <div className="flex gap-3 flex-wrap">
+                {selectedProductIds.map((productId, index) => (
+                  <div className="group" key={index}>
+                    <span className="bg-gray-100 text-gray-800 text-sm font-medium me-2 flex p-2.5 rounded-3xl dark:bg-gray-700 dark:text-gray-300">
+                      <Link href="#">
+                        {allProducts.find(item => item.id === productId)?.name || "Unknown Sub Category"}
+                      </Link>
+                      <span
+                        className="hidden group-hover:block animate-vote text-red-500 rounded-full hover:bg-white"
+                        onClick={() => setSelectedProductIds(prev => prev.filter(item => item !== productId))}><X /></span>
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </AccordionItem>
+        <AccordionItem value="Thông số bán hàng" title="Thông số bán hàng" aria-label="Thông số bán hàng" key="sale-detail">
+          <div className="grid md:grid-cols-3 gap-3 p-3">
+            <Autocomplete selectedKey={[]} onSelectionChange={(id) => setSelectedSaleDetailIds(prev => [...prev, id])}
+              label="Tìm Thông số bán hàng"
+              aria-label="Tìm Thông số bán hàng"
+              className="col-span-1">
+              {
+                allSaleDetails.filter(item => !selectedSaleDetailIds.includes(item.id)).map((saleDetail, i) => (
+                  <AutocompleteItem key={saleDetail.id} aria-label={saleDetail.sku} label={saleDetail.sku}>
+                    <p>{saleDetail.sku}</p>
+                    <p className="text-sm">{saleDetail.sku}</p>
+                  </AutocompleteItem>
+                ))
+              }
+            </Autocomplete>
+
+            <div className="col-span-2 border-l-2 pl-2">
+              <div className="flex gap-3 flex-wrap">
+                {selectedSaleDetailIds.map((saleDetailId, index) => (
+                  <div className="group" key={index}>
+                    <span className="bg-gray-100 text-gray-800 text-sm font-medium me-2 flex p-2.5 rounded-3xl dark:bg-gray-700 dark:text-gray-300">
+                      <Link href="#">
+                        {allSaleDetails.find(item => item.id === saleDetailId)?.sku || "Unknown Sub Category"}
+                      </Link>
+                      <span
+                        className="hidden group-hover:block animate-vote text-red-500 rounded-full hover:bg-white"
+                        onClick={() => setSelectedSaleDetailIds(prev => prev.filter(item => item !== saleDetailId))}><X /></span>
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </AccordionItem>
       </Accordion>
     </>
   );

@@ -57,9 +57,10 @@ model product {
   productId       String?
   filterOnProduct filter_on_product[]
 
-  metaTitle        String?
-  metaDescription  String?
-  technical_detail technical_detail[]
+  metaTitle         String?
+  metaDescription   String?
+  technical_detail  technical_detail[]
+  promotion_program promotion_program[]
 
   @@index([imageId])
   @@index([categoryId])
@@ -155,6 +156,7 @@ model sale_detail {
   updatedAt                        DateTime                           @default(now()) @updatedAt @map("updated_at")
   sale_detail_on_image             sale_detail_on_image[]
   technical_detail_for_sale_detail technical_detail_for_sale_detail[]
+  promotion_program                promotion_program[]
 
   @@index([productId])
   @@index([saleDetailId])
@@ -467,8 +469,10 @@ model category {
   metaTitle       String? @map("meta_title")
   metaDescription String? @map("meta_description")
 
-  category_on_filter_value category_on_filter_value[] @relation("category")
-  popular_search           popular_search[]
+  category_on_filter_value  category_on_filter_value[] @relation("category")
+  popular_search            popular_search[]
+  cate_promotion_program    promotion_program[]        @relation("category")
+  subcate_promotion_program promotion_program[]        @relation("subCate")
 
   @@unique([slug])
   @@index([imageId])
@@ -561,4 +565,20 @@ model import_history {
   status    history_status
   createdAt DateTime       @default(now()) @map("created_at")
   updatedAt DateTime       @default(now()) @updatedAt @map("updated_at")
+}
+
+model promotion_program {
+  id String @id @default(dbgenerated("gen_random_uuid()"))
+
+  name      String  @default(dbgenerated("gen_random_uuid()"))
+  promotion String  @default("")
+  active    Boolean @default(false)
+
+  category    category[]    @relation("category")
+  subCategory category[]    @relation("subCate")
+  product     product[]
+  saleDetail  sale_detail[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 }

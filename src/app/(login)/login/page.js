@@ -30,7 +30,7 @@ export default function Login() {
 
       if (res.ok) {
         toast.success(result.message || LOGIN_MESSAGE.LOGIN_SUCCESS);
-        setTimeout(() => router.push("/admin"));
+        setTimeout(() => router.push("/admin/products"));
       } else {
         toast.error(result.message || LOGIN_MESSAGE.LOGIN_FAILED);
       }

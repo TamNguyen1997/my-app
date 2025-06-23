@@ -6,6 +6,7 @@ import {
   ClipboardList,
   Contact,
   Filter,
+  Goal,
   History,
   Image,
   Info,
@@ -36,6 +37,13 @@ const items = [
     name: "Sản phẩm",
     icon: <ShoppingBasket />,
     link: "/admin/product",
+    roles: [user_role.MANAGER, user_role.ADMIN],
+  },
+  {
+    id: "promotion_program",
+    name: "Chương trình khuyến mãi",
+    icon: <Goal />,
+    link: "/admin/promotion-program",
     roles: [user_role.MANAGER, user_role.ADMIN],
   },
   {

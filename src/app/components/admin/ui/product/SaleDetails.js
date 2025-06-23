@@ -1,4 +1,4 @@
-import { Autocomplete, AutocompleteItem, Button, Checkbox, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Snippet, useDisclosure } from "@nextui-org/react";
+import { Autocomplete, AutocompleteItem, Button, Checkbox, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Snippet, useDisclosure } from "@heroui/react";
 import { Cog, FileImage, Trash2 } from "lucide-react";
 import { useContext } from "react";
 import { v4 } from "uuid";

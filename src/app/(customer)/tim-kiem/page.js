@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { getTotalPages } from "@/lib/pagination"
-import { Button, Link, Pagination, Tab, Tabs } from "@nextui-org/react";
+import { Button, Link, Pagination, Tab, Tabs } from "@heroui/react";
 import { Suspense } from 'react'
 import ProductCard from "@/components/product/ProductCard"
 import BlogItem from "@/app/components/blog/BlogItem";

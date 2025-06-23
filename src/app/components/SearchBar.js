@@ -1,6 +1,6 @@
 'use client';
 
-import { Input } from '@nextui-org/react';
+import { Input } from "@heroui/react";
 import { LoaderIcon, Search } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';

@@ -15,7 +15,7 @@ import {
   Tabs,
   Tab,
   Spinner,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import Dropzone, { ErrorCode } from "react-dropzone";
 import ImagePicker from "./ImagePicker";
 import BannerScheduler from "./BannerScheduler";

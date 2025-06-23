@@ -9,7 +9,7 @@ import {
   ModalFooter,
   ModalHeader,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import ImageCms from "../ImageCms";
 import { useState, useRef, useCallback, forwardRef, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";

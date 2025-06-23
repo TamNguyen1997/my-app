@@ -1,5 +1,5 @@
 "use client";
-import { Link } from "@nextui-org/react";
+import { Link } from "@heroui/react";
 import { motion } from "framer-motion";
 import React from "react";
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { BreadcrumbItem, Breadcrumbs, Link } from "@nextui-org/react";
+import { BreadcrumbItem, Breadcrumbs, Link } from "@heroui/react";
 import { motion } from "framer-motion";
 import parse from 'html-react-parser';
 

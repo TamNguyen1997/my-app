@@ -1,11 +1,11 @@
-import { nextui } from "@nextui-org/react"
+import { heroui } from "@heroui/react"
 import { purgeCSSPlugin } from '@fullhuman/postcss-purgecss';
 
 module.exports = {
   darkMode: ["class"],
   content: [
     './src/app/**/*.{ts,tsx,js,jsx}',
-    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"
+    "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}"
   ],
   prefix: "",
   theme: {
@@ -48,9 +48,9 @@ module.exports = {
     purgeCSSPlugin({
       content: [
         './src/app/**/*.{ts,tsx,js,jsx}',
-        "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"
+        "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}"
       ]
     }),
-    require("tailwindcss-animate"), require("@tailwindcss/typography"), nextui()
+    require("tailwindcss-animate"), require("@tailwindcss/typography"), heroui()
   ],
 } 

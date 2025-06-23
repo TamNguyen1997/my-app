@@ -2,7 +2,7 @@
 import { Menu } from "lucide-react";
 import parse from 'html-react-parser';
 import { useState, useEffect } from "react";
-import { Accordion, AccordionItem } from "@nextui-org/react";
+import { Accordion, AccordionItem } from "@heroui/react";
 
 export default ({ selector }) => {
 	const [headings, setHeadings] = useState([]);
@@ -30,11 +30,11 @@ export default ({ selector }) => {
 		return innerHTML
 	}
 	return (
-		<Accordion
+        <Accordion
 			defaultExpandedKeys={["1"]}
 			className="bg-[#f2f4f9] border border-[#d4d5da] rounded px-4"
 		>
-			<AccordionItem
+            <AccordionItem
 				key="1"
 				aria-label="Nội dung"
 				title="Nội dung"
@@ -78,6 +78,6 @@ export default ({ selector }) => {
 					)
 				})}
 			</AccordionItem>
-		</Accordion>
-	)
+        </Accordion>
+    );
 }

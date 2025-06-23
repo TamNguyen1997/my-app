@@ -1,4 +1,4 @@
-import { Link } from "@nextui-org/react"
+import { Link } from "@heroui/react"
 import React from "react"
 
 class ErrorBoundary extends React.Component {

@@ -1,7 +1,7 @@
 "use client"
 import ProductCard from "@/app/components/product/ProductCard";
 import { CartContext } from "@/context/CartProvider";
-import { Button, Input, Link } from "@nextui-org/react";
+import { Button, Input, Link } from "@heroui/react";
 import { useContext, useEffect, useState } from "react";
 
 const COLOR_VARIANT = {

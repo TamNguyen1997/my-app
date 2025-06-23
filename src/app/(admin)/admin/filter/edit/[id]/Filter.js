@@ -5,7 +5,7 @@ import {
   Input,
   Spinner,
   Switch
-} from "@nextui-org/react"
+} from "@heroui/react"
 import FilterProduct from "@/app/components/admin/ui/filter/FilterProduct";
 import { useParams } from "next/navigation";
 import { v4 } from "uuid";

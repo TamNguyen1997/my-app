@@ -1,7 +1,7 @@
 "use client"
 
 import { Accordion, Autocomplete } from "@mui/material";
-import { AccordionItem, AutocompleteItem, Input, Textarea } from "@nextui-org/react";
+import { AccordionItem, AutocompleteItem, Input, Textarea } from "@heroui/react";
 import { cate_type } from "@prisma/client";
 import { X } from "lucide-react";
 import Link from "next/link";

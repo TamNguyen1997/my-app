@@ -1,4 +1,4 @@
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, useDisclosure } from "@nextui-org/react"
+import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, useDisclosure } from "@heroui/react"
 import { Trash2 } from "lucide-react"
 import { useContext, useState } from "react"
 import { v4 } from "uuid"

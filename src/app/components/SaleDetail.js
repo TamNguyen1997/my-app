@@ -1,5 +1,5 @@
 "use client";
-import { Button, Input } from "@nextui-org/react";
+import { Button, Input } from "@heroui/react";
 import { Gift, ShoppingCart } from "lucide-react";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { CartContext } from "@/context/CartProvider";

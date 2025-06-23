@@ -1,4 +1,4 @@
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react"
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@heroui/react"
 import ImageCms from "../ImageCms"
 import { useContext, useState, forwardRef, useRef, useTransition, useCallback, useEffect } from "react"
 import { ToastContainer, toast } from 'react-toastify';

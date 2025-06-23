@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { X } from 'lucide-react';
-import { Button, DatePicker, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Switch, useDisclosure } from '@nextui-org/react';
+import { Button, DatePicker, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Switch, useDisclosure } from "@heroui/react";
 import ImageCms from "./ImagePicker";
 
 export function ImageDraggable({ itemData, moveRow, index, deleteImagePos, isScheduled, saveImage, setActiveFrom, setActiveTo, setActive }) {

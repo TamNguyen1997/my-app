@@ -4,7 +4,7 @@ import {
   Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Input,
   Pagination, Select, SelectItem,
   Switch,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { Search, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 

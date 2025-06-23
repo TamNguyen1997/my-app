@@ -3,7 +3,7 @@
 import {
   Button,
   Card, CardBody, Tab, Tabs,
-} from "@nextui-org/react"
+} from "@heroui/react"
 import { createContext, useState } from "react"
 import SaleDetails from "@/app/components/admin/ui/product/SaleDetails";
 import TechnicalDetails from "@/app/components/admin/ui/product/TechnicalDetails";

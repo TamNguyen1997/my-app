@@ -1,4 +1,4 @@
-import { Button, DatePicker, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Switch, useDisclosure, user } from "@nextui-org/react"
+import { Button, DatePicker, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Switch, useDisclosure, user } from "@heroui/react"
 import slugify from "slugify"
 import ImageCms from "../ImageCms"
 import { useCallback, useContext, useState } from "react"

@@ -1,6 +1,6 @@
 "use client"
 
-import { Card, CardBody, CardHeader, Divider, Image } from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Divider, Image } from "@heroui/react";
 import Link from "next/link";
 import Carousel from "react-multi-carousel"
 import "react-multi-carousel/lib/styles.css"

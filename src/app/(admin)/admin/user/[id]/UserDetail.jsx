@@ -1,7 +1,7 @@
 "use client";
 
 import { USER_MESSAGE } from "@/constants/message";
-import { Button, Input, Switch, Select, SelectItem } from "@nextui-org/react";
+import { Button, Input, Switch, Select, SelectItem } from "@heroui/react";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";

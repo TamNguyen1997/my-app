@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useEffect, useState } from "react";
-import { BreadcrumbItem, Breadcrumbs, Button, Link } from "@nextui-org/react";
+import { BreadcrumbItem, Breadcrumbs, Button, Link } from "@heroui/react";
 import SaleDetail from "@/components/SaleDetail";
 import ProductImageCarousel from "@/components/ProductImageCarousel";
 import ProductDetailTabs from "@/components/ProductDetailTabs";

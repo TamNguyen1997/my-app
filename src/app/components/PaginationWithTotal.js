@@ -1,4 +1,4 @@
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Pagination } from "@nextui-org/react";
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Pagination } from "@heroui/react";
 
 const PaginationWithTotal = ({ rowsPerPage, setRowsPerPage, page, pages, setPage, total = 0 }) => {
   return (

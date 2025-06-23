@@ -1,6 +1,6 @@
 "use client"
 
-import { Button, Input } from "@nextui-org/react";
+import { Button, Input } from "@heroui/react";
 import Link from "next/link";
 import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";

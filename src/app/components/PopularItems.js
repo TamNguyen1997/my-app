@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Link } from "@nextui-org/react";
+import { Button, Link } from "@heroui/react";
 import React, { useCallback, useState } from "react";
 import "react-multi-carousel/lib/styles.css";
 import ProductCarousel from "@/components/product/ProductCarousel";

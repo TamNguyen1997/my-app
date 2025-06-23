@@ -43,7 +43,7 @@ const items = [
     id: "promotion_program",
     name: "Chương trình khuyến mãi",
     icon: <Goal />,
-    link: "/admin/promotion-program",
+    link: "/admin/promotion",
     roles: [user_role.MANAGER, user_role.ADMIN],
   },
   {

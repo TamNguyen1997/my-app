@@ -1,5 +1,5 @@
 "use client"
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Select, SelectItem, Slider, Spinner } from "@nextui-org/react";
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Select, SelectItem, Slider, Spinner } from "@heroui/react";
 import { useEffect, useState } from "react";
 import ProductCard from "@/components/product/ProductCard"
 import { useSearchParams } from "next/navigation";

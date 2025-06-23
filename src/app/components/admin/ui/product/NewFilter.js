@@ -1,4 +1,4 @@
-import { Button, Input, Switch } from "@nextui-org/react"
+import { Button, Input, Switch } from "@heroui/react"
 import { useForm } from "react-hook-form"
 import { toast, ToastContainer } from "react-toastify"
 import { v4 } from "uuid"

@@ -18,7 +18,7 @@ import {
   Spinner,
   Textarea,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { EditIcon, Search, X } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
 import { ProductContext } from "@/app/(admin)/admin/product/edit/[id]/default";

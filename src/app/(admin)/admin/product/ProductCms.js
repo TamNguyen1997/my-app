@@ -16,7 +16,7 @@ import {
   Snippet,
   useDisclosure,
   Tooltip,
-} from "@nextui-org/react"
+} from "@heroui/react"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { EditIcon, FileImage, Plus, Search, Trash2 } from "lucide-react"
 import Checkbox from '@mui/material/Checkbox';

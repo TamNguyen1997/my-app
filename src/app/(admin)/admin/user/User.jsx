@@ -19,7 +19,7 @@ import {
   useDisclosure,
   Select,
   SelectItem,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import {
   LockIcon,
   Mail,
@@ -384,7 +384,6 @@ const User = () => {
           )}
         </ModalContent>
       </Modal>
-
       <Modal isOpen={modelDel.isOpen} onOpenChange={modelDel.onOpenChange}>
         <ModalContent>
           {(onClose) => (

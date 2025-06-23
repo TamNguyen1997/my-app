@@ -1,6 +1,13 @@
 import { db } from "@/app/db"
 import PromitionProgramPage from "@/components/admin/ui/PromitionProgramPage";
 
+export async function generateMetadata() {
+  return {
+    title: "Chương trình khuyến mãi | Dụng cụ vệ sinh Sao Việt",
+    description: "Quản lý chương trình khuyến mãi tại Dụng cụ vệ sinh Sao Việt",
+  };
+}
+
 export default async function Page({ searchParams }) {
   const { searchTerm, active, page = 1, size = 10 } = searchParams;
 

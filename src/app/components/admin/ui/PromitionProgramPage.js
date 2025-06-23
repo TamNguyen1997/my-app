@@ -101,9 +101,9 @@ const PromitionProgramPage = ({ promotionPrograms = [], queryParams = {}, total 
             </TableBody>
           </Table>
         </div>
-        <div>
+        <Link href="/admin/promotion/new">
           <Button color="primary">Thêm chương trình khuyến mãi</Button>
-        </div>
+        </Link>
       </div>
     </>
   );

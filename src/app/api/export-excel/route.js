@@ -172,6 +172,12 @@ const extractSaleDetailData = async (start, end) => {
       filterValueId: true,
       createdAt: true,
       updatedAt: true,
+      saleDetailId: true,
+      saleDetail: {
+        select: {
+          sku: true
+        }
+      },
       filter: {
         select: {
           displayId: true,
@@ -193,20 +199,22 @@ const extractSaleDetailData = async (start, end) => {
     "Giá khuyến mãi",
     "Giá liên hệ",
     "SL tồn kho",
+    "SKU chính",
     "Ngày tạo",
-    "Ngày cập nhật"
+    "Ngày cập nhật",
   ];
 
   const data = result.map((el) => ({
     "ID thông số bán hàng": el.id,
     "ID SP": el.productId,
-    "SKU": el.sku,
+    "SKU": el.saleDetailId ? "" : el.sku,
     "Giá bán thường": el.price,
     "Giá khuyến mãi": el.promotionalPrice,
     "Giá liên hệ": el.showPrice ? "T" : "F",
     "ID filter": el.filter?.displayId,
     "ID giá trị filter": el.filterValue?.displayId,
     "SL tồn kho": el.inStock,
+    "SKU chính": el.saleDetailId ? el.saleDetail?.sku : "",
     "Ngày tạo": el.createdAt?.toLocaleString(),
     "Ngày cập nhật": el.updatedAt?.toLocaleString()
   }));

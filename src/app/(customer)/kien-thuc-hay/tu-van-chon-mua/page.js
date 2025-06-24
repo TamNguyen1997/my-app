@@ -26,7 +26,7 @@ export const metadata = {
   openGraph: {
     title: 'Tư vấn chọn mua',
     description: 'Tư vấn chọn mua',
-    url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,
+    url: `${process.env.NEXT_PUBLIC_DOMAIN}/kien-thuc-hay/tu-van-chon-mua`,
     images: [
       {
         url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,

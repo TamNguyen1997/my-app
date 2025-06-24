@@ -6,7 +6,7 @@ export const metadata = {
   openGraph: {
     title: 'Liên hệ',
     description: 'Liên hệ',
-    url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,
+    url: `${process.env.NEXT_PUBLIC_DOMAIN}/lien-he`,
     images: [
       {
         url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,

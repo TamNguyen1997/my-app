@@ -6,10 +6,13 @@ import { notFound } from 'next/navigation';
 export const metadata = {
   title: 'Thương hiệu Kimberly Clark',
   description: 'Thương hiệu Kimberly Clark',
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_DOMAIN}/thuong-hieu-kimberly-clark`,
+  },
   openGraph: {
     title: 'Thương hiệu Kimberly Clark',
     description: 'Thương hiệu Kimberly Clark',
-    url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/banner/1440_290_Banner_Kimberly.png`,
+    url: `${process.env.NEXT_PUBLIC_DOMAIN}/thuong-hieu-kimberly-clark`,
     images: [
       {
         url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/banner/1440_290_Banner_Kimberly.png`,

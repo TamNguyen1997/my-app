@@ -19,7 +19,7 @@ export const metadata = {
   openGraph: {
     title: 'Dụng cụ vệ sinh Sao Việt',
     description: 'Dụng cụ vệ sinh Sao Việt',
-    url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,
+    url: `${process.env.NEXT_PUBLIC_DOMAIN}`,
     images: [
       {
         url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,

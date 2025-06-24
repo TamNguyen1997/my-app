@@ -1,6 +1,6 @@
-# Allow Facebook's crawler (for Messenger previews)
-User-agent: facebookexternalhit
-Disallow:
-
 User-agent: *
-Disallow: *
+Disallow: /404/
+Disallow: /admin/*
+Disallow: /login
+Disallow: /wordpress-prod*
+Disallow: /

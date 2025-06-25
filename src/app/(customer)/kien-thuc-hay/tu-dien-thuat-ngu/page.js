@@ -26,7 +26,7 @@ export const metadata = {
   openGraph: {
     title: 'Từ điển thuật ngữ',
     description: 'Từ điển thuật ngữ',
-    url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,
+    url: `${process.env.NEXT_PUBLIC_DOMAIN}/kien-thuc-hay/tu-dien-thuat-ngu`,
     images: [
       {
         url: `${process.env.NEXT_PUBLIC_DOMAIN}/brand/sao-viet-fanpage.jpg`,

@@ -40,6 +40,5 @@ next-env.d.ts
 /src/app/redirects/*
 output*.log
 /src/lib/constant/index.js
-/public/robots.txt
 /public/sitemap*.xml
 /src/app/robots.txt

@@ -1,12 +1,50 @@
 "use client";
 
-import { Button, Input, Select, SelectItem, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
+import { Button, Checkbox, Input, Select, SelectItem, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
 import { EditIcon, Search, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useMemo, useState } from "react";
 import PaginationWithTotal from "@/components/PaginationWithTotal";
+import { toast, ToastContainer } from "react-toastify";
+import { navigate } from "@/lib/utils";
 
-const PromitionProgramPage = ({ promotionPrograms = [], queryParams = {}, total = 0}) => {
+const onDelete = async (id) => {
+  if (!confirm("Bạn có muốn xóa chương trình khuyến mãi này?")) return
+
+  toast.promise(
+    fetch(`/api/promotion-program/${id}`, { method: "DELETE" }).then(async (res) => {
+      if (!res.ok) {
+        throw new Error((await res.json()).message)
+      }
+    }),
+    {
+      pending: 'Đang xóa chương trình khuyến mãi',
+      success: {
+        render() {
+          navigate("/admin/promotion")
+          return 'Đã xóa chương trình khuyến mãi'
+        }
+      },
+      error: {
+        render({ data }) {
+          return `Không thể xóa: ${data.message}`
+        }
+      }
+    },
+    {
+      containerId: "PromotionProgramPage"
+    }
+  )
+}
+
+const quickUpdatePromotionProgram = async (promotionProgram, value) => {
+  return await fetch(`/api/promotion-program/${promotionProgram.id}`, {
+    method: "PUT",
+    body: JSON.stringify(value),
+  })
+}
+
+const PromotionProgramPage = ({ promotionPrograms = [], queryParams = {}, total = 0 }) => {
   const [condition, setCondition] = useState(queryParams);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(1);
@@ -20,17 +58,21 @@ const PromitionProgramPage = ({ promotionPrograms = [], queryParams = {}, total 
     const cellValue = program[columnKey]
 
     switch (columnKey) {
-      case "cate":
-        return program[columnKey]?.name
+      case "active":
+        return (
+          <Checkbox defaultSelected={program[columnKey]} onChange={event => quickUpdatePromotionProgram(program, { [columnKey]: event.target.checked })} />
+        )
       case "actions":
         return (
           <div className="relative flex items-center gap-2">
             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-              <EditIcon />
+              <Link href={`/admin/promotion/edit/${program.id}`}>
+                <EditIcon />
+              </Link>
             </span>
             <span className="text-lg text-danger cursor-pointer active:opacity-50">
               <span className="text-lg text-danger cursor-pointer active:opacity-50">
-                <Trash2 />
+                <Trash2 onClick={() => onDelete(program.id)} />
               </span>
             </span>
           </div>
@@ -42,6 +84,7 @@ const PromitionProgramPage = ({ promotionPrograms = [], queryParams = {}, total 
 
   return (
     <>
+      <ToastContainer containerId="PromotionProgramPage" />
       <div className="md:flex gap-3 w-1/2 pb-3">
         <Input label="Tìm" className="pt-2"
           aria-label="Tìm" labelPlacement="outside" defaultValue={condition.name}
@@ -74,16 +117,16 @@ const PromitionProgramPage = ({ promotionPrograms = [], queryParams = {}, total 
           <Table
             aria-label="Tất cả chương trình khuyến mãi"
             bottomContent={
-                <div className="w-full flex">
-                  <PaginationWithTotal
-                    rowsPerPage={rowsPerPage}
-                    setRowsPerPage={setRowsPerPage}
-                    page={page}
-                    setPage={setPage}
-                    pages={pages}
-                    total={total}
-                  />
-                </div>
+              <div className="w-full flex">
+                <PaginationWithTotal
+                  rowsPerPage={rowsPerPage}
+                  setRowsPerPage={setRowsPerPage}
+                  page={page}
+                  setPage={setPage}
+                  pages={pages}
+                  total={total}
+                />
+              </div>
             }>
             <TableHeader>
               <TableColumn key="name" textValue="name">Tên</TableColumn>
@@ -109,4 +152,4 @@ const PromitionProgramPage = ({ promotionPrograms = [], queryParams = {}, total 
   );
 }
 
-export default PromitionProgramPage;
+export default PromotionProgramPage;

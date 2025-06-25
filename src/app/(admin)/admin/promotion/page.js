@@ -1,5 +1,5 @@
 import { db } from "@/app/db"
-import PromitionProgramPage from "@/components/admin/ui/PromitionProgramPage";
+import PromotionProgramPage from "@/components/admin/ui/PromotionProgramPage";
 
 export async function generateMetadata() {
   return {
@@ -99,7 +99,8 @@ export default async function Page({ searchParams }) {
       createdAt: "desc",
     },
   });
+
   return (
-    <PromitionProgramPage promotionPrograms={promotionPrograms}/>
+    <PromotionProgramPage promotionPrograms={promotionPrograms} />
   );
 }

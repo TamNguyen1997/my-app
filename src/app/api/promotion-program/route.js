@@ -1,6 +1,6 @@
 import { db } from "@/app/db"
+import { NextResponse } from "next/server";
 import queryString from "query-string";
-import { v4 } from "uuid";
 
 export const GET = async (req) => {
   const { query } = queryString.parseUrl(req.url);
@@ -10,7 +10,7 @@ export const GET = async (req) => {
   let condition = {};
   if (query.active) {
     condition.active = query.active === 'true';
-  } 
+  }
 
   if (query.searchTerm) {
     const searchTerm = query.name.trim().replaceAll(" ", " & ");
@@ -86,10 +86,6 @@ export const POST = async (req) => {
   try {
     let body = await req.json();
 
-    if (!body.id) {
-      body.id = v4();
-    }
-    
     const promotionProgram = await db.promotion_program.upsert({
       where: {
         id: body.id
@@ -105,78 +101,76 @@ export const POST = async (req) => {
       }
     });
 
-    await db.transaction(async (tx) => {
+    await db.$transaction(async (tx) => {
       await Promise.all([
         tx.category.updateMany({
           where: {
-            promotionProgramId: body.id
-          },
-          data: {
-            promotionProgramId: null
-          }
-        }), 
-        tx.sub_category.updateMany({
-          where: {
-            promotionProgramId: body.id
+            promotionProgramId: promotionProgram.id
           },
           data: {
             promotionProgramId: null
           }
         })
       ])
-      await tx.category.updateMany({
-        where: {
-          id: {
-            in: body.categoryIds || []
-          }
-        },
-        data: {
-          promotionProgramId: body.id
-        }
-      })
-    });
-
-    await db.transaction(async (tx) => {
-      await tx.product.updateMany({
+      if (body.categoryIds?.length > 0) {
+        await tx.category.updateMany({
           where: {
-            promotionProgramId: body.id
+            id: {
+              in: body.categoryIds || []
+            }
           },
           data: {
-            promotionProgramId: null
+            promotionProgramId: promotionProgram.id
           }
         })
-      
-      await tx.product.updateMany({
-        where: {
-          id: {
-            in: body.productIds || []
-          }
-        },
-        data: {
-          promotionProgramId: body.id
-        }
-      })
+      }
     });
 
-    await db.transaction(async (tx) => {
+    await db.$transaction(async (tx) => {
+      await tx.product.updateMany({
+        where: {
+          promotionProgramId: promotionProgram.id
+        },
+        data: {
+          promotionProgramId: null
+        }
+      })
+      if (body.products?.length > 0) {
+        await tx.product.updateMany({
+          where: {
+            id: {
+              in: body.productIds || []
+            }
+          },
+          data: {
+            promotionProgramId: promotionProgram.id
+          }
+        })
+      }
+    });
+
+    await db.$transaction(async (tx) => {
       await tx.sale_detail.updateMany({
         where: {
-          promotionProgramId: body.id
+          promotionProgramId: promotionProgram.id
         },
         data: {
           promotionProgramId: null
         }
       });
-      await tx.sale_detail.updateMany({
-        where: {
-          id: {
-            in: body.saleDetailIds || []
+
+      if (body.saleDetailIds?.length > 0) {
+        await tx.sale_detail.updateMany({
+          where: {
+            id: {
+              in: body.saleDetailIds || []
+            }
+          },
+          data: {
+            promotionProgramId: promotionProgram.id
           }
-        },
-        data: {
-          promotionProgramId: body.id
-        }
-      });
+        });
+      }
     });
     return NextResponse.json(promotionProgram);
   } catch (e) {

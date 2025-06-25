@@ -1,36 +1,116 @@
 "use client"
 
-import { Input, Textarea, Autocomplete, AutocompleteItem } from "@heroui/react";
+import { Input, Textarea, Autocomplete, AutocompleteItem, Button, Checkbox } from "@heroui/react";
 import { Accordion, AccordionItem } from "@heroui/accordion";
 import { cate_type } from "@prisma/client";
 import { X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { v4 } from "uuid";
+import { toast, ToastContainer } from "react-toastify";
+import { navigate } from "@/lib/utils";
 
-const PromotionProgramDetail = ({ promotionProgram = {}, allProducts = [], allCategories = [], allSubcategories = [], allSaleDetails = [] }) => {
+const PromotionProgramDetail = ({
+  promotionProgram = {},
+  allProducts = [],
+  allCategories = [],
+  allSubcategories = [],
+  allSaleDetails = []
+}) => {
   const [name, setName] = useState(promotionProgram.name || "");
   const [promotion, setPromotion] = useState(promotionProgram.promotion || "");
-
+  const [isActive, setIsActive] = useState(promotionProgram.active || false)
   const [selectedCategoryIds, setSelectedCategoryIds] = useState(promotionProgram.category?.filter(item => item.type === cate_type.CATE).map(item => item.id) || []);
   const [selectedSubCategoryIds, setSelectedSubCategoryIds] = useState(promotionProgram.category?.filter(item => item.type === cate_type.SUB_CATE).map(item => item.id) || []);
   const [selectedProductIds, setSelectedProductIds] = useState(promotionProgram.product?.map(item => item.id) || []);
   const [selectedSaleDetailIds, setSelectedSaleDetailIds] = useState(promotionProgram.saleDetail?.map(item => item.id) || []);
 
+  const onSave = async () => {
+    toast.promise(
+      fetch(`/api/promotion-program`, {
+        method: "POST", body: JSON.stringify({
+          id: promotionProgram.id || v4(),
+          name: name,
+          active: isActive,
+          promotion: promotion,
+          categoryIds: [...selectedCategoryIds, ...selectedSubCategoryIds],
+          productIds: selectedProductIds,
+          saleDetailIds: selectedSaleDetailIds
+        })
+      }).then(async (res) => {
+        if (!res.ok) {
+          throw new Error((await res.json()).message)
+        }
+      }),
+      {
+        pending: 'Đang lưu chương trình khuyến mãi',
+        success: 'Đã lưu chương trình khuyến mãi',
+        error: {
+          render({ data }) {
+            return `Không thể cập nhật: ${data.message}`
+          }
+        }
+      },
+      {
+        containerId: "PromotionProgramDetail"
+      }
+    )
+  }
+
+  const onDelete = async () => {
+    if (!confirm("Bạn có muốn xóa chương trình khuyến mãi này?")) return
+
+    toast.promise(
+      fetch(`/api/promotion-program/${promotionProgram.id}`, { method: "DELETE" }).then(async (res) => {
+        if (!res.ok) {
+          throw new Error((await res.json()).message)
+        }
+      }),
+      {
+        pending: 'Đang xóa chương trình khuyến mãi',
+        success: {
+          render() {
+            navigate("/admin/promotion")
+            return 'Đã xóa chương trình khuyến mãi'
+          }
+        },
+        error: {
+          render({ data }) {
+            return `Không thể xóa: ${data.message}`
+          }
+        }
+      },
+      {
+        containerId: "PromotionProgramDetail"
+      }
+    )
+  }
+
   return (
     <>
-      <div className="flex flex-col gap-3 pb-3">
-        <Input
-          label="Tên chương trình khuyến mãi"
-          placeholder="Nhập tên chương trình khuyến mãi"
-          width={"50%"}
-          defaultValue={name}
-          isRequired
-        />
+      <ToastContainer containerId="PromotionProgramDetail" />
+      <div className="flex flex-col gap-3 pb-3 ml-2">
+        <div className="grid md:grid-cols-12 grid-cols-8 gap-3">
+          <Input
+            className="col-span-7 md:col-span-11"
+            label="Tên chương trình khuyến mãi"
+            placeholder="Nhập tên chương trình khuyến mãi"
+            width={"50%"}
+            defaultValue={name}
+            onValueChange={value => setName(value)}
+            isRequired
+          />
+          <Checkbox
+            defaultSelected={isActive}
+            onValueChange={setIsActive}
+          >Active</Checkbox>
+        </div>
 
         <Textarea
           label="Nội dung chương trình khuyến mãi"
           placeholder="Nhập nội dung chương trình khuyến mãi"
           defaultValue={promotion}
+          onValueChange={value => setPromotion(value)}
         />
       </div>
       <Accordion variant="splitted">
@@ -104,7 +184,7 @@ const PromotionProgramDetail = ({ promotionProgram = {}, allProducts = [], allCa
         </AccordionItem>
         <AccordionItem value="Sản phẩm" title="Sản phẩm" aria-label="Sản phẩm" key="product">
           <div className="grid md:grid-cols-3 gap-3 p-3">
-            <Autocomplete selectedKey={[]} onSelectionChange={(id) => setSelectedSubCategoryIds(prev => [...prev, id])}
+            <Autocomplete selectedKey={[]} onSelectionChange={(id) => setSelectedProductIds(prev => [...prev, id])}
               label="Tìm sản phẩm"
               aria-label="Tìm sản phẩm"
               className="col-span-1">
@@ -171,6 +251,15 @@ const PromotionProgramDetail = ({ promotionProgram = {}, allProducts = [], allCa
           </div>
         </AccordionItem>
       </Accordion>
+      <Button className="m-2"
+        color="primary" onPress={onSave}>Lưu</Button>
+      <Button className="m-2"
+        color="danger"
+        isDisabled={!promotionProgram.id}
+        onPress={onDelete}>Xóa</Button>
+      <Button className="m-2"
+        variant="ghost"
+        onPress={onSave}>Trở về</Button>
     </>
   );
 }

@@ -57,16 +57,18 @@ model product {
   productId       String?
   filterOnProduct filter_on_product[]
 
-  metaTitle         String?
-  metaDescription   String?
-  technical_detail  technical_detail[]
-  promotion_program promotion_program[]
+  metaTitle          String?
+  metaDescription    String?
+  technical_detail   technical_detail[]
+  promotionProgram   promotion_program? @relation(fields: [promotionProgramId], references: [id])
+  promotionProgramId String?            @map("promotion_program_id")
 
   @@index([imageId])
   @@index([categoryId])
   @@index([brandId])
   @@index([subCateId])
   @@index([productId])
+  @@index([promotionProgramId])
 }
 
 enum product_type {
@@ -156,12 +158,14 @@ model sale_detail {
   updatedAt                        DateTime                           @default(now()) @updatedAt @map("updated_at")
   sale_detail_on_image             sale_detail_on_image[]
   technical_detail_for_sale_detail technical_detail_for_sale_detail[]
-  promotion_program                promotion_program[]
+  promotionProgram                 promotion_program?                 @relation(fields: [promotionProgramId], references: [id])
+  promotionProgramId               String?                            @map("promotion_program_id")
 
   @@index([productId])
   @@index([saleDetailId])
   @@index([filterId])
   @@index([filterValueId])
+  @@index([promotionProgramId])
 }
 
 model sale_detail_on_image {
@@ -469,14 +473,15 @@ model category {
   metaTitle       String? @map("meta_title")
   metaDescription String? @map("meta_description")
 
-  category_on_filter_value  category_on_filter_value[] @relation("category")
-  popular_search            popular_search[]
-  cate_promotion_program    promotion_program[]        @relation("category")
-  subcate_promotion_program promotion_program[]        @relation("subCate")
+  category_on_filter_value category_on_filter_value[] @relation("category")
+  popular_search           popular_search[]
+  promotion_program        promotion_program?         @relation(fields: [promotionProgramId], references: [id])
+  promotionProgramId       String?                    @map("promotion_program_id")
 
   @@unique([slug])
   @@index([imageId])
   @@index([cateId])
+  @@index([promotionProgramId])
 }
 
 enum cate_type {
@@ -574,10 +579,9 @@ model promotion_program {
   promotion String  @default("")
   active    Boolean @default(false)
 
-  category    category[]    @relation("category")
-  subCategory category[]    @relation("subCate")
-  product     product[]
-  saleDetail  sale_detail[]
+  category   category[]
+  product    product[]
+  saleDetail sale_detail[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")

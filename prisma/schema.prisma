@@ -475,7 +475,7 @@ model category {
 
   category_on_filter_value category_on_filter_value[] @relation("category")
   popular_search           popular_search[]
-  promotion_program        promotion_program?         @relation(fields: [promotionProgramId], references: [id])
+  promotionProgram         promotion_program?         @relation(fields: [promotionProgramId], references: [id])
   promotionProgramId       String?                    @map("promotion_program_id")
 
   @@unique([slug])

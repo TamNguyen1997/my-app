@@ -9,6 +9,9 @@ import { useState } from "react";
 import { v4 } from "uuid";
 import { toast, ToastContainer } from "react-toastify";
 import { navigate } from "@/lib/utils";
+import { useEditor } from "@tiptap/react";
+import { editorConfig } from "@/lib/editor";
+import RichTextEditor from "@/app/components/admin/ui/RichTextArea"
 
 const PromotionProgramDetail = ({
   promotionProgram = {},
@@ -18,13 +21,12 @@ const PromotionProgramDetail = ({
   allSaleDetails = []
 }) => {
   const [name, setName] = useState(promotionProgram.name || "");
-  const [promotion, setPromotion] = useState(promotionProgram.promotion || "");
   const [isActive, setIsActive] = useState(promotionProgram.active || false)
   const [selectedCategoryIds, setSelectedCategoryIds] = useState(promotionProgram.category?.filter(item => item.type === cate_type.CATE).map(item => item.id) || []);
   const [selectedSubCategoryIds, setSelectedSubCategoryIds] = useState(promotionProgram.category?.filter(item => item.type === cate_type.SUB_CATE).map(item => item.id) || []);
   const [selectedProductIds, setSelectedProductIds] = useState(promotionProgram.product?.map(item => item.id) || []);
   const [selectedSaleDetailIds, setSelectedSaleDetailIds] = useState(promotionProgram.saleDetail?.map(item => item.id) || []);
-
+  const editor = useEditor(editorConfig(promotionProgram.promotion))
   const onSave = async () => {
     toast.promise(
       fetch(`/api/promotion-program`, {
@@ -32,7 +34,7 @@ const PromotionProgramDetail = ({
           id: promotionProgram.id || v4(),
           name: name,
           active: isActive,
-          promotion: promotion,
+          promotion: editor.getHTML(),
           categoryIds: [...selectedCategoryIds, ...selectedSubCategoryIds],
           productIds: selectedProductIds,
           saleDetailIds: selectedSaleDetailIds
@@ -106,12 +108,30 @@ const PromotionProgramDetail = ({
           >Active</Checkbox>
         </div>
 
-        <Textarea
-          label="Nội dung chương trình khuyến mãi"
-          placeholder="Nhập nội dung chương trình khuyến mãi"
-          defaultValue={promotion}
-          onValueChange={value => setPromotion(value)}
-        />
+        <div>
+          <label htmlFor="Chương trình khuyến mãi" >Chương trình khuyến mãi</label>
+          <RichTextEditor id="Chương trình khuyến mãi" editor={editor} disable={{
+            image: true,
+            video: true,
+            table: true,
+            font: true,
+            highlight: true,
+            subscript: true,
+            superscript: true,
+            replace: true,
+            breakLine: true,
+            button: true,
+            indent: true,
+            copy: true,
+            checkbox: true,
+            multicheckbox: true,
+            code: true,
+            textColor: true,
+            orderedList: true,
+            quote: true,
+            textAlign: true
+          }} />
+        </div>
       </div>
       <Accordion variant="splitted">
         <AccordionItem value="category" title="Category" aria-label="Category" key="category">
@@ -252,14 +272,16 @@ const PromotionProgramDetail = ({
         </AccordionItem>
       </Accordion>
       <Button className="m-2"
+        isDisabled={!name}
         color="primary" onPress={onSave}>Lưu</Button>
       <Button className="m-2"
         color="danger"
         isDisabled={!promotionProgram.id}
         onPress={onDelete}>Xóa</Button>
-      <Button className="m-2"
-        variant="ghost"
-        onPress={onSave}>Trở về</Button>
+      <Link href="/admin/promotion">
+        <Button className="m-2"
+          variant="ghost">Trở về</Button>
+      </Link>
     </>
   );
 }

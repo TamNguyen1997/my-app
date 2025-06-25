@@ -45,12 +45,22 @@ const Page = async ({ params }) => {
           filter: true,
           filterValue: true,
           sale_detail_on_image: true,
-          technical_detail_for_sale_detail: true
+          technical_detail_for_sale_detail: true,
+          promotionProgram: true
         }
       },
+      promotionProgram: true,
       image: true,
-      category: true,
-      subCate: true,
+      category: {
+        include: {
+          promotionProgram: true,
+        }
+      },
+      subCate: {
+        include: {
+          promotionProgram: true
+        }
+      },
       product_on_image: {
         orderBy: {
           order: 'asc'

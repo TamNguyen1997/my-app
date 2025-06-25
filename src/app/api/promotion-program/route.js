@@ -92,11 +92,13 @@ export const POST = async (req) => {
       },
       create: {
         id: body.id,
+        active: body.active,
         promotion: body.promotion,
         name: body.name,
       },
       update: {
         promotion: body.promotion,
+        active: body.active,
         name: body.name,
       }
     });

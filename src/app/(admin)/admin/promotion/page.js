@@ -76,7 +76,7 @@ export default async function Page({ searchParams }) {
         {
           saleDetail: {
             some: {
-              slug: {
+              sku: {
                 contains: `${searchTerm}:*`,
                 mode: "insensitive",
               },
@@ -87,8 +87,8 @@ export default async function Page({ searchParams }) {
     };
   }
 
-  if (active) {
-    condition.active = active;
+  if (active && active !== 'undefined') {
+    condition.active = active === "true" ? true : false;
   }
 
   const promotionPrograms = await db.promotion_program.findMany({
@@ -101,6 +101,6 @@ export default async function Page({ searchParams }) {
   });
 
   return (
-    <PromotionProgramPage promotionPrograms={promotionPrograms} />
+    <PromotionProgramPage promotionPrograms={promotionPrograms} queryParams={searchParams} />
   );
 }

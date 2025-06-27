@@ -87,9 +87,10 @@ const PromotionProgramPage = ({ promotionPrograms = [], queryParams = {}, total 
       <ToastContainer containerId="PromotionProgramPage" />
       <div className="md:flex gap-3 w-1/2 pb-3">
         <Input label="Tìm" className="pt-2"
-          aria-label="Tìm" labelPlacement="outside" defaultValue={condition.name}
+          aria-label="Tìm" labelPlacement="outside"
+          defaultValue={condition.searchTerm}
           onValueChange={(value) => {
-            if (value.length > 2 || !value.length) setCondition(Object.assign({}, condition, { id_name_slug: value }))
+            if (value.length > 2 || !value.length) setCondition(Object.assign({}, condition, { searchTerm: value }))
           }}
         />
         <Select

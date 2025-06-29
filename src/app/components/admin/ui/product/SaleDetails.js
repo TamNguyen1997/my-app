@@ -1,4 +1,4 @@
-import { Autocomplete, AutocompleteItem, Button, Checkbox, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Snippet, useDisclosure } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, Button, Checkbox, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Snippet, Tooltip, useDisclosure } from "@heroui/react";
 import { Cog, FileImage, Trash2 } from "lucide-react";
 import { useContext } from "react";
 import { v4 } from "uuid";
@@ -7,6 +7,7 @@ import { FilterValueSelect } from "./NewFilterValue";
 import { ProductContext } from "../../../../(admin)/admin/product/edit/[id]/default";
 import crypto from "crypto";
 import Link from "next/link";
+import SaleDetailImages from '@/app/components/admin/ui/product/SaleDetailImages'
 
 const removeItem = (id, setProduct) => {
   if (!window.confirm("Bạn có chắc chắn muốn xóa thông số này?")) return;
@@ -320,11 +321,11 @@ const SaleDetails = () => {
                     <div className="text-lg text-danger cursor-pointer active:opacity-50 pl-5 float-right">
                       <Trash2 onClick={() => removeItem(detail.id, setProduct)} />
                     </div>
-                    <Snippet symbol="" className="!font-open_san !bg-white" hideCopyButton content="Xem hình ảnh của thông số bán hàng">
-                      <Link className="text-lg text-success cursor-pointer float-right" href={`/admin/product/edit/${product.id}/sale-details/${detail.id}/images/`}>
-                        <FileImage />
-                      </Link>
-                    </Snippet>
+                    <Tooltip size="lg" content={
+                      <SaleDetailImages productId={product.id} saleDetail={detail} />
+                    }>
+                      <FileImage />
+                    </Tooltip>
                     <Snippet symbol="" className="!font-open_san !bg-white" hideCopyButton content="Xem thông số kĩ thuật">
                       <Link className="text-lg text-gray-500 cursor-pointer float-right" href={`/admin/product/edit/${product.id}/sale-details/${detail.id}/technicals/`}>
                         <Cog />

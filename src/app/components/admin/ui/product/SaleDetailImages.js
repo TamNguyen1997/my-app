@@ -23,10 +23,8 @@ import { v4 as uuidv4 } from "uuid";
 const MAX_IMAGES = 10;
 
 const SaleDetailImages = ({ saleDetail, productId }) => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
   const [images, setImages] = useState(saleDetail.sale_detail_on_image || []);
-
+  const [isChoosingImage, setIsChoosingImage] = useState(false)
   const updateProductImages = (newImages) => {
     setImages(newImages);
     sessionStorage.setItem(`${productId}-${saleDetail.id}`, JSON.stringify(newImages));
@@ -40,30 +38,11 @@ const SaleDetailImages = ({ saleDetail, productId }) => {
   }, [])
 
   const handleImageSelection = (value) => {
-    const imageExists = images.some((item) => item.imageUrl === value.source_url);
-
-    if (images.length >= MAX_IMAGES && !imageExists) {
-      toast.error("Không thể thêm hình, đã đạt tối đa 10 hình", { containerId: `sale-detail-${saleDetail.id}` });
-      return;
-    }
-
-    const newImages = imageExists
-      ? images.filter((item) => item.imageUrl !== value.source_url)
-      : [
-        ...images,
-        { imageId: uuidv4(), imageUrl: value.source_url, saleDetailId: saleDetail.id },
-      ];
-
-    toast[imageExists ? "warning" : "success"](
-      imageExists ? "Đã loại ảnh này" : "Đã thêm ảnh", { containerId: `sale-detail-${saleDetail.id}` }
-    );
-    updateProductImages(newImages);
+    updateProductImages([{ imageId: uuidv4(), imageUrl: value.source_url, saleDetailId: saleDetail.id }]);
   };
 
-  const deleteImage = (image) => {
-    const newImages = images.filter((item) => item.imageUrl !== image.imageUrl);
-    updateProductImages(newImages);
-    toast.success("Đã xóa ảnh", { containerId: `sale-detail-${saleDetail.id}` });
+  const deleteImage = () => {
+    updateProductImages([]);
   };
 
   const handleUploadSuccess = (uploads) => {
@@ -89,7 +68,6 @@ const SaleDetailImages = ({ saleDetail, productId }) => {
     });
 
     updateProductImages(newImages);
-    onOpenChange();
   };
 
   const moveRow = useCallback((dragIndex, hoverIndex) => {
@@ -122,54 +100,30 @@ const SaleDetailImages = ({ saleDetail, productId }) => {
   return (
     <>
       <ToastContainer containerId={`sale-detail-${saleDetail.id}`} />
-      <div className="gap-3 p-5">
+      {!isChoosingImage && <div className="gap-3 p-5">
         <ImageDraggableList
           images={images}
           deleteItem={deleteImage}
           moveRow={moveRow}
         />
         <div className="flex flex-row gap-2 px-3 py-4 justify-end">
-          <Link href={`/admin/product/edit/${productId}/?tab=sale`}>
-            <Button variant="ghost">
-              Trở về sản phẩm
-            </Button>
-          </Link>
-          <Button onPress={onOpen} className="w-24">
+          <Button onPress={() => setIsChoosingImage(true)} className="w-24">
             Chọn ảnh
           </Button>
           <Button color="primary" onPress={onSave} className="w-24">
             Lưu
           </Button>
         </div>
-      </div>
-      <Modal
-        size="full"
-        scrollBehavior="inside"
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-      >
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                Chọn hình ảnh
-              </ModalHeader>
-              <ModalBody>
-                <ImageCms
-                  onImageClick={handleImageSelection}
-                  highlights={images}
-                  onUploadSuccess={handleUploadSuccess}
-                />
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Đóng
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+      </div>}
+      {isChoosingImage && <div className="gap-3 p-5">
+        <Button color="danger" onPress={() => setIsChoosingImage(false)}>Đóng</Button>
+        <ImageCms
+          onImageClick={handleImageSelection}
+          highlights={images}
+          onUploadSuccess={handleUploadSuccess}
+          maxFiles={1}
+        />
+      </div>}
     </>
   );
 };

@@ -14,6 +14,7 @@
       "@emotion/styled": "^11.14.0",
       "@heroui/accordion": "^2.2.19",
       "@heroui/react": "2.7.11",
+      "@heroui/tooltip": "^2.2.19",
       "@mui/material": "^5.17.1",
       "@prisma/client": "^6.5.0",
       "@tailwindcss/typography": "^0.5.13",

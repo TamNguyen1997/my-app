@@ -21,7 +21,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
     {
       key: "displayId",
       title: "ID giá trị filter",
-      required: true
+      required: false
     },
     {
       key: "value",

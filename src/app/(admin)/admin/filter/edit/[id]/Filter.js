@@ -50,7 +50,6 @@ const Filter = () => {
             label="ID filter"
             defaultValue={filter.displayId}
             labelPlacement="outside-left"
-            isRequired
             className="[&_label]:grow"
             onValueChange={(value) => setFilter(Object.assign(filter, { displayId: value }))}
           />

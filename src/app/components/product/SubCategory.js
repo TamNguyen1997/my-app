@@ -3,6 +3,7 @@ import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Paginati
 import { useState } from "react";
 import ProductCard from "@/components/product/ProductCard"
 import Link from "next/link";
+import { getRangeForUrl } from "@/lib/product";
 
 const SubCategory = ({ products, filters = [], category = {}, page = 1, selectedFilterIds = [], defaultOrderBy, totalPage = 1 }) => {
   const [data] = useState(products || [])
@@ -86,7 +87,7 @@ const SubCategory = ({ products, filters = [], category = {}, page = 1, selected
                         </div>
                       </div>
                       <div className="flex gap-1">
-                        <Link href={`/${category.slug}?filterId=${filterIds.join(",")}&range=${value[0]}-${value[1]}&orderBy=${orderBy}`}>
+                        <Link href={`/${category.slug}?filterId=${filterIds.join(",")}&orderBy=${orderBy}&${getRangeForUrl(value.join("-"))}`}>
                           <Button color="primary">Tìm</Button>
                         </Link>
                         <Button variant="ghost" color="danger" onPress={() => setValue([0, 100000000])}>Bỏ chọn</Button>
@@ -130,14 +131,6 @@ const SubCategory = ({ products, filters = [], category = {}, page = 1, selected
       </div>
     </>
   );
-};
-
-const getRangeForUrl = (range) => {
-  if (!range || range.length === 0) return "";
-  const [min, max] = [...range];
-  if (isNaN(min) || isNaN(max)) return "";
-  if (min === 0 && max ===  100000000) return "";
-  return `range=${min}-${max}`;
 };
 
 export default SubCategory;

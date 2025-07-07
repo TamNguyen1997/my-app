@@ -48,4 +48,12 @@ const getRecentlyView = () => {
   return items;
 }
 
-export { getPrice, getOriginalPrice, addRecentlyView, getRecentlyView }
+const getRangeForUrl = (range) => {
+  if (!range || range.length === 0) return "";
+  const [min, max] = [...range];
+  if (isNaN(min) || isNaN(max)) return "";
+  if (min === 0 && max ===  100000000) return "";
+  return `range=${min}-${max}`;
+};
+
+export { getPrice, getOriginalPrice, addRecentlyView, getRecentlyView, getRangeForUrl }

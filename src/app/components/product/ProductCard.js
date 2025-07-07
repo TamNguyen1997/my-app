@@ -1,6 +1,7 @@
-import { Button, Link } from "@heroui/react"
+import { Button } from "@heroui/react"
 import { getPrice, getOriginalPrice } from "@/lib/product"
 import Image from "next/image"
+import Link from "next/link"
 
 const ProductCard = ({ product }) => {
   return (
@@ -34,11 +35,11 @@ const ProductCard = ({ product }) => {
             )}
           </>
         ) : (
-          <Link href="https://zalo.me/0902366617" className="text-black w-full">
-            <Button className="flex font-bold uppercase bg-gradient-to-b from-[#ffed00] to-[#fff466] rounded-3xl w-[90%] h-8 m-auto">
-              Liên hệ
-            </Button>
-          </Link>
+          <Button 
+            className="flex font-bold uppercase bg-gradient-to-b from-[#ffed00] to-[#fff466] rounded-3xl w-[90%] h-8 m-auto" 
+            onPress={() => window.open("https://zalo.me/0902366617", "_blank")}>
+            Liên hệ
+          </Button>
         )}
       </div>
     </Link>

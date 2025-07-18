@@ -321,9 +321,11 @@ const SaleDetails = () => {
                     <div className="text-lg text-danger cursor-pointer active:opacity-50 pl-5 float-right">
                       <Trash2 onClick={() => removeItem(detail.id, setProduct)} />
                     </div>
-                    <Tooltip size="lg" content={
-                      <SaleDetailImages productId={product.id} saleDetail={detail} />
-                    }>
+                    <Tooltip size="lg" 
+                      closeDelay={2000}
+                      content={
+                        <SaleDetailImages productId={product.id} saleDetail={detail} />
+                      }>
                       <FileImage />
                     </Tooltip>
                     <Snippet symbol="" className="!font-open_san !bg-white" hideCopyButton content="Xem thông số kĩ thuật">

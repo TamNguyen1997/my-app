@@ -42,8 +42,9 @@ const ProductDetail = () => {
       toast.error("Có lỗi xảy ra khi kiểm tra bài viết sản phẩm")
     } else {
       const existingPost = await existingPostResponse.json()
-      if (existingPost.length > 0) {
-        window.open(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-admin/post.php?post=${existingPost[0].id}&action=edit`, "_blank").focus()
+      const post = existingPost.filter(item => item.slug === product.slug)
+      if (existingPost.length > 0 && post) {
+        window.open(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-admin/post.php?post=${post.id}&action=edit`, "_blank").focus()
       } else {
         const createdPostResponse = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts`, {
           method: "POST",

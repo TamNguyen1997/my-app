@@ -43,7 +43,8 @@ const ProductDetail = () => {
       toast.error("Có lỗi xảy ra khi kiểm tra bài viết sản phẩm")
     } else {
       const existingPost = await existingPostResponse.json()
-      const post = existingPost.filter(item => item.slug === product.slug)
+      const post = existingPost.find(item => item.slug === product.slug)
+      console.log(post)
       if (existingPost.length > 0 && post) {
         window.open(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-admin/post.php?post=${post.id}&action=edit`, "_blank").focus()
       } else {

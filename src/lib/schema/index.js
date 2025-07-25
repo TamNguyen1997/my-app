@@ -33,7 +33,7 @@ export const ORGANIZATION_SCHEMA = {
   "address": {
     "@type": "PostalAddress",
     "streetAddress": "666/62 Đường 3/2",
-    "addressLocality": "Phường 14, Quận 10",
+    "addressLocality": "Phường Diên Hồng",
     "addressRegion": "TP Hồ Chí Minh",
     "postalCode": "700000",
     "addressCountry": "VN"

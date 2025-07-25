@@ -11,7 +11,7 @@ const Footer = () => {
             <p className="font-bold">CÔNG TY TNHH TMDV VỆ SINH SAO VIỆT</p>
             <div className="flex gap-2">
               <MapPin className="text-[#FFD400]" size="24" />
-              <p>666/62 Đường 3/2, Phường 14, Quận 10, TP Hồ Chí Minh</p>
+              <p>666/62 Đường 3/2, Phường Diên Hồng, TP Hồ Chí Minh</p>
             </div>
             <div className="flex gap-2">
               <NotebookText className="text-[#FFD400]" size="24" />

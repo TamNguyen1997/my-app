@@ -57,8 +57,8 @@ const Contact = () => {
                 <span className="block mb-2 font-bold">
                   Địa chỉ liên hệ
                 </span>
-                <span className="">
-                  666/62 Ba Tháng Hai, Phường 14, Quận 10, TP Hồ Chí Minh
+                <span>
+                  666/62 Đường 3/2, Phường Diên Hồng, TP Hồ Chí Minh
                 </span>
               </div>
             </div>

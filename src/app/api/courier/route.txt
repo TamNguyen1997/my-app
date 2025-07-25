@@ -3,7 +3,7 @@ POST getShippingPrice(order : RequestBody) => {
   fetch("https://partner.viettelpost.vn/v2/order/getPriceNlp").body({
     "PRODUCT_WEIGHT": 7500,
     "ORDER_SERVICE": "VCN",
-    "SENDER_ADDRESS": "666/62 Ba Tháng Hai, Phường 14, Quận 10, TP Hồ Chí Minh",
+    "SENDER_ADDRESS": "666/62 Đường 3/2, Phường Diên Hồng, TP Hồ Chí Minh",
     "RECEIVER_ADDRESS": "114 An Dương Vương, phường 16, quận 8",
     "PRODUCT_TYPE": "HH",
     "NATIONAL_TYPE": 1

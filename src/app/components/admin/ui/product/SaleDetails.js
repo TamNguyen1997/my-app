@@ -320,11 +320,13 @@ const SaleDetails = () => {
                     <div className="text-lg text-danger cursor-pointer active:opacity-50 pl-5 float-right">
                       <Trash2 onClick={() => removeItem(detail.id, setProduct)} />
                     </div>
-                    <Snippet symbol="" className="!font-open_san !bg-white" hideCopyButton content="Xem hình ảnh của thông số bán hàng">
+                    {
+                      detail.createdAt && <Snippet symbol="" className="!font-open_san !bg-white" hideCopyButton content="Xem hình ảnh của thông số bán hàng">
                       <Link className="text-lg text-success cursor-pointer float-right" href={`/admin/product/edit/${product.id}/sale-details/${detail.id}/images/`}>
                         <FileImage />
                       </Link>
                     </Snippet>
+                    }
                     <Snippet symbol="" className="!font-open_san !bg-white" hideCopyButton content="Xem thông số kĩ thuật">
                       <Link className="text-lg text-gray-500 cursor-pointer float-right" href={`/admin/product/edit/${product.id}/sale-details/${detail.id}/technicals/`}>
                         <Cog />

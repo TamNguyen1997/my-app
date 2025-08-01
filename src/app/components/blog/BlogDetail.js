@@ -102,7 +102,7 @@ const BlogDetail = ({ slug, blog, relatedBlogs = [], category = "INFORMATION" })
                   return (
                     <div className="flex items-center pl-4 mb-2" key={index}>
                       <div className="w-[5px] h-[5px] min-w-[5px] bg-black rounded-full mr-2"></div>
-                      <Link href={`/kien-thuc-hay/${item.slug}`} className="hover:underline transition font-sans">{item.title.rendered}</Link>
+                      <Link href={`/kien-thuc-hay/${item.slug}`} className="hover:underline transition font-sans">{parse(item.title.rendered)}</Link>
                     </div>
                   )
                 })

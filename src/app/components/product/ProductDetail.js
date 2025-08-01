@@ -65,7 +65,7 @@ const ProductDetail = ({ product = {}, description, relatedProducts = [] }) => {
               className="flex flex-wrap items-start bg-[#f8f8f8] mb-5"
             >
               <div className="relative bg-white border-[3px] border-[#f8f8f8] w-full">
-                <ProductImageCarousel items={getImages()} mainImage={getMainImage()} setImage={setMainImage} />
+                <ProductImageCarousel items={getImages()} mainImage={getMainImage() || product.imageUrl || ""} setImage={setMainImage} />
                 <div className="md:hidden bg-white">
                   <div className="p-5 border-white border-b-[3px] bg-[#f8f8f8]">
                     <SaleDetail saleDetails={product.saleDetails || []} product={product} />

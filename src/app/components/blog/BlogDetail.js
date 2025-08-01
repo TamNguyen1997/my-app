@@ -9,6 +9,7 @@ import "./BlogDetail.css"
 
 const BlogContent = ({ blog }) => {
   return (<>
+    <link rel='stylesheet' id='wp-block-library-css' href='https://dcvs.shop/wordpress/wp-includes/css/dist/block-library/common.min.css?ver=6.8.2' media='all' />
     <motion.div
       initial={{ x: -50, opacity: 0 }}
       whileInView={{ x: 0, opacity: 1 }}
@@ -24,15 +25,12 @@ const BlogContent = ({ blog }) => {
       whileInView={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.7, delay: 0.3 }}
       viewport={{ once: true }}
-      className={`
-                [&_a]:text-primary
-                [&_h2]:mt-[1.25em]
-                [&_p]:my-[1.125em]
-                max-w-full prose blog-content
-              `}
+      className={`blog-content`}
       style={{ "--tw-prose-bullets": "currentColor" }}
     >
-      {blog.content ? parse(blog.content.rendered || blog.content) : ""}
+      <div class="entry-content">
+        {blog.content ? parse(blog.content.rendered || blog.content) : ""}
+      </div>
     </motion.div>
   </>)
 }

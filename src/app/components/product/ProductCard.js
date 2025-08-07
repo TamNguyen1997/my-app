@@ -5,7 +5,7 @@ import Link from "next/link"
 
 const ProductCard = ({ product }) => {
   return (
-    <div className="group-hover:opacity-50 border hover:-translate-y-3 hover:shadow-md transition bg-white max-w-[300px] flex flex-col h-full max-h-[400px]">
+    <div className="group-hover:opacity-50 border hover:-translate-y-3 hover:shadow-md transition bg-white max-w-[300px] flex flex-col h-full">
       <Link
         href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`}>
         <Image
@@ -26,7 +26,7 @@ const ProductCard = ({ product }) => {
         </div>
 
         {getPrice(product) ? (
-          <div className="py-2 h-16 w-full">
+          <div className="py-2 h-14 w-full">
             <p className="text-red-500 font-bold text-center">{getPrice(product)} đ</p>
             {getOriginalPrice(product) && (
               <span className="line-through text-red-500 opacity-60">

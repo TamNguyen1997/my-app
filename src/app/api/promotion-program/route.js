@@ -137,7 +137,7 @@ export const POST = async (req) => {
           promotionProgramId: null
         }
       })
-      if (body.products?.length > 0) {
+      if (body.productIds?.length > 0) {
         await tx.product.updateMany({
           where: {
             id: {

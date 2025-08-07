@@ -1,7 +1,7 @@
 "use client"
 
 import { CartContext } from "@/context/CartProvider";
-import { Button, Checkbox, Input, Link, Select, SelectItem, Textarea } from "@nextui-org/react";
+import { Button, Checkbox, Input, Link, Select, SelectItem, Textarea } from "@heroui/react";
 import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ToastContainer, toast } from 'react-toastify';

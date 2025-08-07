@@ -1,6 +1,6 @@
 "use client"
 
-import { Button, Checkbox, Link, Pagination, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
+import { Button, Checkbox, Link, Pagination, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
 import { EditIcon, Search } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 

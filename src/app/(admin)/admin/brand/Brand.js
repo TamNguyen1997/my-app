@@ -5,7 +5,7 @@ import {
   Table, TableBody,
   TableCell, TableColumn,
   TableHeader, TableRow,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useEffect, useState } from "react";
 
 const rowsPerPage = 10

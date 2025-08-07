@@ -4,7 +4,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import update from "immutability-helper";
 import FlipMove from 'react-flip-move';
 import { ImageDraggable } from "./ImageDraggable";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import { v4 } from "uuid";
 import { ToastContainer, toast } from "react-toastify";
 import { now, parseAbsolute, getLocalTimeZone } from "@internationalized/date";

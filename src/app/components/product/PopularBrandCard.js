@@ -1,6 +1,6 @@
 "use client";
 
-import { Image, Link } from "@nextui-org/react";
+import { Image, Link } from "@heroui/react";
 import ProductCarousel from "@/components/product/ProductCarousel";
 
 const brandDescription = {

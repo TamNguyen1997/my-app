@@ -1,4 +1,4 @@
-import { Autocomplete, AutocompleteItem, Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Switch, useDisclosure } from "@nextui-org/react"
+import { Autocomplete, AutocompleteItem, Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Switch, useDisclosure } from "@heroui/react"
 import { useForm } from "react-hook-form"
 import { toast, ToastContainer } from "react-toastify"
 import { v4 } from "uuid"

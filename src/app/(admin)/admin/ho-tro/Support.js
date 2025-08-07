@@ -1,6 +1,6 @@
 "use client"
 
-import { Button, Card, CardBody, Input, Tab, Tabs } from "@nextui-org/react"
+import { Button, Card, CardBody, Input, Tab, Tabs } from "@heroui/react"
 import RichTextEditor from "@/components/admin/ui/RichTextArea"
 import { useEditor } from "@tiptap/react"
 import { editorConfig } from "@/lib/editor"

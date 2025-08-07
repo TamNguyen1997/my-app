@@ -8,7 +8,7 @@ import AboutUsCustomer from "@/components/about-us/AboutUsCustomer";
 import AboutUsPartner from "@/components/about-us/AboutUsPartner";
 import Contact from "@/components/contact/Contact";
 import { motion } from "framer-motion";
-import { Image } from "@nextui-org/react";
+import { Image } from "@heroui/react";
 
 export default function AboutUs() {
   return (

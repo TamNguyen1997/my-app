@@ -1,4 +1,4 @@
-import { Button, DatePicker, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Switch, useDisclosure, user } from "@nextui-org/react"
+import { Button, DatePicker, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Switch, useDisclosure, user } from "@heroui/react"
 import slugify from "slugify"
 import ImageCms from "../ImageCms"
 import { useCallback, useContext, useState } from "react"
@@ -6,7 +6,6 @@ import { parseDate } from "@internationalized/date";
 import { ProductContext } from "../../../../(admin)/admin/product/edit/[id]/default"
 import { toast } from "react-toastify";
 import Image from "next/image";
-import RichTextEditor from "@/app/components/admin/ui/RichTextArea"
 import Cookies from "js-cookie";
 import { user_role } from "@prisma/client";
 
@@ -15,7 +14,7 @@ const getDateString = (isoDate) =>
 
 const ProductDetail = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const { categories, brands, subCategories, product, setProduct, editor } = useContext(ProductContext)
+  const { categories, brands, subCategories, product, setProduct } = useContext(ProductContext)
   const [productImage, setProductImage] = useState(product.image || {})
   const selectImage = (value) => {
     const newProduct = { ...product, ...{ imageUrl: value.source_url } }
@@ -253,30 +252,6 @@ const ProductDetail = () => {
               label="Alt"
               onValueChange={(value) => setProduct(Object.assign({}, product, { imageAlt: value }))}
               value={product?.imageAlt || ""} />
-            <div>
-              <label htmlFor="Chương trình khuyến mãi" >Chương trình khuyến mãi</label>
-              <RichTextEditor id="Chương trình khuyến mãi" editor={editor} disable={{
-                image: true,
-                video: true,
-                table: true,
-                font: true,
-                highlight: true,
-                subscript: true,
-                superscript: true,
-                replace: true,
-                breakLine: true,
-                button: true,
-                indent: true,
-                copy: true,
-                checkbox: true,
-                multicheckbox: true,
-                code: true,
-                textColor: true,
-                orderedList: true,
-                quote: true,
-                textAlign: true
-              }} />
-            </div>
             <div>
               <Button color="primary" onPress={onOpen} className="w-24 float-right">Chọn ảnh</Button>
             </div>

@@ -6,7 +6,7 @@ import {
   IMPORT_MESSAGE,
   UPLOAD_MESSAGE,
 } from "@/constants/message";
-import { Button, Select, SelectItem } from "@nextui-org/react";
+import { Button, Select, SelectItem } from "@heroui/react";
 import HistoryList from "./_components/HistoryList";
 
 import { DownloadIcon, UploadIcon } from "lucide-react";

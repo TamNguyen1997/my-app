@@ -15,7 +15,7 @@ import {
   Button,
   Tooltip,
   Switch,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { EditIcon, Plus, Search, Trash2 } from "lucide-react";
 

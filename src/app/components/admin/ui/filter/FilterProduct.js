@@ -6,7 +6,7 @@ import {
   Switch,
   Select, SelectItem,
   Button
-} from "@nextui-org/react"
+} from "@heroui/react"
 import { Trash2 } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
 import { v4 } from "uuid";
@@ -21,7 +21,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
     {
       key: "displayId",
       title: "ID giá trị filter",
-      required: true
+      required: false
     },
     {
       key: "value",

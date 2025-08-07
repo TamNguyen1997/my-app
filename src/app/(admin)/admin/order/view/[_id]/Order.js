@@ -1,6 +1,6 @@
 "use client"
 
-import { Button, DatePicker, Input, Select, SelectItem, Spinner, Textarea } from "@nextui-org/react";
+import { Button, DatePicker, Input, Select, SelectItem, Spinner, Textarea } from "@heroui/react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";

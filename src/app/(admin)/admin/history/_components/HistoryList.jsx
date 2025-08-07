@@ -13,7 +13,7 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { Search } from "lucide-react";
 import { history_status } from "@prisma/client";
 

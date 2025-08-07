@@ -1,13 +1,13 @@
 "use client";
-import { Button, Input } from "@nextui-org/react";
-import { Gift, ShoppingCart } from "lucide-react";
+import { Button, Input } from "@heroui/react";
+import { ShoppingCart } from "lucide-react";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { CartContext } from "@/context/CartProvider";
 import parse from 'html-react-parser'
 import { ProductDetailContext } from "./product/ProductDetail";
 import "./SaleDetail.css"
 
-const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
+const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
   const [selectedDetail, setSelectedDetail] = useState(saleDetails[0] || {});
   const [selectedSecondaryDetail, setSelectedSecondaryDetail] = useState({});
   const [quantity, setQuantity] = useState(1);
@@ -33,26 +33,28 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
   };
 
   const getPromotion = useCallback(() => {
-    if (!product.promotion) return [];
-    const matches = product.promotion.match(/<p\b[^>]*>[\s\S]*?<\/p>/gi);
+    let promotion = "";
+    if (selectedSecondaryDetail.promotionProgram?.active && selectedSecondaryDetail.promotionProgram?.promotion) {
+      promotion = selectedSecondaryDetail.promotionProgram?.promotion
+    } else if (selectedDetail.promotionProgram?.active && selectedDetail.promotionProgram?.promotion) {
+      promotion = selectedDetail.promotionProgram?.promotion
+    } else if (product.subCate?.promotionProgram?.promotion && product.subCate?.promotionProgram?.active) {
+      promotion = product.subCate?.promotionProgram?.promotion
+    } else if (product.category?.promotionProgram?.promotion && product.category?.promotionProgram?.active) {
+      promotion = product.category?.promotionProgram?.promotion
+    }
+    if (!promotion) return [];
+    const matches = promotion.match(/<p\b[^>]*>[\s\S]*?<\/p>/gi) || [];
     return matches.map(item => item.replace(/<(\w+)[^>]*>\s*<\/\1>/g, '')).filter(item => item.length > 0);
-  }, [product])
+  }, [product, selectedDetail, selectedSecondaryDetail])
 
   useEffect(() => {
     if (selectedDetail.id) {
-      setImages(selectedDetail.sale_detail_on_image?.map((item) => item.imageUrl) || []);
       setSelectedSaleDetail(selectedDetail);
     }
   }, [selectedDetail]);
 
   const getVariant = (id, selected) => (id === selected ? "solid" : "ghost");
-
-  const getColor = (detail, selected) => {
-    const baseClass = `rounded-full w-7 h-7 border-[#e3e3e3] border hover:opacity-50 hover:border-4 hover:border-blue-500`;
-    return detail.id === selected
-      ? `${baseClass} border-4 border-blue-500`
-      : baseClass;
-  };
 
   const formatPrice = (price) =>
     price?.toLocaleString().replaceAll(",", ".");
@@ -171,20 +173,19 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
             )
             .map((detail, i) => (
               <div key={i} className="flex flex-col gap-1">
-                {detail.type === "COLOR" ? (
-                  <div
-                    className={getColor(detail, selectedDetail.id)}
-                    onClick={() => onPrimarySelect(detail.id)}
-                  ></div>
-                ) : (
-                  <Button
-                    color="default"
-                    variant={getVariant(detail.id, selectedDetail.id)}
-                    onPress={() => onPrimarySelect(detail.id)}
-                  >
-                    {detail.filterValue.value}
-                  </Button>
-                )}
+                <Button
+                  color="default"
+                  variant={getVariant(detail.id, selectedDetail.id)}
+                  onPress={() => onPrimarySelect(detail.id)}
+                  onMouseOver={() => {
+                    if (detail.sale_detail_on_image?.length > 0) {
+                      setImage(detail.sale_detail_on_image[0]?.imageUrl)
+                    }
+                  }}
+                  onMouseOut={() => setImage(null)}
+                >
+                  {detail.filterValue.value}
+                </Button>
               </div>
             ))}
         </div>
@@ -195,6 +196,12 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
               key={sDetail.id}
               variant={getVariant(sDetail.id, selectedSecondaryDetail.id)}
               onPress={() => onSecondarySelect(sDetail.id)}
+              onMouseOver={() => {
+                if (sDetail.sale_detail_on_image?.length > 0) {
+                  setImage(sDetail.sale_detail_on_image[0]?.imageUrl)
+                }
+              }}
+              onMouseOut={() => setImage(null)}
             >
               {sDetail.filterValue?.value}
             </Button>
@@ -230,14 +237,14 @@ const SaleDetail = ({ saleDetails, product, setImages = () => { } }) => {
           <Button
             color="primary"
             isDisabled={getPrice() <= 0}
-            onClick={(evt) => handleAddToCart(evt, true)}
+            onPress={(evt) => handleAddToCart(evt, true)}
           >
             Mua ngay <ShoppingCart />
           </Button>
           <Button
             color="primary"
             isDisabled={getPrice() <= 0}
-            onClick={(evt) => handleAddToCart(evt)}
+            onPress={(evt) => handleAddToCart(evt)}
           >
             Thêm vào giỏ hàng
           </Button>

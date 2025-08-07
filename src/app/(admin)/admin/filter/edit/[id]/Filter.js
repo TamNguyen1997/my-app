@@ -5,7 +5,7 @@ import {
   Input,
   Spinner,
   Switch
-} from "@nextui-org/react"
+} from "@heroui/react"
 import FilterProduct from "@/app/components/admin/ui/filter/FilterProduct";
 import { useParams } from "next/navigation";
 import { v4 } from "uuid";
@@ -50,7 +50,6 @@ const Filter = () => {
             label="ID filter"
             defaultValue={filter.displayId}
             labelPlacement="outside-left"
-            isRequired
             className="[&_label]:grow"
             onValueChange={(value) => setFilter(Object.assign(filter, { displayId: value }))}
           />

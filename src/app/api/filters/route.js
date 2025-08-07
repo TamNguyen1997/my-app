@@ -2,6 +2,7 @@ import { db } from '@/app/db';
 import { cate_type } from '@prisma/client';
 import { NextResponse } from 'next/server';
 import queryString from 'query-string';
+import crypto from "crypto";
 
 export async function POST(req) {
   try {
@@ -10,6 +11,10 @@ export async function POST(req) {
     delete filter["filterValue"];
     if (await db.filter.findFirst({ where: { id: filter.id } })) {
       return NextResponse.json({ message: "ID của filter đã tổn tại" }, { status: 400 })
+    }
+
+    if (!filter.displayId) {
+      filter.displayId = crypto.randomBytes(4).toString("hex")
     }
     const createdFilter = await db.filter.create({ data: filter })
 
@@ -33,6 +38,11 @@ export async function POST(req) {
         delete filterValue["brands"]
         delete filterValue["categories"]
         delete filterValue["subCategories"]
+
+        if (!filterValue.displayId) {
+          filterValue.displayId = crypto.randomBytes(4).toString("hex")
+        }
+
         await tx.filter_value.create({ data: filterValue })
 
         await tx.brand_on_filter_value.createMany({

@@ -1,5 +1,5 @@
 "use client"
-import { Image } from '@nextui-org/react';
+import { Image } from "@heroui/react";
 import Carousel from "react-multi-carousel"
 import "react-multi-carousel/lib/styles.css"
 import { motion } from "framer-motion";

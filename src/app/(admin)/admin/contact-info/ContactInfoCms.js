@@ -15,7 +15,7 @@ import {
   useDisclosure,
   Textarea,
   ModalFooter
-} from "@nextui-org/react"
+} from "@heroui/react"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { EditIcon, Search } from "lucide-react"
 

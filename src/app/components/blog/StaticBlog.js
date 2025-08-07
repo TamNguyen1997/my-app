@@ -1,6 +1,6 @@
 "use client"
 import { BlogContent } from "@/components/blog/BlogDetail"
-import { Spinner } from "@nextui-org/react"
+import { Spinner } from "@heroui/react"
 import { useEffect, useState } from "react"
 
 const StaticBlog = ({ slug }) => {

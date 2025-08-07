@@ -1,4 +1,4 @@
-import { Link } from "@nextui-org/react"
+import { Link } from "@heroui/react"
 
 const BlogNotFound = () => {
   return <section className="bg-white dark:bg-gray-900">

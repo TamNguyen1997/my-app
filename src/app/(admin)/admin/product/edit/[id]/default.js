@@ -3,7 +3,7 @@
 import {
   Button,
   Card, CardBody, Tab, Tabs,
-} from "@nextui-org/react"
+} from "@heroui/react"
 import { createContext, useState } from "react"
 import SaleDetails from "@/app/components/admin/ui/product/SaleDetails";
 import TechnicalDetails from "@/app/components/admin/ui/product/TechnicalDetails";
@@ -11,8 +11,6 @@ import ProductDetail from "@/app/components/admin/ui/product/ProductDetail";
 import ProductImage from "@/app/components/admin/ui/product/ProductImage";
 import { useParams } from "next/navigation";
 import { product_type } from "@prisma/client";
-import { useEditor } from "@tiptap/react";
-import { editorConfig } from "@/lib/editor";
 import { toast, ToastContainer } from "react-toastify";
 import { useSearchParams } from 'next/navigation';
 
@@ -24,8 +22,6 @@ const Default = ({ initProduct = {}, categories = [], subCategories = [], brands
   const [product, setProduct] = useState(initProduct || {})
   const [selected] = useState(useSearchParams().get('tab') || 'default');
   const [filters, setFilters] = useState(initFilters)
-
-  const editor = useEditor(editorConfig(initProduct.promotion))
 
   const deleteProduct = async () => {
     if (window.confirm("Bạn có chắc chắn muốn xoá sản phẩm này không?")) {
@@ -64,8 +60,7 @@ const Default = ({ initProduct = {}, categories = [], subCategories = [], brands
             weight: product.weight || 0,
             productId: product.productId,
             metaTitle: product.metaTitle,
-            metaDescription: product.metaDescription,
-            promotion: editor.getHTML() || product.promotion
+            metaDescription: product.metaDescription
           },
           saleDetails: product.saleDetails,
           productOnImages: newProductOnImage,
@@ -102,7 +97,7 @@ const Default = ({ initProduct = {}, categories = [], subCategories = [], brands
   return (
     <>
       <ToastContainer containerId="ProductDetailPage" />
-      <ProductContext.Provider value={{ product, setProduct, categories, brands, subCategories, filters, setFilters, editor }}>
+      <ProductContext.Provider value={{ product, setProduct, categories, brands, subCategories, filters, setFilters }}>
         <Tabs defaultSelectedKey={selected}>
           <Tab title="Thông tin chung" key="default">
             <Card>

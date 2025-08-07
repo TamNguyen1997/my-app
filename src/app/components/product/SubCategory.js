@@ -1,75 +1,16 @@
 "use client"
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Select, SelectItem, Slider, Spinner } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Pagination, Select, SelectItem, Slider } from "@heroui/react";
+import { useState } from "react";
 import ProductCard from "@/components/product/ProductCard"
-import { useSearchParams } from "next/navigation";
-import { navigate } from "@/lib/utils";
+import Link from "next/link";
+import { getRangeForUrl } from "@/lib/product";
 
-const rowsPerPage = 20;
-
-const SubCategory = ({ params, productFilter, filters = [] }) => {
-  const [data, setData] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [category, setCategory] = useState({ name: "" })
+const SubCategory = ({ products, filters = [], category = {}, page = 1, selectedFilterIds = [], defaultOrderBy, totalPage = 1 }) => {
+  const [data] = useState(products || [])
   const [value, setValue] = useState([0, 100000000])
-  const [orderBy, setOrderBy] = useState("")
-  const searchParams = useSearchParams()
-  const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"))
-  const [endContent, setEndContent] = useState(false)
+  const [orderBy, setOrderBy] = useState(defaultOrderBy)
   const [filterIds, setFilterIds] = useState([])
 
-  const getProduct = async (reload = false) => {
-    setIsLoading(true)
-    const hash = window.location.hash?.split('#')
-    const res = await fetch(`/api/categories/${params}/products/?active=true&page=${page}&${window.location.hash ? hash[1] : `filterId=${productFilter || ""}`}&${orderBy && `orderBy=${orderBy}`}`)
-    if (res.ok) {
-      const body = await res.json()
-      setCategory(body.category)
-      if (reload) {
-        setData([...body.products])
-      } else {
-        setData(prevData => [...prevData, ...body.products])
-      }
-      setEndContent(body.products.length !== rowsPerPage)
-    }
-    setIsLoading(false)
-  }
-
-  useEffect(() => {
-    getProduct()
-    fetch(`/api/filters/?categoryId=${params}&active=true`)
-      .then(res => res.json())
-  }, [page]);
-
-  const filter = () => {
-    let range = ""
-    if (JSON.stringify(value) !== JSON.stringify([0, 100000000])) {
-      range += `range=${value.join('-')}`
-    } else {
-      if (!filterIds.length) {
-        getProduct(true)
-        navigate(`/${category.slug}`)
-        return
-      }
-      if (filterIds.length === 1) {
-        getProduct(true)
-        navigate(`/${category.slug}#${filterIds[0]}`)
-        return
-      }
-    }
-
-    let query = []
-    if (range) {
-      query.push(range)
-    }
-    if (filterIds.length) {
-      query.push(`filterId=${filterIds.join("&filterId=")}`)
-    }
-    getProduct(true)
-    navigate(`/${params}#${query.join("&")}`)
-  }
-
-  if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />
   return (
     <>
       <div
@@ -89,8 +30,7 @@ const SubCategory = ({ params, productFilter, filters = [] }) => {
               className="max-w-[200px]"
               selectionMode="multiple"
               labelPlacement="outside"
-              defaultSelectedKeys={new Set([
-                filter.filterValue.find(item => window.location.hash.includes(item.slug) || item.slug === productFilter)?.id])}
+              defaultSelectedKeys={selectedFilterIds}
               onSelectionChange={(value) => {
                 const newValues = Array.from(value).filter(item => item)
                 if (!newValues.length) {
@@ -102,8 +42,8 @@ const SubCategory = ({ params, productFilter, filters = [] }) => {
                 }
               }}
             >
-              {filter.filterValue.filter(item => item.slug).map((item, i) => (
-                <SelectItem key={item.slug}>{item.value}</SelectItem>
+              {filter.filterValue.map(item => (
+                <SelectItem key={item.displayId}>{item.value}</SelectItem>
               ))}
             </Select>
           ))}
@@ -120,16 +60,16 @@ const SubCategory = ({ params, productFilter, filters = [] }) => {
                     <div className="p-4 flex flex-col gap-2 items-center">
                       <div>
                         <div className="flex flex-wrap gap-2">
-                          <Button variant="ghost" onClick={() => setValue([0, 2000000])}>
+                          <Button variant="ghost" onPress={() => setValue([0, 2000000])}>
                             Dưới 2 triệu
                           </Button>
-                          <Button variant="ghost" onClick={() => setValue([2000000, 3000000])}>
+                          <Button variant="ghost" onPress={() => setValue([2000000, 3000000])}>
                             Từ 2 - 3 triệu
                           </Button>
-                          <Button variant="ghost" onClick={() => setValue([3000000, 4000000])}>
+                          <Button variant="ghost" onPress={() => setValue([3000000, 4000000])}>
                             Từ 3 - 4 triệu
                           </Button>
-                          <Button variant="ghost" onClick={() => setValue([4000000, 100000000])}>
+                          <Button variant="ghost" onPress={() => setValue([4000000, 100000000])}>
                             Trên 4 triệu
                           </Button>
                         </div>
@@ -147,8 +87,10 @@ const SubCategory = ({ params, productFilter, filters = [] }) => {
                         </div>
                       </div>
                       <div className="flex gap-1">
-                        <Button color="primary" onClick={filter}>Tìm</Button>
-                        <Button variant="ghost" color="danger" onClick={() => setValue([0, 100000000])}>Bỏ chọn</Button>
+                        <Link href={`/${category.slug}?filterId=${filterIds.join(",")}&orderBy=${orderBy}&${getRangeForUrl(value.join("-"))}`}>
+                          <Button color="primary">Tìm</Button>
+                        </Link>
+                        <Button variant="ghost" color="danger" onPress={() => setValue([0, 100000000])}>Bỏ chọn</Button>
                       </div>
                     </div>
                   </>
@@ -164,30 +106,26 @@ const SubCategory = ({ params, productFilter, filters = [] }) => {
               <SelectItem key="price:asc">Giá thấp đến cao</SelectItem>
               <SelectItem key="price:desc">Giá cao đến thấp</SelectItem>
             </Select>
-            <Button color="primary" onClick={filter}>Tìm</Button>
+            <Link href={`/${category.slug}?filterId=${filterIds.join(",")}&orderBy=${orderBy}&${getRangeForUrl(value.join("-"))}`}>
+              <Button color="primary">Tìm</Button>
+            </Link>
           </div>
         </div>
 
-        {!isLoading && !data.length ? (
+        {!data.length ? (
           <p className="m-auto text-lg opacity-55 py-4">Không tìm thấy sản phẩm nào.</p>
         ) : (
           <>
             <div className="w-full my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
-              {data.map((product) => (
-                <div key={product.id} className="h-full hover:opacity-75">
+              {data.map((product, i) => (
+                <div key={i} className="h-full hover:opacity-75">
                   <ProductCard product={product} />
                 </div>
               ))}
             </div>
-            {!endContent && (
-              <Button
-                className="flex justify-center items-center font-semibold w-[181px] h-[43px] rounded-[30px] text-black bg-white
-                border border-black hover:bg-[#FFD400] transition mx-auto text-large"
-                onClick={() => setPage(page + 1)}
-              >
-                Xem thêm
-              </Button>
-            )}
+            <Pagination className="w-full mx-auto" initialPage={parseInt(page || "1")} total={parseInt(totalPage || "1")} onChange={(newPage) => {
+              window.location.href = `/${category.slug}?filterId=${filterIds.join(",")}&orderBy=${orderBy}&page=${newPage}&${getRangeForUrl(value)}`;
+            }}/>
           </>
         )}
       </div>

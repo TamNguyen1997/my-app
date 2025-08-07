@@ -15,20 +15,20 @@ import {
   Tabs,
   Tab,
   Spinner,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import Dropzone, { ErrorCode } from "react-dropzone";
 import ImagePicker from "./ImagePicker";
 import BannerScheduler from "./BannerScheduler";
 import { ToastContainer, toast } from "react-toastify";
 
 const MAX_FILE_SIZE = 10_000_000;
-const MAX_FILES = 10;
 
 const ImageCms = ({
   onImageClick = () => { },
   highlights,
   onUploadSuccess,
   showHighlight = true,
+  maxFiles = 10
 }) => {
   const [reload, setReload] = useState(false);
   const [selectedTab, setSelectedTab] = useState("Gallery");
@@ -37,7 +37,7 @@ const ImageCms = ({
   const [isUploading, setIsUploading] = useState(false);
 
   const handleDropRejected = (fileRejections) => {
-    if (fileRejections.length > MAX_FILES) {
+    if (fileRejections.length > maxFiles) {
       alert("Tối đa 5 file");
       return;
     }
@@ -112,7 +112,7 @@ const ImageCms = ({
       >
         <Tab key="Gallery" title="Gallery">
           <div className="flex w-full flex-wrap md:flex-nowrap gap-4 py-5">
-            <Button color="primary" onClick={onOpen}>
+            <Button color="primary" onPress={onOpen}>
               Thêm ảnh
             </Button>
           </div>
@@ -128,7 +128,7 @@ const ImageCms = ({
                       <ModalHeader>Upload ảnh</ModalHeader>
                       <Dropzone
                         maxSize={MAX_FILE_SIZE}
-                        maxFiles={MAX_FILES}
+                        maxFiles={maxFiles}
                         multiple
                         accept="image/*"
                         onDropRejected={handleDropRejected}

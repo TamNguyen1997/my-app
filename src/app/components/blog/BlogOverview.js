@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Button, Link } from "@nextui-org/react";
+import { Button, Link } from "@heroui/react";
 import BlogCarousel from "./BlogCarousel";
 import TopBlogs from "./TopBlogs";
 import BlogItem from "./BlogItem";

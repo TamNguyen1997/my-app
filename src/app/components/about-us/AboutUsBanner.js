@@ -1,4 +1,4 @@
-import { Image } from "@nextui-org/react";
+import { Image } from "@heroui/react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useState } from 'react';
 import Carousel from "react-multi-carousel";

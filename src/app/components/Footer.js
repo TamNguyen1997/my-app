@@ -1,4 +1,4 @@
-import { Link } from "@nextui-org/react";
+import { Link } from "@heroui/react";
 import { Facebook, Mail, MapPin, NotebookText, Phone, PhoneCall, Youtube } from "lucide-react";
 import Image from "next/image";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import RelatedProducts from "@/components/RelatedProducts";
 import TechnicalDetail from './TechnicalDetail';

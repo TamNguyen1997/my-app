@@ -14,7 +14,7 @@ import {
   Tooltip,
   useDisclosure,
   Accordion, AccordionItem
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { EditIcon, Search, Trash2, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import slugify from "slugify"

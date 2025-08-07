@@ -1,5 +1,5 @@
 "use client"
-import { Button, Image, Input, Link, Textarea } from "@nextui-org/react";
+import { Button, Image, Input, Link, Textarea } from "@heroui/react";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { ToastContainer, toast } from 'react-toastify';

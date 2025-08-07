@@ -2,7 +2,7 @@
 
 import {
   Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader,
-} from '@nextui-org/react'
+} from "@heroui/react"
 
 const DeleteConfirmation = ({ disclosure, onDelete = () => { } }) => {
   return (

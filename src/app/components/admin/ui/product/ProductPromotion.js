@@ -1,6 +1,6 @@
 import RichTextEditor from "../RichTextArea"
 import { editorConfig } from "@/lib/editor"
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import { useEditor } from "@tiptap/react";
 import { toast, ToastContainer } from "react-toastify";
 

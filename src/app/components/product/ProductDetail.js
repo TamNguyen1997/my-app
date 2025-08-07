@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useEffect, useState } from "react";
-import { BreadcrumbItem, Breadcrumbs, Button, Link } from "@nextui-org/react";
+import { BreadcrumbItem, Breadcrumbs, Button, Link } from "@heroui/react";
 import SaleDetail from "@/components/SaleDetail";
 import ProductImageCarousel from "@/components/ProductImageCarousel";
 import ProductDetailTabs from "@/components/ProductDetailTabs";
@@ -10,26 +10,24 @@ import { addRecentlyView } from "@/lib/product";
 
 export const ProductDetailContext = createContext();
 
-export default ({ product = {}, description, relatedProducts = [] }) => {
-
-  const [images, setImages] = useState(product.product_on_image.map(item => item.imageUrl) || product.imageUrl ? [product.imageUrl] : []);
+const ProductDetail = ({ product = {}, description, relatedProducts = [] }) => {
   const [selectedSaleDetail, setSelectedSaleDetail] = useState({});
-
   useEffect(() => {
     addRecentlyView(product)
   }, [product.id])
+
   const getImages = useCallback(() => {
-    if (images.length > 0) {
-      return images
+    return product.product_on_image.map(item => item.imageUrl) || [product.imageUrl].filter(item => item)
+  }, [product])
+
+  const [mainImage, setMainImage] = useState(getImages()[0])
+
+  const getMainImage = useCallback(() => {
+    if (!mainImage) {
+      return getImages()[0]
     }
-    if (product.product_on_image.map(item => item.imageUrl).length > 0) {
-      return product.product_on_image.map(item => item.imageUrl)
-    }
-    if (product.imageUrl) {
-      return [product.imageUrl]
-    }
-    return []
-  }, [images, product.product_on_image])
+    return mainImage
+  }, [mainImage])
   return (
     <>
       <ProductDetailContext.Provider value={{
@@ -67,10 +65,10 @@ export default ({ product = {}, description, relatedProducts = [] }) => {
               className="flex flex-wrap items-start bg-[#f8f8f8] mb-5"
             >
               <div className="relative bg-white border-[3px] border-[#f8f8f8] w-full">
-                <ProductImageCarousel items={getImages()} />
+                <ProductImageCarousel items={getImages()} mainImage={getMainImage() || product.imageUrl || ""} setImage={setMainImage} />
                 <div className="md:hidden bg-white">
                   <div className="p-5 border-white border-b-[3px] bg-[#f8f8f8]">
-                    <SaleDetail saleDetails={product.saleDetails || []} product={product} setImages={setImages} />
+                    <SaleDetail saleDetails={product.saleDetails || []} product={product} />
                   </div>
                   <div className="text-sm px-5 pt-2 bg-[#f8f8f8]">
                     <p className="mb-2.5">Bạn cần trợ giúp? <span className="font-bold mb-2.5">Đường dây nóng: 0902 366 617</span></p>
@@ -101,7 +99,7 @@ export default ({ product = {}, description, relatedProducts = [] }) => {
             className="hidden md:block md:col-span-2"
           >
             <div className="p-5 border-white border-b-[3px] bg-[#f8f8f8]">
-              <SaleDetail saleDetails={product.saleDetails || []} product={product} setImages={setImages} />
+              <SaleDetail saleDetails={product.saleDetails || []} product={product} setImage={setMainImage} />
             </div>
             <div className="text-sm px-5 pt-2 bg-[#f8f8f8]">
               <p className="mb-2.5">Bạn cần trợ giúp? <span className="font-bold mb-2.5">Đường dây nóng: 0902 366 617</span></p>
@@ -117,3 +115,5 @@ export default ({ product = {}, description, relatedProducts = [] }) => {
     </>
   );
 };
+
+export default ProductDetail

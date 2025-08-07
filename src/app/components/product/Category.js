@@ -1,59 +1,26 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react";
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, Select, SelectItem, Slider, Spinner } from "@nextui-org/react";
+import { useEffect, useState } from "react";
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, Select, SelectItem, Slider, Spinner } from "@heroui/react";
 import ProductCard from "@/components/product/ProductCard";
+import { getRangeForUrl } from "@/lib/product";
 
-const Category = ({ category, productFilter, subcates, filters = [], product = [] }) => {
-  const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+const Category = ({ category, subcates, filters = [], products = [], filterIds = [], defaultOrderBy }) => {
   const [value, setValue] = useState([0, 100000000]);
-  const [orderBy, setOrderBy] = useState("");
+  const [orderBy, setOrderBy] = useState(defaultOrderBy);
   const [groupedData, setGroupData] = useState({});
-  const [selectedFilterValues, setSelectedFilterValues] = useState({});
+  const [selectedFilterValues, setSelectedFilterValues] = useState(filterIds);
   const [showAllSubCates, setShowAllSubCates] = useState(false);
 
-  const getProduct = async () => {
-    const hash = window.location.hash?.split('#');
-    const res = await fetch(`/api/products/?active=true&page=1&size=10000&includeCate=true&categoryId=${category.id}&${hash && hash[1]?.includes("=") ? hash[1] : `filterId=${productFilter || hash[1] || ""}`}&${orderBy && `orderBy=${orderBy}`}`);
-    if (res.ok) {
-      const body = await res.json();
-      const groupData = subcates.reduce((acc, subcate) => {
-        acc[subcate.id] = body.result.filter(product => product.subCate && (product.subCate.id === subcate.id));
-        return acc;
-      }, {});
-      const [minPrice, maxPrice] = value;
-      let result = body.result.filter(item => item.saleDetails.find(sd => sd.showPrice && sd.price >= minPrice & sd.price <= maxPrice));
-
-      setData(result);
-      setGroupData(groupData);
-    }
-    setIsLoading(false);
-  };
-
+  console.log(selectedFilterValues)
+  console.log(filterIds)
   useEffect(() => {
-    getProduct();
-  }, [category.slug, productFilter, orderBy, value]);
-
-  const filter = useCallback(() => {
-    let range = "";
-    let filterIds = Object.values(selectedFilterValues).flat();
-
-    if (JSON.stringify(value) !== JSON.stringify([0, 100000000])) {
-      range += `range=${value.join('-')}`;
-    }
-    let query = [];
-    if (range) {
-      query.push(range);
-    }
-    if (filterIds.length) {
-      query.push(`filterId=${filterIds.join("&filterId=")}`);
-    }
-    window.location.replace(`/${category.slug}#${query.join("&")}`);
-    getProduct()
-  }, [category, selectedFilterValues, value]);
-
-  if (isLoading) return <Spinner className="w-full h-full m-auto p-12" />;
+    const groupData = subcates.reduce((acc, subcate) => {
+      acc[subcate.id] = products.filter(product => product.subCate && (product.subCate.id === subcate.id));
+      return acc;
+    }, {});
+    setGroupData(groupData);
+  }, [products, subcates]);
 
   return (
     <>
@@ -69,12 +36,12 @@ const Category = ({ category, productFilter, subcates, filters = [], product = [
       <div className="sm:w-9/12 mx-auto">
         <div className="flex flex-wrap gap-2 p-3">
           {
-            [...subcates].splice(0, showAllSubCates ? subcates.length : 10).map(subcate => <Link key={subcate.id} href={`/${subcate.slug}`}><Button variant="ghost" color="default">{subcate.name}</Button></Link>)
+            [...subcates].splice(0, showAllSubCates ? subcates.length : 10).map((subcate, i) => <Link key={i} href={`/${subcate.slug}`}><Button variant="ghost" color="default">{subcate.name}</Button></Link>)
           }
           {
             subcates.length > 10 && (showAllSubCates ?
-              <Button variant="ghost" color="danger" onClick={() => setShowAllSubCates(false)}>Ẩn bớt</Button> :
-              <Button variant="ghost" color="primary" onClick={() => setShowAllSubCates(true)}>Xem thêm</Button>)
+              <Button variant="ghost" color="danger" onPress={() => setShowAllSubCates(false)}>Ẩn bớt</Button> :
+              <Button variant="ghost" color="primary" onPress={() => setShowAllSubCates(true)}>Xem thêm</Button>)
           }
         </div>
         <div className="flex flex-wrap gap-2 p-3">
@@ -84,12 +51,11 @@ const Category = ({ category, productFilter, subcates, filters = [], product = [
                 label={filter.name}
                 className="max-w-[200px]"
                 selectionMode="multiple"
-                defaultSelectedKeys={new Set([
-                  filter.filterValue.find(item => window.location.hash.includes(item.displayId) || item.displayId === productFilter)?.displayId])}
+                defaultSelectedKeys={selectedFilterValues}
+                labelPlacement="outside"
                 onSelectionChange={(value) => {
-                  setSelectedFilterValues(prevValues => ({ ...prevValues, [filter.id]: Array.from(value).filter(item => item) }));
-                }}
-              >
+                  setSelectedFilterValues([...value]);
+                }}>
                 {
                   filter.filterValue.filter(item => item.displayId).map((item, i) =>
                     <SelectItem key={item.displayId}>{item.value}</SelectItem>
@@ -111,16 +77,16 @@ const Category = ({ category, productFilter, subcates, filters = [], product = [
                     <div className="p-4 flex flex-col gap-2 items-center">
                       <div>
                         <div className="flex flex-wrap gap-2">
-                          <Button variant="ghost" onClick={() => setValue([0, 2000000])}>
+                          <Button variant="ghost" onPress={() => setValue([0, 2000000])}>
                             Dưới 2 triệu
                           </Button>
-                          <Button variant="ghost" onClick={() => setValue([2000000, 3000000])}>
+                          <Button variant="ghost" onPress={() => setValue([2000000, 3000000])}>
                             Từ 2 - 3 triệu
                           </Button>
-                          <Button variant="ghost" onClick={() => setValue([3000000, 4000000])}>
+                          <Button variant="ghost" onPress={() => setValue([3000000, 4000000])}>
                             Từ 3 - 4 triệu
                           </Button>
-                          <Button variant="ghost" onClick={() => setValue([4000000, 100000000])}>
+                          <Button variant="ghost" onPress={() => setValue([4000000, 100000000])}>
                             Trên 4 triệu
                           </Button>
                         </div>
@@ -138,8 +104,10 @@ const Category = ({ category, productFilter, subcates, filters = [], product = [
                         </div>
                       </div>
                       <div className="flex gap-1">
-                        <Button color="primary" onClick={filter}>Tìm</Button>
-                        <Button variant="ghost" color="danger" onClick={() => setValue([0, 100000000])}>Bỏ chọn</Button>
+                      <Link href={`/${category.slug}?filterId=${selectedFilterValues.filter(item => item).join(",")}&orderBy=${orderBy}&${getRangeForUrl(value.join("-"))}`}>
+                          <Button color="primary">Tìm</Button>
+                        </Link>
+                        <Button variant="ghost" color="danger" onPress={() => setValue([0, 100000000])}>Bỏ chọn</Button>
                       </div>
                     </div>
                   </>
@@ -155,11 +123,13 @@ const Category = ({ category, productFilter, subcates, filters = [], product = [
               <SelectItem key="price:asc">Giá thấp đến cao</SelectItem>
               <SelectItem key="price:desc">Giá cao đến thấp</SelectItem>
             </Select>
-            <Button color="primary" onClick={filter}>Tìm</Button>
+            <Link href={`/${category.slug}?filterId=${selectedFilterValues.join(",")}&orderBy=${orderBy}&${getRangeForUrl(value.join("-"))}`}>
+              <Button color="primary">Tìm</Button>
+            </Link>
           </div>
         </div>
         {
-          !isLoading && !data.length ?
+          !products.length ?
             <p className="m-auto pt-4 text-lg opacity-55">Không tìm thấy sản phẩm nào.</p> :
             <div className="w-full my-5 flex flex-col gap-4 p-2">
               {
@@ -186,8 +156,8 @@ const CategorySection = ({ products }) => {
       {
         products.length ? <>
           <div className="w-full my-5 grid grid-cols-[repeat(auto-fill,minmax(222px,1fr))] gap-4 p-2">
-            {[...products].splice(0, 20).map((product) => (
-              <div key={product.id} className="h-full hover:opacity-75 [&>div]:mx-auto">
+            {[...products].splice(0, 20).map((product,i ) => (
+              <div key={i} className="h-full hover:opacity-75 [&>div]:mx-auto">
                 <ProductCard product={product} />
               </div>
             ))}

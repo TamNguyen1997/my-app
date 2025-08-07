@@ -16,7 +16,7 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useState } from "react";
 
 import { ColorPicker, useColor } from "react-color-palette";

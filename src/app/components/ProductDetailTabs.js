@@ -62,10 +62,10 @@ const TabContent = ({ id, product, description, relatedProducts, technicalDetail
               return (
                 <div className="text-sm" key={index}>
                   <div className="relative pb-[100%]">
-                    <img src={product?.imageUrl} className="absolute inset-0 w-full h-full object-cover" />
+                    <img src={product?.imageUrl} className="absolute inset-0 w-full h-full object-cover" alt="Dụng cụ vệ sinh Sao Việt" />
                   </div>
                   <p className="font-bold my-1.5">Ứng dụng Home & Garden</p>
-                  <p>Ứng dụng Kärcher Home & Garden giúp bạn trở thành một chuyên gia làm sạch. Tận dụng kiến ​thức sâu rộng về Kärcher của chúng tôi để có kết quả làm sạch hoàn hảo. Dịch vụ toàn diện tiện lợi - tất cả thông tin trên thiết bị, ứng dụng và cổng Dịch vụ của chúng tôi.</p>
+                  <p>Ứng dụng Kärcher Home & Garden giúp bạn trở thành một chuyên gia làm sạch. Tận dụng kiến thức sâu rộng về Kärcher của chúng tôi để có kết quả làm sạch hoàn hảo. Dịch vụ toàn diện tiện lợi - tất cả thông tin trên thiết bị, ứng dụng và cổng Dịch vụ của chúng tôi.</p>
                 </div>
               )
             })
@@ -126,7 +126,7 @@ const TabContent = ({ id, product, description, relatedProducts, technicalDetail
   }
 }
 
-export default ({ product, description, relatedProducts }) => {
+const ProductDetailTabs = ({ product, description, relatedProducts }) => {
   const tabs = [
     { id: ID.RECENTLY_VIEW, title: "Sản phẩm vừa xem" },
     { id: ID.DESCRIPTION, title: "Mô tả" },
@@ -151,7 +151,7 @@ export default ({ product, description, relatedProducts }) => {
     if (headerItems) {
       setHeaderHeight(headerItems.getBoundingClientRect()?.height);
     }
-  });
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -176,7 +176,7 @@ export default ({ product, description, relatedProducts }) => {
     return () => {
       observer.disconnect();
     }
-  }, [titles.length]);
+  }, [titles]);
 
   useEffect(() => {
     const tabHeader = document.querySelector(".tab-header");
@@ -267,3 +267,5 @@ export default ({ product, description, relatedProducts }) => {
     </>
   )
 }
+
+export default ProductDetailTabs;

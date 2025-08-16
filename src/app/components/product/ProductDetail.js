@@ -14,7 +14,7 @@ const ProductDetail = ({ product = {}, description, relatedProducts = [] }) => {
   const [selectedSaleDetail, setSelectedSaleDetail] = useState({});
   useEffect(() => {
     addRecentlyView(product)
-  }, [product.id])
+  }, [product])
 
   const getImages = useCallback(() => {
     return product.product_on_image.map(item => item.imageUrl) || [product.imageUrl].filter(item => item)
@@ -27,7 +27,8 @@ const ProductDetail = ({ product = {}, description, relatedProducts = [] }) => {
       return getImages()[0]
     }
     return mainImage
-  }, [mainImage])
+  }, [getImages, mainImage])
+  
   return (
     <>
       <ProductDetailContext.Provider value={{
@@ -81,15 +82,6 @@ const ProductDetail = ({ product = {}, description, relatedProducts = [] }) => {
                 </div>
               </div>
             </motion.div>
-
-            <motion.div
-              initial={{ y: 100, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.7 }}
-              viewport={{ once: true }}
-            >
-              <ProductDetailTabs product={product} description={description} relatedProducts={relatedProducts} />
-            </motion.div>
           </div>
           <motion.div
             initial={{ y: 100, opacity: 0 }}
@@ -111,6 +103,15 @@ const ProductDetail = ({ product = {}, description, relatedProducts = [] }) => {
             </div>
           </motion.div>
         </div>
+        <motion.div
+          initial={{ y: 100, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.7 }}
+          viewport={{ once: true }}
+          className="md:container w-full xl:min-w-[65%] lg:min-w-[80%] py-[30px]"
+        >
+          <ProductDetailTabs product={product} description={description} relatedProducts={relatedProducts} />
+        </motion.div>
       </ProductDetailContext.Provider>
     </>
   );

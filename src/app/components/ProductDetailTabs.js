@@ -49,7 +49,7 @@ const TabContent = ({ id, product, description, relatedProducts, technicalDetail
           [&_p]:my-[1.125em]
           max-w-full
           prose
-          mb-9 product-description
+          mb-9 product-description blog-content
         `}>
           {description ? parse(description) : ""}
         </div>

@@ -12,6 +12,83 @@
   margin: 5px 20px 20px 0;
 }
 
+.blog-content .wp-block-paragraph {
+  line-height: 1.7;
+  word-spacing: 2px;
+}
+
+.blog-content .entry-content p {
+  line-height: 1.8;
+  word-spacing: 3px;
+}
+
+/* Style all headers in WordPress */
+.blog-content h1,
+.blog-content h2,
+.blog-content h3,
+.blog-content h4,
+.blog-content h5,
+.blog-content h6 {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  /* Change font */
+  font-weight: 600;
+  /* Semi-bold */
+  line-height: 1.3;
+  /* Line spacing */
+  word-spacing: 2px;
+  /* Word spacing */
+  margin-top: 1em;
+  /* Top spacing */
+  margin-bottom: 0.5em;
+  /* Bottom spacing */
+  color: #222;
+  /* Text color */
+}
+
+.blog-content h1 {
+  font-size: 2.5rem;
+}
+
+/* ~40px */
+.blog-content h2 {
+  font-size: 2rem;
+}
+
+/* ~32px */
+.blog-content h3 {
+  font-size: 1.75rem;
+}
+
+/* ~28px */
+.blog-content h4 {
+  font-size: 1.5rem;
+}
+
+/* ~24px */
+.blog-content h5 {
+  font-size: 1.25rem;
+}
+
+/* ~20px */
+.blog-content h6 {
+  font-size: 1rem;
+}
+
+.blog-content ul {
+  margin: 1em 0;
+  /* space above/below list */
+  padding-left: 1.5em;
+  /* space before bullets */
+}
+
+.blog-content ul li {
+  margin-bottom: 0.5em;
+  /* spacing between items */
+  line-height: 1.6;
+  /* line spacing inside items */
+  list-style-type: disc;
+}
+
 .aligncenter,
 div.aligncenter {
   display: block;

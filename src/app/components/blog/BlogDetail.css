@@ -29,12 +29,6 @@
 .blog-content h5,
 .blog-content h6 {
   font-family: "Helvetica Neue", Arial, sans-serif;
-  /* Change font */
-  font-weight: 600;
-  /* Semi-bold */
-  line-height: 1.1;
-  /* Line spacing */
-  word-spacing: 2px;
   /* Word spacing */
   margin-top: 1em;
   /* Top spacing */

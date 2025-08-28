@@ -38,6 +38,7 @@ const ProductCms = ({ categories = [] }) => {
   const [total, setTotal] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [selectedKeys, setSelectedKeys] = useState([])
+  const [reload, setReload] = useState(false)
 
   const [page, setPage] = useState(1)
   const [products, setProducts] = useState([])
@@ -67,7 +68,7 @@ const ProductCms = ({ categories = [] }) => {
       setLoadingState("idle")
       toast.error("An error occurred while fetching the products.", { containerId: "ProductCmsToast" })
     }
-  }, [page, rowsPerPage, condition])
+  }, [page, rowsPerPage, condition, reload])
 
   useEffect(() => {
     fetchProducts()
@@ -125,6 +126,8 @@ const ProductCms = ({ categories = [] }) => {
       const errorMessages = await Promise.all(errors.map(res => res.json()))
       errorMessages.forEach(error => toast.error(error.message))
     }
+    setReload(!reload)
+    setSelectedKeys([])
   }
 
   const renderCell = useCallback((product, columnKey) => {
@@ -292,7 +295,7 @@ const ProductCms = ({ categories = [] }) => {
               <TableColumn key="actions" textValue="actions" width="100"></TableColumn>
             </TableHeader>
             <TableBody
-              items={products}
+              items={loadingState === "loading" ? [] : products}
               emptyContent="Không có sản phẩm nào"
               isLoading={loadingState === "loading"}
               loadingContent={<Spinner label="Loading..." />}
@@ -311,6 +314,12 @@ const ProductCms = ({ categories = [] }) => {
           </Button>
           <Button color="primary" onPress={() => massUpdate({ highlight: false })} isDisabled={![...selectedKeys].length && selectedKeys !== "all"}>
             Đánh dấu không nổi bật
+          </Button>
+          <Button color="primary" onPress={() => massUpdate({ active: true })} isDisabled={![...selectedKeys].length && selectedKeys !== "all"}>
+            Đánh dấu active
+          </Button>
+          <Button color="danger" onPress={() => massUpdate({ active: false })} isDisabled={![...selectedKeys].length && selectedKeys !== "all"}>
+            Đánh dấu inactive
           </Button>
           <Link href="/admin/product/edit/new">Thêm sản phẩm</Link>
         </div>

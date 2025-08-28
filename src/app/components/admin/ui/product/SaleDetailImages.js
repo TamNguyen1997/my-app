@@ -106,7 +106,7 @@ const SaleDetailImages = ({ saleDetail, productId }) => {
           deleteItem={deleteImage}
           moveRow={moveRow}
         />
-        <div className="flex flex-row gap-2 px-3 py-4 justify-end">
+        <div className="flex flex-row gap-2 px-3 py-4">
           <Button onPress={() => setIsChoosingImage(true)} className="w-24">
             Chọn ảnh
           </Button>

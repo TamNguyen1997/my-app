@@ -1,6 +1,6 @@
 import { Autocomplete, AutocompleteItem, Button, Checkbox, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Snippet, Tooltip, useDisclosure } from "@heroui/react";
 import { Cog, FileImage, Trash2 } from "lucide-react";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { v4 } from "uuid";
 import NewFilter from "@/components/admin/ui/product/NewFilter";
 import { FilterValueSelect } from "./NewFilterValue";
@@ -160,6 +160,9 @@ const SecondarySaleDetails = ({ saleDetail }) => {
 const SaleDetails = () => {
   const { product, filters, setFilters, setProduct } = useContext(ProductContext);
   const newFilterModal = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [selectedProductId, setSelectedProductId] = useState(null);
+  const [selectDetail, setSelectDetail] = useState(null);
 
   const addEmptySaleDetail = () => {
     const newSaleDetails = [
@@ -168,6 +171,14 @@ const SaleDetails = () => {
     ];
     setProduct(prevProduct => ({ ...prevProduct, saleDetails: newSaleDetails }));
   };
+
+  const handleOpen = (productId, detail) => {
+    console.log("detail", detail);
+    if (!productId || !detail) return;
+    setSelectedProductId(productId);
+    setSelectDetail(detail);
+    onOpen();
+  }
 
   return (
     <>
@@ -309,7 +320,7 @@ const SaleDetails = () => {
                   </Checkbox>
 
                   <div className="flex text-center items-center">
-                    <Button onClick={() => {
+                    <Button onPress={() => {
                       const newSaleDetails = [
                         ...product.saleDetails,
                         { id: v4(), type: "TEXT", saleDetailId: detail.id, productId: product.id, price: 0, sku: crypto.randomBytes(3).toString("hex") }
@@ -321,13 +332,7 @@ const SaleDetails = () => {
                     <div className="text-lg text-danger cursor-pointer active:opacity-50 pl-5 float-right">
                       <Trash2 onClick={() => removeItem(detail.id, setProduct)} />
                     </div>
-                    <Tooltip size="lg"
-                      closeDelay={2000}
-                      content={
-                        <SaleDetailImages productId={product.id} saleDetail={detail} />
-                      }>
-                      <FileImage />
-                    </Tooltip>
+                    <FileImage onClick={() => handleOpen(product.id, detail)} />
                     <Snippet symbol="" className="!font-open_san !bg-white" hideCopyButton content="Xem thông số kĩ thuật">
                       <Link className="text-lg text-gray-500 cursor-pointer float-right" href={`/admin/product/edit/${product.id}/sale-details/${detail.id}/technicals/`}>
                         <Cog />
@@ -342,6 +347,20 @@ const SaleDetails = () => {
             </div>
           </div>
         ))}
+        <Modal isOpen={isOpen} size="full" onClose={onClose}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <SaleDetailImages productId={selectedProductId} saleDetail={selectDetail} />
+                <ModalFooter>
+                  <Button color="danger" variant="light" onPress={onClose}>
+                    Đóng
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
       </div>
     </>
   );

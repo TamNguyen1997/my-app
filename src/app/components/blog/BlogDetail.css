@@ -17,6 +17,13 @@
   word-spacing: 2px;
 }
 
+.blog-content p {
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
+
 .blog-content .entry-content p {
   line-height: 1.8;
 }

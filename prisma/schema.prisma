@@ -62,6 +62,7 @@ model product {
   technical_detail   technical_detail[]
   promotionProgram   promotion_program? @relation(fields: [promotionProgramId], references: [id])
   promotionProgramId String?            @map("promotion_program_id")
+  bundle_product     bundle_product[]
 
   @@index([imageId])
   @@index([categoryId])
@@ -69,6 +70,26 @@ model product {
   @@index([subCateId])
   @@index([productId])
   @@index([promotionProgramId])
+}
+
+model bundle {
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  bundleProducts bundle_product[]
+}
+
+model bundle_product {
+  bundleId  String
+  productId String
+
+  bundle  bundle  @relation(fields: [bundleId], references: [id], onDelete: Cascade)
+  product product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([bundleId, productId])
+  @@index([bundleId])
+  @@index([productId])
 }
 
 enum product_type {

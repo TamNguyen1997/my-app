@@ -39,7 +39,8 @@ const Page = async ({ params }) => {
             order: 'asc'
           },
         },
-        brand: true
+        brand: true,
+        bundle_product: true
       }
     }),
     db.category.findMany({}),
@@ -92,8 +93,22 @@ const Page = async ({ params }) => {
   const categories = allCategories.filter(item => item.type === cate_type.CATE)
   const subCategories = allCategories.filter(item => item.type === cate_type.SUB_CATE)
 
+  const allProducts = await db.product.findMany({})
+
+  const bundleId = product?.bundle_product?.[0]?.bundleId;
+  const productsInBundle = bundleId ? await db.bundle_product.findMany({
+    where: { bundleId: bundleId },
+    include: { product: true }
+  }) : [];
   return (
-    <Default initProduct={product || {}} categories={categories} subCategories={subCategories} brands={brands} initFilters={filters} />
+    <Default
+      allProducts={allProducts}
+      initProduct={product || {}}
+      categories={categories}
+      subCategories={subCategories}
+      brands={brands}
+      productsInBundle={productsInBundle}
+      initFilters={filters} />
   )
 }
 

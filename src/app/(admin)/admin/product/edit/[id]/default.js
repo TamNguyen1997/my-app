@@ -13,10 +13,18 @@ import { useParams } from "next/navigation";
 import { product_type } from "@prisma/client";
 import { toast, ToastContainer } from "react-toastify";
 import { useSearchParams } from 'next/navigation';
+import ProductBundle from "../../../../../components/admin/ui/product/ProductBundle";
 
 export const ProductContext = createContext();
 
-const Default = ({ initProduct = {}, categories = [], subCategories = [], brands = [], initFilters = [] }) => {
+const Default = ({
+  allProducts = [],
+  initProduct = {},
+  categories = [],
+  subCategories = [],
+  brands = [],
+  productsInBundle = [],
+  initFilters = [] }) => {
   const { id } = useParams()
   const [isLoading, setIsLoading] = useState(false)
   const [product, setProduct] = useState(initProduct || {})
@@ -103,6 +111,13 @@ const Default = ({ initProduct = {}, categories = [], subCategories = [], brands
             <Card>
               <CardBody>
                 <ProductDetail />
+              </CardBody>
+            </Card>
+          </Tab>
+          <Tab title="Sản phẩm đi kèm" key="bundle">
+            <Card>
+              <CardBody>
+                <ProductBundle allProducts={allProducts} product={product} productsInBundle={productsInBundle} />
               </CardBody>
             </Card>
           </Tab>

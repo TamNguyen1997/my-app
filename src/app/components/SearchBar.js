@@ -123,7 +123,7 @@ const SearchBar = () => {
                 <div className="w-full p-2 flex justify-center">
                   <LoaderIcon className="animate-spin" />
                 </div>
-              ) : results[key].length > 0 ? (
+              ) : results[key]?.length > 0 ? (
                 <div className="divide-y divide-slate-300 py-2">
                   {results[key].map((item) =>
                     key === 'blogs' ? (

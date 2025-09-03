@@ -66,7 +66,8 @@ const Page = async ({ params }) => {
           order: 'asc'
         },
       },
-      brand: true
+      brand: true,
+      bundle_product: true
     },
     where: {
       slug: params.productSlug,
@@ -140,13 +141,28 @@ const Page = async ({ params }) => {
       ]),
     ]
   }
+
+  const bundleId = product?.bundle_product?.[0]?.bundleId;
+  const productsInBundle = bundleId ? await db.bundle_product.findMany({
+    where: { bundleId: bundleId, productId: { not: product.id } },
+    include: {
+      product: {
+        include: { saleDetails: true, technical_detail: true }
+      }
+    }
+  }) : [];
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }}
       />
-      <ProductDetail product={product} description={productDescription} relatedProducts={relatedProducts} />
+      <ProductDetail
+        product={product}
+        description={productDescription}
+        relatedProducts={relatedProducts}
+        productsInBundle={productsInBundle}
+      />
     </>
   )
 }

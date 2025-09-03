@@ -10,7 +10,7 @@ import { addRecentlyView } from "@/lib/product";
 
 export const ProductDetailContext = createContext();
 
-const ProductDetail = ({ product = {}, description, relatedProducts = [] }) => {
+const ProductDetail = ({ product = {}, description, relatedProducts = [], productsInBundle = [] }) => {
   const [selectedSaleDetail, setSelectedSaleDetail] = useState({});
   useEffect(() => {
     addRecentlyView(product)
@@ -28,7 +28,7 @@ const ProductDetail = ({ product = {}, description, relatedProducts = [] }) => {
     }
     return mainImage
   }, [getImages, mainImage])
-  
+
   return (
     <>
       <ProductDetailContext.Provider value={{
@@ -110,7 +110,12 @@ const ProductDetail = ({ product = {}, description, relatedProducts = [] }) => {
           viewport={{ once: true }}
           className="md:container w-full xl:min-w-[65%] lg:min-w-[80%] py-[30px]"
         >
-          <ProductDetailTabs product={product} description={description} relatedProducts={relatedProducts} />
+          <ProductDetailTabs
+            product={product}
+            description={description}
+            relatedProducts={relatedProducts}
+            productsInBundle={productsInBundle}
+          />
         </motion.div>
       </ProductDetailContext.Provider>
     </>

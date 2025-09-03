@@ -22,7 +22,7 @@ const ID = {
   RELATED_ITEMS: "RELATED_ITEMS"
 };
 
-const TabContent = ({ id, product, description, relatedProducts, technicalDetailForSaleDetail = [] }) => {
+const TabContent = ({ id, product, description, relatedProducts, productsInBundle = [] }) => {
 
   const [recentlyView, setRecentlyView] = useState([])
 
@@ -102,6 +102,12 @@ const TabContent = ({ id, product, description, relatedProducts, technicalDetail
           <RelatedProducts query={`/?size=10&page=1&productType=COMPONENT_PART&productId=${product.id}`} />
         </div>
       )
+    case ID.BUNDLE:
+      return (
+        <div className="mb-9">
+          <RelatedProducts relatedProducts={productsInBundle} />
+        </div>
+      )
     case ID.RECENTLY_VIEW:
       return (
         <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
@@ -126,11 +132,12 @@ const TabContent = ({ id, product, description, relatedProducts, technicalDetail
   }
 }
 
-const ProductDetailTabs = ({ product, description, relatedProducts }) => {
+const ProductDetailTabs = ({ product, description, relatedProducts, productsInBundle = [] }) => {
   const tabs = [
     { id: ID.RECENTLY_VIEW, title: "Sản phẩm vừa xem" },
     { id: ID.DESCRIPTION, title: "Mô tả" },
     { id: ID.SPECIFICATIONS, title: "Thông số kỹ thuật" },
+    { id: ID.BUNDLE, title: "Sản phẩm đi kèm" },
     { id: ID.RELATED_ITEMS, title: "Sản phẩm liên quan" },
   ];
 
@@ -225,7 +232,7 @@ const ProductDetailTabs = ({ product, description, relatedProducts }) => {
                             `}
                     key={index}
                     data-id={tab.id}
-                    onClick={() => {
+                    onPress={() => {
                       window.scrollTo({
                         top: titles[index].getBoundingClientRect().top + window.scrollY - 60,
                         behavior: "smooth"
@@ -258,7 +265,13 @@ const ProductDetailTabs = ({ product, description, relatedProducts }) => {
                   {tab.title}
                 </div>
 
-                <TabContent id={tab.id} product={product} description={description} relatedProducts={relatedProducts} />
+                <TabContent
+                  id={tab.id}
+                  product={product}
+                  description={description}
+                  relatedProducts={relatedProducts}
+                  productsInBundle={productsInBundle}
+                />
               </div>
             )
           })

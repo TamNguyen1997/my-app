@@ -1,9 +1,8 @@
 import { Button } from "@heroui/react"
-import { get } from "http";
 import { useState, useEffect } from "react"
 
 const ProductBundle = ({ allProducts = [], product = {}, productsInBundle = [] }) => {
-  const [bundleProducts, setBundleProducts] = useState(productsInBundle.map(bd => bd.product) || []);
+  const [bundleProducts, setBundleProducts] = useState(productsInBundle.map(bd => bd.product).filter(p => p.id !== product.id) || []);
   const [search, setSearch] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(false);

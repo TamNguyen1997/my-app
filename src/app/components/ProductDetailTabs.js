@@ -137,7 +137,7 @@ const ProductDetailTabs = ({ product, description, relatedProducts, productsInBu
     { id: ID.RECENTLY_VIEW, title: "Sản phẩm vừa xem" },
     { id: ID.DESCRIPTION, title: "Mô tả" },
     { id: ID.SPECIFICATIONS, title: "Thông số kỹ thuật" },
-    // { id: ID.BUNDLE, title: "Sản phẩm đi kèm" },
+    { id: ID.BUNDLE, title: "Sản phẩm đi kèm" },
     { id: ID.RELATED_ITEMS, title: "Sản phẩm liên quan" },
   ];
 

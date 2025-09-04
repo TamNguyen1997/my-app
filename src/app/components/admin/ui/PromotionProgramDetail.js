@@ -207,7 +207,9 @@ const PromotionProgramDetail = ({
             <Autocomplete selectedKey={[]} onSelectionChange={(id) => setSelectedProductIds(prev => [...prev, id])}
               label="Tìm sản phẩm"
               aria-label="Tìm sản phẩm"
-              className="col-span-1">
+              className="col-span-1"
+              itemHeight={48}
+              size="lg">
               {
                 allProducts.filter(item => !selectedProductIds.includes(item.id)).map((product, i) => (
                   <AutocompleteItem key={product.id} aria-label={product.name} label={product.name}>

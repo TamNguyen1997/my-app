@@ -44,7 +44,6 @@ const Page = async ({ params }) => {
 
   const allSaleDetails = allProducts.flatMap(item => item.saleDetails)
 
-  console.log(promotionProgram.product)
   return <PromotionProgramDetail
     promotionProgram={promotionProgram}
     allCategories={categories}

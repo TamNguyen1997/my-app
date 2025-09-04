@@ -160,7 +160,7 @@ const SecondarySaleDetails = ({ saleDetail }) => {
 const SaleDetails = () => {
   const { product, filters, setFilters, setProduct } = useContext(ProductContext);
   const newFilterModal = useDisclosure();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedProductId, setSelectedProductId] = useState(null);
   const [selectDetail, setSelectDetail] = useState(null);
 
@@ -347,7 +347,7 @@ const SaleDetails = () => {
             </div>
           </div>
         ))}
-        <Modal isOpen={isOpen} size="full" onClose={onClose}>
+        <Modal isOpen={isOpen} size="full" onOpenChange={onOpenChange}>
           <ModalContent>
             {(onClose) => (
               <>

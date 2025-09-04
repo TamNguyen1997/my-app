@@ -173,7 +173,8 @@ const PromotionProgramDetail = ({
             <Autocomplete selectedKey={[]} onSelectionChange={(id) => setSelectedSubCategoryIds(prev => [...prev, id])}
               label="Tìm sub-category"
               aria-label="Tìm sub-category"
-              className="col-span-1">
+              className="col-span-1"
+              itemHeight={48}>
               {
                 allSubcategories.filter(item => !selectedSubCategoryIds.includes(item.id)).map((subCate, i) => (
                   <AutocompleteItem key={subCate.id} aria-label={subCate.name} label={subCate.name}>
@@ -243,7 +244,8 @@ const PromotionProgramDetail = ({
             <Autocomplete selectedKey={[]} onSelectionChange={(id) => setSelectedSaleDetailIds(prev => [...prev, id])}
               label="Tìm Thông số bán hàng"
               aria-label="Tìm Thông số bán hàng"
-              className="col-span-1">
+              className="col-span-1"
+              itemHeight={48}>
               {
                 allSaleDetails.filter(item => !selectedSaleDetailIds.includes(item.id)).map((saleDetail, i) => (
                   <AutocompleteItem key={saleDetail.id} aria-label={saleDetail.sku} label={saleDetail.sku}>

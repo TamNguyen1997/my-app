@@ -47,7 +47,7 @@ const Page = async ({ params }) => {
   return <PromotionProgramDetail
     promotionProgram={promotionProgram}
     allCategories={categories}
-    subCategories={subCategories}
+    allSubcategories={subCategories}
     allProducts={allProducts}
     allSaleDetails={allSaleDetails}
   />

@@ -66,14 +66,14 @@ const getHeaders = async () => {
   ]
 
   const slugs = [
-          "dung-cu-ve-sinh-kinh",
-          "dung-cu-ve-sinh",
-          "hop-thung-dung-do-da-nang",
-          "xe-day-phuc-vu",
-          "khan",
-          "gang-tay-chuyen-dung",
-          "cac-thiet-bi-khac",
-        ]
+    "dung-cu-ve-sinh-kinh",
+    "dung-cu-ve-sinh",
+    "hop-thung-dung-do-da-nang",
+    "xe-day-phuc-vu",
+    "khan",
+    "gang-tay-chuyen-dung",
+    "cac-thiet-bi-khac",
+  ]
 
   const headers = await db.category.findMany({
     where: {
@@ -95,7 +95,7 @@ const getHeaders = async () => {
     }
   })
 
-  return [brandCategory, ...headers.sort((a,b) => {return slugs.indexOf(a.slug) - slugs.indexOf(b.slug);}), ...utilities]
+  return [brandCategory, ...headers.sort((a, b) => { return slugs.indexOf(a.slug) - slugs.indexOf(b.slug); }), ...utilities]
 }
 
 const BRANDS = [
@@ -134,7 +134,7 @@ const BRANDS = [
   {
     id: 5,
     slug: "thuong-hieu-kleen-tex",
-    name: "Kleen-Tex_Thảm trải sản/sảnh",
+    name: "Kleen-Tex_Thảm trải sàn/sảnh",
     image: {
       path: "/brand/KLEEN-TEX.webp"
     },

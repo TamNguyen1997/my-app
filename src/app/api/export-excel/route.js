@@ -61,6 +61,8 @@ const extractProductData = async (start, end) => {
       subCateId: true,
       brandId: true,
       active: true,
+      metaTitle: true,
+      metaDescription: true,
       saleDetails: {
         select: {
           price: true,
@@ -88,7 +90,9 @@ const extractProductData = async (start, end) => {
     "ID Cate",
     "ID sub-cate",
     "ID thương hiệu",
-    "Trạng thái active"
+    "Trạng thái active",
+    "Meta title",
+    "Meta description",
   ];
 
   const data = result.map((el) => ({
@@ -97,7 +101,9 @@ const extractProductData = async (start, end) => {
     "ID Cate": el.categoryId,
     "ID sub-cate": el.subCateId,
     "ID thương hiệu": el.brandId,
-    "Trạng thái active": el.active ? "T" : "F"
+    "Trạng thái active": el.active ? "T" : "F",
+    "Meta title": el.metaTitle,
+    "Meta description": el.metaDescription,
   }));
 
   return XLSX.utils.json_to_sheet(data, { header: headers });

@@ -80,6 +80,7 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
           ? selectedDetail
           : saleDetails[0];
 
+    console.log(formatPrice(detail.price))
     if (!detail) return 0;
     return detail?.promotionalPrice > 0
       ? formatPrice(detail.promotionalPrice)
@@ -154,7 +155,7 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
         </p>
       )}
       <p className="text-[32px] font-medium text-[#b61a2d]">
-        {getPrice() && getPrice() > 0 ? `${getPrice()} đ` : ""}
+        {getPrice() ? `${getPrice()} đ` : ""}
       </p>
       <p className="text-sm">
         Đã bao gồm VAT, chưa bao gồm phí giao hàng.

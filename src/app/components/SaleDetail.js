@@ -80,7 +80,6 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
           ? selectedDetail
           : saleDetails[0];
 
-    console.log(formatPrice(detail.price))
     if (!detail) return 0;
     return detail?.promotionalPrice > 0
       ? formatPrice(detail.promotionalPrice)
@@ -183,7 +182,6 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
                       setImage(detail.sale_detail_on_image[0]?.imageUrl)
                     }
                   }}
-                  onMouseOut={() => setImage(null)}
                 >
                   {detail.filterValue.value}
                 </Button>
@@ -197,12 +195,6 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
               key={sDetail.id}
               variant={getVariant(sDetail.id, selectedSecondaryDetail.id)}
               onPress={() => onSecondarySelect(sDetail.id)}
-              onMouseOver={() => {
-                if (sDetail.sale_detail_on_image?.length > 0) {
-                  setImage(sDetail.sale_detail_on_image[0]?.imageUrl)
-                }
-              }}
-              onMouseOut={() => setImage(null)}
             >
               {sDetail.filterValue?.value}
             </Button>

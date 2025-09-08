@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Button } from "@heroui/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import RelatedProducts from "@/components/RelatedProducts";
+import CompactRelatedProducts from "@/components/CompactRelatedProducts";
 import TechnicalDetail from './TechnicalDetail';
 import parse from 'html-react-parser'
 import "./ProductDetailTabs.css"
@@ -105,7 +106,7 @@ const TabContent = ({ id, product, description, relatedProducts, productsInBundl
     case ID.BUNDLE:
       return (
         <div className="mb-9">
-          <RelatedProducts relatedProducts={productsInBundle} />
+          <CompactRelatedProducts relatedProducts={productsInBundle} />
         </div>
       )
     case ID.RECENTLY_VIEW:
@@ -134,10 +135,10 @@ const TabContent = ({ id, product, description, relatedProducts, productsInBundl
 
 const ProductDetailTabs = ({ product, description, relatedProducts, productsInBundle = [] }) => {
   const tabs = [
-    { id: ID.RECENTLY_VIEW, title: "Sản phẩm vừa xem" },
+    { id: ID.BUNDLE, title: "Sản phẩm đi kèm" },
     { id: ID.DESCRIPTION, title: "Mô tả" },
     { id: ID.SPECIFICATIONS, title: "Thông số kỹ thuật" },
-    // { id: ID.BUNDLE, title: "Sản phẩm đi kèm" },
+    { id: ID.RECENTLY_VIEW, title: "Sản phẩm vừa xem" },
     { id: ID.RELATED_ITEMS, title: "Sản phẩm liên quan" },
   ];
 

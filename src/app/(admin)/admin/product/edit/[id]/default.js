@@ -114,13 +114,13 @@ const Default = ({
               </CardBody>
             </Card>
           </Tab>
-          {/* <Tab title="Sản phẩm đi kèm" key="bundle">
+          <Tab title="Sản phẩm đi kèm" key="bundle">
             <Card>
               <CardBody>
                 <ProductBundle allProducts={allProducts} product={product} productsInBundle={productsInBundle} />
               </CardBody>
             </Card>
-          </Tab> */}
+          </Tab>
           <Tab title="Hình ảnh" key="image">
             <Card>
               <CardBody>

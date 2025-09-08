@@ -154,7 +154,7 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
         </p>
       )}
       <p className="text-[32px] font-medium text-[#b61a2d]">
-        {getPrice() ? `${getPrice()} đ` : ""}
+        {getPrice() > 0 ? `${getPrice()} đ` : ""}
       </p>
       <p className="text-sm">
         Đã bao gồm VAT, chưa bao gồm phí giao hàng.
@@ -189,10 +189,10 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
             ))}
         </div>
         <div>
-          {getSecondaryDetails().map((sDetail) => (
+          {getSecondaryDetails().map((sDetail, i) => (
             <Button
               color="default"
-              key={sDetail.id}
+              key={i}
               variant={getVariant(sDetail.id, selectedSecondaryDetail.id)}
               onPress={() => onSecondarySelect(sDetail.id)}
             >
@@ -212,7 +212,7 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
             </h2>
             <div className="px-2 overflow-auto text-sm py-2 flex flex-col gap-2">
               {
-                getPromotion().map((p, index) => parse(`<div className="flex gap-3"><div className="rounded-full bg-blue-400 w-4 h-4 text-xs text-white text-center">${index + 1}</div>` + p + "</div>"))
+                getPromotion().map((p, index) => parse(`<div className="flex gap-3" key="${index}"><div className="rounded-full bg-blue-400 w-4 h-4 text-xs text-white text-center">${index + 1}</div>` + p + "</div>"))
               }
             </div>
           </div>

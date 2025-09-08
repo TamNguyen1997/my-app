@@ -37,7 +37,7 @@ const PopularItems = React.memo(({
             <Button
               key={brand}
               radius="none"
-              onClick={() => setSelectedBrand(brand)}
+              onPress={() => setSelectedBrand(brand)}
               className={`${getSelectedColor(brand)} text-white text-medium font-bold hover:bg-slate-800 border-r border-white`}
             >
               {brand}

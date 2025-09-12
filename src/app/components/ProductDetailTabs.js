@@ -3,12 +3,18 @@
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@heroui/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Swiper from "swiper";
+import { Navigation, Pagination } from "swiper/modules";
 import RelatedProducts from "@/components/RelatedProducts";
 import CompactRelatedProducts from "@/components/CompactRelatedProducts";
 import TechnicalDetail from './TechnicalDetail';
 import parse from 'html-react-parser'
 import "./ProductDetailTabs.css"
 import "./blog/BlogDetail.css"
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+
 import { getRecentlyView } from "@/lib/product";
 import Link from "next/link";
 import Image from "next/image";
@@ -31,6 +37,28 @@ const TabContent = ({ id, product, description, relatedProducts, productsInBundl
     setRecentlyView(getRecentlyView())
   }, [])
 
+  useEffect(() => {
+    const carousels = document.querySelectorAll(".wp-block-cb-carousel-v2 .swiper");
+
+    carousels.forEach((el) => {
+      if (el.swiper) return; // prevent double init
+
+      const container = el.closest(".wp-block-cb-carousel-v2");
+
+      new Swiper(el, {
+        modules: [Navigation, Pagination],
+        slidesPerView: 1,
+        spaceBetween: 15,
+        pagination: {
+          el: container.querySelector(".cb-pagination"),
+          clickable: true,
+        },
+        breakpoints: {
+          768: { slidesPerView: 3, slidesPerGroup: 1 },
+        },
+      });
+    });
+  }, [description]);
 
   const getImageUrl = useCallback((url) => {
     if (url) {

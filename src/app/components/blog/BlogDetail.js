@@ -3,11 +3,39 @@
 import { BreadcrumbItem, Breadcrumbs, Link } from "@heroui/react";
 import { motion } from "framer-motion";
 import parse from 'html-react-parser';
-
+import Swiper from "swiper";
+import { Navigation, Pagination } from "swiper/modules";
 import TableOfContent from "./TableOfContent"
 import "./BlogDetail.css"
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import { useEffect } from "react";
 
 const BlogContent = ({ blog }) => {
+  useEffect(() => {
+    const carousels = document.querySelectorAll(".wp-block-cb-carousel-v2 .swiper");
+
+    carousels.forEach((el) => {
+      if (el.swiper) return; // prevent double init
+
+      const container = el.closest(".wp-block-cb-carousel-v2");
+
+      new Swiper(el, {
+        modules: [Navigation, Pagination],
+        slidesPerView: 1,
+        spaceBetween: 15,
+        pagination: {
+          el: container.querySelector(".cb-pagination"),
+          clickable: true,
+        },
+        breakpoints: {
+          768: { slidesPerView: 3, slidesPerGroup: 1 },
+        },
+      });
+    });
+  }, [blog]);
+
   return (<>
     <link rel='stylesheet' id='wp-block-library-css' href='https://dcvs.shop/wordpress/wp-includes/css/dist/block-library/common.min.css?ver=6.8.2' media='all' />
     <motion.div

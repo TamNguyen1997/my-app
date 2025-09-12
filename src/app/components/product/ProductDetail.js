@@ -74,7 +74,7 @@ const ProductDetail = ({ product = {}, description, relatedProducts = [], produc
                     <SaleDetail saleDetails={product.saleDetails || []} product={product} />
                   </div>
                   <div className="text-sm px-5 pt-2 bg-[#f8f8f8]">
-                    <p className="mb-2.5">Bạn cần trợ giúp? <span className="font-bold mb-2.5">Đường dây nóng: 0902 366 617</span></p>
+                    <p className="mb-2.5">Bạn cần trợ giúp? <span className="font-bold mb-2.5">Đường dây nóng: 090 380 2979</span></p>
                     <Link isExternal href="https://zalo.me/0903802979" className="text-black w-full h-[45px]">
                       <Button className="text-sm font-bold uppercase bg-gradient-to-b from-[#ffed00] to-[#fff466] rounded-none w-full border border-[#e3e3e3] mb-2.5">
                         Liên hệ
@@ -96,7 +96,7 @@ const ProductDetail = ({ product = {}, description, relatedProducts = [], produc
               <SaleDetail saleDetails={product.saleDetails || []} product={product} setImage={setMainImage} />
             </div>
             <div className="text-sm px-5 pt-2 bg-[#f8f8f8]">
-              <p className="mb-2.5">Bạn cần trợ giúp? <span className="font-bold mb-2.5">Đường dây nóng: 0902 366 617</span></p>
+              <p className="mb-2.5">Bạn cần trợ giúp? <span className="font-bold mb-2.5">Đường dây nóng: 090 380 2979</span></p>
               <Link isExternal href="https://zalo.me/0903802979" className="text-black w-full h-[45px]">
                 <Button className="text-sm font-bold uppercase bg-gradient-to-b from-[#ffed00] to-[#fff466] rounded-none w-full border border-[#e3e3e3] mb-2.5">
                   Liên hệ

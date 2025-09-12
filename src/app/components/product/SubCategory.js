@@ -87,7 +87,7 @@ const SubCategory = ({ products, filters = [], category = {}, page = 1, selected
                         </div>
                       </div>
                       <div className="flex gap-1">
-                        <Link href={`/${category.slug}?filterId=${filterIds.join(",")}&orderBy=${orderBy}&${getRangeForUrl(value.join("-"))}`}>
+                        <Link href={`/${category.slug}?filterId=${filterIds.join(",")}&orderBy=${orderBy}&${getRangeForUrl(value)}`}>
                           <Button color="primary">Tìm</Button>
                         </Link>
                         <Button variant="ghost" color="danger" onPress={() => setValue([0, 100000000])}>Bỏ chọn</Button>
@@ -106,7 +106,7 @@ const SubCategory = ({ products, filters = [], category = {}, page = 1, selected
               <SelectItem key="price:asc">Giá thấp đến cao</SelectItem>
               <SelectItem key="price:desc">Giá cao đến thấp</SelectItem>
             </Select>
-            <Link href={`/${category.slug}?filterId=${filterIds.join(",")}&orderBy=${orderBy}&${getRangeForUrl(value.join("-"))}`}>
+            <Link href={`/${category.slug}?filterId=${filterIds.join(",")}&orderBy=${orderBy}&${getRangeForUrl(value)}`}>
               <Button color="primary">Tìm</Button>
             </Link>
           </div>
@@ -125,7 +125,7 @@ const SubCategory = ({ products, filters = [], category = {}, page = 1, selected
             </div>
             <Pagination className="w-full mx-auto" initialPage={parseInt(page || "1")} total={parseInt(totalPage || "1")} onChange={(newPage) => {
               window.location.href = `/${category.slug}?filterId=${filterIds.join(",")}&orderBy=${orderBy}&page=${newPage}&${getRangeForUrl(value)}`;
-            }}/>
+            }} />
           </>
         )}
       </div>

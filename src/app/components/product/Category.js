@@ -104,7 +104,7 @@ const Category = ({ category, subcates, filters = [], products = [], filterIds =
                         </div>
                       </div>
                       <div className="flex gap-1">
-                      <Link href={`/${category.slug}?filterId=${selectedFilterValues.filter(item => item).join(",")}&orderBy=${orderBy}&${getRangeForUrl(value.join("-"))}`}>
+                        <Link href={`/${category.slug}?filterId=${selectedFilterValues.filter(item => item).join(",")}&orderBy=${orderBy}&${getRangeForUrl(value)}`}>
                           <Button color="primary">Tìm</Button>
                         </Link>
                         <Button variant="ghost" color="danger" onPress={() => setValue([0, 100000000])}>Bỏ chọn</Button>
@@ -123,7 +123,7 @@ const Category = ({ category, subcates, filters = [], products = [], filterIds =
               <SelectItem key="price:asc">Giá thấp đến cao</SelectItem>
               <SelectItem key="price:desc">Giá cao đến thấp</SelectItem>
             </Select>
-            <Link href={`/${category.slug}?filterId=${selectedFilterValues.join(",")}&orderBy=${orderBy}&${getRangeForUrl(value.join("-"))}`}>
+            <Link href={`/${category.slug}?filterId=${selectedFilterValues.join(",")}&orderBy=${orderBy}&${getRangeForUrl(value)}`}>
               <Button color="primary">Tìm</Button>
             </Link>
           </div>
@@ -156,7 +156,7 @@ const CategorySection = ({ products }) => {
       {
         products.length ? <>
           <div className="w-full my-5 grid grid-cols-[repeat(auto-fill,minmax(222px,1fr))] gap-4 p-2">
-            {[...products].splice(0, 20).map((product,i ) => (
+            {[...products].splice(0, 20).map((product, i) => (
               <div key={i} className="h-full hover:opacity-75 [&>div]:mx-auto">
                 <ProductCard product={product} />
               </div>

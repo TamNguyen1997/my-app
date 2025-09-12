@@ -106,7 +106,7 @@ const TabContent = ({ id, product, description, relatedProducts, productsInBundl
     case ID.BUNDLE:
       return (
         <div className="mb-9">
-          <CompactRelatedProducts relatedProducts={productsInBundle} />
+          <CompactRelatedProducts relatedProducts={productsInBundle.map(item => item.product)} />
         </div>
       )
     case ID.RECENTLY_VIEW:

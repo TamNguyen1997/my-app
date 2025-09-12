@@ -19,7 +19,7 @@ const ProductCard = ({ product, compact = false }) => {
           loading="eager"
           priority="true"
         />
-        <div className={`${compact ? "py-2 w-full h-10" : "py-3 w-full h-20"}`}>
+        <div className={`py-3 w-full h-20`}>
           <p
             className={`px-2 grow mx-auto sm:text-base ${compact ? "text-small" : "text-lg"} text-gray-700 line-clamp-2 font-roboto text-center`}>
             {product.name}

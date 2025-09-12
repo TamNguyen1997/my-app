@@ -40,7 +40,7 @@ const ProductCard = ({ product, compact = false }) => {
 
       {!getPrice(product) ? <Button
         className="flex font-bold uppercase bg-gradient-to-b from-[#ffed00] to-[#fff466] rounded-3xl w-[90%] h-8 m-auto"
-        onPress={() => window.open("https://zalo.me/0902366617", "_blank")}>
+        onPress={() => window.open("https://zalo.me/0903802979", "_blank")}>
         Liên hệ
       </Button> : ""}
     </div>

@@ -65,7 +65,7 @@ const PopularBrandCard = ({ products, selectedBrand }) => {
 
   return (
     <div className="lg:grid xl:grid-cols-6 grid-cols-1">
-      <div className="pt-2 col-span-2 bg-yellow-400 shadow-lg rounded-md w-full xl:h-[370px] h-[250px]">
+      <div className="pt-2 col-span-2 bg-yellow-400 shadow-lg rounded-md w-full xl:h-[370px] h-[270px]">
         <div className="flex justify-center">
           {brandDescription[selectedBrand]?.logo && (
             <Link href={`/${brandDescription[selectedBrand].slug}`} className="mx-auto max-h-full">

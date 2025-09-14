@@ -34,8 +34,17 @@ const SecondarySaleDetails = ({ saleDetail }) => {
     <div className="flex flex-col gap-1">
       {product.saleDetails?.filter(item => item.saleDetailId === saleDetail.id).map(detail => (
         <div className="flex" key={detail.id}>
-          <div className="w-10/12">
+          <div className="w-11/12">
             <div className="flex gap-2">
+              <Input
+                type="text"
+                label="SKU"
+                className="w-1/2"
+                defaultValue={detail.sku}
+                aria-label="SKU"
+                isRequired
+                onValueChange={value => handleDetailChange(detail.id, { sku: value }, setProduct)}
+              />
               <Autocomplete
                 label="Filter"
                 placeholder="Tìm filter"
@@ -197,7 +206,7 @@ const SaleDetails = () => {
       </div>
       <div className="flex flex-col gap-4">
         {product.saleDetails?.filter(item => !item.saleDetailId).map(detail => (
-          <div key={detail.id}>
+          <div key={detail.id} className="border border-gray-300 rounded p-2">
             <div className="flex">
               <div className="w-full">
                 <div className="flex gap-2">
@@ -342,7 +351,7 @@ const SaleDetails = () => {
                 </div>
               </div>
             </div>
-            <div className="ml-36 pt-1 flex flex-col gap-1">
+            <div className="ml-20 pt-1 flex flex-col gap-1">
               <SecondarySaleDetails saleDetail={detail} />
             </div>
           </div>

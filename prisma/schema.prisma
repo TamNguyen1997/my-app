@@ -170,7 +170,7 @@ model sale_detail {
   filterValue   filter_value? @relation(fields: [filterValueId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   filterValueId String?       @map("filter_value_id")
 
-  sku              String  @unique
+  sku              String  @unique @default(dbgenerated("gen_random_uuid()"))
   promotionalPrice Int?
   showPrice        Boolean @default(true)
   inStock          Int     @default(0)

@@ -108,17 +108,19 @@ const FilterValueSelect = ({
   const newFilterValueModal = useDisclosure()
   return (
     <>
-      <div className="flex flex-col gap-1 w-full">
+      <div className="flex flex-col gap-1">
         <Autocomplete label="Giá trị filter"
           placeholder="Tìm giá trị filter"
           isDisabled={!getFilter() || !getFilter().id || !categoryId || !brandId || !subCategoryId}
           selectedKey={detail.filterValueId}
+          className="min-w-60"
           onSelectionChange={value => {
             if (value !== "new") {
               onSelectionChange({ filterValueId: value }, detail.id, product, setProduct)
             }
           }}
           size="lg"
+          itemHeight={60}
         >
           <AutocompleteItem
             textValue="Thêm mới"
@@ -136,7 +138,7 @@ const FilterValueSelect = ({
             </AutocompleteItem>)
           }
         </Autocomplete>
-        <p className="text-gray-500 text-xs">{getFilter()?.filterValue?.find(fv => fv.id === detail.filterValueId)?.displayId}</p>
+        {/* <p className="text-gray-500 text-xs">{getFilter()?.filterValue?.find(fv => fv.id === detail.filterValueId)?.displayId}</p> */}
       </div>
 
       <Modal

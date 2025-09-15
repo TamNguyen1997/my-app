@@ -2,13 +2,6 @@
 
 import {
   Button,
-  Link,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  useDisclosure,
 } from "@heroui/react";
 import ImageCms from "../ImageCms";
 import { useState, useRef, useCallback, forwardRef, useEffect } from "react";

@@ -163,7 +163,7 @@ const TabContent = ({ id, product, description, relatedProducts, productsInBundl
 
 const ProductDetailTabs = ({ product, description, relatedProducts, productsInBundle = [] }) => {
   const tabs = [
-    { id: ID.BUNDLE, title: "Sản phẩm đi kèm" },
+    // { id: ID.BUNDLE, title: "Sản phẩm đi kèm" },
     { id: ID.DESCRIPTION, title: "Mô tả" },
     { id: ID.SPECIFICATIONS, title: "Thông số kỹ thuật" },
     { id: ID.RECENTLY_VIEW, title: "Sản phẩm vừa xem" },

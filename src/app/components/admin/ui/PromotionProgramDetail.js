@@ -191,7 +191,7 @@ const PromotionProgramDetail = ({
                   <div className="group" key={index}>
                     <span className="bg-gray-100 text-gray-800 text-sm font-medium me-2 flex p-2.5 rounded-3xl dark:bg-gray-700 dark:text-gray-300">
                       <Link href="#">
-                        {allCategories.find(item => item.id === subCateId)?.name || "Unknown Sub Category"}
+                        {allSubcategories.find(item => item.id === subCateId)?.name || "Unknown Sub Category"}
                       </Link>
                       <span
                         className="hidden group-hover:block animate-vote text-red-500 rounded-full hover:bg-white"

@@ -20,7 +20,7 @@ export async function generateMetadata({ params }) {
     openGraph: {
       title: category?.metaTitle || category?.name,
       description: category?.metaDescription || category?.description,
-      url: `${process.env.NEXT_PUBLIC_DOMAIN}/${category.slug}`,
+      url: `${process.env.NEXT_PUBLIC_DOMAIN}/${category?.slug}`,
       images: [
         {
           url: category?.imageUrl || `${process.env.NEXT_PUBLIC_DOMAIN}/default-category-image.png`,

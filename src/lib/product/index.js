@@ -1,17 +1,20 @@
 const getPrice = (product) => {
-  if (!product.saleDetails?.length) return null
-  const saleDetails = product.saleDetails.filter(item => item.showPrice === true && item.price > 0).sort((a, b) => a.price - b.price)
-  if (!saleDetails.length) return null
-  if (product.saleDetails.length === 1) return (product.saleDetails[0].promotionalPrice || product.saleDetails[0].price).toLocaleString()?.replaceAll(",", ".")
+  if (!product?.saleDetails?.length) return null;
 
-  const filteredSaleDetails = saleDetails.filter(item => item.filterId && item.filterValueId)
-  if (!filteredSaleDetails[0]?.price) return filteredSaleDetails[filteredSaleDetails.length - 1]?.price.toLocaleString()?.replaceAll(",", ".")
-  const promotions = filteredSaleDetails.filter(item => item.promotionalPrice).map(item => item.promotionalPrice)
-  const prices = filteredSaleDetails.map(item => item.price)
-  const display = [...promotions, ...prices].sort()
+  // Build list of effective prices: promotionalPrice if > 0, else base price
+  const effectivePrices = product.saleDetails
+    .filter(detail => detail.showPrice === true && (((detail.promotionalPrice ?? 0) > 0) || ((detail.price ?? 0) > 0)))
+    .map(detail => (detail.promotionalPrice && detail.promotionalPrice > 0) ? detail.promotionalPrice : (detail.price || 0));
 
-  if (display[0] === display[display.length - 1]) return display[0].toLocaleString().replaceAll(",", ".")
-  return <>{`${Math.min(...promotions, ...prices).toLocaleString().replaceAll(",", ".")} - ${Math.max(...promotions, ...prices).toLocaleString().replaceAll(",", ".")}`} </>
+  if (!effectivePrices.length) return null;
+
+  const lowest = Math.min(...effectivePrices);
+  const highest = Math.max(...effectivePrices);
+
+  const format = (n) => n.toLocaleString()?.replaceAll(",", ".");
+
+  if (lowest === highest) return `${format(lowest)}`;
+  return `${format(lowest)} - ${format(highest)}`;
 }
 
 const getOriginalPrice = (product) => {

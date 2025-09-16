@@ -80,7 +80,7 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
           ? selectedDetail
           : saleDetails[0];
 
-    if (!detail) return 0;
+    if (!detail) return null;
     return detail?.promotionalPrice > 0
       ? formatPrice(detail.promotionalPrice)
       : formatPrice(detail.price);
@@ -154,7 +154,7 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
         </p>
       )}
       <p className="text-[32px] font-medium text-[#b61a2d]">
-        {getPrice() > 0 ? `${getPrice()} đ` : ""}
+        {getPrice() && getPrice() !== "0" ? `${getPrice()} đ` : ""}
       </p>
       <p className="text-sm">
         Đã bao gồm VAT, chưa bao gồm phí giao hàng.
@@ -229,14 +229,14 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
         <div className="flex lg:flex-nowrap flex-wrap gap-3 mx-auto">
           <Button
             color="primary"
-            isDisabled={getPrice() <= 0}
+            isDisabled={getPrice() == null || getPrice() === "0"}
             onPress={(evt) => handleAddToCart(evt, true)}
           >
             Mua ngay <ShoppingCart />
           </Button>
           <Button
             color="primary"
-            isDisabled={getPrice() <= 0}
+            isDisabled={getPrice() == null || getPrice() === "0"}
             onPress={(evt) => handleAddToCart(evt)}
           >
             Thêm vào giỏ hàng

@@ -4,47 +4,59 @@ import Image from "next/image"
 import Link from "next/link"
 
 const ProductCard = ({ product, compact = false }) => {
+  const hasPromo = Array.isArray(product?.saleDetails)
+    && product.saleDetails.some(sd => sd?.showPrice && (sd?.promotionalPrice ?? 0) > 0)
+
+  const sizes = compact
+    ? "(max-width: 640px) 45vw, (max-width: 1024px) 25vw, 150px"
+    : "(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 300px"
+
   return (
-    <div className={`group-hover:opacity-50 hover:shadow-md transition bg-white
-    ${compact ? "max-w-[150px] hover:-translate-y-1" : "max-w-[300px] hover:-translate-y-2 border"} flex flex-col h-full`}>
-      <Link
-        href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`}>
-        <Image
-          width={compact ? 100 : 200}
-          height={compact ? 100 : 200}
-          srcSet={`${product.imageUrl}?w=400 400w, ${product.imageUrl}?w=800 800w`}
-          src={product.imageUrl || "/default-featured-image.webp"}
-          alt={product.imageAlt || "Dụng cụ vệ sinh Sao Việt"}
-          className={`flex flex-col ${compact ? "lg:h-[125px] h-[100px]" : "lg:h-[250px] h-[200px]"}  rounded-md overflow-hidden mx-auto`}
-          loading="eager"
-          priority="true"
-        />
-        <div className={`py-3 w-full h-20`}>
-          <p
-            className={`px-2 grow mx-auto sm:text-base ${compact ? "text-small" : "text-lg"} text-gray-700 line-clamp-2 font-roboto text-center`}>
+    <div className={`group transition bg-white rounded-xl border shadow-sm hover:shadow-md ${compact ? "max-w-[170px] hover:-translate-y-1" : "max-w-[300px] hover:-translate-y-2"} flex flex-col h-full duration-200`}>
+      <Link href={`/${product.subCate ? product.subCate.slug : "san-pham"}/${product.slug}`}>
+        <div className={`relative ${compact ? "aspect-[1/1]" : "aspect-[4/3]"} w-full overflow-hidden rounded-t-xl bg-white`}>
+          {hasPromo && (
+            <div className="absolute left-2 top-2 z-10 rounded-md bg-red-500/90 px-2 py-0.5 text-white text-[11px] font-semibold">
+              Sale
+            </div>
+          )}
+          <Image
+            fill
+            sizes={sizes}
+            src={product.imageUrl || "/default-featured-image.webp"}
+            alt={product.imageAlt || "Dụng cụ vệ sinh Sao Việt"}
+            className="object-contain transition-transform duration-300 group-hover:scale-[1.03]"
+            priority={!compact}
+            loading={compact ? "lazy" : "eager"}
+          />
+        </div>
+        <div className="px-2 py-3 w-full min-h-20">
+          <p className={`grow mx-auto sm:text-base ${compact ? "text-small" : "text-[15px] md:text-[16px]"} text-gray-800 line-clamp-2 font-roboto text-center`}>
             {product.name}
           </p>
         </div>
 
         {getPrice(product) ? (
-          <div className={`py-3 ${compact ? "h-10" : "h-14"} w-full`}>
-            <p className="text-red-500 font-bold text-center">{getPrice(product)} đ</p>
+          <div className={`pb-3 ${compact ? "h-10" : "h-14"} w-full`}>
+            <p className="text-red-600 font-bold text-center">{getPrice(product)} đ</p>
             {getOriginalPrice(product) && (
-              <span className="line-through text-red-500 opacity-60 text-small">
-                <p className="font-bold text-center">{getOriginalPrice(product)} đ</p>
+              <span className="block leading-none text-center">
+                <span className="line-through text-red-500/70 text-small font-semibold">{getOriginalPrice(product)} đ</span>
               </span>
             )}
           </div>
         ) : ""}
       </Link>
 
-      {!getPrice(product) ? <Button
-        className="flex font-bold uppercase bg-gradient-to-b from-[#ffed00] to-[#fff466] rounded-3xl w-[90%] h-8 m-auto"
-        onPress={() => window.open("https://zalo.me/0903802979", "_blank")}>
-        Liên hệ
-      </Button> : ""}
+      {!getPrice(product) ? (
+        <Button
+          className="mb-3 mt-auto font-bold uppercase bg-gradient-to-b from-[#ffed00] to-[#fff466] rounded-3xl w-[90%] h-8 mx-auto"
+          onPress={() => window.open("https://zalo.me/0903802979", "_blank")}
+        >
+          Liên hệ
+        </Button>
+      ) : ""}
     </div>
-
   )
 }
 

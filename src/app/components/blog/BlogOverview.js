@@ -68,8 +68,7 @@ const BlogOverview = ({ activeCategory, activeTag }) => {
   const [endContent, setEndContent] = useState(false)
 
   useEffect(() => {
-    const wordpressCateIds = [getCategoryId(activeCategory), getCategoryId(activeTag)]
-    fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&categories=${wordpressCateIds.join()}&per_page=${itemPerPage}&page=${page}&status=publish`)
+    fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&categories=${getCategoryId(activeTag) || getCategoryId(activeCategory)}&per_page=${itemPerPage}&page=${page}&status=publish`)
       .then(res => res.json())
       .then(json => {
         setBlogs([...blogs, ...json])

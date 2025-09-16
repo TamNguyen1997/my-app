@@ -325,3 +325,24 @@ a img.aligncenter {
 :root :where(.wp-block-columns-is-layout-flex) {
   gap: 10px;
 }
+
+/* Responsive iframe wrapper for embeds in blog content */
+.blog-content .responsive-iframe {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  /* 16:9 */
+  height: 0;
+  overflow: hidden;
+  background: #000;
+  border-radius: 8px;
+}
+
+.blog-content .responsive-iframe > iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  border: 0;
+}

@@ -34,6 +34,31 @@ const BlogContent = ({ blog }) => {
         },
       });
     });
+
+    // Make WordPress iframes responsive (e.g., YouTube embeds)
+    const content = document.querySelector('.blog-content .entry-content');
+    if (content) {
+      const iframes = content.querySelectorAll('iframe');
+      iframes.forEach((iframe) => {
+        // Skip if already wrapped
+        if (iframe.closest('.responsive-iframe')) return;
+
+        // Wrap iframe
+        const wrapper = document.createElement('div');
+        wrapper.className = 'responsive-iframe';
+        iframe.parentNode && iframe.parentNode.insertBefore(wrapper, iframe);
+        wrapper.appendChild(iframe);
+
+        // Remove fixed sizing so CSS can control it
+        iframe.removeAttribute('width');
+        iframe.removeAttribute('height');
+        iframe.setAttribute('loading', iframe.getAttribute('loading') || 'lazy');
+        iframe.setAttribute('allowfullscreen', '');
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+        iframe.style.border = '0';
+      });
+    }
   }, [blog]);
 
   return (<>
@@ -56,7 +81,7 @@ const BlogContent = ({ blog }) => {
       className={`blog-content`}
       style={{ "--tw-prose-bullets": "currentColor" }}
     >
-      <div class="entry-content">
+      <div className="entry-content">
         {blog.content ? parse(blog.content.rendered || blog.content) : ""}
       </div>
     </motion.div>

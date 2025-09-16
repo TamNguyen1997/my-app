@@ -43,6 +43,10 @@ const News = async ({ params }) => {
     notFound()
   }
 
+  if (!blog.categories?.includes(Number(process.env.NEXT_PUBLIC_WORDPRESS_POST_NEWS_ID))) {
+    notFound()
+  }
+  
   const jsonLdSchema = {
     '@context': 'https://schema.org',
     '@graph': [

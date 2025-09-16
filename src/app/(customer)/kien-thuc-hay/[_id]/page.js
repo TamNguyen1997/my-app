@@ -43,6 +43,10 @@ const Information = async ({ params }) => {
     notFound()
   }
 
+  if (!blog.categories?.includes(Number(process.env.NEXT_PUBLIC_WORDPRESS_POST_INFORMATION_ID))) {
+    notFound()
+  }
+  
   const relatedBlogRes = await fetch(`${process.env.WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&categories=${blog.categories?.join()}&exclude=${blog.id}&per_page=4&categories_exclude=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID || ""}`)
 
   const jsonLdSchema = {

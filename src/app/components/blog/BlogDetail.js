@@ -71,7 +71,7 @@ const getTitle = (category) => {
   return category === "INFORMATION" ? "Kiến thức hay" : "Tin tức";
 }
 
-const BlogDetail = ({ slug, blog, relatedBlogs = [], category = "INFORMATION" }) => {
+const BlogDetail = ({ blog, relatedBlogs = [], category = "INFORMATION" }) => {
   return (
     <div className="bg-[#f6f6f6] font-open_san">
       <div className="bg-opacity-40 py-6">

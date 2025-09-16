@@ -6,7 +6,6 @@ import { Button, Link } from "@heroui/react";
 import BlogCarousel from "./BlogCarousel";
 import TopBlogs from "./TopBlogs";
 import BlogItem from "./BlogItem";
-import { CATEGORY_TO_WORDPRESS_CATEGORY_ID } from "@/lib/constant";
 
 const itemPerPage = 5
 const blogCategories = [
@@ -45,6 +44,23 @@ const blogCategories = [
   }
 ];
 
+const getCategoryId = (category) => {
+  switch(category) {
+    case "INFORMATION":
+      return process.env.NEXT_PUBLIC_WORDPRESS_POST_INFORMATION_ID;
+    case "NEWS":
+      return process.env.NEXT_PUBLIC_WORDPRESS_POST_NEWS_ID;
+    case "TERMINOLOGY":
+      return process.env.NEXT_PUBLIC_WORDPRESS_POST_TERMINOLOGY_ID;
+    case "ADVISORY":
+      return process.env.NEXT_PUBLIC_WORDPRESS_POST_ADVISORY_ID;
+    case "MANUAL":
+      return process.env.NEXT_PUBLIC_WORDPRESS_POST_MANUAL_ID;
+    default:
+      return null;
+  }
+}
+
 const BlogOverview = ({ activeCategory, activeTag }) => {
   const [blogs, setBlogs] = useState([]);
   const [category, setCategory] = useState({});
@@ -52,7 +68,7 @@ const BlogOverview = ({ activeCategory, activeTag }) => {
   const [endContent, setEndContent] = useState(false)
 
   useEffect(() => {
-    const wordpressCateIds = [CATEGORY_TO_WORDPRESS_CATEGORY_ID[activeCategory], CATEGORY_TO_WORDPRESS_CATEGORY_ID[activeTag]]
+    const wordpressCateIds = [getCategoryId(activeCategory), getCategoryId(activeTag)]
     fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&categories=${wordpressCateIds.join()}&per_page=${itemPerPage}&page=${page}&status=publish`)
       .then(res => res.json())
       .then(json => {

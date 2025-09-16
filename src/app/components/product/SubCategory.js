@@ -1,5 +1,5 @@
 "use client"
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Pagination, Select, SelectItem, Slider } from "@heroui/react";
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Pagination, Select, SelectItem, Slider, Input } from "@heroui/react";
 import { useState } from "react";
 import ProductCard from "@/components/product/ProductCard"
 import Link from "next/link";
@@ -10,6 +10,49 @@ const SubCategory = ({ products, filters = [], category = {}, page = 1, selected
   const [value, setValue] = useState([0, 100000000])
   const [orderBy, setOrderBy] = useState(defaultOrderBy)
   const [filterIds, setFilterIds] = useState([])
+  const [dynamicRanges, setDynamicRanges] = useState([])
+
+  const currency = (v) =>
+    (v || v === 0)
+      ? v.toLocaleString("vi-VN", { style: "currency", currency: "VND", maximumFractionDigits: 0 })
+      : "";
+
+  const getEffectiveMinPrice = (product) => {
+    if (!product?.saleDetails?.length) return null;
+    const visible = product.saleDetails
+      .filter(d => d.showPrice === true && (((d.promotionalPrice ?? 0) > 0) || ((d.price ?? 0) > 0)) )
+      .map(d => (d.promotionalPrice && d.promotionalPrice > 0) ? d.promotionalPrice : (d.price || 0));
+    if (!visible.length) return null;
+    return Math.min(...visible);
+  };
+
+  // Build dynamic range presets based on current products' effective prices
+  if (dynamicRanges.length === 0) {
+    const prices = (data || [])
+      .map(p => getEffectiveMinPrice(p))
+      .filter(p => typeof p === "number" && p > 0)
+      .sort((a, b) => a - b);
+
+    if (prices.length < 4) {
+      setDynamicRanges([
+        { label: "Dưới 2 triệu", range: [0, 2000000] },
+        { label: "2 - 3 triệu", range: [2000000, 3000000] },
+        { label: "3 - 4 triệu", range: [3000000, 4000000] },
+        { label: "Trên 4 triệu", range: [4000000, 100000000] }
+      ])
+    } else {
+      const q = (pct) => prices[Math.min(prices.length - 1, Math.max(0, Math.floor(pct * (prices.length - 1))))];
+      const q1 = q(0.25);
+      const q2 = q(0.5);
+      const q3 = q(0.75);
+      setDynamicRanges([
+        { label: `Dưới ${currency(q1)}`, range: [0, Math.round(q1)] },
+        { label: `${currency(q1)} - ${currency(q2)}`, range: [Math.round(q1), Math.round(q2)] },
+        { label: `${currency(q2)} - ${currency(q3)}`, range: [Math.round(q2), Math.round(q3)] },
+        { label: `Trên ${currency(q3)}`, range: [Math.round(q3), 100000000] }
+      ])
+    }
+  }
 
   return (
     <>
@@ -60,23 +103,16 @@ const SubCategory = ({ products, filters = [], category = {}, page = 1, selected
                     <div className="p-4 flex flex-col gap-2 items-center">
                       <div>
                         <div className="flex flex-wrap gap-2">
-                          <Button variant="ghost" onPress={() => setValue([0, 2000000])}>
-                            Dưới 2 triệu
-                          </Button>
-                          <Button variant="ghost" onPress={() => setValue([2000000, 3000000])}>
-                            Từ 2 - 3 triệu
-                          </Button>
-                          <Button variant="ghost" onPress={() => setValue([3000000, 4000000])}>
-                            Từ 3 - 4 triệu
-                          </Button>
-                          <Button variant="ghost" onPress={() => setValue([4000000, 100000000])}>
-                            Trên 4 triệu
-                          </Button>
+                          {dynamicRanges.map((r, idx) => (
+                            <Button key={idx} variant="ghost" onPress={() => setValue(r.range)}>
+                              {r.label}
+                            </Button>
+                          ))}
                         </div>
                         <div>
                           <Slider
                             label="Mức giá"
-                            step={50}
+                            step={50000}
                             minValue={0}
                             maxValue={100000000}
                             value={value}
@@ -84,6 +120,30 @@ const SubCategory = ({ products, filters = [], category = {}, page = 1, selected
                             formatOptions={{ style: "currency", currency: "VND" }}
                             className="max-w-md m-auto p-3"
                           />
+                          <div className="flex gap-3 justify-center">
+                            <Input
+                              type="number"
+                              label="Tối thiểu"
+                              labelPlacement="outside"
+                              className="max-w-[180px]"
+                              value={`${value[0]}`}
+                              onChange={(e) => {
+                                const next = Math.max(0, Math.min(100000000, Number(e.target.value || 0)));
+                                setValue([Math.min(next, value[1]), value[1]]);
+                              }}
+                            />
+                            <Input
+                              type="number"
+                              label="Tối đa"
+                              labelPlacement="outside"
+                              className="max-w-[180px]"
+                              value={`${value[1]}`}
+                              onChange={(e) => {
+                                const next = Math.max(0, Math.min(100000000, Number(e.target.value || 0)));
+                                setValue([value[0], Math.max(next, value[0])]);
+                              }}
+                            />
+                          </div>
                         </div>
                       </div>
                       <div className="flex gap-1">

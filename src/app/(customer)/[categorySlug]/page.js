@@ -170,42 +170,56 @@ const applyRangeAndOrder = (products, range, orderBy) => {
   let updatedProducts = products
   if (updatedProducts.length > 0 && range?.length > 0) {
     const [min, max] = range.split('-').map(Number);
-    if (max < 100000000) {
-      updatedProducts = updatedProducts.filter(product => {
-        return product.saleDetails?.find(detail => detail.showPrice && detail.price > min && detail.price < max);
-      });
-    }
+    const inRange = (product) => {
+      if (!product.saleDetails?.length) return false;
+      const effectivePrices = product.saleDetails
+        .filter(detail => detail.showPrice && (((detail.promotionalPrice ?? 0) > 0) || ((detail.price ?? 0) > 0)))
+        .map(detail => (detail.promotionalPrice && detail.promotionalPrice > 0) ? detail.promotionalPrice : (detail.price || 0));
+      if (!effectivePrices.length) return false;
+      if (max >= 100000000) {
+        return effectivePrices.some(p => p >= min);
+      }
+      return effectivePrices.some(p => p >= min && p <= max);
+    };
+    updatedProducts = updatedProducts.filter(inRange);
   }
 
   switch (orderBy[0]) {
     case 'price':
-      updatedProducts = updatedProducts.filter(product => product.saleDetails.find(detail => detail.showPrice && (detail.price > 0 || detail.promotionalPrice > 0)))
-      if (orderBy[1] === "asc") {
-        updatedProducts = updatedProducts.sort((a, b) => {
-          const priceA = a.saleDetails.length
-            ? Math.min(...a.saleDetails.map(sd => sd.price).filter(p => p !== null && p !== 0))
-            : Infinity;
-          const priceB = b.saleDetails.length
-            ? Math.min(...b.saleDetails.map(sd => sd.price).filter(p => p !== null && p !== 0))
-            : Infinity;
-          if (priceA === Infinity) return 1;
-          if (priceB === Infinity) return -1;
-          return priceA - priceB;
-        });
-      }
-      if (orderBy[1] === "desc") {
-        updatedProducts = updatedProducts.sort((a, b) => {
-          const priceA = a.saleDetails.length
-            ? Math.max(...a.saleDetails.map(sd => sd.price).filter(p => p !== null))
-            : -Infinity;
-          const priceB = b.saleDetails.length
-            ? Math.max(...b.saleDetails.map(sd => sd.price).filter(p => p !== null))
-            : -Infinity;
-          if (priceA === Infinity) return -1;
-          if (priceB === Infinity) return 1;
-          return priceB - priceA;
-        });
-      }
+      const getEffectivePrices = (product) => {
+        if (!product.saleDetails?.length) return [];
+        return product.saleDetails
+          .filter(detail => detail.showPrice && ((detail.promotionalPrice ?? 0) > 0 || (detail.price ?? 0) > 0))
+          .map(detail => {
+            const promo = detail.promotionalPrice ?? 0;
+            const base = detail.price ?? 0;
+            return promo > 0 ? promo : base;
+          });
+      };
+
+      const compareAsc = (a, b) => {
+        const pricesA = getEffectivePrices(a);
+        const pricesB = getEffectivePrices(b);
+        const hasPriceA = pricesA.length > 0 ? 0 : 1;
+        const hasPriceB = pricesB.length > 0 ? 0 : 1;
+        if (hasPriceA !== hasPriceB) return hasPriceA - hasPriceB; // items without price go last
+        const minA = pricesA.length ? Math.min(...pricesA) : Number.POSITIVE_INFINITY;
+        const minB = pricesB.length ? Math.min(...pricesB) : Number.POSITIVE_INFINITY;
+        return minA - minB;
+      };
+
+      const compareDesc = (a, b) => {
+        const pricesA = getEffectivePrices(a);
+        const pricesB = getEffectivePrices(b);
+        const hasPriceA = pricesA.length > 0 ? 0 : 1;
+        const hasPriceB = pricesB.length > 0 ? 0 : 1;
+        if (hasPriceA !== hasPriceB) return hasPriceA - hasPriceB; // items without price go last
+        const maxA = pricesA.length ? Math.max(...pricesA) : Number.NEGATIVE_INFINITY;
+        const maxB = pricesB.length ? Math.max(...pricesB) : Number.NEGATIVE_INFINITY;
+        return maxB - maxA;
+      };
+
+      updatedProducts = updatedProducts.sort(orderBy[1] === 'asc' ? compareAsc : compareDesc);
       break;
     case 'createdAt':
     default:

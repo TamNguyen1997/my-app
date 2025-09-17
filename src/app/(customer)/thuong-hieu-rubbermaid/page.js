@@ -40,7 +40,7 @@ const jsonLdSchema = {
 export default async function Page({ searchParams }) {
   let { filterId, range, orderBy } = searchParams || {};
   const filterIds = filterId?.split(",").filter(item => item) || [];
-  orderBy = orderBy?.split(":") || ['createdAt', 'desc'];
+  orderBy = orderBy?.split(":");
   const brand = await db.brand.findFirst({ where: { slug: 'thuong-hieu-rubbermaid' } })
   if (!brand) {
     notFound()
@@ -93,7 +93,8 @@ export default async function Page({ searchParams }) {
     }
   })
 
-  products = applyRangeAndOrder(products, range, orderBy);
+  products = applyRange(products, range);
+  products = applyOrder(products, orderBy);
 
   return (<>
     <script
@@ -104,9 +105,9 @@ export default async function Page({ searchParams }) {
   </>)
 }
 
-const applyRangeAndOrder = (products, range, orderBy) => {
+const applyRange = (products, range) => {
   let updatedProducts = products
-  if (updatedProducts.length > 0 && range?.length > 0) {
+  if (updatedProducts.length > 0 && typeof range === 'string' && range.length > 0) {
     const [min, max] = range.split('-').map(Number);
     const inRange = (product) => {
       if (!product.saleDetails?.length) return false;
@@ -121,7 +122,12 @@ const applyRangeAndOrder = (products, range, orderBy) => {
     };
     updatedProducts = updatedProducts.filter(inRange);
   }
+  return updatedProducts;
+}
 
+const applyOrder = (products, orderBy) => {
+  if (!Array.isArray(orderBy) || orderBy.length === 0) return products;
+  let updatedProducts = products
   switch (orderBy[0]) {
     case 'price': {
       const getEffectivePrices = (product) => {
@@ -157,16 +163,15 @@ const applyRangeAndOrder = (products, range, orderBy) => {
         return maxB - maxA;
       };
 
-      updatedProducts = updatedProducts.sort(orderBy[1] === 'asc' ? compareAsc : compareDesc);
+      updatedProducts = [...updatedProducts].sort(orderBy[1] === 'asc' ? compareAsc : compareDesc);
       break;
     }
     case 'createdAt':
     default:
-      updatedProducts = updatedProducts.sort((a, b) => {
+      updatedProducts = [...updatedProducts].sort((a, b) => {
         return orderBy[1] === 'asc' ? new Date(a.createdAt) - new Date(b.createdAt) : new Date(b.createdAt) - new Date(a.createdAt);
       });
       break;
   }
-
   return updatedProducts;
 }

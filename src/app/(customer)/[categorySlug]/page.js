@@ -49,7 +49,7 @@ const Page = async ({ params, searchParams }) => {
   if (!category) {
     return <CategoryNotFound />
   }
-  orderBy = orderBy?.split(":") || ['createdAt', 'desc'];
+  orderBy = orderBy?.split(":");
   const filters = (await db.filter.findMany({
     where: {
       active: true,
@@ -124,7 +124,8 @@ const CategoryPage = async ({category, filters, filterIds, range, orderBy}) => {
   })
 
   const subCategories = products.map(product => product.subCate)
-  products = applyRangeAndOrder(products, range, orderBy);
+  products = applyRange(products, range);
+  products = applyOrder(products, orderBy);
 
   return <Category category={category} subcates={subCategories} filters={filters} products={products} filterIds={filterIds} defaultOrderBy={orderBy?.join(":")}/>
 }
@@ -161,14 +162,15 @@ const SubCategoryPage = async ({category, filterIds, range, page, orderBy, filte
 
   const total = products.length;
   const totalPage = Math.ceil(total / ITEM_PER_PAGE);
-  products = applyRangeAndOrder(products, range, orderBy);
+  products = applyRange(products, range);
+  products = applyOrder(products, orderBy);
   products = products.slice((page - 1) * ITEM_PER_PAGE, page * ITEM_PER_PAGE);
   return <SubCategory category={category} products={products} filters={filters.filter(item => item.filterValue.length > 0)} selectedFilterIds={filterIds} defaultOrderBy={orderBy?.join(":")} page={page} totalPage={totalPage}/> 
 }
 
-const applyRangeAndOrder = (products, range, orderBy) => {
+const applyRange = (products, range) => {
   let updatedProducts = products
-  if (updatedProducts.length > 0 && range?.length > 0) {
+  if (updatedProducts.length > 0 && typeof range === 'string' && range.length > 0) {
     const [min, max] = range.split('-').map(Number);
     const inRange = (product) => {
       if (!product.saleDetails?.length) return false;
@@ -183,7 +185,12 @@ const applyRangeAndOrder = (products, range, orderBy) => {
     };
     updatedProducts = updatedProducts.filter(inRange);
   }
+  return updatedProducts;
+}
 
+const applyOrder = (products, orderBy) => {
+  if (!Array.isArray(orderBy) || orderBy.length === 0) return products;
+  let updatedProducts = products
   switch (orderBy[0]) {
     case 'price':
       const getEffectivePrices = (product) => {
@@ -219,16 +226,15 @@ const applyRangeAndOrder = (products, range, orderBy) => {
         return maxB - maxA;
       };
 
-      updatedProducts = updatedProducts.sort(orderBy[1] === 'asc' ? compareAsc : compareDesc);
+      updatedProducts = [...updatedProducts].sort(orderBy[1] === 'asc' ? compareAsc : compareDesc);
       break;
     case 'createdAt':
     default:
-      updatedProducts = updatedProducts.sort((a, b) => {
+      updatedProducts = [...updatedProducts].sort((a, b) => {
         return orderBy[1] === 'asc' ? new Date(a.createdAt) - new Date(b.createdAt) : new Date(b.createdAt) - new Date(a.createdAt);
       });
       break;
   }
-
   return updatedProducts;
 }
 

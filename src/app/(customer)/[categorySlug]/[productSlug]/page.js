@@ -46,6 +46,15 @@ const Page = async ({ params }) => {
           filterValue: true,
           sale_detail_on_image: true,
           technical_detail_for_sale_detail: true,
+          filter_value_on_sale_detail: {
+            include: {
+              filterValue: {
+                include: {
+                  filter: true
+                }
+              }
+            }
+          },
           promotionProgram: true
         }
       },

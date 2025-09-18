@@ -4,21 +4,25 @@ import { ProductDetailContext } from "./product/ProductDetail";
 
 const TechnicalDetail = ({ data = [] }) => {
   const { selectedSaleDetail } = useContext(ProductDetailContext);
+  const productTechnical = data.map(item => {
+    return {
+      id: v4(),
+      filter: item.filter?.name,
+      filterValue: item.filterValue?.value
+    }
+  })
+
+  const filterValueOnSaleDetail = (selectedSaleDetail?.filter_value_on_sale_detail || []).map(item => {
+    return {
+      id: v4(),
+      filter: item?.filterValue?.filter?.name,
+      filterValue: item?.filterValue?.value
+    }
+  })
+
   const result = [
-    ...data.map(item => {
-      return {
-        id: v4(),
-        filter: item.filter?.name,
-        filterValue: item.filterValue?.value
-      }
-    }),
-    ...(JSON.parse(selectedSaleDetail?.technical_detail_for_sale_detail ? selectedSaleDetail?.technical_detail_for_sale_detail[0]?.technicalDetails || "[]" : "[]")?.map(item => {
-      return {
-        id: item.id,
-        filter: item.key,
-        filterValue: item.value
-      }
-    }) || [])
+    ...productTechnical,
+    ...filterValueOnSaleDetail
   ]
 
   return (<>

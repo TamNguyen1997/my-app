@@ -218,7 +218,7 @@ const History = ({ totalProducts = 0, totalSaleDetails = 0, totalTechnicalDetail
             <Button
               type="button"
               color="success"
-              onClick={() => inputRef.current.click()}
+              onPress={() => inputRef.current.click()}
               endContent={<UploadIcon />}
             >
               Import

@@ -17,11 +17,34 @@ const Page = async ({ params }) => {
 
   const technicalDetails = JSON.parse(technical_detail_for_sale_detail?.technicalDetails || "[]")
 
+  const filterValueOnSaleDetail = await db.filter_value_on_sale_detail.findMany({
+    where: {
+      saleDetailId: saleDetailId
+    },
+    include: {
+      filterValue: {
+        include: {
+          filter: true
+        }
+      }
+    }
+  })
+
+  const allFilters = await db.filter.findMany({
+    include: {
+      filterValue: true
+    }
+  })
+
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">Thông số kĩ thuật {saleDetailId}</h1>
+      <h1 className="text-2xl font-bold">Thông số kĩ thuật</h1>
       <div className="flex flex-col gap-4">
-        <TechnicalDetailForSaleDetail technicalDetails={technicalDetails} productId={id} saleDetailId={saleDetailId} />
+        <TechnicalDetailForSaleDetail 
+          allFilters={allFilters}
+          filterValueOnSaleDetail={filterValueOnSaleDetail}
+          productId={id} 
+          saleDetailId={saleDetailId} />
       </div>
     </div>
   );

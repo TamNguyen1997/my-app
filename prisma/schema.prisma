@@ -146,6 +146,20 @@ model technical_detail_for_sale_detail {
   @@index([saleDetailId])
 }
 
+model filter_value_on_sale_detail {
+  id            String       @id @default(dbgenerated("gen_random_uuid()"))
+  filterValueId String       @map("filter_value_id")
+  filterValue   filter_value @relation(fields: [filterValueId], references: [id])
+  saleDetailId  String       @map("sale_detail_id")
+  saleDetail    sale_detail  @relation(fields: [saleDetailId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@index([filterValueId])
+  @@index([saleDetailId])
+}
+
 enum sale_detail_type {
   COLOR
   TEXT
@@ -181,6 +195,7 @@ model sale_detail {
   technical_detail_for_sale_detail technical_detail_for_sale_detail[]
   promotionProgram                 promotion_program?                 @relation(fields: [promotionProgramId], references: [id])
   promotionProgramId               String?                            @map("promotion_program_id")
+  filter_value_on_sale_detail      filter_value_on_sale_detail[]
 
   @@index([productId])
   @@index([saleDetailId])
@@ -230,10 +245,11 @@ model filter_value {
 
   active Boolean @default(false)
 
-  technicalDetails         technical_detail[]
-  saleDetails              sale_detail[]
-  brand_on_filter_value    brand_on_filter_value[]
-  category_on_filter_value category_on_filter_value[]
+  technicalDetails            technical_detail[]
+  saleDetails                 sale_detail[]
+  brand_on_filter_value       brand_on_filter_value[]
+  category_on_filter_value    category_on_filter_value[]
+  filter_value_on_sale_detail filter_value_on_sale_detail[]
 
   @@index([filterId])
 }

@@ -7,6 +7,8 @@ import slugify from "slugify"
 import crypto from "crypto";
 import { v4 } from "uuid"
 
+import { importTechnicalDetail } from "./technicalDetails"
+
 async function validateProduct(cateId, subCateId, brandId) {
   const [cate, subCate, brand] = await Promise.all([
     db.category.findUnique({ where: { id: cateId } }),
@@ -20,24 +22,6 @@ async function validateProduct(cateId, subCateId, brandId) {
     isCateValid: !!cate,
     isSubCateValid: !!subCate,
     isBrandValid: !!brand,
-  }
-}
-
-async function validateImportTechnicalDetail(
-  productId,
-  filterId,
-  filterValueId
-) {
-  const [product, filter, filterValue] = await Promise.all([
-    db.product.findUnique({ where: { id: productId } }),
-    db.filter.findUnique({ where: { displayId: filterId } }),
-    db.filter_value.findUnique({ where: { displayId: filterValueId } }),
-  ])
-
-  return {
-    isProductValid: !!product,
-    isFilterValid: !!filter,
-    isFilterValueValid: !!filterValue,
   }
 }
 
@@ -151,99 +135,6 @@ async function importProduct(worksheet) {
             },
           })
         }
-      } catch (error) {
-        console.log(error)
-        throw new Error(IMPORT_MESSAGE.DATABASE_ERROR)
-      }
-    }
-  })
-
-  return { success: true }
-}
-
-async function importTechnicalDetail(worksheet) {
-  const requiredColumnIndexes = {
-    productId: 0,
-    filterId: 1,
-    filterValueId: 2,
-  }
-
-  await db.$transaction(async tx => {
-    for (const [index, row] of worksheet.entries()) {
-      const rowData = Object.values(row)
-
-      const isAllRequiredData = Object.values(requiredColumnIndexes).every(
-        (colIndex) =>
-          rowData[colIndex] !== undefined &&
-          rowData[colIndex] !== null &&
-          rowData[colIndex] !== ""
-      )
-
-      if (!isAllRequiredData) {
-        throw new Error(
-          `"Line ${index + 1}": ${IMPORT_MESSAGE.MISSING_REQUIRED_DATA}`
-        )
-      }
-
-      const productId = rowData[requiredColumnIndexes.productId].toString()
-      const filterId = rowData[requiredColumnIndexes.filterId].toString()
-      const filterValueId = rowData[requiredColumnIndexes.filterValueId].toString()
-
-      const { isProductValid, isFilterValid, isFilterValueValid } =
-        await validateImportTechnicalDetail(productId, filterId, filterValueId)
-
-      if (!isProductValid) {
-        throw new Error(
-          `"Line ${index + 1}": ${IMPORT_MESSAGE.PRODUCT_NOT_FOUND}`
-        )
-      }
-
-      if (!isFilterValid) {
-        throw new Error(`"Line ${index + 1}": ${IMPORT_MESSAGE.FILTER_NOT_FOUND}`)
-      }
-
-      if (!isFilterValueValid) {
-        throw new Error(
-          `"Line ${index + 1}": ${IMPORT_MESSAGE.FILTER_VALUE_NOT_FOUND}`
-        )
-      }
-
-      const filter = await tx.filter.findUnique({
-        where: { displayId: filterId }
-      })
-
-      const filterValue = await tx.filter_value.findUnique({
-        where: { displayId: filterValueId }
-      })
-
-      const existingRecord = await tx.technical_detail.findFirst({
-        where: {
-          productId: productId,
-          filterId: filterId,
-          filterValueId: filterValueId,
-        },
-      })
-
-      if (existingRecord) {
-        continue
-      }
-
-      const dataObj = {
-        product: {
-          connect: { id: productId },
-        },
-        filter: {
-          connect: { id: filter.id },
-        },
-        filterValue: {
-          connect: { id: filterValue.id },
-        },
-      }
-
-      try {
-        await tx.technical_detail.create({
-          data: dataObj,
-        })
       } catch (error) {
         console.log(error)
         throw new Error(IMPORT_MESSAGE.DATABASE_ERROR)

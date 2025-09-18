@@ -14,7 +14,7 @@ const blogCategories = {
 }
 
 const getParentCategory = (blog) => {
-  if (blog.categories.includes(process.env.NEXT_PUBLIC_WORDPRESS_POST_NEWS_ID)) {
+  if (blog.categories.includes(Number(process.env.NEXT_PUBLIC_WORDPRESS_POST_NEWS_ID))) {
     return "NEWS"
   }
   return "INFORMATION"

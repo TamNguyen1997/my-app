@@ -136,7 +136,7 @@ const BlogOverview = ({ activeCategory, activeTag }) => {
                                 ${tag.id === activeTag && 'bg-black text-white'}
                               `}
                         key={tag.id}
-                        href={`/kien-thuc-hay/${tag.slug}`}
+                        href={`/${activeCategory === "INFORMATION" ? "kien-thuc-hay" : "tin-tuc"}/${tag.slug}`}
                       >
                         {tag.title}
                       </Link>
@@ -158,7 +158,7 @@ const BlogOverview = ({ activeCategory, activeTag }) => {
               {!endContent && <Button
                 className="flex justify-center items-center font-semibold w-[181px] h-[43px] rounded-[30px] text-black bg-white
                 border border-black hover:bg-[#FFD400] transition mx-auto text-large"
-                onClick={() => setPage(page + 1)}
+                onPress={() => setPage(page + 1)}
               >
                 Xem thêm
               </Button>}

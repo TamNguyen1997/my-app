@@ -8,6 +8,7 @@ import { ProductContext } from "../../../../(admin)/admin/product/edit/[id]/defa
 import crypto from "crypto";
 import Link from "next/link";
 import SaleDetailImages from '@/app/components/admin/ui/product/SaleDetailImages'
+import FullscreenModal from '@/app/components/admin/ui/common/FullscreenModal'
 
 const removeItem = (id, setProduct) => {
   if (!window.confirm("Bạn có chắc chắn muốn xóa thông số này?")) return;
@@ -330,23 +331,16 @@ const SaleDetails = () => {
               </div>
             </div>
           ))}
-          <Modal
-            isOpen={imageDetailModal.isOpen}
-            size="full"
-            onOpenChange={imageDetailModal.onOpenChange}>
-            <ModalContent>
-              {(onClose) => (
-                <>
-                  <SaleDetailImages productId={selectedProductId} saleDetail={selectDetail} />
-                  <ModalFooter>
-                    <Button color="danger" variant="light" onPress={onClose}>
-                      Đóng
-                    </Button>
-                  </ModalFooter>
-                </>
-              )}
-            </ModalContent>
-          </Modal>
+          <FullscreenModal isOpen={imageDetailModal.isOpen} onClose={imageDetailModal.onClose}>
+            <div className="flex-1">
+              <SaleDetailImages productId={selectedProductId} saleDetail={selectDetail} />
+            </div>
+            <div className="p-4 border-t flex justify-end">
+              <Button color="danger" variant="light" onPress={imageDetailModal.onClose}>
+                Đóng
+              </Button>
+            </div>
+          </FullscreenModal>
         </div>
       </div>
     </>

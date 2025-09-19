@@ -215,7 +215,6 @@ const PromotionProgramDetail = ({
                 allProducts.filter(item => !selectedProductIds.includes(item.id)).map((product, i) => (
                   <AutocompleteItem key={product.id} aria-label={product.name} label={product.name}>
                     <p>{product.name}</p>
-                    <p className="text-sm">{product.slug}</p>
                   </AutocompleteItem>
                 ))
               }
@@ -250,7 +249,6 @@ const PromotionProgramDetail = ({
                 allSaleDetails.filter(item => !selectedSaleDetailIds.includes(item.id)).map((saleDetail, i) => (
                   <AutocompleteItem key={saleDetail.id} aria-label={saleDetail.sku} label={saleDetail.sku}>
                     <p>{saleDetail.sku}</p>
-                    <p className="text-sm">{saleDetail.sku}</p>
                   </AutocompleteItem>
                 ))
               }

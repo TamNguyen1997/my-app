@@ -202,7 +202,7 @@ async function importSaleDetail(worksheet) {
     const filterValueId = rowData[6]
 
     if (filterId) {
-      const filter = await tx.filter.findUnique({
+      const filter = await tx.filter.findFirst({
         where: { OR: [{id: filterId }, {displayId: filterId }] },
       })
 
@@ -218,7 +218,7 @@ async function importSaleDetail(worksheet) {
     }
 
     if (filterValueId) {
-      const filterValue = await tx.filter_value.findUnique({
+      const filterValue = await tx.filter_value.findFirst({
         where: { OR: [{id: filterValueId }, {displayId: filterValueId }] },
       })
 

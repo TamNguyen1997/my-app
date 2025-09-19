@@ -338,11 +338,20 @@ a img.aligncenter {
   border-radius: 8px;
 }
 
-.blog-content .responsive-iframe > iframe {
+.blog-content .responsive-iframe iframe {
   position: absolute;
   top: 0;
   left: 0;
   width: 100% !important;
   height: 100% !important;
+  border: 0;
+}
+
+/* Center standalone iframes inside blog content */
+.blog-content iframe {
+  display: block;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
   border: 0;
 }

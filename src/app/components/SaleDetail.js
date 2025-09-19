@@ -38,11 +38,14 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
       promotion = selectedSecondaryDetail.promotionProgram?.promotion
     } else if (selectedDetail.promotionProgram?.active && selectedDetail.promotionProgram?.promotion) {
       promotion = selectedDetail.promotionProgram?.promotion
+    } else if (product.promotionProgram?.promotion && product.promotionProgram?.active) {
+      promotion = product.promotionProgram?.promotion
     } else if (product.subCate?.promotionProgram?.promotion && product.subCate?.promotionProgram?.active) {
       promotion = product.subCate?.promotionProgram?.promotion
     } else if (product.category?.promotionProgram?.promotion && product.category?.promotionProgram?.active) {
       promotion = product.category?.promotionProgram?.promotion
     }
+
     if (!promotion) return [];
     const matches = promotion.match(/<p\b[^>]*>[\s\S]*?<\/p>/gi) || [];
     return matches.map(item => item.replace(/<(\w+)[^>]*>\s*<\/\1>/g, '')).filter(item => item.length > 0);

@@ -123,7 +123,14 @@ const CategoryPage = async ({category, filters, filterIds, range, orderBy}) => {
     }
   })
 
-  const subCategories = products.map(product => product.subCate)
+  const subCategories = Array.from(
+    new Map(
+      products
+        .map(p => p.subCate)
+        .filter(Boolean)
+        .map(sc => [sc.id, sc])
+    ).values()
+  );
   products = applyRange(products, range);
   products = applyOrder(products, orderBy);
 

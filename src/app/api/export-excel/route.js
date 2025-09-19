@@ -126,12 +126,12 @@ const extractTechnicalDetailData = async (start, end) => {
       updatedAt: true,
       filter: {
         select: {
-          displayId: true,
+          id: true,
         },
       },
       filterValue: {
         select: {
-          displayId: true,
+          id: true,
         },
       },
     },
@@ -149,8 +149,8 @@ const extractTechnicalDetailData = async (start, end) => {
   const data = result.map((el) => ({
     "ID thông số kỹ thuật": el.id,
     "ID SP": el.productId,
-    "ID bộ lọc": el.filter?.displayId,
-    "ID giá trị bộ lọc": el.filterValue?.displayId,
+    "ID bộ lọc": el.filter?.id,
+    "ID giá trị bộ lọc": el.filterValue?.id,
     "Ngày tạo": el.createdAt?.toLocaleString(),
     "Ngày cập nhật": el.updatedAt?.toLocaleString()
   }));
@@ -186,12 +186,12 @@ const extractSaleDetailData = async (start, end) => {
       },
       filter: {
         select: {
-          displayId: true,
+          id: true,
         },
       },
       filterValue: {
         select: {
-          displayId: true,
+          id: true,
         },
       },
     },
@@ -217,8 +217,8 @@ const extractSaleDetailData = async (start, end) => {
     "Giá bán thường": el.price,
     "Giá khuyến mãi": el.promotionalPrice,
     "Giá liên hệ": el.showPrice ? "T" : "F",
-    "ID filter": el.filter?.displayId,
-    "ID giá trị filter": el.filterValue?.displayId,
+    "ID filter": el.filter?.id,
+    "ID giá trị filter": el.filterValue?.id,
     "SL tồn kho": el.inStock,
     "SKU chính": el.saleDetailId ? el.saleDetail?.sku : "",
     "Ngày tạo": el.createdAt?.toLocaleString(),

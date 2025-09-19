@@ -156,6 +156,7 @@ async function importSaleDetail(worksheet) {
   const skuIndex = 1
   const parentSaleSkuColumnIndex = 8
 
+  await db.$transaction(async tx => {
   for (const [index, row] of worksheet.entries()) {
     const rowData = Object.values(row)
     const isAllRequiredData = Object.values(requiredColumnIndexes).every(
@@ -178,9 +179,8 @@ async function importSaleDetail(worksheet) {
     const inStock = rowData[requiredColumnIndexes.inStock]
     const parentSaleDetailSku = rowData[parentSaleSkuColumnIndex]
 
-    const { isProductValid } = await validateImportSaleDetail(productId)
-
-    if (!isProductValid) {
+    const product = await tx.product.findUnique({ where: { id: productId } })
+    if (!product) {
       throw new Error(
         `"Line ${index + 1}": ${IMPORT_MESSAGE.PRODUCT_NOT_FOUND}`
       )
@@ -202,8 +202,8 @@ async function importSaleDetail(worksheet) {
     const filterValueId = rowData[6]
 
     if (filterId) {
-      const filter = await db.filter.findUnique({
-        where: { displayId: filterId },
+      const filter = await tx.filter.findUnique({
+        where: { OR: [{id: filterId }, {displayId: filterId }] },
       })
 
       if (!filter) {
@@ -218,8 +218,8 @@ async function importSaleDetail(worksheet) {
     }
 
     if (filterValueId) {
-      const filterValue = await db.filter_value.findUnique({
-        where: { displayId: filterValueId },
+      const filterValue = await tx.filter_value.findUnique({
+        where: { OR: [{id: filterValueId }, {displayId: filterValueId }] },
       })
 
       if (!filterValue) {
@@ -234,7 +234,7 @@ async function importSaleDetail(worksheet) {
     }
 
     if (parentSaleDetailSku) {
-      const parentSaleDetail = await db.sale_detail.findUnique({
+      const parentSaleDetail = await tx.sale_detail.findUnique({
         where: { sku: parentSaleDetailSku },
       })
       if (!parentSaleDetail) {
@@ -249,10 +249,10 @@ async function importSaleDetail(worksheet) {
     }
 
     try {
-      if (await db.sale_detail.findUnique({ where: { sku: dataObj.sku } })) {
-        await db.sale_detail.update({ where: { sku: dataObj.sku }, data: dataObj })
+      if (await tx.sale_detail.findUnique({ where: { sku: dataObj.sku } })) {
+        await tx.sale_detail.update({ where: { sku: dataObj.sku }, data: dataObj })
       } else {
-        await db.sale_detail.create({ data: dataObj })
+        await tx.sale_detail.create({ data: dataObj })
       }
     } catch (error) {
       console.error(`Error importing sale detail at line ${index + 1}`)
@@ -260,6 +260,7 @@ async function importSaleDetail(worksheet) {
       throw new Error(IMPORT_MESSAGE.DATABASE_ERROR)
     }
   }
+  })
 
   return { success: true }
 }

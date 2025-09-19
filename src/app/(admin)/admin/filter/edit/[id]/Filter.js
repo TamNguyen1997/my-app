@@ -48,10 +48,10 @@ const Filter = () => {
           <Input
             type="text"
             label="ID filter"
-            defaultValue={filter.displayId}
+            defaultValue={filter.id}
             labelPlacement="outside-left"
             className="[&_label]:grow"
-            onValueChange={(value) => setFilter(Object.assign(filter, { displayId: value }))}
+            readOnly
           />
 
           <Input

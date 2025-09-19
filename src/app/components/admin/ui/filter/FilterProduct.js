@@ -19,7 +19,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
   }
   const tableHeaders = [
     {
-      key: "displayId",
+      key: "id",
       title: "ID giá trị filter",
       required: false
     },
@@ -97,7 +97,6 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
         fetch(`/api/filters/${filterId}`, {
           method: "PUT",
           body: JSON.stringify({
-            displayId: filter.displayId,
             active: filter.active,
             name: filter.name,
           })
@@ -219,8 +218,8 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
                     <tr key={i}>
                       <td scope="row" className="px-2 py-2 min-w-[80px]">
                         <Input
-                          defaultValue={item?.displayId}
-                          onValueChange={(value) => onCellValueChange(item?.id, { displayId: value })}
+                          defaultValue={item?.id}
+                          readOnly
                           className="min-w-[80px]"
                         />
                       </td>

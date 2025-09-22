@@ -177,7 +177,7 @@ const getHighlightCatesWithProducts = async () => {
 
 const getBlogs = async () => {
   let blogs = []
-  const res = await fetch(`${process.env.WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&per_page=3&categories_exclude=${process.env.WORDPRESS_PRODUCT_CATEGORY_ID || ""}`)
+  const res = await fetch(`${process.env.WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&per_page=3&categories=${process.env.NEXT_PUBLIC_WORDPRESS_POST_NEWS_ID || ""}`)
   if (res.ok) blogs = await res.json()
   return blogs
 }

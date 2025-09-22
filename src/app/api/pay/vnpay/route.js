@@ -12,7 +12,11 @@ export async function POST(req) {
     priceList.forEach(price => {
       totalPrice += parseInt(price)
     })
-    totalPrice += parseInt(body["shipping_costs"])
+
+    if (totalPrice < 2000000) {
+      totalPrice += parseInt(body["shipping_costs"])
+    }
+    
     const info = `OrId${body.orderId}`
 
     if (!info) {

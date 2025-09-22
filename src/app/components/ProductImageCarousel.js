@@ -43,6 +43,7 @@ const ProductImageCarousel = ({ items = [], mainImage, selectedSaleDetailImage }
 								sizes="(max-width: 640px) 72px, 96px"
 								className={`p-1 sm:p-2 cursor-pointer ${hoverImage === item ? 'border-red-500 border-2' : ''}`}
 								onClick={() => setHoverImage(item)}
+								onMouseOver={() => setHoverImage(item)}
 								alt="Dụng cụ vệ sinh Sao Việt"
 							/>
 						</div>

@@ -213,15 +213,19 @@ const SaleDetails = () => {
               <div className="flex">
                 <div className="w-full">
                   <div className="flex gap-2">
-                    <Input
-                      type="text"
-                      label={product.saleDetails.find(item => item.saleDetailId === detail.id) ? `UUID` : "SKU"}
-                      defaultValue={detail.sku}
-                      aria-label="SKU"
-                      isRequired
-                      className={product.saleDetails.find(item => item.saleDetailId === detail.id) ? "w-[165rem]" : "50rem"}
-                      onValueChange={value => handleDetailChange(detail.id, { sku: value }, setProduct)}
-                    />
+                    {
+                      !product.saleDetails.some(item => item.saleDetailId === detail.id) && (
+                        <Input
+                          type="text"
+                          label="SKU"
+                          defaultValue={detail.sku}
+                          aria-label="SKU"
+                          isRequired
+                          className="w-[50rem]"
+                          onValueChange={value => handleDetailChange(detail.id, { sku: value }, setProduct)}
+                        />
+                      )
+                    }
                     <div className="flex flex-col w-full gap-1">
                       <Autocomplete
                         label="Filter"

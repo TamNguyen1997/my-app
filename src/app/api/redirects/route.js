@@ -2,6 +2,17 @@ import { NextResponse } from 'next/server';
 import queryString from 'query-string';
 import { db } from '@/app/db';
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+export const fetchCache = 'force-no-store'
+
+const noStoreHeaders = {
+  'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+  'Pragma': 'no-cache',
+  'Expires': '0',
+  'Surrogate-Control': 'no-store'
+}
+
 export async function GET(req) {
   let page = 1
   let size = 10
@@ -30,10 +41,16 @@ export async function GET(req) {
       redirectLists = redirectLists.splice((page - 1) * size, size)
     }
 
-    return NextResponse.json({ redirects: redirectLists, total: Object.values(redirectLists).length })
+    return NextResponse.json(
+      { redirects: redirectLists, total: Object.values(redirectLists).length },
+      { headers: noStoreHeaders }
+    )
   } catch (e) {
     console.log(e)
-    return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
+    return NextResponse.json(
+      { message: "Something went wrong", error: e },
+      { status: 400, headers: noStoreHeaders }
+    )
   }
 }
 
@@ -45,9 +62,12 @@ export async function PUT(req) {
     await db.redirect.deleteMany({})
     await db.redirect.create({ data: { redirect: updatedData } })
 
-    return NextResponse.json({ mesage: "Success" }, { status: 200 })
+    return NextResponse.json({ mesage: "Success" }, { status: 200, headers: noStoreHeaders })
   } catch (e) {
     console.log(e)
-    return NextResponse.json({ message: "Something went wrong", error: e }, { status: 400 })
+    return NextResponse.json(
+      { message: "Something went wrong", error: e },
+      { status: 400, headers: noStoreHeaders }
+    )
   }
 }

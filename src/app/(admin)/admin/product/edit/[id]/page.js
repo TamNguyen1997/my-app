@@ -50,6 +50,24 @@ const Page = async ({ params }) => {
   const filters = await db.filter.findMany({
     include: {
       filterValue: {
+        where: {
+          OR: [
+            {
+              category_on_filter_value: {
+                some: {
+                  categoryId: product?.subCateId || product?.categoryId
+                }
+              }
+            },
+            {
+              category_on_filter_value: {
+                some: {
+                  categoryId: product?.subCateId || product?.categoryId
+                }
+              }
+            }
+          ]
+        },
         orderBy: [
           {
             value: "asc"
@@ -90,6 +108,7 @@ const Page = async ({ params }) => {
     ]
   })
 
+  // console.log(filters)
   const categories = allCategories.filter(item => item.type === cate_type.CATE)
   const subCategories = allCategories.filter(item => item.type === cate_type.SUB_CATE)
 

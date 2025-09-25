@@ -6,6 +6,29 @@ const siteUrl = process.env.NEXT_PUBLIC_DOMAIN || 'http://localhost:3000';
 
 const db = new PrismaClient()
 
+const VALID_CHANGEFREQ = new Set(['always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly', 'never'])
+function normalizeChangefreq(cf) {
+  const value = typeof cf === 'string' ? cf.toLowerCase() : ''
+  return VALID_CHANGEFREQ.has(value) ? value : 'weekly'
+}
+function normalizePriority(p) {
+  const n = Number(p)
+  if (!isFinite(n)) return '0.5'
+  const clamped = Math.max(0, Math.min(1, n))
+  return clamped.toFixed(1)
+}
+
+function buildUrlFromSegments() {
+  const segments = Array.from(arguments).filter(Boolean).map(s => encodeURIComponent(String(s)))
+  return `${siteUrl}/${segments.join('/')}`
+}
+
+function buildUrlFromPath(path) {
+  const clean = String(path || '').replace(/^\/+|\/+$/g, '')
+  const parts = clean.split('/').filter(Boolean).map(seg => encodeURIComponent(seg))
+  return `${siteUrl}/${parts.join('/')}`
+}
+
 async function generateSitemap() {
   const products = await db.product.findMany({
     where: {
@@ -35,7 +58,7 @@ async function generateSitemap() {
     page++;
   } while (page <= totalPages);
 
-  fs.writeFileSync(__dirname + '/public/sitemap-san-pham.xml', convertToXmlProductSiteMap(products.filter(item => item.subCate && item.subCate.slug), 1, 'daily'));
+  fs.writeFileSync(__dirname + '/public/sitemap-san-pham.xml', convertToXmlProductSiteMap(products.filter(item => item.subCate && item.subCate.slug), 1.0, 'daily'));
   fs.writeFileSync(__dirname + '/public/sitemap-category.xml', convertToXmlCategoriesSiteMap(categories, 0.9, 'weekly'));
   fs.writeFileSync(__dirname + '/public/sitemap-blog.xml', convertToXmlBLogsSiteMap(blogs, 0.9, 'daily'));
   fs.writeFileSync(__dirname + '/public/sitemap-ho-tro.xml', convertToXmlAboutUsSiteMap([
@@ -50,8 +73,8 @@ async function generateSitemap() {
   ], 0.7, 'weekly'));
 
   fs.writeFileSync(__dirname + '/public/sitemap-0.xml', `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
-<url><loc>${siteUrl}</loc><lastmod>2025-05-11T17:20:49.887Z</lastmod><changefreq>daily</changefreq><priority>1</priority></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url><loc>${siteUrl}</loc><lastmod>${new Date().toISOString()}</lastmod><changefreq>${normalizeChangefreq('daily')}</changefreq><priority>${normalizePriority(1.0)}</priority></url>
 </urlset>`);
   fs.writeFileSync(__dirname + '/public/sitemap.xml',
     `<?xml version="1.0" encoding="UTF-8"?>
@@ -68,28 +91,32 @@ async function generateSitemap() {
 generateSitemap();
 function convertToXmlProductSiteMap(products, priority, changefreq) {
   return `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/${changefreq}">${products.map(p => `
-<url><loc>${siteUrl}/${p.subCate.slug}/${p.slug}</loc><lastmod>${p.updatedAt.toISOString()}</lastmod><changefreq>${priority}</changefreq><priority>${changefreq}</priority></url>`).join('')}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${products.map(p => `
+<url><loc>${buildUrlFromSegments(p.subCate.slug, p.slug)}</loc><lastmod>${new Date(p.updatedAt).toISOString()}</lastmod><changefreq>${normalizeChangefreq(changefreq)}</changefreq><priority>${normalizePriority(priority)}</priority></url>`).join('')}
 </urlset>`;
 }
 
 function convertToXmlCategoriesSiteMap(categories, priority, changefreq) {
   return `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/${changefreq}">${categories.map(cate => `
-<url><loc>${siteUrl}/${cate.slug}</loc><lastmod>${cate.updatedAt.toISOString()}</lastmod><changefreq>${priority}</changefreq><priority>${changefreq}</priority></url>`).join('')}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${categories.map(cate => `
+<url><loc>${buildUrlFromSegments(cate.slug)}</loc><lastmod>${new Date(cate.updatedAt).toISOString()}</lastmod><changefreq>${normalizeChangefreq(changefreq)}</changefreq><priority>${normalizePriority(priority)}</priority></url>`).join('')}
 </urlset>`;
 }
 
 function convertToXmlBLogsSiteMap(blogs, priority = 0.9, changefreq) {
   return `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/${changefreq}">${blogs.map(blog => `
-<url><loc>${siteUrl}/${blog.categories.includes(parseInt(process.env.NEXT_PUBLIC_WORDPRESS_POST_NEWS_ID)) ? "tin-tuc" : "kien-thuc-hay"}/${blog.slug}</loc><lastmod>${blog.modified || new Date().toISOString()}</lastmod><changefreq>${priority}</changefreq><priority>${changefreq}</priority></url>`).join('')}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${blogs.map(blog => {
+  const modified = blog && blog.modified ? new Date(blog.modified) : new Date();
+  const lastmod = isNaN(modified.getTime()) ? new Date().toISOString() : modified.toISOString();
+  const section = (blog.categories || []).includes(parseInt(process.env.NEXT_PUBLIC_WORDPRESS_POST_NEWS_ID)) ? "tin-tuc" : "kien-thuc-hay";
+  return `
+<url><loc>${buildUrlFromSegments(section, blog.slug)}</loc><lastmod>${lastmod}</lastmod><changefreq>${normalizeChangefreq(changefreq)}</changefreq><priority>${normalizePriority(priority)}</priority></url>`;}).join('')}
 </urlset>`;
 }
 
 function convertToXmlAboutUsSiteMap(urls, priority = 0.7, changefreq = "weekly") {
   return `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/${changefreq}">${urls.map(p => `
-<url><loc>${siteUrl}/${urls}</loc><lastmod>${new Date().toISOString()}</lastmod><changefreq>${priority}</changefreq><priority>${changefreq}</priority></url>`).join('')}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.map(p => `
+<url><loc>${buildUrlFromPath(p)}</loc><lastmod>${new Date().toISOString()}</lastmod><changefreq>${normalizeChangefreq(changefreq)}</changefreq><priority>${normalizePriority(priority)}</priority></url>`).join('')}
 </urlset>`;
 }

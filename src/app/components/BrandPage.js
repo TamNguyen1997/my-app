@@ -3,7 +3,7 @@
 import Brand from "@/app/components/product/Brand";
 import { usePathname } from 'next/navigation'
 
-const BrandPage = ({ brand, bg, filters, products = [], defaultOrderBy = "createdAt:desc", defaultRange = [0, 100000000], defaultFilterIds = [] }) => {
+const BrandPage = ({ brand, bg, filters, products = [], defaultOrderBy = "createdAt:desc", defaultRange = [0, 100000000], defaultFilterIds = [], priceBreakpoints = [] }) => {
   const [_, filter] = usePathname().split("#")
   return (<>
     <div className="flex flex-col items-center justify-center w-full xl:h-96 lg:h-72 md:h-60 h-32 bg-cover bg-center bg-no-repeat">
@@ -17,6 +17,7 @@ const BrandPage = ({ brand, bg, filters, products = [], defaultOrderBy = "create
       defaultOrderBy={defaultOrderBy}
       defaultRange={defaultRange}
       defaultFilterIds={defaultFilterIds}
+      priceBreakpoints={priceBreakpoints}
       productFilter={filter}
     />
   </>

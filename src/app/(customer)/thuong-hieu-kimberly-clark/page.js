@@ -104,6 +104,25 @@ export default async function Page({ searchParams }) {
     }
   })
 
+  const getEffectiveMinPrice = (product) => {
+    if (!product?.saleDetails?.length) return null;
+    const visible = product.saleDetails
+      .filter(detail => detail.showPrice && (((detail.promotionalPrice ?? 0) > 0) || ((detail.price ?? 0) > 0)))
+      .map(detail => (detail.promotionalPrice && detail.promotionalPrice > 0) ? detail.promotionalPrice : (detail.price || 0));
+    if (!visible.length) return null;
+    return Math.min(...visible);
+  };
+  const computePriceBreakpoints = (allProducts) => {
+    const prices = (allProducts || [])
+      .map(p => getEffectiveMinPrice(p))
+      .filter(p => typeof p === 'number' && p > 0)
+      .sort((a, b) => a - b);
+    if (prices.length === 0) return [];
+    const q = (pct) => prices[Math.min(prices.length - 1, Math.max(0, Math.floor(pct * (prices.length - 1))))];
+    return [Math.round(q(0.25)), Math.round(q(0.5)), Math.round(q(0.75))];
+  };
+  const priceBreakpoints = computePriceBreakpoints(products);
+
   products = applyRange(products, range);
   products = applyOrder(products, orderBy);
 
@@ -121,6 +140,7 @@ export default async function Page({ searchParams }) {
         defaultOrderBy={orderBy?.join(":")}
         defaultRange={range?.split('-').map(Number) || [0, 100000000]}
         defaultFilterIds={filterIds}
+        priceBreakpoints={priceBreakpoints}
       />
     </>
   )

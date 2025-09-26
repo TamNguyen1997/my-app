@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, Select, SelectItem, Slider, Spinner, Input } from "@heroui/react";
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, Select, SelectItem, Slider, Input } from "@heroui/react";
 import ProductCard from "@/components/product/ProductCard";
 import { getRangeForUrl } from "@/lib/product";
 
-const Brand = ({ brandSlug, products = [], filters = [], defaultOrderBy = "createdAt:desc", defaultRange = [0, 100000000], defaultFilterIds = [] }) => {
+const Brand = ({ brandSlug, products = [], filters = [], defaultOrderBy = "createdAt:desc", defaultRange = [0, 100000000], defaultFilterIds = [], priceBreakpoints = [] }) => {
   const [orderBy, setOrderBy] = useState(defaultOrderBy);
   const [value, setValue] = useState(defaultRange);
   const [selectedFilterValues, setSelectedFilterValues] = useState(defaultFilterIds);
@@ -39,34 +39,40 @@ const Brand = ({ brandSlug, products = [], filters = [], defaultOrderBy = "creat
   }, [groupedData]);
 
   useEffect(() => {
+    if (priceBreakpoints.length === 3) {
+      const [q1, q2, q3] = priceBreakpoints
+      setDynamicRanges([
+        { label: `Dưới ${currency(q1)}`, range: [0, q1] },
+        { label: `${currency(q1)} - ${currency(q2)}`, range: [q1, q2] },
+        { label: `${currency(q2)} - ${currency(q3)}`, range: [q2, q3] },
+        { label: `Trên ${currency(q3)}`, range: [q3, 100000000] }
+      ])
+      return
+    }
     const prices = products
       .map(p => getEffectiveMinPrice(p))
       .filter(p => typeof p === "number" && p > 0)
       .sort((a, b) => a - b);
-
-    if (prices.length < 4) {
+    if (!prices.length) {
       setDynamicRanges([
         { label: "Dưới 2 triệu", range: [0, 2000000] },
         { label: "2 - 3 triệu", range: [2000000, 3000000] },
         { label: "3 - 4 triệu", range: [3000000, 4000000] },
         { label: "Trên 4 triệu", range: [4000000, 100000000] }
-      ]);
-      return;
+      ])
+      return
     }
-
     const q = (pct) => prices[Math.min(prices.length - 1, Math.max(0, Math.floor(pct * (prices.length - 1))))];
-    const q1 = q(0.25);
-    const q2 = q(0.5);
-    const q3 = q(0.75);
-
-    const presets = [
-      { label: `Dưới ${currency(q1)}`, range: [Math.max(0, Math.round(q1 * 0)) , Math.round(q1)] },
-      { label: `${currency(q1)} - ${currency(q2)}`, range: [Math.round(q1), Math.round(q2)] },
-      { label: `${currency(q2)} - ${currency(q3)}`, range: [Math.round(q2), Math.round(q3)] },
-      { label: `Trên ${currency(q3)}`, range: [Math.round(q3), 100000000] }
-    ];
-    setDynamicRanges(presets);
-  }, [products]);
+    const q1 = Math.round(q(0.25));
+    const q2 = Math.round(q(0.5));
+    const q3 = Math.round(q(0.75));
+    setDynamicRanges([
+      { label: `Dưới ${currency(q1)}`, range: [0, q1] },
+      { label: `${currency(q1)} - ${currency(q2)}`, range: [q1, q2] },
+      { label: `${currency(q2)} - ${currency(q3)}`, range: [q2, q3] },
+      { label: `Trên ${currency(q3)}`, range: [q3, 100000000] }
+    ])
+  }, [products, priceBreakpoints]);
 
   const buildUrl = () => {
     const params = [];

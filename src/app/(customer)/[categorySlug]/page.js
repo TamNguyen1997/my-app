@@ -131,10 +131,30 @@ const CategoryPage = async ({category, filters, filterIds, range, orderBy}) => {
         .map(sc => [sc.id, sc])
     ).values()
   );
+  // Compute breakpoints for category ranges
+  const getEffectiveMinPrice = (product) => {
+    if (!product?.saleDetails?.length) return null;
+    const visible = product.saleDetails
+      .filter(detail => detail.showPrice && (((detail.promotionalPrice ?? 0) > 0) || ((detail.price ?? 0) > 0)))
+      .map(detail => (detail.promotionalPrice && detail.promotionalPrice > 0) ? detail.promotionalPrice : (detail.price || 0));
+    if (!visible.length) return null;
+    return Math.min(...visible);
+  };
+  const computePriceBreakpoints = (allProducts) => {
+    const prices = (allProducts || [])
+      .map(p => getEffectiveMinPrice(p))
+      .filter(p => typeof p === 'number' && p > 0)
+      .sort((a, b) => a - b);
+    if (prices.length === 0) return [];
+    const q = (pct) => prices[Math.min(prices.length - 1, Math.max(0, Math.floor(pct * (prices.length - 1))))];
+    return [Math.round(q(0.25)), Math.round(q(0.5)), Math.round(q(0.75))];
+  };
+  const priceBreakpoints = computePriceBreakpoints(products);
+
   products = applyRange(products, range);
   products = applyOrder(products, orderBy);
 
-  return <Category category={category} subcates={subCategories} filters={filters} products={products} filterIds={filterIds} defaultOrderBy={orderBy?.join(":")}/>
+  return <Category category={category} subcates={subCategories} filters={filters} products={products} filterIds={filterIds} defaultOrderBy={orderBy?.join(":")} priceBreakpoints={priceBreakpoints} defaultRange={range?.split('-').map(Number) || [0, 100000000]}/>
 }
 
 const SubCategoryPage = async ({category, filterIds, range, page, orderBy, filters}) => {
@@ -167,12 +187,33 @@ const SubCategoryPage = async ({category, filterIds, range, page, orderBy, filte
     }
   })
 
-  const total = products.length;
+  const getEffectiveMinPrice = (product) => {
+    if (!product?.saleDetails?.length) return null;
+    const visible = product.saleDetails
+      .filter(detail => detail.showPrice && (((detail.promotionalPrice ?? 0) > 0) || ((detail.price ?? 0) > 0)))
+      .map(detail => (detail.promotionalPrice && detail.promotionalPrice > 0) ? detail.promotionalPrice : (detail.price || 0));
+    if (!visible.length) return null;
+    return Math.min(...visible);
+  };
+
+  const computePriceBreakpoints = (allProducts) => {
+    const prices = (allProducts || [])
+      .map(p => getEffectiveMinPrice(p))
+      .filter(p => typeof p === 'number' && p > 0)
+      .sort((a, b) => a - b);
+    if (prices.length === 0) return [];
+    const q = (pct) => prices[Math.min(prices.length - 1, Math.max(0, Math.floor(pct * (prices.length - 1))))];
+    return [Math.round(q(0.25)), Math.round(q(0.5)), Math.round(q(0.75))];
+  };
+
+  const priceBreakpoints = computePriceBreakpoints(products);
+
+  let filteredProducts = applyRange(products, range);
+  filteredProducts = applyOrder(filteredProducts, orderBy);
+  const total = filteredProducts.length;
   const totalPage = Math.ceil(total / ITEM_PER_PAGE);
-  products = applyRange(products, range);
-  products = applyOrder(products, orderBy);
-  products = products.slice((page - 1) * ITEM_PER_PAGE, page * ITEM_PER_PAGE);
-  return <SubCategory category={category} products={products} filters={filters.filter(item => item.filterValue.length > 0)} selectedFilterIds={filterIds} defaultOrderBy={orderBy?.join(":")} page={page} totalPage={totalPage}/> 
+  const pagedProducts = filteredProducts.slice((page - 1) * ITEM_PER_PAGE, page * ITEM_PER_PAGE);
+  return <SubCategory category={category} products={pagedProducts} filters={filters.filter(item => item.filterValue.length > 0)} selectedFilterIds={filterIds} defaultOrderBy={orderBy?.join(":")} page={page} totalPage={totalPage} priceBreakpoints={priceBreakpoints} defaultRange={range?.split('-').map(Number) || [0, 100000000]}/> 
 }
 
 const applyRange = (products, range) => {

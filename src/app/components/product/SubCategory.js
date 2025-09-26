@@ -5,9 +5,9 @@ import ProductCard from "@/components/product/ProductCard"
 import Link from "next/link";
 import { getRangeForUrl } from "@/lib/product";
 
-const SubCategory = ({ products, filters = [], category = {}, page = 1, selectedFilterIds = [], defaultOrderBy, totalPage = 1 }) => {
+const SubCategory = ({ products, filters = [], category = {}, page = 1, selectedFilterIds = [], defaultOrderBy, totalPage = 1, priceBreakpoints = [], defaultRange = [0, 100000000] }) => {
   const [data] = useState(products || [])
-  const [value, setValue] = useState([0, 100000000])
+  const [value, setValue] = useState(Array.isArray(defaultRange) && defaultRange.length === 2 ? defaultRange : [0, 100000000])
   const [orderBy, setOrderBy] = useState(defaultOrderBy)
   const [filterIds, setFilterIds] = useState([])
   const [dynamicRanges, setDynamicRanges] = useState([])
@@ -17,41 +17,15 @@ const SubCategory = ({ products, filters = [], category = {}, page = 1, selected
       ? v.toLocaleString("vi-VN", { style: "currency", currency: "VND", maximumFractionDigits: 0 })
       : "";
 
-  const getEffectiveMinPrice = (product) => {
-    if (!product?.saleDetails?.length) return null;
-    const visible = product.saleDetails
-      .filter(d => d.showPrice === true && (((d.promotionalPrice ?? 0) > 0) || ((d.price ?? 0) > 0)) )
-      .map(d => (d.promotionalPrice && d.promotionalPrice > 0) ? d.promotionalPrice : (d.price || 0));
-    if (!visible.length) return null;
-    return Math.min(...visible);
-  };
-
-  // Build dynamic range presets based on current products' effective prices
+  // Build dynamic range presets based on all products in category (breakpoints passed from server)
   if (dynamicRanges.length === 0) {
-    const prices = (data || [])
-      .map(p => getEffectiveMinPrice(p))
-      .filter(p => typeof p === "number" && p > 0)
-      .sort((a, b) => a - b);
-
-    if (prices.length < 4) {
-      setDynamicRanges([
-        { label: "Dưới 2 triệu", range: [0, 2000000] },
-        { label: "2 - 3 triệu", range: [2000000, 3000000] },
-        { label: "3 - 4 triệu", range: [3000000, 4000000] },
-        { label: "Trên 4 triệu", range: [4000000, 100000000] }
-      ])
-    } else {
-      const q = (pct) => prices[Math.min(prices.length - 1, Math.max(0, Math.floor(pct * (prices.length - 1))))];
-      const q1 = q(0.25);
-      const q2 = q(0.5);
-      const q3 = q(0.75);
-      setDynamicRanges([
-        { label: `Dưới ${currency(q1)}`, range: [0, Math.round(q1)] },
-        { label: `${currency(q1)} - ${currency(q2)}`, range: [Math.round(q1), Math.round(q2)] },
-        { label: `${currency(q2)} - ${currency(q3)}`, range: [Math.round(q2), Math.round(q3)] },
-        { label: `Trên ${currency(q3)}`, range: [Math.round(q3), 100000000] }
-      ])
-    }
+    const [q1, q2, q3] = priceBreakpoints.length === 3 ? priceBreakpoints : [500000, 1000000, 2000000]
+    setDynamicRanges([
+      { label: `Dưới ${currency(q1)}`, range: [0, q1] },
+      { label: `${currency(q1)} - ${currency(q2)}`, range: [q1, q2] },
+      { label: `${currency(q2)} - ${currency(q3)}`, range: [q2, q3] },
+      { label: `Trên ${currency(q3)}`, range: [q3, 100000000] }
+    ])
   }
 
   return (
@@ -85,8 +59,8 @@ const SubCategory = ({ products, filters = [], category = {}, page = 1, selected
                 }
               }}
             >
-              {filter.filterValue.map(item => (
-                <SelectItem key={item.displayId}>{item.value}</SelectItem>
+              {filter.filterValue.map((item, i) => (
+                <SelectItem key={i}>{item.value}</SelectItem>
               ))}
             </Select>
           ))}
@@ -183,9 +157,20 @@ const SubCategory = ({ products, filters = [], category = {}, page = 1, selected
                 </div>
               ))}
             </div>
-            <Pagination className="w-full mx-auto" initialPage={parseInt(page || "1")} total={parseInt(totalPage || "1")} onChange={(newPage) => {
-              window.location.href = `/${category.slug}?filterId=${filterIds.join(",")}&orderBy=${orderBy}&page=${newPage}&${getRangeForUrl(value)}`;
-            }} />
+            <Pagination className="w-full mx-auto"
+              initialPage={parseInt(page || "1")}
+              total={parseInt(totalPage || "1")}
+              onChange={(newPage) => {
+                const params = new URLSearchParams()
+                if (filterIds.length) params.set('filterId', filterIds.join(','))
+                if (orderBy) params.set('orderBy', orderBy)
+                if (Array.isArray(value) && value.length === 2) {
+                  const [min, max] = value
+                  params.set('range', `${Math.max(0, min)}-${Math.max(min, max)}`)
+                }
+                params.set('page', String(newPage))
+                window.location.href = `/${category.slug}?${params.toString()}`
+              }} />
           </>
         )}
       </div>

@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, Select, SelectItem, Slider, Input } from "@heroui/react";
 import ProductCard from "@/components/product/ProductCard";
-import { getRangeForUrl } from "@/lib/product";
+import { buildQueryParams, getRangeForUrl } from "@/lib/product";
 
 const Brand = ({ brandSlug, products = [], filters = [], defaultOrderBy = "createdAt:desc", defaultRange = [0, 100000000], defaultFilterIds = [], priceBreakpoints = [] }) => {
   const [orderBy, setOrderBy] = useState(defaultOrderBy);
@@ -74,14 +74,7 @@ const Brand = ({ brandSlug, products = [], filters = [], defaultOrderBy = "creat
     ])
   }, [products, priceBreakpoints]);
 
-  const buildUrl = () => {
-    const params = [];
-    const rangeParam = getRangeForUrl(value);
-    if (rangeParam) params.push(rangeParam);
-    if (selectedFilterValues.length) params.push(`filterId=${selectedFilterValues.join(",")}`);
-    if (orderBy) params.push(`orderBy=${orderBy}`);
-    return `/${brandSlug}?${params.join("&")}`;
-  };
+  const buildUrl = () => `/${brandSlug}?${buildQueryParams({ filterIds: selectedFilterValues.filter(Boolean), orderBy, range: value })}`;
 
   return (
     <>

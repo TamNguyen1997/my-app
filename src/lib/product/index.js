@@ -59,4 +59,25 @@ const getRangeForUrl = (range) => {
   return `range=${min}-${max}`;
 };
 
-export { getPrice, getOriginalPrice, addRecentlyView, getRecentlyView, getRangeForUrl }
+const buildQueryParams = ({ filterIds = [], orderBy = "", range = [] }) => {
+  const params = new URLSearchParams();
+
+  const validFilters = (Array.isArray(filterIds) ? filterIds : [])
+    .map(String)
+    .map(s => s.trim())
+    .filter(Boolean);
+  if (validFilters.length) params.set('filterId', validFilters.join(','));
+
+  const allowedOrderBy = new Set(['createdAt:asc', 'createdAt:desc', 'price:asc', 'price:desc']);
+  if (orderBy && allowedOrderBy.has(orderBy)) params.set('orderBy', orderBy);
+
+  const rangeParam = getRangeForUrl(range);
+  if (rangeParam) {
+    const [key, val] = rangeParam.split('=');
+    params.set(key, val);
+  }
+
+  return params.toString();
+}
+
+export { getPrice, getOriginalPrice, addRecentlyView, getRecentlyView, getRangeForUrl, buildQueryParams }

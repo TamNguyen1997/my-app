@@ -3,7 +3,7 @@ import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Paginati
 import { useState } from "react";
 import ProductCard from "@/components/product/ProductCard"
 import Link from "next/link";
-import { getRangeForUrl } from "@/lib/product";
+import { buildQueryParams, getRangeForUrl } from "@/lib/product";
 
 const SubCategory = ({ products, filters = [], category = {}, page = 1, selectedFilterIds = [], defaultOrderBy, totalPage = 1, priceBreakpoints = [], defaultRange = [0, 100000000] }) => {
   const [data] = useState(products || [])
@@ -121,7 +121,7 @@ const SubCategory = ({ products, filters = [], category = {}, page = 1, selected
                         </div>
                       </div>
                       <div className="flex gap-1">
-                        <Link href={`/${category.slug}?filterId=${filterIds.join(",")}&orderBy=${orderBy}&${getRangeForUrl(value)}`}>
+                        <Link href={`/${category.slug}?${buildQueryParams({ filterIds, orderBy, range: value })}`}>
                           <Button color="primary">Tìm</Button>
                         </Link>
                         <Button variant="ghost" color="danger" onPress={() => setValue([0, 100000000])}>Bỏ chọn</Button>
@@ -140,7 +140,7 @@ const SubCategory = ({ products, filters = [], category = {}, page = 1, selected
               <SelectItem key="price:asc">Giá thấp đến cao</SelectItem>
               <SelectItem key="price:desc">Giá cao đến thấp</SelectItem>
             </Select>
-            <Link href={`/${category.slug}?filterId=${filterIds.join(",")}&orderBy=${orderBy}&${getRangeForUrl(value)}`}>
+            <Link href={`/${category.slug}?${buildQueryParams({ filterIds, orderBy, range: value })}`}>
               <Button color="primary">Tìm</Button>
             </Link>
           </div>
@@ -161,15 +161,9 @@ const SubCategory = ({ products, filters = [], category = {}, page = 1, selected
               initialPage={parseInt(page || "1")}
               total={parseInt(totalPage || "1")}
               onChange={(newPage) => {
-                const params = new URLSearchParams()
-                if (filterIds.length) params.set('filterId', filterIds.join(','))
-                if (orderBy) params.set('orderBy', orderBy)
-                if (Array.isArray(value) && value.length === 2) {
-                  const [min, max] = value
-                  params.set('range', `${Math.max(0, min)}-${Math.max(min, max)}`)
-                }
-                params.set('page', String(newPage))
-                window.location.href = `/${category.slug}?${params.toString()}`
+                const base = buildQueryParams({ filterIds, orderBy, range: value })
+                const amp = base.length ? '&' : ''
+                window.location.href = `/${category.slug}?${base}${amp}page=${newPage}`
               }} />
           </>
         )}

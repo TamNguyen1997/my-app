@@ -175,13 +175,12 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
       </p>
       <p className="text-sm">Giao hàng trong vòng 1-3 ngày.</p>
 
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 pt-2">
         {(
           getSecondaryDetails().length > 0 ||
           saleDetails.filter(item => !item.saleDetailId && item.filterValueId && item.filterValue && item.filterId).length > 1
         ) ? (
           <div className="border rounded-lg bg-white p-3">
-            <p className="text-xs font-medium text-gray-500 mb-2">Phân loại</p>
             <div className="flex gap-2 flex-wrap">
           {saleDetails
             .filter(
@@ -243,7 +242,6 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
         )}
         {getSecondaryDetails().length > 0 && (
           <div className="border rounded-lg bg-white p-3">
-            <p className="text-xs font-medium text-gray-500 mb-2">Tùy chọn</p>
             <div className="flex gap-2 flex-wrap">
               {getSecondaryDetails().map((sDetail, i) => (
                 <Button

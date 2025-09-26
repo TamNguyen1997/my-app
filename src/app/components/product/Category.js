@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, Select, SelectItem, Slider, Spinner, Input } from "@heroui/react";
 import ProductCard from "@/components/product/ProductCard";
-import { getRangeForUrl } from "@/lib/product";
+import { buildQueryParams, getRangeForUrl } from "@/lib/product";
 
 const Category = ({ category, subcates, filters = [], products = [], filterIds = [], defaultOrderBy, priceBreakpoints = [], defaultRange = [0, 100000000] }) => {
   const [value, setValue] = useState(Array.isArray(defaultRange) && defaultRange.length === 2 ? defaultRange : [0, 100000000]);
@@ -171,7 +171,7 @@ const Category = ({ category, subcates, filters = [], products = [], filterIds =
                         </div>
                       </div>
                       <div className="flex gap-1">
-                        <Link href={`/${category.slug}?filterId=${selectedFilterValues.filter(item => item).join(",")}&orderBy=${orderBy}&${getRangeForUrl(value)}`}>
+                        <Link href={`/${category.slug}?${buildQueryParams({ filterIds: selectedFilterValues.filter(Boolean), orderBy, range: value })}`}>
                           <Button color="primary">Tìm</Button>
                         </Link>
                         <Button variant="ghost" color="danger" onPress={() => setValue([0, 100000000])}>Bỏ chọn</Button>
@@ -190,7 +190,7 @@ const Category = ({ category, subcates, filters = [], products = [], filterIds =
               <SelectItem key="price:asc">Giá thấp đến cao</SelectItem>
               <SelectItem key="price:desc">Giá cao đến thấp</SelectItem>
             </Select>
-            <Link href={`/${category.slug}?filterId=${selectedFilterValues.join(",")}&orderBy=${orderBy}&${getRangeForUrl(value)}`}>
+            <Link href={`/${category.slug}?${buildQueryParams({ filterIds: selectedFilterValues.filter(Boolean), orderBy, range: value })}`}>
               <Button color="primary">Tìm</Button>
             </Link>
           </div>

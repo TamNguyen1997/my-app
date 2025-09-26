@@ -9,6 +9,21 @@ import { v4 } from "uuid"
 
 import { importTechnicalDetail } from "./technicalDetails"
 
+function toNonNegativeInt(value) {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return value < 0 ? 0 : Math.trunc(value)
+  }
+  if (typeof value === 'string') {
+    const cleaned = value.replace(/[,\s]/g, '').replace(/[^0-9\-\.]/g, '')
+    const n = Number(cleaned)
+    if (Number.isFinite(n)) {
+      const intVal = Math.trunc(n)
+      return intVal < 0 ? 0 : intVal
+    }
+  }
+  return 0
+}
+
 async function validateProduct(cateId, subCateId, brandId) {
   const [cate, subCate, brand] = await Promise.all([
     db.category.findUnique({ where: { id: cateId } }),
@@ -174,9 +189,9 @@ async function importSaleDetail(worksheet) {
 
     const productId = rowData[requiredColumnIndexes.productId].toString()
     const sku = rowData[skuIndex]?.toString() || v4()
-    const price = rowData[requiredColumnIndexes.price]
+    const price = toNonNegativeInt(rowData[requiredColumnIndexes.price])
     const showPrice = rowData[requiredColumnIndexes.showPrice]
-    const inStock = rowData[requiredColumnIndexes.inStock]
+    const inStock = toNonNegativeInt(rowData[requiredColumnIndexes.inStock])
     const parentSaleDetailSku = rowData[parentSaleSkuColumnIndex]
 
     const product = await tx.product.findUnique({ where: { id: productId } })
@@ -190,7 +205,7 @@ async function importSaleDetail(worksheet) {
     const dataObj = {
       sku: sku,
       price: price,
-      promotionalPrice: showPrice === "T" ? null : rowData[3],
+      promotionalPrice: showPrice === "T" ? null : toNonNegativeInt(rowData[3]),
       showPrice: showPrice === "T",
       product: {
         connect: { id: productId },

@@ -1,10 +1,14 @@
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const ProductImageCarousel = ({ items = [], mainImage, selectedSaleDetailImage }) => {
 	const safe = (url) => (typeof url === 'string' && url.trim().length > 0) ? url : "/default-featured-image.webp";
 	const imageList = useMemo(() => items.filter(i => typeof i === 'string' && i.trim().length > 0), [items]);
 	const [hoverImage, setHoverImage] = useState(safe(mainImage || imageList[0]));
+
+	useEffect(() => {
+		setHoverImage(safe(selectedSaleDetailImage || mainImage || imageList[0]))
+	}, [selectedSaleDetailImage, mainImage, imageList])
 
 	return (
 		<div className="flex flex-col gap-5">

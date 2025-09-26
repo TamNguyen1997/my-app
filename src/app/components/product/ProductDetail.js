@@ -68,7 +68,7 @@ const ProductDetail = ({ product = {}, description, relatedProducts = [], produc
               <div className="relative bg-white border-[3px] border-[#f8f8f8] w-full">
                 <ProductImageCarousel items={getImages()} mainImage={getMainImage() || product.imageUrl || ""}
                   selectedSaleDetailImage={selectedSaleDetail?.sale_detail_on_image ?
-                    selectedSaleDetail?.sale_detail_on_image[0] : null} />
+                    selectedSaleDetail?.sale_detail_on_image[0]?.imageUrl : null} />
                 <div className="md:hidden bg-white">
                   <div className="p-5 border-white border-b-[3px] bg-[#f8f8f8]">
                     <SaleDetail saleDetails={product.saleDetails || []} product={product} />

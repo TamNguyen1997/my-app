@@ -355,3 +355,9 @@ a img.aligncenter {
   margin-right: auto;
   border: 0;
 }
+
+.blog-content.wp-block-cb-slide-v2.cb-slide.swiper-slide {
+  border: 1px solid #333;
+  padding: 12px;
+  box-sizing: border-box;
+}

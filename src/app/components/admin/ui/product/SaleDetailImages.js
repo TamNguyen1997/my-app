@@ -23,7 +23,6 @@ const SaleDetailImages = ({ saleDetail, productId }) => {
     sessionStorage.setItem(`${productId}-${saleDetail.id}`, JSON.stringify(newImages));
   };
 
-  console.log(saleDetail.sale_detail_on_image)
   useEffect(() => {
     const sessionImages = sessionStorage.getItem(`${productId}-${saleDetail.id}`)
     if (sessionImages?.length > 0) {

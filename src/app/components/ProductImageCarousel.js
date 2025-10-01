@@ -1,10 +1,12 @@
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import ProductImageModal from "./ProductImageModal";
 
 const ProductImageCarousel = ({ items = [], mainImage, selectedSaleDetailImage }) => {
 	const safe = (url) => (typeof url === 'string' && url.trim().length > 0) ? url : "/default-featured-image.webp";
 	const imageList = useMemo(() => items.filter(i => typeof i === 'string' && i.trim().length > 0), [items]);
 	const [hoverImage, setHoverImage] = useState(safe(mainImage || imageList[0]));
+    const modalRef = useRef(null);
 
 	useEffect(() => {
 		setHoverImage(safe(selectedSaleDetailImage || mainImage || imageList[0]))
@@ -14,12 +16,13 @@ const ProductImageCarousel = ({ items = [], mainImage, selectedSaleDetailImage }
 		<div className="flex flex-col gap-5">
 			<div className="w-full max-w-[520px] mx-auto aspect-square sm:w-2/3 sm:h-[450px]">
 				<Image
-					className="object-contain w-full h-full"
+					className="object-contain w-full h-full cursor-pointer"
 					src={safe(hoverImage || selectedSaleDetailImage || mainImage)}
 					width={450}
 					height={450}
 					sizes="(max-width: 640px) 100vw, 450px"
 					alt="Dụng cụ vệ sinh Sao Việt"
+					onClick={() => modalRef.current?.openWith(imageList, Math.max(0, imageList.indexOf(hoverImage)))}
 				/>
 			</div>
 			<div className="relative">
@@ -46,7 +49,9 @@ const ProductImageCarousel = ({ items = [], mainImage, selectedSaleDetailImage }
 								height={96}
 								sizes="(max-width: 640px) 72px, 96px"
 								className={`p-1 sm:p-2 cursor-pointer ${hoverImage === item ? 'border-red-500 border-2' : ''}`}
-								onClick={() => setHoverImage(item)}
+                            onClick={() => {
+                                    modalRef.current?.openWith(imageList, i)
+                                }}
 								onMouseOver={() => setHoverImage(item)}
 								alt="Dụng cụ vệ sinh Sao Việt"
 							/>
@@ -64,6 +69,7 @@ const ProductImageCarousel = ({ items = [], mainImage, selectedSaleDetailImage }
 					›
 				</button>
 			</div>
+			<ProductImageModal ref={modalRef} title={typeof window !== 'undefined' ? document?.title || '' : ''} />
 		</div>
 	)
 }

@@ -31,7 +31,7 @@ async function importTechnicalDetail(worksheet) {
       if (filterValueIds.length > 0) {
         const foundById = await tx.filter_value.findMany({
             where: { id: { in: filterValueIds } },
-            select: { id: true },
+            select: { id: true, filterId: true },
           });
 
         const existing = new Set([
@@ -61,14 +61,34 @@ async function importTechnicalDetail(worksheet) {
       }
 
       try {
-        await tx.filter_value_on_sale_detail.createMany({
-          data: [
-            ...filterValueIds.map(value => ({
-              filterValueId: value,
-              saleDetailId: saleDetail.id,
-            })),
-          ],
+        const providedFilterValues = await tx.filter_value.findMany({
+          where: { id: { in: filterValueIds } },
+          select: { id: true, filterId: true },
         })
+
+        for (const fv of providedFilterValues) {
+          const existingTechnical = await tx.filter_value_on_sale_detail.findFirst({
+            where: {
+              saleDetailId: saleDetail.id,
+              filterValue: { filterId: fv.filterId },
+            },
+            select: { id: true },
+          })
+
+          if (existingTechnical) {
+            await tx.filter_value_on_sale_detail.update({
+              where: { id: existingTechnical.id },
+              data: { filterValueId: fv.id },
+            })
+          } else {
+            await tx.filter_value_on_sale_detail.create({
+              data: {
+                filterValueId: fv.id,
+                saleDetailId: saleDetail.id,
+              },
+            })
+          }
+        }
       } catch (error) {
         console.log(error)
         throw new Error(IMPORT_MESSAGE.DATABASE_ERROR)

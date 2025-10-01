@@ -1,7 +1,7 @@
 "use client";
 
 import { forwardRef, useImperativeHandle, useMemo, useState } from "react";
-import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/react";
+import { Modal, ModalBody, ModalContent } from "@heroui/react";
 import Image from "next/image";
 
 const ProductImageModal = forwardRef(function ProductImageModal({ title = "" }, ref) {
@@ -24,7 +24,7 @@ const ProductImageModal = forwardRef(function ProductImageModal({ title = "" }, 
   }), []);
 
   return (
-    <Modal isOpen={isOpen} onOpenChange={setIsOpen} size="5xl" backdrop="blur" scrollBehavior="outside">
+    <Modal isOpen={isOpen} onOpenChange={setIsOpen} size="5xl" backdrop="blur" scrollBehavior="outside" placement="center">
       <ModalContent>
         {(onClose) => (
           <>

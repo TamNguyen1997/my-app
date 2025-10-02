@@ -6,8 +6,8 @@ async function importTechnicalDetail(worksheet) {
     sku: 0
   }
 
-  await db.$transaction(async tx => {
-    for (const [index, row] of worksheet.entries()) {
+  for (const [index, row] of worksheet.entries()) {
+    await db.$transaction(async tx => {
       const rowData = Object.values(row)
 
       const isAllRequiredData = Object.values(requiredColumnIndexes).every(
@@ -93,8 +93,8 @@ async function importTechnicalDetail(worksheet) {
         console.log(error)
         throw new Error(IMPORT_MESSAGE.DATABASE_ERROR)
       }
-    }
-  })
+    })
+  }
 
   return { success: true }
 }

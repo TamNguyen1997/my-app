@@ -60,12 +60,12 @@ const SearchBar = () => {
     try {
       Promise.all([
         fetch(`/api/categories/?size=3&page=1&${queryString}`).then(res => res.json()),
-        fetch(`/api/products/search/?size=5&page=1&searchTerm=${value}&includeCate=true`).then(res => res.json()),
+        fetch(`/api/products/search/?size=5&page=1&searchTerm=${encodeURIComponent(value)}&includeCate=true`).then(res => res.json()),
       ]).then(([categories, products]) => {
         setResults(prev => ({ ...prev, categories: categories.result, products: products.result }));
         setIsLoading(prev => ({ ...prev, categories: false, products: false }));
       });
-      fetch(`/api/blogs/?size=3&page=1&searchTerm=${value}`).then(res => res.json()).then(json => {
+      fetch(`/api/blogs/?size=3&page=1&searchTerm=${encodeURIComponent(value)}`).then(res => res.json()).then(json => {
         setResults(prev => ({ ...prev, blogs: json.result }))
         setIsLoading(prev => ({ ...prev, blogs: false }));
       })

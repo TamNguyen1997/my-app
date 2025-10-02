@@ -107,7 +107,7 @@ const SearchBar = () => {
         }}
         onKeyDown={(e) => {
           if (e.key === 'Enter' && query.trim()) {
-            window.location.replace(`/tim-kiem?key=${querySlug}`);
+            window.location.replace(`/tim-kiem?key=${querySlug}&q=${encodeURIComponent(query)}`);
           }
         }}
         onClear={() => setQuery('')}

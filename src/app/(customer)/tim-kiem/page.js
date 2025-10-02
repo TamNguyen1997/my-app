@@ -25,7 +25,8 @@ const SearchProductBar = () => {
   }, [total, rowsPerPage]);
 
   const getProduct = () => {
-    fetch(`/api/products/search/?size=${rowsPerPage}&page=${page}&searchTerm=${searchParams.get("key")}&active=true&includeCate=true`).then(async res => {
+    const term = searchParams.get("q") || searchParams.get("key") || "";
+    fetch(`/api/products/search/?size=${rowsPerPage}&page=${page}&searchTerm=${encodeURIComponent(term)}&active=true&includeCate=true`).then(async res => {
       if (res.ok) {
         const body = await res.json()
         setData(body.result)
@@ -60,7 +61,7 @@ const SearchProductBar = () => {
                   total={pages}
                   onChange={(page) => {
                     setPage(page)
-                    navigate(`/tim-kiem?key=${searchParams.get("key")}&page=${page}`)
+                    navigate(`/tim-kiem?key=${searchParams.get("key")}&q=${encodeURIComponent(searchParams.get("q") || "")}&page=${page}`)
                   }}
                 />
               </div>

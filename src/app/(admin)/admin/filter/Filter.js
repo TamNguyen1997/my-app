@@ -15,7 +15,7 @@ const Filter = () => {
 
   const tableHeaders = [
     {
-      key: "displayId",
+      key: "id",
       title: "ID Filter"
     },
     {

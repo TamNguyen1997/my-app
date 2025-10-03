@@ -70,6 +70,22 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
     }
   }, [totalPages, page])
 
+  const paginationItems = useMemo(() => {
+    const visiblePages = new Set([1, totalPages])
+    for (let i = page - 2; i <= page + 2; i++) {
+      if (i >= 1 && i <= totalPages) visiblePages.add(i)
+    }
+    const sorted = Array.from(visiblePages).sort((a, b) => a - b)
+    const result = []
+    for (let i = 0; i < sorted.length; i++) {
+      if (i > 0 && sorted[i] - sorted[i - 1] > 1) {
+        result.push(`ellipsis-${i}`)
+      }
+      result.push(sorted[i])
+    }
+    return result
+  }, [page, totalPages])
+
   const pagedItems = useMemo(() => {
     const items = filter.filterValue || []
     const start = (page - 1) * rowsPerPage
@@ -147,23 +163,28 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
   }
 
   const addNewFilterValue = useCallback(() => {
-    setFilter(prev => ({
-      ...prev,
-      filterValue: [
-        ...((prev.filterValue) || []),
-        {
-          id: v4(),
-          value: "",
-          slug: "",
-          brands: [],
-          categories: [],
-          subCategories: [],
-          filterId: prev.id,
-          active: false
-        }
-      ]
-    }))
-  }, [setFilter])
+    setFilter(prev => {
+      const nextItemCount = (prev.filterValue?.length || 0) + 1
+      const lastPage = Math.max(1, Math.ceil(nextItemCount / rowsPerPage))
+      setPage(lastPage)
+      return {
+        ...prev,
+        filterValue: [
+          ...((prev.filterValue) || []),
+          {
+            id: v4(),
+            value: "",
+            slug: "",
+            brands: [],
+            categories: [],
+            subCategories: [],
+            filterId: prev.id,
+            active: false
+          }
+        ]
+      }
+    })
+  }, [setFilter, rowsPerPage, setPage])
 
   const deleteFilter = async () => {
     if (!window.confirm("Bạn có chắc muốn xóa filter này không?")) return
@@ -280,6 +301,24 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
                 >
                   Trang trước
                 </Button>
+                {
+                  paginationItems.map((it) => (
+                    typeof it === "string"
+                      ? (
+                        <span key={it} className="px-1 text-sm select-none">…</span>
+                      ) : (
+                        <Button
+                          key={it}
+                          size="sm"
+                          variant={it === page ? "solid" : "ghost"}
+                          color={it === page ? "primary" : "default"}
+                          onPress={() => setPage(it)}
+                        >
+                          {it}
+                        </Button>
+                      )
+                  ))
+                }
                 <Button
                   size="sm"
                   variant="ghost"
@@ -290,7 +329,7 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
                 </Button>
               </div>
             </div>
-            <Button color="default" variant="ghost" onClick={() => addNewFilterValue()} className="w-full mt-2">
+            <Button color="default" variant="ghost" onPress={() => addNewFilterValue()} className="w-full mt-2">
               Thêm giá trị filter
             </Button>
           </div>
@@ -300,8 +339,8 @@ const FilterProduct = ({ categories, brands, subCategories, filter, setFilter, f
           <div className="flex gap-5">
             <Link href="/admin/filter">Quay về</Link>
             <Link href="/admin/filter/edit/new">Thêm filter</Link>
-            <Button color="primary" className="ml-auto" onClick={onSave}>Lưu</Button>
-            <Button color="danger" variant="ghost" onClick={deleteFilter}>Xoá</Button>
+            <Button color="primary" className="ml-auto" onPress={onSave}>Lưu</Button>
+            <Button color="danger" variant="ghost" onPress={deleteFilter}>Xoá</Button>
           </div>
         </div>
       </div>

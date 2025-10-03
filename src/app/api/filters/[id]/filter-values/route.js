@@ -127,27 +127,29 @@ export async function PUT(req, { params }) {
         }),
       ])
 
-      await Promise.all([
-        ...filterValues.map(filterValue => {
-          return tx.filter_value.upsert({
-            where: { id: filterValue.id },
-            update: {
-              displayId: filterValue.displayId,
-              value: filterValue.value,
-              slug: filterValue.slug,
-              active: filterValue.active,
-            },
-            create: {
-              id: filterValue.id,
-              displayId: filterValue.displayId,
-              value: filterValue.value,
-              slug: filterValue.slug,
-              active: filterValue.active,
-              filterId: params.id,
-            }
-          })
+      for (const filterValue of filterValues) {
+        await tx.filter_value.upsert({
+          where: { id: filterValue.id },
+          update: {
+            displayId: filterValue.displayId,
+            value: filterValue.value,
+            slug: filterValue.slug,
+            active: filterValue.active,
+          },
+          create: {
+            id: filterValue.id,
+            displayId: filterValue.displayId,
+            value: filterValue.value,
+            slug: filterValue.slug,
+            active: filterValue.active,
+            filterId: params.id,
+          }
         })
-      ])
+      }
+    }, {
+      maxWait: 10000,
+      timeout: 60000,
+      isolationLevel: Prisma.TransactionIsolationLevel.ReadCommitted,
     })
 
     await db.$transaction(async tx => {
@@ -163,6 +165,10 @@ export async function PUT(req, { params }) {
       if (categories.length > 0) {
         await tx.category_on_filter_value.createMany({ data: categories })
       }
+    }, {
+      maxWait: 10000,
+      timeout: 60000,
+      isolationLevel: Prisma.TransactionIsolationLevel.ReadCommitted,
     })
 
     return NextResponse.json({ message: "Update successfully" }, { status: 200 })

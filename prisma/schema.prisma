@@ -4,7 +4,7 @@
 generator client {
   provider        = "prisma-client-js"
   binaryTargets   = ["native", "rhel-openssl-1.0.x"]
-  previewFeatures = ["fullTextSearch", "fullTextIndex", "relationJoins"]
+  previewFeatures = ["fullTextSearchPostgres", "relationJoins"]
 }
 
 datasource db {
@@ -237,8 +237,8 @@ model filter_value {
   displayId String  @unique @default(dbgenerated("gen_random_uuid()")) @map("display_id")
   value     String  @default("")
   slug      String?
-  filter    filter  @relation(fields: [filterId], references: [id])
-  filterId  String  @map("filter_id")
+  filter    filter? @relation(fields: [filterId], references: [id])
+  filterId  String? @map("filter_id")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")

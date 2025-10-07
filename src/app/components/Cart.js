@@ -1,35 +1,33 @@
 "use client"
 import ProductCard from "@/app/components/product/ProductCard";
 import { CartContext } from "@/context/CartProvider";
-import { Button, Input, Link } from "@heroui/react";
+import { Button, Input, Link, Chip } from "@heroui/react";
 import { useContext, useEffect, useState } from "react";
-
-const COLOR_VARIANT = {
-  "#ffffff": "bg-[#ffffff]",
-  "#4b5563": "bg-[#4b5563]",
-  "#1e3a8a": "bg-[#1e3a8a]",
-  "#facc15": "bg-[#facc15]",
-  "#dc2626": "bg-[#dc2626]",
-  "#000000": "bg-[#000000]",
-}
+import Image from "next/image";
 
 const Cart = () => {
-  const { cartdetails, removeItemFromCart, updateItemQuantityInCart, getTotal } = useContext(CartContext)
+  const { cartdetails, removeItemFromCart, updateItemQuantityInCart, getTotal, getPrice } = useContext(CartContext)
   const [relatedProducts, setRelatedProducts] = useState([])
 
   useEffect(() => {
     if (cartdetails.length) {
       fetch(`/api/products/${cartdetails[0].product.id}/related?active=true`).then(res => res.json()).then(setRelatedProducts)
     }
-  }, [cartdetails.length])
+  }, [cartdetails])
 
-  const getPrice = (saleDetail, secondarySaleDetail, detail) => {
-    if (detail.product?.saleDetails?.length === 1 && detail.product?.saleDetails[0]?.price) return detail.product?.saleDetails[0].price
-    if (!secondarySaleDetail?.price && saleDetail?.price) return saleDetail.price
-    if (secondarySaleDetail?.price) return secondarySaleDetail.price
-    return 0
+  if (!cartdetails || !cartdetails.length) {
+    return (<>
+      <section className="bg-white py-8 antialiased dark:bg-gray-900 md:py-16 flex mx-auto lg:max-w-2xl xl:max-w-4xl flex-col p-2">
+        <h2 className="text-xl font-semibold text-gray-900 sm:text-2xl">Giỏ hàng</h2>
+        <div className="mt-6 sm:mt-8 flex flex-col items-center gap-4 border p-6 rounded-lg bg-white shadow-sm">
+          <p className="text-gray-600">Giỏ hàng của bạn đang trống.</p>
+          <Link href="/" className="items-center justify-center flex">
+            <Button color="primary" type="button">Tiếp tục mua hàng</Button>
+          </Link>
+        </div>
+      </section>
+    </>)
   }
-
   return (<>
     <section className="bg-white py-8 antialiased dark:bg-gray-900 md:py-16 flex mx-auto lg:max-w-2xl xl:max-w-4xl flex-col p-2">
       <h2 className="text-xl font-semibold text-gray-900 sm:text-2xl">Giỏ hàng</h2>
@@ -41,7 +39,13 @@ const Cart = () => {
                 <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6" key={i}>
                   <div className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
                     <a href={`/${detail.product.subCate ? detail.product.subCate.slug : "san-pham"}/${detail.product.slug}`} className="shrink-0 md:order-1">
-                      <img className="h-20 w-20 dark:block" src={`${detail.product.imageUrl || detail.product.image?.path}`} alt="imac image" />
+                      <Image
+                        className="h-20 w-20 dark:block"
+                        src={`${detail.product.imageUrl || detail.product.image?.path}`}
+                        alt={detail.product?.name || "Product image"}
+                        width={80}
+                        height={80}
+                      />
                     </a>
                     <div className="flex items-center justify-between md:order-3 md:justify-end">
                       <div className="flex items-center w-32">
@@ -64,24 +68,17 @@ const Cart = () => {
                         <a href={`/${detail.product.subCate ? detail.product.subCate.slug : "san-pham"}/${detail.product.slug}`} className="text-base font-medium text-gray-900 hover:underline dark:text-white">{detail.product.name}</a>
                         <p className="text-lg font-bold leading-tight text-red-600 dark:text-red-500">
                           {getPrice(detail.saleDetail, detail.secondarySaleDetail, detail).toLocaleString().replaceAll(",", ".")} đ</p>
-                        <div className="text-[16px] flex opacity-80 pt-1">
-                          <div className="pr-3">
-                            {
-                              detail.saleDetail && detail.saleDetail.value ? detail.saleDetail.type === "COLOR" ?
-                                <div className={`rounded-full ${COLOR_VARIANT[detail.saleDetail.value]} w-5 h-5 border-[#e3e3e3] border`}></div> :
-                                detail.saleDetail.value : ""
-                            }
-                          </div>
-                          {
-                            !detail.secondarySaleDetail?.value ? "" :
-                              <div className="border-l-2 pl-3">
-                                {
-                                  detail.secondarySaleDetail.type === "COLOR" ?
-                                    <div className={`rounded-full ${COLOR_VARIANT[detail.secondarySaleDetail.value]} w-5 h-5 border-[#e3e3e3] border`}></div> :
-                                    detail.secondarySaleDetail.value
-                                }
-                              </div>
-                          }
+                        <div className="text-[14px] flex flex-wrap gap-2 opacity-80 pt-1">
+                          {detail.saleDetail?.filter && detail.saleDetail?.filterValue && (
+                            <Chip radius="sm" variant="flat" className="bg-gray-100 text-gray-800">
+                              {`${detail.saleDetail.filter.name}: ${detail.saleDetail.filterValue.value}`}
+                            </Chip>
+                          )}
+                          {detail.secondarySaleDetail?.filter && detail.secondarySaleDetail?.filterValue && (
+                            <Chip radius="sm" variant="flat" className="bg-gray-100 text-gray-800">
+                              {`${detail.secondarySaleDetail.filter.name}: ${detail.secondarySaleDetail.filterValue.value}`}
+                            </Chip>
+                          )}
                         </div>
                       </div>
                       <div className="flex items-center gap-4">

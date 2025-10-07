@@ -66,7 +66,12 @@ async function importTechnicalDetail(worksheet) {
           select: { id: true, filterId: true },
         })
 
-        for (const fv of providedFilterValues) {
+        // Preserve input order so earlier items update first (earliest updated_at)
+        const byId = new Map(providedFilterValues.map(fv => [fv.id, fv]))
+        const providedFilterValuesOrdered = filterValueIds.map(id => byId.get(id)).filter(Boolean)
+
+        // Process sequentially in the given order
+        for (const fv of providedFilterValuesOrdered) {
           const existingTechnical = await tx.filter_value_on_sale_detail.findFirst({
             where: {
               saleDetailId: saleDetail.id,

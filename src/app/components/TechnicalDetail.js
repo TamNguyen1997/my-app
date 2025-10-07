@@ -4,26 +4,40 @@ import { ProductDetailContext } from "./product/ProductDetail";
 
 const TechnicalDetail = ({ data = [] }) => {
   const { selectedSaleDetail } = useContext(ProductDetailContext);
-  const productTechnical = data.map(item => {
-    return {
-      id: v4(),
-      filter: item.filter?.name,
-      filterValue: item.filterValue?.value
-    }
-  })
 
-  const filterValueOnSaleDetail = (selectedSaleDetail?.filter_value_on_sale_detail || []).map(item => {
-    return {
-      id: v4(),
-      filter: item?.filterValue?.filter?.name,
-      filterValue: item?.filterValue?.value
-    }
-  })
+  const result = useMemo(() => {
+    const productTechnical = data.map(item => {
+      return {
+        id: v4(),
+        filter: item.filter?.name,
+        filterValue: item.filterValue?.value,
+        updatedAt: item.updatedAt || item.updated_at
+      }
+    })
 
-  const result = [
-    ...productTechnical,
-    ...filterValueOnSaleDetail
-  ]
+    const filterValueOnSaleDetail = (selectedSaleDetail?.filter_value_on_sale_detail || [])
+    .sort((a, b) => {
+      console.log(a.updatedAt, b.updatedAt)
+      const aT = a.updatedAt ? new Date(a.updatedAt).getTime() : 0
+      const bT = b.updatedAt ? new Date(b.updatedAt).getTime() : 0
+      return aT - bT
+    })
+    .map(item => {
+      return {
+        id: v4(),
+        filter: item?.filterValue?.filter?.name,
+        filterValue: item?.filterValue?.value,
+        updatedAt: item.updatedAt || item.updated_at
+      }
+    })
+
+    const merged = [
+      ...productTechnical,
+      ...filterValueOnSaleDetail
+    ]
+
+    return merged
+  }, [data, selectedSaleDetail])
 
   return (<>
     <div className="pt-6">

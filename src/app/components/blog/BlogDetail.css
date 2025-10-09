@@ -361,3 +361,52 @@ a img.aligncenter {
   padding: 12px;
   box-sizing: border-box;
 }
+
+/* Tables inside blog content (WordPress) */
+.blog-content table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin: 1.25rem 0; /* space above/below table */
+  font-size: 0.95rem;
+  line-height: 1.6;
+  display: block; /* enable horizontal scroll on small screens */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.blog-content thead th {
+  background-color: #f9fafb; /* gray-50/100 */
+  color: #111827; /* gray-900 */
+  font-weight: 600;
+}
+
+.blog-content th,
+.blog-content td {
+  border: 1px solid #e5e7eb; /* gray-200 */
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.blog-content tbody tr:nth-child(even) {
+  background-color: #fafafa; /* subtle zebra striping */
+}
+
+.blog-content tbody tr:hover {
+  background-color: #f3f4f6; /* gray-100 */
+}
+
+.blog-content table caption {
+  caption-side: bottom;
+  text-align: left;
+  padding-top: 8px;
+  color: #6b7280; /* gray-500 */
+  font-size: 0.875rem;
+}
+
+/* Optional: make numeric columns align right if WP adds classes */
+.blog-content td.is-style-numeric,
+.blog-content th.is-style-numeric {
+  text-align: right;
+}

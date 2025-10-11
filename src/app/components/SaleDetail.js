@@ -18,7 +18,10 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
   const onPrimarySelect = (key) => {
     const detail = saleDetails.find((detail) => detail.id === key);
     setSelectedDetail(detail);
-    setSelectedSecondaryDetail({});
+    const secondaryDetails = saleDetails.filter(
+      (item) => item.saleDetailId === detail.id && item.filterValueId
+    );
+    setSelectedSecondaryDetail(secondaryDetails[0] || {});
   };
 
   const getSecondaryDetails = () =>
@@ -54,8 +57,12 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
   useEffect(() => {
     if (selectedDetail.id) {
       setSelectedSaleDetail(selectedDetail);
+      const secondaryDetails = saleDetails.filter(
+        (item) => item.saleDetailId === selectedDetail.id && item.filterValueId
+      );
+      setSelectedSecondaryDetail(secondaryDetails[0] || {});
     }
-  }, [selectedDetail, setSelectedSaleDetail]);
+  }, [selectedDetail, saleDetails, setSelectedSaleDetail]);
 
   const getVariant = (id, selected) => (id === selected ? "solid" : "ghost");
 

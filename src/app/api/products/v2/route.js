@@ -137,8 +137,17 @@ export async function POST(req) {
 
     const saleDetailIds = saleDetails?.map(item => item.id)
     if (!saleDetailIds || saleDetailIds.length === 0) {
+      await db.filter_value_on_sale_detail.deleteMany({
+        where: { saleDetail: { productId: productBody.id } }
+      })
       await db.sale_detail.deleteMany({ where: { productId: productBody.id } });
     } else {
+      await db.filter_value_on_sale_detail.deleteMany({
+        where: {
+          saleDetailId: { notIn: saleDetailIds },
+          saleDetail: { productId: productBody.id }
+        }
+      })
       await db.sale_detail.deleteMany({ where: { productId: productBody.id, id: { notIn: saleDetailIds } } });
     }
 
@@ -167,7 +176,7 @@ export async function POST(req) {
 
     productOnImages.forEach(async item => {
       await db.product_on_image.upsert({
-        where: { productId_imageId: { productId: productBody.id, imageId: item.imageId } },
+        where: { imageId_productId: { imageId: item.imageId, productId: productBody.id } },
         update: {
           order: item.order,
           imageUrl: item.imageUrl,

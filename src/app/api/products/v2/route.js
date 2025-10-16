@@ -120,6 +120,7 @@ export async function POST(req) {
           inStock: item.inStock || 0,
         },
         create: {
+          id: item.id,
           productId: item.productId,
           value: item.value,
           price: item.price,

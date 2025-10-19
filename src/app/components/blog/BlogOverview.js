@@ -113,7 +113,7 @@ const BlogOverview = ({ activeCategory, activeTag }) => {
 
             <div className="w-full flex flex-col lg:flex-row items-start lg:space-x-5">
               <div className="relative w-full lg:w-[57%] mb-5">
-                <BlogCarousel items={blogs} />
+                <BlogCarousel items={blogs?.slice(0, 5)} />
               </div>
               <div className="w-full lg:w-[43%] mb-5">
                 <TopBlogs items={blogs.slice(0, 4)} />

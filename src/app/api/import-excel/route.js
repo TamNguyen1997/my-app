@@ -8,21 +8,8 @@ import crypto from "crypto";
 
 import { importTechnicalDetail } from "./technicalDetails"
 import { importSaleDetail } from "./saleDetails"
-
-function toNonNegativeInt(value) {
-  if (typeof value === 'number' && Number.isFinite(value)) {
-    return value < 0 ? 0 : Math.trunc(value)
-  }
-  if (typeof value === 'string') {
-    const cleaned = value.replace(/[,\s]/g, '').replace(/[^0-9\-\.]/g, '')
-    const n = Number(cleaned)
-    if (Number.isFinite(n)) {
-      const intVal = Math.trunc(n)
-      return intVal < 0 ? 0 : intVal
-    }
-  }
-  return 0
-}
+import { importFilter } from "./filter"
+import { importCategoryOnFilterValue } from "./categoryOnFilterValue"
 
 async function validateProduct(cateId, subCateId, brandId) {
   const [cate, subCate, brand] = await Promise.all([
@@ -212,6 +199,12 @@ export async function POST(req) {
         break
       case "sale_detail":
         await importSaleDetail(worksheet)
+        break
+      case "filter":
+        await importFilter(worksheet)
+        break
+      case "category_on_filter_value":
+        await importCategoryOnFilterValue(worksheet)
         break
       default:
         throw new Error(IMPORT_MESSAGE.INVALID_IMPORT_TYPE)

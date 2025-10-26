@@ -2,18 +2,18 @@ import { db } from "@/app/db";
 import { EXPORT_MESSAGE } from "@/constants/message";
 import { NextResponse } from "next/server";
 import * as XLSX from "xlsx";
+import { extractFilterData } from "./exportFilter";
+import { extractCategoryOnFilterValueData } from "./exportCategoryOnFilterValue";
 
 const LIMIT = 1000;
 export async function GET(req) {
   const url = new URL(req.url);
   const searchParams = url.searchParams;
 
-  const start = parseInt(searchParams.get("start") || "0");
-  const end = parseInt(searchParams.get("end") || `${LIMIT}`);
   const type = searchParams.get("type") || `product`;
 
   try {
-    const worksheet = await getWorksheet(type, start, end);
+    const worksheet = await getWorksheet(type);
 
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
@@ -35,19 +35,22 @@ export async function GET(req) {
   }
 }
 
-const getWorksheet = (type, start, end) => {
+const getWorksheet = (type) => {
   switch (type) {
+    case "category_on_filter_value":
+      return extractCategoryOnFilterValueData();
+    case "filter":
+      return extractFilterData();
     case "technical_detail":
-      return extractTechnicalDetailData(start, end);
+      return extractTechnicalDetailData();
     case "sale_detail":
-      return extractSaleDetailData(start, end);
+      return extractSaleDetailData();
     case "product":
     default:
-      return extractProductData(start, end);
+      return extractProductData();
   }
 }
-const extractProductData = async (start, end) => {
-  const limit = end - start;
+const extractProductData = async () => {
   const result = await db.product.findMany({
     orderBy: {
       updatedAt: "desc",
@@ -80,8 +83,6 @@ const extractProductData = async (start, end) => {
       createdAt: true,
       updatedAt: true,
     },
-    take: limit,
-    skip: start,
   });
 
   const headers = [
@@ -109,11 +110,8 @@ const extractProductData = async (start, end) => {
   return XLSX.utils.json_to_sheet(data, { header: headers });
 }
 
-const extractTechnicalDetailData = async (start, end) => {
-  const limit = end - start;
+const extractTechnicalDetailData = async () => {
   const result = await db.technical_detail.findMany({
-    take: limit,
-    skip: start,
     orderBy: {
       updatedAt: "desc",
     },
@@ -158,11 +156,8 @@ const extractTechnicalDetailData = async (start, end) => {
   return XLSX.utils.json_to_sheet(data, { header: headers });
 }
 
-const extractSaleDetailData = async (start, end) => {
-  const limit = end - start;
+const extractSaleDetailData = async () => {
   const result = await db.sale_detail.findMany({
-    take: limit,
-    skip: start,
     orderBy: {
       updatedAt: "desc",
     },

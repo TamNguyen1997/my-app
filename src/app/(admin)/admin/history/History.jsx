@@ -11,7 +11,7 @@ import HistoryList from "./_components/HistoryList";
 
 import { DownloadIcon, UploadIcon } from "lucide-react";
 
-const History = ({ totalProducts = 0, totalSaleDetails = 0, totalTechnicalDetails = 0 }) => {
+const History = () => {
   const inputRef = useRef(null);
   const [type, setType] = useState("product");
   const [refreshData, setRefreshData] = useState(false);
@@ -31,7 +31,7 @@ const History = ({ totalProducts = 0, totalSaleDetails = 0, totalTechnicalDetail
 
     if (
       type === null ||
-      !["category", "product", "technical_detail", "sale_detail"].includes(type)
+      !["category", "product", "technical_detail", "sale_detail", "filter", "category_on_filter_value"].includes(type)
     ) {
       toast.error(UPLOAD_MESSAGE.UPLOAD_TYPE_ERROR, {
         containerId: "ImportExportContainer",
@@ -123,28 +123,19 @@ const History = ({ totalProducts = 0, totalSaleDetails = 0, totalTechnicalDetail
   };
 
   const handleExport = async () => {
-    if (!selectedRange) {
-      toast.error(EXPORT_MESSAGE.SELECT_RANGE_ERROR, {
-        containerId: "ImportExportContainer",
-      });
-      return;
-    }
-
-    const { start, end } = selectedRange;
-
     toast.info(EXPORT_MESSAGE.EXPORT_IN_PROGRESS, {
       containerId: "ImportExportContainer",
     });
 
     try {
-      const res = await fetch(`/api/export-excel?start=${start}&end=${end}&type=${type}`);
+      const res = await fetch(`/api/export-excel?type=${type}`);
 
       if (res.ok) {
         const blob = await res.blob();
         const url = window.URL.createObjectURL(new Blob([blob]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", `data-${start}-${end}.xlsx`);
+        link.setAttribute("download", `data.xlsx`);
 
         document.body.appendChild(link);
         link.click();
@@ -167,22 +158,8 @@ const History = ({ totalProducts = 0, totalSaleDetails = 0, totalTechnicalDetail
   };
 
   useEffect(() => {
-    const total = type === "product"
-      ? totalProducts
-      : type === "sale_detail"
-        ? totalSaleDetails
-        : totalTechnicalDetails;
-    const createRanges = () => {
-      const newRanges = [];
-      for (let i = 0; i < total; i += 1000) {
-        const start = i;
-        const end = Math.min(i + 1000, total);
-        newRanges.push({ start, end });
-      }
-      setRanges(newRanges);
-    };
-
-    createRanges();
+    setRanges([]);
+    setSelectedRange(undefined);
   }, [type]);
 
   return (
@@ -206,6 +183,8 @@ const History = ({ totalProducts = 0, totalSaleDetails = 0, totalTechnicalDetail
               <SelectItem key="product">Sản phẩm</SelectItem>
               <SelectItem key="technical_detail">Thông số kỹ thuật</SelectItem>
               <SelectItem key="sale_detail">Thông số bán hàng</SelectItem>
+              <SelectItem key="filter">Filter</SelectItem>
+              <SelectItem key="category_on_filter_value">Giá trị filter với category/sub-category</SelectItem>
             </Select>
 
             <input
@@ -226,28 +205,7 @@ const History = ({ totalProducts = 0, totalSaleDetails = 0, totalTechnicalDetail
           </div>
 
           <div className="flex items-center gap-2">
-            <Select
-              label="Khoảng xuất dữ liệu"
-              labelPlacement="outside"
-              onSelectionChange={(value) => {
-                const [start, end] = value
-                  .values()
-                  .next()
-                  .value.split("-")
-                  .map(Number);
-                setSelectedRange({ start, end });
-              }}
-              className="!m-0 w-60"
-            >
-              {ranges.map((range) => (
-                <SelectItem
-                  key={`${range.start}-${range.end}`}
-                  textValue={`${range.start}-${range.end}`}
-                >
-                  {range.start} - {range.end}
-                </SelectItem>
-              ))}
-            </Select>
+            {/* Range selection removed */}
 
             <Button
               type="button"

@@ -12,9 +12,10 @@ const Page = async () => {
   const totalProducts = await db.product.count();
   const totalSaleDetails = await db.sale_detail.count();
   const totalTechnicalDetails = await db.technical_detail.count();
+  const totalFilters = await db.filter.count();
 
   return <>
-    <History totalProducts={totalProducts} totalSaleDetails={totalSaleDetails} totalTechnicalDetails={totalTechnicalDetails} />
+    <History totalProducts={totalProducts} totalSaleDetails={totalSaleDetails} totalTechnicalDetails={totalTechnicalDetails} totalFilters={totalFilters} />
   </>
 }
 

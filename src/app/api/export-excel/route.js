@@ -208,7 +208,7 @@ const extractSaleDetailData = async () => {
   const data = result.map((el) => ({
     "ID thông số bán hàng": el.id,
     "ID SP": el.productId,
-    "SKU": el.saleDetailId ? "" : el.sku,
+    "SKU": el.sku,
     "Giá bán thường": el.price,
     "Giá khuyến mãi": el.promotionalPrice,
     "Giá liên hệ": el.showPrice ? "T" : "F",

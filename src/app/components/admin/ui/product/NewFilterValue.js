@@ -134,11 +134,10 @@ const FilterValueSelect = ({
           {
             getFilter()?.filterValue?.map(item => <AutocompleteItem key={item.id} textValue={item.value}>
               <p>{item.value}</p>
-              <p className="text-xs text-gray-500">{item.displayId}</p>
+              <p className="text-xs text-gray-500">{item.id}</p>
             </AutocompleteItem>)
           }
         </Autocomplete>
-        {/* <p className="text-gray-500 text-xs">{getFilter()?.filterValue?.find(fv => fv.id === detail.filterValueId)?.displayId}</p> */}
       </div>
 
       <Modal

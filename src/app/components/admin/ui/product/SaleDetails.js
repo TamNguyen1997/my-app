@@ -253,9 +253,6 @@ const SaleDetails = () => {
                           </AutocompleteItem>
                         ))}
                       </Autocomplete>
-                      {/* <p className="text-gray-500 text-xs">
-                        {filters?.find(f => f.id === detail.filterId)?.displayId}
-                      </p> */}
                     </div>
 
                     <FilterValueSelect

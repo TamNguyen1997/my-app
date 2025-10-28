@@ -19,6 +19,7 @@ export const IMPORT_MESSAGE = {
   FILTER_NOT_FOUND: "The specified Filter ID does not exist.",
   FILTER_VALUE_NOT_FOUND: "The specified Filter-value ID does not exist.",
   BRAND_NOT_FOUND: "The specified Brand ID does not exist.",
+  FILTER_NOT_MATCH: "The specified Filter ID does not match the Filter-value ID.",
   MISSING_REQUIRED_DATA:
     "The product was skipped due to missing required data columns.",
   ERROR_LIMIT_REACHED: "The maximum error limit was reached during the import.",

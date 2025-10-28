@@ -76,7 +76,7 @@ export default async function Page({ searchParams }) {
         saleDetails: {
           some: {
             filterValue: {
-              displayId: {
+              id: {
                 in: filterIds
               }
             }

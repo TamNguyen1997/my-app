@@ -100,8 +100,8 @@ const Brand = ({ brandSlug, products = [], filters = [], defaultOrderBy = "creat
                   setSelectedFilterValues([...value]);
                 }}
               >
-                {filter.filterValue.filter(item => item.displayId).map((item, i) => (
-                  <SelectItem key={item.displayId}>{item.value}</SelectItem>
+                {filter.filterValue.filter(item => item.id).map((item, i) => (
+                  <SelectItem key={item.id}>{item.value}</SelectItem>
                 ))}
               </Select>
             ))}

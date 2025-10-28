@@ -105,7 +105,7 @@ const CategoryPage = async ({category, filters, filterIds, range, orderBy}) => {
         saleDetails: {
           some: {
             filterValue: {
-              displayId: {
+              id: {
                 in: filterIds
               }
             }
@@ -169,7 +169,7 @@ const SubCategoryPage = async ({category, filterIds, range, page, orderBy, filte
         saleDetails: {
           some: {
             filterValue: {
-              displayId: {
+              id: {
                 in: filterIds
               }
             }

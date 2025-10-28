@@ -72,11 +72,11 @@ const TechnicalDetails = () => {
                 {
                   filters.map(item => <SelectItem key={item.id} textValue={item.name}>
                     <p>{item.name}</p>
-                    <p className="text-xs text-gray-500">{item.displayId}</p>
+                    <p className="text-xs text-gray-500">{item.id}</p>
                   </SelectItem>)
                 }
               </Select>
-              <p className="text-xs text-gray-500">{filters.find(f => f.id === item.filterId)?.displayId}</p>
+              <p className="text-xs text-gray-500">{filters.find(f => f.id === item.filterId)?.id}</p>
             </div>
             <Modal
               scrollBehavior="inside"

@@ -51,7 +51,12 @@ export const extractCategoryOnFilterValueData = async () => {
     "ID category/sub-category",
   ]
 
-  const data = links.map((link) => {
+  const data = links
+    .filter((link) => {
+      const fv = fvMap.get(link.filterValueId)
+      return !!(fv && fv.filterId)
+    })
+    .map((link) => {
     const fv = fvMap.get(link.filterValueId)
     const filterId = fv?.filterId || ""
     const filterName = filterId ? filterMap.get(filterId) || "" : ""

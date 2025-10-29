@@ -139,6 +139,20 @@ const extractTechnicalDetailData = async () => {
     : [];
   const saleDetailById = new Map(saleDetails.map((s) => [s.id, s]));
 
+  // Fetch only existing products referenced by sale_details
+  const productIdsFromSaleDetails = Array.from(
+    new Set(saleDetails.map((s) => s.productId).filter(Boolean))
+  );
+  const existingProductsFromSaleDetails = productIdsFromSaleDetails.length
+    ? await db.product.findMany({
+        where: { id: { in: productIdsFromSaleDetails } },
+        select: { id: true },
+      })
+    : [];
+  const existingProductIdSetFromSaleDetails = new Set(
+    existingProductsFromSaleDetails.map((p) => p.id)
+  );
+
   // 2) Then append technical_detail
   const technicalDetails = await db.technical_detail.findMany({
     orderBy: { updatedAt: "desc" },
@@ -152,6 +166,20 @@ const extractTechnicalDetailData = async () => {
     },
   });
 
+  // Limit technical details to ones whose product still exists
+  const productIdsFromTechnical = Array.from(
+    new Set(technicalDetails.map((t) => t.productId).filter(Boolean))
+  );
+  const existingProductsFromTechnical = productIdsFromTechnical.length
+    ? await db.product.findMany({
+        where: { id: { in: productIdsFromTechnical } },
+        select: { id: true },
+      })
+    : [];
+  const existingProductIdSetFromTechnical = new Set(
+    existingProductsFromTechnical.map((p) => p.id)
+  );
+
   const headers = [
     "ID thông số kỹ thuật",
     "ID SP",
@@ -163,30 +191,37 @@ const extractTechnicalDetailData = async () => {
     "Ngày cập nhật",
   ];
 
-  const filterValueOnSaleDetailRows = filterValueOnSaleDetails.map((el) => {
-    const sd = saleDetailById.get(el.saleDetailId);
-    return {
+  const filterValueOnSaleDetailRows = filterValueOnSaleDetails
+    .filter((el) => {
+      const sd = saleDetailById.get(el.saleDetailId);
+      return !!(sd?.productId && existingProductIdSetFromSaleDetails.has(sd.productId));
+    })
+    .map((el) => {
+      const sd = saleDetailById.get(el.saleDetailId);
+      return {
+        "ID thông số kỹ thuật": el.id,
+        "ID SP": sd?.productId || "",
+        "ID thông số bán hàng": el.saleDetailId || "",
+        "SKU": sd?.sku || "",
+        "ID filter": sd?.filterId || "",
+        "ID giá trị filter": el.filterValueId || sd?.filterValueId || "",
+        "Ngày tạo": el.createdAt?.toLocaleString(),
+        "Ngày cập nhật": el.updatedAt?.toLocaleString(),
+      };
+    });
+
+  const technicalDetailRows = technicalDetails
+    .filter((el) => existingProductIdSetFromTechnical.has(el.productId))
+    .map((el) => ({
       "ID thông số kỹ thuật": el.id,
-      "ID SP": sd?.productId || "",
-      "ID thông số bán hàng": el.saleDetailId || "",
-      "SKU": sd?.sku || "",
-      "ID filter": sd?.filterId || "",
-      "ID giá trị filter": el.filterValueId || sd?.filterValueId || "",
+      "ID SP": el.productId,
+      "ID thông số bán hàng": "",
+      "SKU": "",
+      "ID filter": el.filterId || "",
+      "ID giá trị filter": el.filterValueId || "",
       "Ngày tạo": el.createdAt?.toLocaleString(),
       "Ngày cập nhật": el.updatedAt?.toLocaleString(),
-    };
-  });
-
-  const technicalDetailRows = technicalDetails.map((el) => ({
-    "ID thông số kỹ thuật": el.id,
-    "ID SP": el.productId,
-    "ID thông số bán hàng": "",
-    "SKU": "",
-    "ID filter": el.filterId || "",
-    "ID giá trị filter": el.filterValueId || "",
-    "Ngày tạo": el.createdAt?.toLocaleString(),
-    "Ngày cập nhật": el.updatedAt?.toLocaleString(),
-  }));
+    }));
 
   const data = [...filterValueOnSaleDetailRows, ...technicalDetailRows];
 

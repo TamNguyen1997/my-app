@@ -111,10 +111,37 @@ const extractProductData = async () => {
 }
 
 const extractTechnicalDetailData = async () => {
-  const result = await db.technical_detail.findMany({
-    orderBy: {
-      updatedAt: "desc",
+  // 1) Export filter_value_on_sale_detail first
+  const filterValueOnSaleDetails = await db.filter_value_on_sale_detail.findMany({
+    orderBy: { updatedAt: "desc" },
+    select: {
+      id: true,
+      filterValueId: true,
+      saleDetailId: true,
+      createdAt: true,
+      updatedAt: true,
     },
+  });
+
+  // Build a map of sale_detail by id to safely enrich rows without relying on required relations
+  const saleDetailIds = Array.from(new Set(filterValueOnSaleDetails.map((x) => x.saleDetailId).filter(Boolean)));
+  const saleDetails = saleDetailIds.length
+    ? await db.sale_detail.findMany({
+        where: { id: { in: saleDetailIds } },
+        select: {
+          id: true,
+          productId: true,
+          sku: true,
+          filterId: true,
+          filterValueId: true,
+        },
+      })
+    : [];
+  const saleDetailById = new Map(saleDetails.map((s) => [s.id, s]));
+
+  // 2) Then append technical_detail
+  const technicalDetails = await db.technical_detail.findMany({
+    orderBy: { updatedAt: "desc" },
     select: {
       id: true,
       filterId: true,
@@ -122,36 +149,46 @@ const extractTechnicalDetailData = async () => {
       productId: true,
       createdAt: true,
       updatedAt: true,
-      filter: {
-        select: {
-          id: true,
-        },
-      },
-      filterValue: {
-        select: {
-          id: true,
-        },
-      },
     },
   });
 
   const headers = [
     "ID thông số kỹ thuật",
     "ID SP",
+    "ID thông số bán hàng",
+    "SKU",
     "ID filter",
     "ID giá trị filter",
     "Ngày tạo",
-    "Ngày cập nhật"
+    "Ngày cập nhật",
   ];
 
-  const data = result.map((el) => ({
+  const filterValueOnSaleDetailRows = filterValueOnSaleDetails.map((el) => {
+    const sd = saleDetailById.get(el.saleDetailId);
+    return {
+      "ID thông số kỹ thuật": el.id,
+      "ID SP": sd?.productId || "",
+      "ID thông số bán hàng": el.saleDetailId || "",
+      "SKU": sd?.sku || "",
+      "ID filter": sd?.filterId || "",
+      "ID giá trị filter": el.filterValueId || sd?.filterValueId || "",
+      "Ngày tạo": el.createdAt?.toLocaleString(),
+      "Ngày cập nhật": el.updatedAt?.toLocaleString(),
+    };
+  });
+
+  const technicalDetailRows = technicalDetails.map((el) => ({
     "ID thông số kỹ thuật": el.id,
     "ID SP": el.productId,
-    "ID bộ lọc": el.filter?.id,
-    "ID giá trị bộ lọc": el.filterValue?.id,
+    "ID thông số bán hàng": "",
+    "SKU": "",
+    "ID filter": el.filterId || "",
+    "ID giá trị filter": el.filterValueId || "",
     "Ngày tạo": el.createdAt?.toLocaleString(),
-    "Ngày cập nhật": el.updatedAt?.toLocaleString()
+    "Ngày cập nhật": el.updatedAt?.toLocaleString(),
   }));
+
+  const data = [...filterValueOnSaleDetailRows, ...technicalDetailRows];
 
   return XLSX.utils.json_to_sheet(data, { header: headers });
 }

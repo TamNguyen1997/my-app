@@ -46,18 +46,6 @@ const Page = async ({ params }) => {
           filterValue: true,
           sale_detail_on_image: true,
           technical_detail_for_sale_detail: true,
-          filter_value_on_sale_detail: {
-            orderBy: {
-              updatedAt: 'asc'
-            },
-            include: {
-              filterValue: {
-                include: {
-                  filter: true
-                }
-              }
-            }
-          },
           promotionProgram: true
         }
       },
@@ -88,6 +76,61 @@ const Page = async ({ params }) => {
   })
   if (!product || !product.category || !product.subCate || !product.brand) {
     notFound()
+  }
+  // Enrich saleDetails with filter_value_on_sale_detail safely (avoid deep nested include that panics Prisma)
+  if (product?.saleDetails?.length) {
+    const saleDetailIds = product.saleDetails.map((sd) => sd.id).filter(Boolean)
+    if (saleDetailIds.length) {
+      const fvsds = await db.filter_value_on_sale_detail.findMany({
+        where: { saleDetailId: { in: saleDetailIds } },
+        orderBy: { updatedAt: 'asc' },
+        select: {
+          id: true,
+          saleDetailId: true,
+          filterValueId: true,
+          createdAt: true,
+          updatedAt: true,
+        }
+      })
+
+      const filterValueIds = Array.from(new Set(fvsds.map((x) => x.filterValueId).filter(Boolean)))
+      const filterValues = filterValueIds.length
+        ? await db.filter_value.findMany({
+            where: { id: { in: filterValueIds } },
+            select: {
+              id: true,
+              value: true,
+              filterId: true,
+            },
+          })
+        : []
+      const filterIdSet = Array.from(new Set(filterValues.map((fv) => fv.filterId).filter(Boolean)))
+      const filters = filterIdSet.length
+        ? await db.filter.findMany({
+            where: { id: { in: filterIdSet } },
+            select: { id: true, name: true },
+          })
+        : []
+      const filterById = new Map(filters.map((f) => [f.id, f]))
+      const filterValueById = new Map(
+        filterValues.map((fv) => [fv.id, { ...fv, filter: fv.filterId ? filterById.get(fv.filterId) || null : null }])
+      )
+
+      const fvsdsBySaleDetailId = new Map()
+      for (const row of fvsds) {
+        const arr = fvsdsBySaleDetailId.get(row.saleDetailId) || []
+        arr.push({
+          ...row,
+          filterValue: row.filterValueId ? filterValueById.get(row.filterValueId) || null : null,
+        })
+        fvsdsBySaleDetailId.set(row.saleDetailId, arr)
+      }
+
+      product.saleDetails = product.saleDetails.map((sd) => ({
+        ...sd,
+        filter_value_on_sale_detail: fvsdsBySaleDetailId.get(sd.id) || [],
+      }))
+    }
   }
   let productDescription = ""
   const productPostResponse = await fetch(`${process.env.WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${params.productSlug}`);

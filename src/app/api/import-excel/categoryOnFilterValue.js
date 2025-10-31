@@ -1,6 +1,7 @@
 import { db } from "@/app/db"
 import { IMPORT_MESSAGE } from "@/constants/message"
 import slugify from "slugify"
+import { v4 } from "uuid"
 
 export async function importCategoryOnFilterValue(worksheet) {
   // Expected columns by index based on exporter:
@@ -18,7 +19,7 @@ export async function importCategoryOnFilterValue(worksheet) {
       const rowData = Object.values(row)
 
       const filterId = (rowData[requiredColumnIndexes.filterId] || "").toString()
-      const filterValueId = (rowData[requiredColumnIndexes.filterValueId] || "").toString()
+      const filterValueId = (rowData[requiredColumnIndexes.filterValueId] || "").toString() || v4()
       const filterValue = (rowData[requiredColumnIndexes.filterValue] || "").toString()
       const categoryId = (rowData[requiredColumnIndexes.categoryId] || "").toString()
 

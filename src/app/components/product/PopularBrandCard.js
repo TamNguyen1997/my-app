@@ -29,7 +29,7 @@ const brandDescription = {
     kính Moerman vẫn được duy trì như thương hiệu nổi tiếng vốn có của nó. 
     Moerman, dụng cụ vệ sinh kính nổi tiếng toàn cầu.`,
   },
-  "KIMBERLY-CLARK PROFESSIONAL": {
+  "KIMBERLY-CLARK": {
     logo: "/brand/Logo-Kimberly-Clark.webp",
     slug: "thuong-hieu-kimberly-clark",
     description: `Kimberly-Clark Corporation - tập đoàn chuyên sản xuất hàng hóa tiêu dùng, đặc biệt là các sản phẩm về Giấy. 

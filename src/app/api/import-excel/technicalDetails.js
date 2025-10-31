@@ -98,7 +98,7 @@ async function importTechnicalDetail(worksheet) {
         console.log(error)
         throw new Error(IMPORT_MESSAGE.DATABASE_ERROR)
       }
-    })
+    }, { timeout: 120000, maxWait: 10000 })
   }
 
   return { success: true }

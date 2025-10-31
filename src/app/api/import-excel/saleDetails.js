@@ -28,8 +28,15 @@ async function importSaleDetail(worksheet) {
   const skuIndex = 1
   const parentSaleSkuColumnIndex = 8
 
-  await db.$transaction(async tx => {
-  for (const [index, row] of worksheet.entries()) {
+  const CHUNK_SIZE = 200
+
+  for (let offset = 0; offset < worksheet.length; offset += CHUNK_SIZE) {
+    const chunk = worksheet.slice(offset, offset + CHUNK_SIZE)
+
+    await db.$transaction(async tx => {
+  for (let i = 0; i < chunk.length; i++) {
+    const row = chunk[i]
+    const index = offset + i
     const rowData = Object.values(row)
     const isAllRequiredData = Object.values(requiredColumnIndexes).every(
       (colIndex) =>
@@ -140,7 +147,8 @@ async function importSaleDetail(worksheet) {
       throw new Error(IMPORT_MESSAGE.DATABASE_ERROR)
     }
   }
-  })
+  }, { timeout: 120000, maxWait: 10000 })
+  }
 
   return { success: true }
 }

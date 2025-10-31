@@ -40,13 +40,6 @@ export async function importCategoryOnFilterValue(worksheet) {
       if (!category) {
         throw new Error(`"Line ${index + 1}": ${IMPORT_MESSAGE.CATEGORY_NOT_FOUND}`)
       }
-      if (filterValueId) {
-        const filterValueData = await tx.filter_value.findFirst({ where: { id: filterValueId } })
-        if (filterValueData?.filterId !== filterId) {
-          throw new Error(`"Line ${index + 1}": ${IMPORT_MESSAGE.FILTER_NOT_MATCH}`)
-        }
-      }
-
       const slug = slugify(filterValue, { locale: 'vi' }).replaceAll("(", "").replaceAll(")", "").toLowerCase()
 
       try {

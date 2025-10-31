@@ -15,8 +15,6 @@ const History = () => {
   const inputRef = useRef(null);
   const [type, setType] = useState("product");
   const [refreshData, setRefreshData] = useState(false);
-  const [ranges, setRanges] = useState([]);
-  const [selectedRange, setSelectedRange] = useState();
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
@@ -122,6 +120,7 @@ const History = () => {
     }
   };
 
+  console.log(type);
   const handleExport = async () => {
     toast.info(EXPORT_MESSAGE.EXPORT_IN_PROGRESS, {
       containerId: "ImportExportContainer",
@@ -156,11 +155,6 @@ const History = () => {
       });
     }
   };
-
-  useEffect(() => {
-    setRanges([]);
-    setSelectedRange(undefined);
-  }, [type]);
 
   return (
     <>

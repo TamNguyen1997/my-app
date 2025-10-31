@@ -13,72 +13,82 @@ export async function importCategoryOnFilterValue(worksheet) {
     categoryId: 4,
   }
 
-  await db.$transaction(async (tx) => {
-    for (const [index, row] of worksheet.entries()) {
-      // process all rows
-      const rowData = Object.values(row)
+  const CHUNK_SIZE = 200
 
-      const filterId = (rowData[requiredColumnIndexes.filterId] || "").toString()
-      const filterValueId = (rowData[requiredColumnIndexes.filterValueId] || "").toString() || v4()
-      const filterValue = (rowData[requiredColumnIndexes.filterValue] || "").toString()
-      const categoryId = (rowData[requiredColumnIndexes.categoryId] || "").toString()
+  for (let offset = 0; offset < worksheet.length; offset += CHUNK_SIZE) {
+    const chunk = worksheet.slice(offset, offset + CHUNK_SIZE)
 
-      const hasAll = filterId && filterValueId && filterValue && categoryId
-      if (!hasAll) {
-        throw new Error(`"Line ${index + 1}": ${IMPORT_MESSAGE.MISSING_REQUIRED_DATA}`)
-      }
+    await db.$transaction(async (tx) => {
+      for (let i = 0; i < chunk.length; i++) {
+        const row = chunk[i]
+        const index = offset + i
 
-      // Validate referenced entities
-      const [filter, category, filterValueData] = await Promise.all([
-        tx.filter.findUnique({ where: { id: filterId } }),
-        tx.category.findUnique({ where: { id: categoryId } }),
-      ])
+        // process one row
+        const rowData = Object.values(row)
 
-      if (!filter) {
-        throw new Error(`"Line ${index + 1}": ${IMPORT_MESSAGE.FILTER_NOT_FOUND}`)
-      }
-      if (!category) {
-        throw new Error(`"Line ${index + 1}": ${IMPORT_MESSAGE.CATEGORY_NOT_FOUND}`)
-      }
-      const slug = slugify(filterValue, { locale: 'vi' }).replaceAll("(", "").replaceAll(")", "").toLowerCase()
+        const filterId = (rowData[requiredColumnIndexes.filterId] || "").toString()
+        const filterValueId = (rowData[requiredColumnIndexes.filterValueId] || "").toString() || v4()
+        const filterValue = (rowData[requiredColumnIndexes.filterValue] || "").toString()
+        const categoryId = (rowData[requiredColumnIndexes.categoryId] || "").toString()
 
-      try {
-        // Upsert filter_value by ID
-        await tx.filter_value.upsert({
-          where: { id: filterValueId },
-          update: {
-            value: filterValue,
-            slug: slug,
-            filter: { connect: { id: filterId } },
-          },
-          create: {
-            id: filterValueId,
-            value: filterValue,
-            slug: slug,
-            filter: { connect: { id: filterId } },
-          },
-        })
+        const hasAll = filterId && filterValueId && filterValue && categoryId
+        if (!hasAll) {
+          throw new Error(`"Line ${index + 1}": ${IMPORT_MESSAGE.MISSING_REQUIRED_DATA}`)
+        }
 
-        // Link category and filter value (upsert on composite key)
-        await tx.category_on_filter_value.upsert({
-          where: {
-            categoryId_filterValueId: {
-              categoryId: categoryId,
-              filterValueId: filterValueId,
+        // Validate referenced entities
+        const [filter, category] = await Promise.all([
+          tx.filter.findFirst({ where: { id: filterId } }),
+          tx.category.findFirst({ where: { id: categoryId } }),
+        ])
+
+        if (!filter) {
+          throw new Error(`"Line ${index + 1}": ${IMPORT_MESSAGE.FILTER_NOT_FOUND}`)
+        }
+        if (!category) {
+          throw new Error(`"Line ${index + 1}": ${IMPORT_MESSAGE.CATEGORY_NOT_FOUND}`)
+        }
+
+        const slug = slugify(filterValue, { locale: 'vi' }).replaceAll("(", "").replaceAll(")", "").toLowerCase()
+
+        try {
+          // Upsert filter_value by ID
+          await tx.filter_value.upsert({
+            where: { id: filterValueId },
+            update: {
+              value: filterValue,
+              slug: slug,
+              filter: { connect: { id: filterId } },
             },
-          },
-          update: {},
-          create: {
-            category: { connect: { id: categoryId } },
-            filterValue: { connect: { id: filterValueId } },
-          },
-        })
-      } catch (error) {
-        console.log(error)
-        throw new Error(IMPORT_MESSAGE.DATABASE_ERROR)
+            create: {
+              id: filterValueId,
+              value: filterValue,
+              slug: slug,
+              filter: { connect: { id: filterId } },
+            },
+          })
+
+          // Link category and filter value (upsert on composite key)
+          await tx.category_on_filter_value.upsert({
+            where: {
+              categoryId_filterValueId: {
+                categoryId: categoryId,
+                filterValueId: filterValueId,
+              },
+            },
+            update: {},
+            create: {
+              category: { connect: { id: categoryId } },
+              filterValue: { connect: { id: filterValueId } },
+            },
+          })
+        } catch (error) {
+          console.log(error)
+          throw new Error(IMPORT_MESSAGE.DATABASE_ERROR)
+        }
       }
-    }
-  })
+    }, { timeout: 120000, maxWait: 10000 })
+  }
 
   return { success: true }
 }

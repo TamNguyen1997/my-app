@@ -88,6 +88,16 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
       : formatPrice(detail.price);
   };
 
+  const getActiveDetail = () => {
+    const detail =
+      selectedSecondaryDetail.price && selectedSecondaryDetail.showPrice
+        ? selectedSecondaryDetail
+        : selectedDetail.price && !getSecondaryDetails().length
+          ? selectedDetail
+          : saleDetails[0];
+    return detail;
+  };
+
   const addToCartAnimation = (evt, image = null) => {
     const addBtn = evt?.target;
     const headerCartBtn = document.getElementById("header-cart-btn");
@@ -164,11 +174,16 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
       <p className="text-[32px] font-medium text-[#b61a2d]">
         {getPrice() && getPrice() !== "0" ? `${getPrice()} đ` : ""}
       </p>
+      {getActiveDetail()?.inStock && getActiveDetail()?.inStock <= 0 && (
+        <p className="text-sm text-red-500">
+          Sản phẩm đã hết hàng
+        </p>
+      )}
       <p className="text-sm">
         Đã bao gồm VAT, chưa bao gồm phí giao hàng.
       </p>
       <p className="text-sm">Giao hàng trong vòng 1-3 ngày.</p>
-
+      
       <div className="flex flex-col gap-3 pt-2">
         {(
           getSecondaryDetails().length > 0 ||
@@ -281,14 +296,22 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
         <div className="flex lg:flex-nowrap flex-wrap gap-3 mx-auto">
           <Button
             color="primary"
-            isDisabled={getPrice() == null || getPrice() === "0"}
+            isDisabled={
+              getPrice() == null ||
+              getPrice() === "0" ||
+              ((getActiveDetail()?.inStock ?? 0) === 0)
+            }
             onPress={(evt) => handleAddToCart(evt, true)}
           >
             Mua ngay <ShoppingCart />
           </Button>
           <Button
             color="primary"
-            isDisabled={getPrice() == null || getPrice() === "0"}
+            isDisabled={
+              getPrice() == null ||
+              getPrice() === "0" ||
+              ((getActiveDetail()?.inStock ?? 0) === 0)
+            }
             onPress={(evt) => handleAddToCart(evt)}
           >
             Thêm vào giỏ hàng

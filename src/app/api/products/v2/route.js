@@ -67,19 +67,131 @@ export async function POST(req) {
       }
     })
 
+    // Pre-checks for transaction
+    let existingProduct = null
     if (body.product.id) {
-      const existingProduct = await db.product.findFirst({ where: { id: body.product.id } });
+      existingProduct = await db.product.findFirst({ where: { id: body.product.id } });
       if (!existingProduct) {
         return NextResponse.json({ message: `Không tìm thấy sản phẩm ${body.product.id} để cập nhật` }, { status: 404 });
       }
+    }
 
-      const role = req.cookies.get("role");
+    const role = req.cookies.get("role");
+    const slugChanged = !!(existingProduct && existingProduct.slug !== productBody.slug)
+    if (slugChanged) {
+      if (!role?.value || role?.value !== user_role.ADMIN) {
+        return NextResponse.json({ message: "Bạn không có quyền cập nhật slug sản phẩm này" }, { status: 403 });
+      }
+    }
 
-      const updatedProduct = await db.product.update({ where: { id: body.product.id }, data: productBody })
-      if (existingProduct.slug !== updatedProduct.slug) {
-        if (!role?.value || role?.value !== user_role.ADMIN) {
-          return NextResponse.json({ message: "Bạn không có quyền cập nhật slug sản phẩm này" }, { status: 403 });
-        }
+    // Keep DB transaction lean (no network calls) and set timeouts to avoid long locks
+    await db.$transaction(async (tx) => {
+      if (body.product.id) {
+        await tx.product.update({ where: { id: body.product.id }, data: productBody })
+      } else {
+        await tx.product.create({ data: productBody })
+      }
+
+      if (saleDetails?.length) {
+        await Promise.all(saleDetails.map(item => tx.sale_detail.upsert({
+          where: { id: item.id },
+          update: {
+            productId: item.productId,
+            value: item.value,
+            price: item.price,
+            type: item.type,
+            saleDetailId: item.saleDetailId,
+            filterId: item.filterId,
+            filterValueId: item.filterValueId,
+            sku: item.sku,
+            promotionalPrice: item.promotionalPrice,
+            showPrice: item.showPrice,
+            inStock: item.inStock || 0,
+          },
+          create: {
+            id: item.id,
+            productId: item.productId,
+            value: item.value,
+            price: item.price,
+            type: item.type,
+            saleDetailId: item.saleDetailId,
+            filterId: item.filterId,
+            filterValueId: item.filterValueId,
+            sku: item.sku,
+            promotionalPrice: item.promotionalPrice,
+            showPrice: item.showPrice,
+            inStock: item.inStock || 0,
+          }
+        })))
+      }
+
+      const saleDetailIds = saleDetails?.map(item => item.id)
+      if (!saleDetailIds || saleDetailIds.length === 0) {
+        await tx.filter_value_on_sale_detail.deleteMany({
+          where: { saleDetail: { productId: productBody.id } }
+        })
+        await tx.sale_detail.deleteMany({ where: { productId: productBody.id } });
+      } else {
+        await tx.filter_value_on_sale_detail.deleteMany({
+          where: {
+            saleDetailId: { notIn: saleDetailIds },
+            saleDetail: { productId: productBody.id }
+          }
+        })
+        await tx.sale_detail.deleteMany({ where: { productId: productBody.id, id: { notIn: saleDetailIds } } });
+      }
+
+      if (technicalDetails?.length) {
+        await Promise.all(technicalDetails.map(item => tx.technical_detail.upsert({
+          where: { id: item.id },
+          update: {
+            productId: item.productId,
+            filterId: item.filterId,
+            filterValueId: item.filterValueId,
+          },
+          create: {
+            productId: item.productId,
+            filterId: item.filterId,
+            filterValueId: item.filterValueId,
+          }
+        })))
+      }
+
+      const technicalDetailIds = technicalDetails?.map(item => item.id)
+      if (!technicalDetailIds || technicalDetailIds.length === 0) {
+        await tx.technical_detail.deleteMany({ where: { productId: productBody.id } });
+      } else {
+        await tx.technical_detail.deleteMany({ where: { productId: productBody.id, id: { notIn: technicalDetailIds } } });
+      }
+
+      const safeProductOnImages = productOnImages || []
+      if (safeProductOnImages.length) {
+        await Promise.all(safeProductOnImages.map(item => tx.product_on_image.upsert({
+          where: { imageId_productId: { imageId: item.imageId, productId: productBody.id } },
+          update: {
+            order: item.order,
+            imageUrl: item.imageUrl,
+          },
+          create: {
+            order: item.order,
+            imageId: item.imageId,
+            imageUrl: item.imageUrl,
+            productId: productBody.id
+          }
+        })))
+      }
+
+      const productOnImageIds = safeProductOnImages.map(item => item.imageId)
+      if (!productOnImageIds || productOnImageIds.length === 0) {
+        await tx.product_on_image.deleteMany({ where: { productId: productBody.id } });
+      } else {
+        await tx.product_on_image.deleteMany({ where: { productId: productBody.id, imageId: { notIn: productOnImageIds } } });
+      }
+    }, { timeout: 120000, maxWait: 10000 })
+
+    // Perform WordPress sync outside of DB transaction to avoid timeouts
+    if (slugChanged) {
+      try {
         const wordpressPostRes = await fetch(`${process.env.WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${existingProduct.slug}&status=any`, {
           method: "GET",
           headers: {
@@ -95,107 +207,12 @@ export async function POST(req) {
               'Content-Type': 'application/json',
               'Authorization': `Basic ${Buffer.from(`${process.env.WORDPRESS_ADMIN_USER}:${process.env.WORDPRESS_ADMIN_PASSWORD}`).toString('base64')}`
             },
-            body: JSON.stringify({ slug: updatedProduct.slug })
+            body: JSON.stringify({ slug: productBody.slug })
           });
         }
+      } catch (err) {
+        console.log('WordPress sync failed:', err)
       }
-    } else {
-      await db.product.create({ data: productBody })
-    }
-
-    saleDetails?.forEach(async item => {
-      await db.sale_detail.upsert({
-        where: { id: item.id },
-        update: {
-          productId: item.productId,
-          value: item.value,
-          price: item.price,
-          type: item.type,
-          saleDetailId: item.saleDetailId,
-          filterId: item.filterId,
-          filterValueId: item.filterValueId,
-          sku: item.sku,
-          promotionalPrice: item.promotionalPrice,
-          showPrice: item.showPrice,
-          inStock: item.inStock || 0,
-        },
-        create: {
-          id: item.id,
-          productId: item.productId,
-          value: item.value,
-          price: item.price,
-          type: item.type,
-          saleDetailId: item.saleDetailId,
-          filterId: item.filterId,
-          filterValueId: item.filterValueId,
-          sku: item.sku,
-          promotionalPrice: item.promotionalPrice,
-          showPrice: item.showPrice,
-          inStock: item.inStock || 0,
-        }
-      });
-    })
-
-    const saleDetailIds = saleDetails?.map(item => item.id)
-    if (!saleDetailIds || saleDetailIds.length === 0) {
-      await db.filter_value_on_sale_detail.deleteMany({
-        where: { saleDetail: { productId: productBody.id } }
-      })
-      await db.sale_detail.deleteMany({ where: { productId: productBody.id } });
-    } else {
-      await db.filter_value_on_sale_detail.deleteMany({
-        where: {
-          saleDetailId: { notIn: saleDetailIds },
-          saleDetail: { productId: productBody.id }
-        }
-      })
-      await db.sale_detail.deleteMany({ where: { productId: productBody.id, id: { notIn: saleDetailIds } } });
-    }
-
-    technicalDetails?.forEach(async item => {
-      await db.technical_detail.upsert({
-        where: { id: item.id },
-        update: {
-          productId: item.productId,
-          filterId: item.filterId,
-          filterValueId: item.filterValueId,
-        },
-        create: {
-          productId: item.productId,
-          filterId: item.filterId,
-          filterValueId: item.filterValueId,
-        }
-      });
-    })
-
-    const technicalDetailIds = technicalDetails?.map(item => item.id)
-    if (!technicalDetailIds || technicalDetailIds.length === 0) {
-      await db.technical_detail.deleteMany({ where: { productId: productBody.id } });
-    } else {
-      await db.technical_detail.deleteMany({ where: { productId: productBody.id, id: { notIn: technicalDetailIds } } });
-    }
-
-    productOnImages.forEach(async item => {
-      await db.product_on_image.upsert({
-        where: { imageId_productId: { imageId: item.imageId, productId: productBody.id } },
-        update: {
-          order: item.order,
-          imageUrl: item.imageUrl,
-        },
-        create: {
-          order: item.order,
-          imageId: item.imageId,
-          imageUrl: item.imageUrl,
-          productId: productBody.id
-        }
-      });
-    })
-
-    const productOnImageIds = productOnImages.map(item => item.imageId)
-    if (!productOnImageIds || productOnImageIds.length === 0) {
-      await db.product_on_image.deleteMany({ where: { productId: productBody.id } });
-    } else {
-      await db.product_on_image.deleteMany({ where: { productId: productBody.id, imageId: { notIn: productOnImageIds } } });
     }
 
     return NextResponse.json({ id: productBody.id })

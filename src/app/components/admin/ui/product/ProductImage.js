@@ -10,6 +10,7 @@ import update from "immutability-helper";
 import FlipMove from 'react-flip-move';
 import { useDrag, useDrop } from "react-dnd";
 import { v4 } from "uuid";
+import Image from "next/image";
 
 const ProductImage = () => {
   const [, startTransition] = useTransition();
@@ -19,12 +20,14 @@ const ProductImage = () => {
 
   const selectImage = (value) => {
     let newImages = product.product_on_image
-    if (newImages.length > 10) {
-      toast.error("Không thể thêm hình, đã đạt tối đa 10 hình")
+    // Check if we're deleting (image already exists)
+    if (newImages.find(item => item.imageUrl === value.source_url || item.imageUrl === value.imageUrl)) {
+      newImages = newImages.filter(item => item.imageUrl !== value.source_url && item.imageUrl !== value.imageUrl)
+      toast.warning("Đã loại ảnh này")
     } else {
-      if (newImages.find(item => item.imageUrl === value.source_url || item.imageUrl === value.imageUrl)) {
-        newImages = newImages.filter(item => item.imageUrl !== value.source_url && item.imageUrl !== value.imageUrl)
-        toast.warning("Đã loại ảnh này")
+      // Only check length limit when adding
+      if (newImages.length >= 10) {
+        toast.error("Không thể thêm hình, đã đạt tối đa 10 hình")
       } else {
         newImages = [...newImages, { imageId: v4(), imageUrl: value.source_url, productId: product.id }]
       }
@@ -176,11 +179,15 @@ const ImageItem = ({ img, onClick, deleteItem, index, moveRow }) => {
         transition duration-400
       `}
     >
-      <img
-        src={`${img?.imageUrl}`}
-        alt={img?.imageUrl}
-        className="aspect-auto object-cover rounded-t shrink-0"
-        onClick={() => onClick(img)} />
+      <Image
+        src={img?.imageUrl || ""}
+        alt={img?.imageUrl || ""}
+        width={160}
+        height={160}
+        className="aspect-auto object-cover rounded-t shrink-0 cursor-pointer"
+        onClick={() => onClick(img)}
+        unoptimized
+      />
 
       <span className="absolute -top-2.5 -right-2.5 hidden group-hover:block 
       animate-vote bg-red-500 rounded-full hover:bg-red-700"

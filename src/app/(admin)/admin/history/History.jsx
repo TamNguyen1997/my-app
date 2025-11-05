@@ -120,7 +120,6 @@ const History = () => {
     }
   };
 
-  console.log(type);
   const handleExport = async () => {
     toast.info(EXPORT_MESSAGE.EXPORT_IN_PROGRESS, {
       containerId: "ImportExportContainer",

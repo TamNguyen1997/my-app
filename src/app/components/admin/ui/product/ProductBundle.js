@@ -8,8 +8,6 @@ const ProductBundle = ({ allProducts = [], product = {}, productsInBundle = [] }
   const [loading, setLoading] = useState(false);
   const getBundleId = () => product.bundle_product[0]?.bundleId || null;
 
-  console.log(getBundleId());
-  console.log(bundleProducts)
   useEffect(() => {
     const bundleIds = bundleProducts.map(p => p.id);
     setFilteredProducts(

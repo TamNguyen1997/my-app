@@ -80,7 +80,7 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
         ? selectedSecondaryDetail
         : selectedDetail.price && !getSecondaryDetails().length
           ? selectedDetail
-          : saleDetails[0];
+          : null;
 
     if (!detail) return null;
     return detail?.promotionalPrice > 0
@@ -214,6 +214,7 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
                   }}
                 >
                   {detail.filterValue.value}
+                  {detail.id}
                 </Button>
               </div>
             ))}

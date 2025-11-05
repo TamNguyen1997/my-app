@@ -43,7 +43,6 @@ const ProductDetail = () => {
     } else {
       const existingPost = await existingPostResponse.json()
       const post = existingPost.find(item => item.slug === cleanedSlug)
-      console.log(post)
       if (existingPost.length > 0 && post) {
         window.open(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-admin/post.php?post=${post.id}&action=edit`, "_blank").focus()
       } else {

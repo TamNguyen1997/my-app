@@ -143,7 +143,6 @@ async function importSaleDetail(worksheet) {
       }
     } catch (error) {
       console.error(`Error importing sale detail at line ${index + 1}`)
-      console.log(rowData)
       throw new Error(IMPORT_MESSAGE.DATABASE_ERROR)
     }
   }

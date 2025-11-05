@@ -17,7 +17,6 @@ const TechnicalDetail = ({ data = [] }) => {
 
     const filterValueOnSaleDetail = (selectedSaleDetail?.filter_value_on_sale_detail || [])
     .sort((a, b) => {
-      console.log(a.updatedAt, b.updatedAt)
       const aT = a.updatedAt ? new Date(a.updatedAt).getTime() : 0
       const bT = b.updatedAt ? new Date(b.updatedAt).getTime() : 0
       return aT - bT

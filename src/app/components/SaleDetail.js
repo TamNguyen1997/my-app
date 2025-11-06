@@ -213,8 +213,7 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
                     }
                   }}
                 >
-                  {detail.filterValue.value}
-                  {detail.id}
+                  {detail.filterValue.value}i
                 </Button>
               </div>
             ))}

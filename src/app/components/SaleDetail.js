@@ -183,7 +183,7 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
         Đã bao gồm VAT, chưa bao gồm phí giao hàng.
       </p>
       <p className="text-sm">Giao hàng trong vòng 1-3 ngày.</p>
-      
+
       <div className="flex flex-col gap-3 pt-2">
         {(
           getSecondaryDetails().length > 0 ||
@@ -191,32 +191,32 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
         ) ? (
           <div className="border rounded-lg bg-white p-3">
             <div className="flex gap-2 flex-wrap">
-          {saleDetails
-            .filter(
-              (item) =>
-                !item.saleDetailId &&
-                item.filterValueId &&
-                item.filterValue &&
-                item.filterId
-            )
-            .map((detail, i) => (
-              <div key={i} className="flex flex-col gap-1">
-                <Button
-                  color="default"
-                  size="sm"
-                  variant={getVariant(detail.id, selectedDetail.id)}
-                  className={`rounded-full px-3 ${detail.id === selectedDetail.id ? 'ring-2 ring-primary' : 'border'} !shadow-sm`}
-                  onPress={() => onPrimarySelect(detail.id)}
-                  onMouseOver={() => {
-                    if (detail.sale_detail_on_image?.length > 0) {
-                      setImage(detail.sale_detail_on_image[0]?.imageUrl)
-                    }
-                  }}
-                >
-                  {detail.filterValue.value}i
-                </Button>
-              </div>
-            ))}
+              {saleDetails
+                .filter(
+                  (item) =>
+                    !item.saleDetailId &&
+                    item.filterValueId &&
+                    item.filterValue &&
+                    item.filterId
+                )
+                .map((detail, i) => (
+                  <div key={i} className="flex flex-col gap-1">
+                    <Button
+                      color="default"
+                      size="sm"
+                      variant={getVariant(detail.id, selectedDetail.id)}
+                      className={`rounded-full px-3 ${detail.id === selectedDetail.id ? 'ring-2 ring-primary' : 'border'} !shadow-sm`}
+                      onPress={() => onPrimarySelect(detail.id)}
+                      onMouseOver={() => {
+                        if (detail.sale_detail_on_image?.length > 0) {
+                          setImage(detail.sale_detail_on_image[0]?.imageUrl)
+                        }
+                      }}
+                    >
+                      {detail.filterValue.value}
+                    </Button>
+                  </div>
+                ))}
             </div>
           </div>
         ) : (

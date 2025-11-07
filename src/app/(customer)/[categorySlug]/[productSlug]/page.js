@@ -41,12 +41,59 @@ const Page = async ({ params }) => {
         }
       },
       saleDetails: {
-        include: {
-          filter: true,
-          filterValue: true,
-          sale_detail_on_image: true,
-          technical_detail_for_sale_detail: true,
-          promotionProgram: true
+        select: {
+          id: true,
+          productId: true,
+          value: true,
+          price: true,
+          type: true,
+          saleDetailId: true,
+          filterId: true,
+          filterValueId: true,
+          sku: true,
+          promotionalPrice: true,
+          showPrice: true,
+          inStock: true,
+          createdAt: true,
+          updatedAt: true,
+          promotionProgramId: true,
+          filter: {
+            select: {
+              id: true,
+              name: true,
+              active: true,
+            }
+          },
+          filterValue: {
+            select: {
+              id: true,
+              value: true,
+              filterId: true,
+            }
+          },
+          sale_detail_on_image: {
+            select: {
+              imageUrl: true,
+              order: true,
+            },
+            orderBy: {
+              order: 'asc'
+            }
+          },
+          technical_detail_for_sale_detail: {
+            select: {
+              id: true,
+              technicalDetails: true,
+            }
+          },
+          promotionProgram: {
+            select: {
+              id: true,
+              name: true,
+              promotion: true,
+              active: true,
+            }
+          }
         }
       },
       promotionProgram: true,

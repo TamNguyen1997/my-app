@@ -127,18 +127,84 @@ export async function POST(req) {
 
       const saleDetailIds = saleDetails?.map(item => item.id)
       if (!saleDetailIds || saleDetailIds.length === 0) {
+        // Delete child sale details (secondary sale details) first
+        const childSaleDetails = await tx.sale_detail.findMany({
+          where: { 
+            productId: productBody.id,
+            saleDetailId: { not: null }
+          },
+          select: { id: true }
+        })
+        const childSaleDetailIds = childSaleDetails.map(sd => sd.id)
+        
+        // Delete filter_value_on_sale_detail for child sale details
+        if (childSaleDetailIds.length > 0) {
+          await tx.filter_value_on_sale_detail.deleteMany({
+            where: { saleDetailId: { in: childSaleDetailIds } }
+          })
+        }
+        
+        // Delete child sale details
+        if (childSaleDetailIds.length > 0) {
+          await tx.sale_detail.deleteMany({ 
+            where: { id: { in: childSaleDetailIds } } 
+          })
+        }
+        
+        // Delete filter_value_on_sale_detail for all sale details
         await tx.filter_value_on_sale_detail.deleteMany({
           where: { saleDetail: { productId: productBody.id } }
         })
+        
+        // Delete all sale details (parent sale details)
         await tx.sale_detail.deleteMany({ where: { productId: productBody.id } });
       } else {
+        // Find child sale details that belong to sale details being deleted
+        const saleDetailsToDelete = await tx.sale_detail.findMany({
+          where: { 
+            productId: productBody.id, 
+            id: { notIn: saleDetailIds } 
+          },
+          select: { id: true }
+        })
+        const saleDetailIdsToDelete = saleDetailsToDelete.map(sd => sd.id)
+        
+        // Find child sale details (secondary sale details) that reference the sale details being deleted
+        const childSaleDetails = await tx.sale_detail.findMany({
+          where: { 
+            productId: productBody.id,
+            saleDetailId: { in: saleDetailIdsToDelete }
+          },
+          select: { id: true }
+        })
+        const childSaleDetailIds = childSaleDetails.map(sd => sd.id)
+        
+        // Delete filter_value_on_sale_detail for child sale details
+        if (childSaleDetailIds.length > 0) {
+          await tx.filter_value_on_sale_detail.deleteMany({
+            where: { saleDetailId: { in: childSaleDetailIds } }
+          })
+        }
+        
+        // Delete child sale details first
+        if (childSaleDetailIds.length > 0) {
+          await tx.sale_detail.deleteMany({ 
+            where: { id: { in: childSaleDetailIds } } 
+          })
+        }
+        
+        // Delete filter_value_on_sale_detail for sale details being deleted
         await tx.filter_value_on_sale_detail.deleteMany({
           where: {
             saleDetailId: { notIn: saleDetailIds },
             saleDetail: { productId: productBody.id }
           }
         })
-        await tx.sale_detail.deleteMany({ where: { productId: productBody.id, id: { notIn: saleDetailIds } } });
+        
+        // Delete parent sale details
+        await tx.sale_detail.deleteMany({ 
+          where: { productId: productBody.id, id: { notIn: saleDetailIds } } 
+        });
       }
 
       if (technicalDetails?.length) {

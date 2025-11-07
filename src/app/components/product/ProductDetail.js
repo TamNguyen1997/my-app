@@ -12,15 +12,19 @@ export const ProductDetailContext = createContext();
 
 const ProductDetail = ({ product = {}, description, relatedProducts = [], productsInBundle = [] }) => {
   const [selectedSaleDetail, setSelectedSaleDetail] = useState({});
-  useEffect(() => {
-    addRecentlyView(product)
-  }, [product])
-
+  
   const getImages = useCallback(() => {
     return product.product_on_image.map(item => item.imageUrl) || [product.imageUrl].filter(item => item)
   }, [product])
 
   const [mainImage, setMainImage] = useState(getImages()[0])
+
+  // Reset context and state when product changes (new page load)
+  useEffect(() => {
+    setSelectedSaleDetail({});
+    setMainImage(getImages()[0]);
+    addRecentlyView(product);
+  }, [product, getImages])
 
   const getMainImage = useCallback(() => {
     if (!mainImage) {

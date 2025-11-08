@@ -1,23 +1,32 @@
 "use client";
 import { Button, Input } from "@heroui/react";
 import { ShoppingCart } from "lucide-react";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { CartContext } from "@/context/CartProvider";
 import parse from 'html-react-parser'
 import { ProductDetailContext } from "./product/ProductDetail";
 import "./SaleDetail.css"
 
 const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
-  const [selectedDetail, setSelectedDetail] = useState(saleDetails[0] || {});
   const [selectedSecondaryDetail, setSelectedSecondaryDetail] = useState({});
   const [quantity, setQuantity] = useState(1);
 
   const { addItemToCart } = useContext(CartContext);
-  const { setSelectedSaleDetail } = useContext(ProductDetailContext);
+  const { selectedSaleDetail, setSelectedSaleDetail } = useContext(ProductDetailContext);
+
+  useEffect(() => {
+    if (!selectedSaleDetail?.id && saleDetails?.length > 0) {
+      setSelectedSaleDetail(saleDetails[0]);
+    }
+  }, [saleDetails, selectedSaleDetail, setSelectedSaleDetail]);
+
+  const selectedDetail = useMemo(() => {
+    return selectedSaleDetail || saleDetails[0] || {};
+  }, [selectedSaleDetail, saleDetails]);
 
   const onPrimarySelect = (key) => {
     const detail = saleDetails.find((detail) => detail.id === key);
-    setSelectedDetail(detail);
+    setSelectedSaleDetail(detail);
   };
 
   const getSecondaryDetails = () =>
@@ -50,11 +59,6 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
     return matches.map(item => item.replace(/<(\w+)[^>]*>\s*<\/\1>/g, '')).filter(item => item.length > 0);
   }, [product, selectedDetail, selectedSecondaryDetail])
 
-  useEffect(() => {
-    if (selectedDetail.id) {
-      setSelectedSaleDetail(selectedDetail);
-    }
-  }, [selectedDetail, saleDetails, setSelectedSaleDetail]);
 
   const getVariant = (id, selected) => (id === selected ? "solid" : "ghost");
 
@@ -78,7 +82,7 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
     const detail =
       selectedSecondaryDetail.price && selectedSecondaryDetail.showPrice
         ? selectedSecondaryDetail
-        : selectedDetail.price && !getSecondaryDetails().length
+        : selectedDetail.price && !getSecondaryDetails().length && selectedDetail.showPrice
           ? selectedDetail
           : null;
 

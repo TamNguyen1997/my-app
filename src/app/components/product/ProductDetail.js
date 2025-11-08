@@ -8,7 +8,10 @@ import ProductDetailTabs from "@/components/ProductDetailTabs";
 import { motion } from "framer-motion";
 import { addRecentlyView } from "@/lib/product";
 
-export const ProductDetailContext = createContext();
+export const ProductDetailContext = createContext({
+  selectedSaleDetail: null,
+  setSelectedSaleDetail: () => {}
+});
 
 const ProductDetail = ({ product = {}, description, relatedProducts = [], productsInBundle = [] }) => {
   const [selectedSaleDetail, setSelectedSaleDetail] = useState({});

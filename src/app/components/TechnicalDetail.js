@@ -3,7 +3,13 @@ import { v4 } from "uuid";
 import { ProductDetailContext } from "./product/ProductDetail";
 
 const TechnicalDetail = ({ data = [] }) => {
-  const { selectedSaleDetail } = useContext(ProductDetailContext);
+  const contextValue = useContext(ProductDetailContext);
+  
+  // Check if context is actually provided (not using default values)
+  const isContextProvided = contextValue.setSelectedSaleDetail !== (() => {});
+  const selectedSaleDetail = useMemo(() => {
+    return isContextProvided ? (contextValue?.selectedSaleDetail || {}) : {};
+  }, [isContextProvided, contextValue?.selectedSaleDetail]);
 
   const result = useMemo(() => {
     const productTechnical = data.map(item => {

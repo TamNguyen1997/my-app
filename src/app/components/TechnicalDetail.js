@@ -39,7 +39,7 @@ const TechnicalDetail = ({ data = [] }) => {
     const merged = [
       ...productTechnical,
       ...filterValueOnSaleDetail
-    ]
+    ].filter(item => item.filterValue && item.filter)
 
     return merged
   }, [data, selectedSaleDetail])

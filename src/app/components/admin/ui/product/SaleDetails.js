@@ -29,143 +29,165 @@ const handleDetailChange = (id, value, setProduct) => {
 
 const SecondarySaleDetails = ({ saleDetail }) => {
   const newFilterModal = useDisclosure();
+  const imageDetailModal = useDisclosure();
+  const [selectedSecondaryDetail, setSelectedSecondaryDetail] = useState(null);
   const { product, filters, setFilters, setProduct } = useContext(ProductContext);
 
+  const handleOpen = (detail) => {
+    if (!detail) return;
+    setSelectedSecondaryDetail(detail);
+    imageDetailModal.onOpen();
+  };
+
   return (
-    <div className="flex flex-col gap-1">
-      {product.saleDetails?.filter(item => item.saleDetailId === saleDetail.id).map(detail => (
-        <div className="flex" key={detail.id}>
-          <div className="w-11/12">
-            <div className="flex gap-2">
-              <Input
-                type="text"
-                label="SKU"
-                className="w-[50rem]"
-                defaultValue={detail.sku}
-                aria-label="SKU"
-                isRequired
-                onValueChange={value => handleDetailChange(detail.id, { sku: value }, setProduct)}
-              />
-              <Autocomplete
-                label="Filter"
-                placeholder="Tìm filter"
-                selectedKey={detail.filterId}
-                onSelectionChange={value => {
-                  if (value !== "new") {
-                    handleDetailChange(detail.id, { filterId: value }, setProduct);
-                  }
-                }}
-                size="lg"
-              >
-                <AutocompleteItem textValue="Thêm filter" key="new"
-                  onClick={() => {
-                    newFilterModal.onOpen()
-                  }}>
-                  <div className="font-bold w-full flex justify-between">
-                    Thêm filter
-                  </div>
-                </AutocompleteItem>
-                {filters?.map(item => (
-                  <AutocompleteItem key={item.id} textValue={item.name}>
-                    <p>
-                      {item.name}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {item.id}
-                    </p>
+    <>
+      <div className="flex flex-col gap-1">
+        {product.saleDetails?.filter(item => item.saleDetailId === saleDetail.id).map(detail => (
+          <div className="flex" key={detail.id}>
+            <div className="w-11/12">
+              <div className="flex gap-2">
+                <Input
+                  type="text"
+                  label="SKU"
+                  className="w-[50rem]"
+                  defaultValue={detail.sku}
+                  aria-label="SKU"
+                  isRequired
+                  onValueChange={value => handleDetailChange(detail.id, { sku: value }, setProduct)}
+                />
+                <Autocomplete
+                  label="Filter"
+                  placeholder="Tìm filter"
+                  selectedKey={detail.filterId}
+                  onSelectionChange={value => {
+                    if (value !== "new") {
+                      handleDetailChange(detail.id, { filterId: value }, setProduct);
+                    }
+                  }}
+                  size="lg"
+                >
+                  <AutocompleteItem textValue="Thêm filter" key="new"
+                    onClick={() => {
+                      newFilterModal.onOpen()
+                    }}>
+                    <div className="font-bold w-full flex justify-between">
+                      Thêm filter
+                    </div>
                   </AutocompleteItem>
-                ))}
-              </Autocomplete>
+                  {filters?.map(item => (
+                    <AutocompleteItem key={item.id} textValue={item.name}>
+                      <p>
+                        {item.name}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {item.id}
+                      </p>
+                    </AutocompleteItem>
+                  ))}
+                </Autocomplete>
 
-              <Modal
-                scrollBehavior="inside"
-                size="xl"
-                isOpen={newFilterModal.isOpen}
-                onOpenChange={newFilterModal.onOpenChange}
-              >
-                <ModalContent>
-                  {(onClose) => (
-                    <>
-                      <ModalHeader className="flex flex-col gap-1">Filter mới</ModalHeader>
-                      <ModalBody>
-                        <NewFilter
-                          filters={filters}
-                          setFilters={setFilters}
-                          callback={(value) => {
-                            handleDetailChange(detail.id, { filterId: value }, setProduct);
-                            onClose();
-                          }}
-                        />
-                      </ModalBody>
-                      <ModalFooter>
-                        <Button color="danger" variant="light" onPress={onClose}>
-                          Đóng
-                        </Button>
-                      </ModalFooter>
-                    </>
-                  )}
-                </ModalContent>
-              </Modal>
+                <Modal
+                  scrollBehavior="inside"
+                  size="xl"
+                  isOpen={newFilterModal.isOpen}
+                  onOpenChange={newFilterModal.onOpenChange}
+                >
+                  <ModalContent>
+                    {(onClose) => (
+                      <>
+                        <ModalHeader className="flex flex-col gap-1">Filter mới</ModalHeader>
+                        <ModalBody>
+                          <NewFilter
+                            filters={filters}
+                            setFilters={setFilters}
+                            callback={(value) => {
+                              handleDetailChange(detail.id, { filterId: value }, setProduct);
+                              onClose();
+                            }}
+                          />
+                        </ModalBody>
+                        <ModalFooter>
+                          <Button color="danger" variant="light" onPress={onClose}>
+                            Đóng
+                          </Button>
+                        </ModalFooter>
+                      </>
+                    )}
+                  </ModalContent>
+                </Modal>
 
-              <FilterValueSelect
-                detail={detail}
-                setFilters={setFilters}
-                getFilter={() => filters.find(filter => filter.id === detail.filterId)}
-                filters={filters}
-                brandId={product.brandId}
-                categoryId={product.categoryId}
-                subCategoryId={product.subCateId}
-                onSelectionChange={(value, detailId) => handleDetailChange(detailId, { filterValueId: value.filterValueId }, setProduct)}
-              />
-              <Input
-                type="number"
-                label="Giá"
-                defaultValue={detail.price}
-                aria-label="Giá"
-                min={0}
-                max={999999999}
-                className="w-[59rem]"
-                isRequired
-                onValueChange={value => handleDetailChange(detail.id, { price: parseInt(value) }, setProduct)}
-              />
-              <Input
-                type="number"
-                label="Giá giảm"
-                defaultValue={detail.promotionalPrice}
-                aria-label="Giá"
-                min={0}
-                max={999999999}
-                className="w-[59rem]"
-                onValueChange={value => handleDetailChange(detail.id, { promotionalPrice: parseInt(value) }, setProduct)}
-              />
-              <Input
-                type="number"
-                label="Tồn kho"
-                defaultValue={detail.inStock}
-                aria-label="Giá"
-                className="w-[40rem]"
-                min={0}
-                max={999999999}
-                onValueChange={value => handleDetailChange(detail.id, { inStock: parseInt(value) }, setProduct)}
-              />
-              <Checkbox
-                className="w-full content-center"
-                isSelected={detail.showPrice}
-                onValueChange={value => handleDetailChange(detail.id, { showPrice: value }, setProduct)}
-              >
-                Hiện giá
-              </Checkbox>
+                <FilterValueSelect
+                  detail={detail}
+                  setFilters={setFilters}
+                  getFilter={() => filters.find(filter => filter.id === detail.filterId)}
+                  filters={filters}
+                  brandId={product.brandId}
+                  categoryId={product.categoryId}
+                  subCategoryId={product.subCateId}
+                  onSelectionChange={(value, detailId) => handleDetailChange(detailId, { filterValueId: value.filterValueId }, setProduct)}
+                />
+                <Input
+                  type="number"
+                  label="Giá"
+                  defaultValue={detail.price}
+                  aria-label="Giá"
+                  min={0}
+                  max={999999999}
+                  className="w-[59rem]"
+                  isRequired
+                  onValueChange={value => handleDetailChange(detail.id, { price: parseInt(value) }, setProduct)}
+                />
+                <Input
+                  type="number"
+                  label="Giá giảm"
+                  defaultValue={detail.promotionalPrice}
+                  aria-label="Giá"
+                  min={0}
+                  max={999999999}
+                  className="w-[59rem]"
+                  onValueChange={value => handleDetailChange(detail.id, { promotionalPrice: parseInt(value) }, setProduct)}
+                />
+                <Input
+                  type="number"
+                  label="Tồn kho"
+                  defaultValue={detail.inStock}
+                  aria-label="Giá"
+                  className="w-[40rem]"
+                  min={0}
+                  max={999999999}
+                  onValueChange={value => handleDetailChange(detail.id, { inStock: parseInt(value) }, setProduct)}
+                />
+                <Checkbox
+                  className="w-full content-center"
+                  isSelected={detail.showPrice}
+                  onValueChange={value => handleDetailChange(detail.id, { showPrice: value }, setProduct)}
+                >
+                  Hiện giá
+                </Checkbox>
+                <div className="flex items-center gap-2">
+                  <FileImage onClick={() => handleOpen(detail)} className="cursor-pointer" />
+                  <div className="text-lg text-danger cursor-pointer active:opacity-50">
+                    <Trash2 onClick={() => removeItem(detail.id, setProduct)} />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-
-          <div className="pt-3 pl-3">
-            <div className="text-lg text-danger cursor-pointer active:opacity-50 pl-5 float-right">
-              <Trash2 onClick={() => removeItem(detail.id, setProduct)} />
-            </div>
+        ))}
+      </div>
+      {selectedSecondaryDetail && (
+        <FullscreenModal isOpen={imageDetailModal.isOpen} onClose={imageDetailModal.onClose}>
+          <div className="flex-1">
+            <SaleDetailImages productId={product.id} saleDetail={selectedSecondaryDetail} />
           </div>
-        </div>
-      ))}
-    </div>
+          <div className="p-4 border-t flex justify-end">
+            <Button color="danger" variant="light" onPress={imageDetailModal.onClose}>
+              Đóng
+            </Button>
+          </div>
+        </FullscreenModal>
+      )}
+    </>
   );
 };
 

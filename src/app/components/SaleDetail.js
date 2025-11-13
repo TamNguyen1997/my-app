@@ -8,11 +8,10 @@ import { ProductDetailContext } from "./product/ProductDetail";
 import "./SaleDetail.css"
 
 const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
-  const [selectedSecondaryDetail, setSelectedSecondaryDetail] = useState({});
   const [quantity, setQuantity] = useState(1);
 
   const { addItemToCart } = useContext(CartContext);
-  const { selectedSaleDetail, setSelectedSaleDetail } = useContext(ProductDetailContext);
+  const { selectedSaleDetail, setSelectedSaleDetail, selectedSecondaryDetail, setSelectedSecondaryDetail } = useContext(ProductDetailContext);
 
   useEffect(() => {
     if (!selectedSaleDetail?.id && saleDetails?.length > 0) {
@@ -24,9 +23,32 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
     return selectedSaleDetail || saleDetails[0] || {};
   }, [selectedSaleDetail, saleDetails]);
 
+  // Handle image display priority: secondary detail image first, then primary detail image
+  useEffect(() => {
+    if (selectedSecondaryDetail?.id) {
+      // Prioritize secondary detail image, fallback to primary detail image
+      if (selectedSecondaryDetail.sale_detail_on_image?.length > 0) {
+        setImage(selectedSecondaryDetail.sale_detail_on_image[0]?.imageUrl);
+      } else if (selectedDetail.sale_detail_on_image?.length > 0) {
+        setImage(selectedDetail.sale_detail_on_image[0]?.imageUrl);
+      }
+    } else if (selectedDetail?.id) {
+      // Show primary detail image when no secondary detail is selected
+      if (selectedDetail.sale_detail_on_image?.length > 0) {
+        setImage(selectedDetail.sale_detail_on_image[0]?.imageUrl);
+      }
+    }
+  }, [selectedSecondaryDetail, selectedDetail, setImage]);
+
   const onPrimarySelect = (key) => {
     const detail = saleDetails.find((detail) => detail.id === key);
     setSelectedSaleDetail(detail);
+    // Reset secondary selection when primary changes
+    setSelectedSecondaryDetail({});
+    // Show primary detail image when primary is selected (secondary is reset)
+    if (detail.sale_detail_on_image?.length > 0) {
+      setImage(detail.sale_detail_on_image[0]?.imageUrl);
+    }
   };
 
   const getSecondaryDetails = () =>
@@ -38,6 +60,12 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
   const onSecondarySelect = (key) => {
     const detail = saleDetails.find((detail) => detail.id === key);
     setSelectedSecondaryDetail(detail);
+    // Prioritize secondary detail image, fallback to primary detail image
+    if (detail.sale_detail_on_image?.length > 0) {
+      setImage(detail.sale_detail_on_image[0]?.imageUrl);
+    } else if (selectedDetail.sale_detail_on_image?.length > 0) {
+      setImage(selectedDetail.sale_detail_on_image[0]?.imageUrl);
+    }
   };
 
   const getPromotion = useCallback(() => {
@@ -212,8 +240,11 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
                       className={`rounded-full px-3 ${detail.id === selectedDetail.id ? 'ring-2 ring-primary' : 'border'} !shadow-sm`}
                       onPress={() => onPrimarySelect(detail.id)}
                       onMouseOver={() => {
-                        if (detail.sale_detail_on_image?.length > 0) {
-                          setImage(detail.sale_detail_on_image[0]?.imageUrl)
+                        // Only show primary detail image if no secondary detail is selected
+                        if (!selectedSecondaryDetail?.id) {
+                          if (detail.sale_detail_on_image?.length > 0) {
+                            setImage(detail.sale_detail_on_image[0]?.imageUrl)
+                          }
                         }
                       }}
                     >
@@ -264,6 +295,23 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
                   variant={getVariant(sDetail.id, selectedSecondaryDetail.id)}
                   className={`rounded-full px-3 ${sDetail.id === selectedSecondaryDetail.id ? 'ring-2 ring-primary' : 'border'} !shadow-sm`}
                   onPress={() => onSecondarySelect(sDetail.id)}
+                  onMouseOver={() => {
+                    // Only show secondary detail image if a secondary detail is selected
+                    // Otherwise, show primary detail image on hover
+                    if (selectedSecondaryDetail?.id) {
+                      // If a secondary detail is selected, prioritize its image
+                      if (selectedSecondaryDetail.sale_detail_on_image?.length > 0) {
+                        setImage(selectedSecondaryDetail.sale_detail_on_image[0]?.imageUrl);
+                      } else if (selectedDetail.sale_detail_on_image?.length > 0) {
+                        setImage(selectedDetail.sale_detail_on_image[0]?.imageUrl);
+                      }
+                    } else {
+                      // If no secondary detail is selected, only show primary detail image
+                      if (selectedDetail.sale_detail_on_image?.length > 0) {
+                        setImage(selectedDetail.sale_detail_on_image[0]?.imageUrl);
+                      }
+                    }
+                  }}
                 >
                   {sDetail.filterValue?.value}
                 </Button>

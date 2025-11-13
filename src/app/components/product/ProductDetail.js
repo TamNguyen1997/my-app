@@ -10,11 +10,14 @@ import { addRecentlyView } from "@/lib/product";
 
 export const ProductDetailContext = createContext({
   selectedSaleDetail: null,
-  setSelectedSaleDetail: () => {}
+  setSelectedSaleDetail: () => {},
+  selectedSecondaryDetail: null,
+  setSelectedSecondaryDetail: () => {}
 });
 
 const ProductDetail = ({ product = {}, description, relatedProducts = [], productsInBundle = [] }) => {
   const [selectedSaleDetail, setSelectedSaleDetail] = useState({});
+  const [selectedSecondaryDetail, setSelectedSecondaryDetail] = useState({});
   
   const getImages = useCallback(() => {
     return product.product_on_image.map(item => item.imageUrl) || [product.imageUrl].filter(item => item)
@@ -25,6 +28,7 @@ const ProductDetail = ({ product = {}, description, relatedProducts = [], produc
   // Reset context and state when product changes (new page load)
   useEffect(() => {
     setSelectedSaleDetail({});
+    setSelectedSecondaryDetail({});
     setMainImage(getImages()[0]);
     addRecentlyView(product);
   }, [product, getImages])
@@ -39,7 +43,8 @@ const ProductDetail = ({ product = {}, description, relatedProducts = [], produc
   return (
     <>
       <ProductDetailContext.Provider value={{
-        selectedSaleDetail, setSelectedSaleDetail
+        selectedSaleDetail, setSelectedSaleDetail,
+        selectedSecondaryDetail, setSelectedSecondaryDetail
       }}>
         <div className="bg-[#ffed00] py-2.5">
           <div className="container">
@@ -74,8 +79,14 @@ const ProductDetail = ({ product = {}, description, relatedProducts = [], produc
             >
               <div className="relative bg-white border-[3px] border-[#f8f8f8] w-full">
                 <ProductImageCarousel items={getImages()} mainImage={getMainImage() || product.imageUrl || ""}
-                  selectedSaleDetailImage={selectedSaleDetail?.sale_detail_on_image ?
-                    selectedSaleDetail?.sale_detail_on_image[0]?.imageUrl : null} />
+                  selectedSaleDetailImage={
+                    // Prioritize secondary sale detail image, fallback to primary sale detail image
+                    selectedSecondaryDetail?.sale_detail_on_image?.length > 0
+                      ? selectedSecondaryDetail.sale_detail_on_image[0]?.imageUrl
+                      : selectedSaleDetail?.sale_detail_on_image?.length > 0
+                        ? selectedSaleDetail.sale_detail_on_image[0]?.imageUrl
+                        : null
+                  } />
                 <div className="md:hidden bg-white">
                   <div className="p-5 border-white border-b-[3px] bg-[#f8f8f8]">
                     <SaleDetail saleDetails={product.saleDetails || []} product={product} />

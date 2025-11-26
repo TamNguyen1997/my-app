@@ -288,93 +288,118 @@ export async function POST(req) {
   }
 }
 
-
 export async function GET(req) {
   const { query } = queryString.parseUrl(req.url);
   const page = parseInt(query.page) || 1;
   const size = parseInt(query.size) || 10;
-  let condition = {};
-
-  if (query) {
-    Object.assign(condition, {
-      ...(query.highlight && { highlight: query.highlight === 'true' }),
-      ...(query.categoryId && { categoryId: { in: query.categoryId.split(',') } }),
-      ...(query.subCateId && { subCateId: { in: query.subCateId.split(',') } }),
-      ...(query.active && { active: query.active === 'true' }),
-      ...(query.name && { name: { contains: query.name } }),
-      ...(query.slug && { slug: { contains: query.slug } }),
-      ...(query.productType && { productType: query.productType }),
-      ...(query.thumbnail === 'true' && { imageUrl: { not: null } }),
-      ...(query.thumbnail === 'false' && { imageUrl: null }),
-      ...(query.brandId && { brand: { slug: query.brandId } })
-    });
-
-    if (query.id_name) {
-      const slugifiedQuery = slugify(query.id_name, { locale: 'vi' }).replace(/[()]/g, '');
-      condition.OR = ['name', 'id', 'slug'].map(field => ({ [field]: { contains: field === "slug" ? slugifiedQuery : query.id_name } }));
-    }
-
-    if (query.sku) {
-      condition.saleDetails = { some: { sku: { contains: query.sku } } };
-    }
-
-    let productIds = query.productId ? [query.productId] : [];
-
-    if (query.filterId || query.filterValueId) {
-      const filterIds = Array.isArray(query.filterId || []) ? query.filterId : [query.filterId];
-      const filterValueIds = Array.isArray(query.filterValueId || []) ? query.filterValueId : [query.filterValueId];
-      let saleDetailCondition = condition.saleDetails || { saleDetails: { some: {} } }
-      saleDetailCondition.saleDetails.some.AND = [
-        { filterId: { in: filterIds } },
-        {
-          OR: [
-            { filterValueId: { in: filterValueIds } },
-            { filterValue: { slug: { in: filterValueIds } } }
-          ]
-        }
-      ]
-
-      let technicalDetailCondition = condition.technical_detail || { technical_detail: { some: {} } }
-
-      technicalDetailCondition.technical_detail.some.AND = [
-        { filterId: { in: filterIds } },
-        {
-          OR: [
-            { filterValueId: { in: filterValueIds } },
-            { filterValue: { slug: { in: filterValueIds } } }
-          ]
-        }
-      ]
-
-      Object.assign(condition, {
-        OR: [
-          saleDetailCondition,
-          technicalDetailCondition
-        ]
-      })
-    }
-
-    if (productIds.length) condition.id = { in: productIds };
-  }
+  const condition = buildQueryCondition(query);
 
   try {
-    const result = await db.product.findMany({
-      select: {
-        active: true, brandId: true, categoryId: true, createdAt: true, id: true,
-        name: true, imageId: true, productId: true, slug: true, updatedAt: true,
-        imageAlt: true, saleDetails: true, technical_detail: true, image: true,
-        category: true, subCate: true, brand: true, highlight: true, imageUrl: true,
-      },
-      where: condition,
-      orderBy: { updatedAt: 'desc' },
-      take: size,
-      skip: (page - 1) * size
-    });
+    const [result, total] = await Promise.all([
+      db.product.findMany({
+        select: {
+          active: true,
+          brandId: true,
+          categoryId: true,
+          createdAt: true,
+          id: true,
+          name: true,
+          imageId: true,
+          productId: true,
+          slug: true,
+          updatedAt: true,
+          imageAlt: true,
+          saleDetails: true,
+          technical_detail: true,
+          image: true,
+          category: true,
+          subCate: true,
+          brand: true,
+          highlight: true,
+          imageUrl: true,
+        },
+        where: condition,
+        orderBy: { updatedAt: 'desc' },
+        take: size,
+        skip: (page - 1) * size
+      }),
+      db.product.count({ where: condition })
+    ]);
 
-    const total = await db.product.count({ where: condition });
     return NextResponse.json({ result, total });
   } catch (e) {
-    console.log(e)
-    return NextResponse.json({ message: 'Something went wrong', error: e }, { status: 400 });
+    console.error('Error fetching products:', e);
+    return NextResponse.json({ 
+      message: 'Something went wrong', 
+      error: e.message 
+    }, { status: 400 });
   }
+}
+
+function buildQueryCondition(query) {
+  if (!query) return {};
+
+  const condition = {
+    ...(query.highlight && { highlight: query.highlight === 'true' }),
+    ...(query.categoryId && { categoryId: { in: query.categoryId.split(',') } }),
+    ...(query.subCateId && { subCateId: { in: query.subCateId.split(',') } }),
+    ...(query.active && { active: query.active === 'true' }),
+    ...(query.name && { name: { contains: query.name } }),
+    ...(query.slug && { slug: { contains: query.slug } }),
+    ...(query.productType && { productType: query.productType }),
+    ...(query.thumbnail === 'true' && { imageUrl: { not: null } }),
+    ...(query.thumbnail === 'false' && { imageUrl: null }),
+    ...(query.brandId && { brand: { slug: query.brandId } })
+  };
+
+  if (query.id_name) {
+    const slugifiedQuery = slugify(query.id_name, { locale: 'vi' }).replace(/[()]/g, '');
+    console.log('Slugified Query:', slugifiedQuery);
+    condition.OR = ['name', 'id', 'slug'].map(field => ({ 
+      [field]: { 
+        contains: field === "slug" ? slugifiedQuery : query.id_name, 
+        mode: 'insensitive' 
+      }}));
+  }
+
+  if (query.sku) {
+    condition.saleDetails = { some: { sku: { contains: query.sku } } };
+  }
+
+  if (query.filterId || query.filterValueId) {
+    const filterIds = Array.isArray(query.filterId) ? query.filterId : [query.filterId].filter(Boolean);
+    const filterValueIds = Array.isArray(query.filterValueId) ? query.filterValueId : [query.filterValueId].filter(Boolean);
+    
+    const buildFilterCondition = (relationName) => ({
+      [relationName]: {
+        some: {
+          AND: [
+            ...(filterIds.length > 0 ? [{ filterId: { in: filterIds } }] : []),
+            ...(filterValueIds.length > 0 ? [{
+              OR: [
+                { filterValueId: { in: filterValueIds } },
+                { filterValue: { slug: { in: filterValueIds } } }
+              ]
+            }] : [])
+          ]
+        }
+      }
+    });
+
+    const conditions = [];
+    if (filterIds.length > 0 || filterValueIds.length > 0) {
+      conditions.push(buildFilterCondition('saleDetails'));
+      conditions.push(buildFilterCondition('technical_detail'));
+    }
+
+    if (conditions.length > 0) {
+      condition.OR = conditions;
+    }
+  }
+
+  if (query.productId) {
+    condition.id = { in: Array.isArray(query.productId) ? query.productId : [query.productId] };
+  }
+
+  return condition;
 }

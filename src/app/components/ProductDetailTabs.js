@@ -182,11 +182,29 @@ const ProductDetailTabs = ({ product, description, relatedProducts, productsInBu
     setTitles(titleArray);
   }, []);
 
+  // Dynamically compute the offset so the tab header sits just below the page header
   useEffect(() => {
-    const headerItems = document.querySelector(".header-items");
-    if (headerItems) {
-      setHeaderHeight(headerItems.getBoundingClientRect()?.height);
-    }
+    const computeHeaderOffset = () => {
+      const headerEl = document.querySelector('.header');
+      const headerItemsEl = document.querySelector('.header-items');
+      let offset = 0;
+      if (headerItemsEl?.classList.contains('fixed-header')) {
+        // When header items become fixed we only need their height
+        offset = headerItemsEl.getBoundingClientRect().height || 0;
+      } else {
+        // Use full header height (includes top bar + header items)
+        offset = headerEl?.getBoundingClientRect().height || headerItemsEl?.getBoundingClientRect().height || 0;
+      }
+      setHeaderHeight(offset);
+    };
+
+    computeHeaderOffset();
+    window.addEventListener('scroll', computeHeaderOffset, { passive: true });
+    window.addEventListener('resize', computeHeaderOffset);
+    return () => {
+      window.removeEventListener('scroll', computeHeaderOffset);
+      window.removeEventListener('resize', computeHeaderOffset);
+    };
   }, []);
 
   useEffect(() => {
@@ -246,7 +264,7 @@ const ProductDetailTabs = ({ product, description, relatedProducts, productsInBu
   return (
     <>
       <div
-        className="sticky top-0 z-10"
+        className="product-tabs-sticky"
         style={{ top: `${headerHeight}px` }}
       >
         <div className="relative bg-white tab-header">

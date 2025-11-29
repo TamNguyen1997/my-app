@@ -13,3 +13,9 @@
 *[style*="font-family:open-sans"] {
   font-family: "Open Sans", sans-serif !important;
 }
+
+.product-tabs-sticky {
+  position: sticky;
+  z-index: 9000; /* below subcate menu (10000) but above content */
+  background: #fff;
+}

@@ -13,9 +13,13 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
   const { addItemToCart } = useContext(CartContext);
   const { selectedSaleDetail, setSelectedSaleDetail, selectedSecondaryDetail, setSelectedSecondaryDetail } = useContext(ProductDetailContext);
 
+  // Default select: first primary sale detail (no saleDetailId) if available
   useEffect(() => {
-    if (!selectedSaleDetail?.id && saleDetails?.length > 0) {
-      setSelectedSaleDetail(saleDetails[0]);
+    if (!selectedSaleDetail?.id && Array.isArray(saleDetails) && saleDetails.length > 0) {
+      const firstPrimary = saleDetails.find(
+        (item) => !item.saleDetailId && item.filterValueId && item.filterValue && item.filterId
+      ) || saleDetails[0];
+      setSelectedSaleDetail(firstPrimary);
     }
   }, [saleDetails, selectedSaleDetail, setSelectedSaleDetail]);
 

@@ -68,7 +68,7 @@ const ProductCms = ({ categories = [] }) => {
       setLoadingState("idle")
       toast.error("An error occurred while fetching the products.", { containerId: "ProductCmsToast" })
     }
-  }, [page, rowsPerPage, condition, reload])
+  }, [page, rowsPerPage, condition])
 
   useEffect(() => {
     fetchProducts()

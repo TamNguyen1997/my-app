@@ -214,8 +214,9 @@ const getBrandToProducts = async () => {
           id: true,
           name: true,
           slug: true
-        }
+        },
       },
+      saleDetails: true,
     },
     where: {
       active: true,

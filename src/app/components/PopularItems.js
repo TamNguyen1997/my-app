@@ -16,7 +16,7 @@ const PopularItems = React.memo(({
 
   const getProducts = useCallback(() => {
     return brandToProducts[selectedBrand] || []
-  }, [selectedBrand])
+  }, [brandToProducts, selectedBrand])
 
   const getSelectedColor = (value) => {
     return selectedBrand === value ? "bg-slate-700" : "bg-black";

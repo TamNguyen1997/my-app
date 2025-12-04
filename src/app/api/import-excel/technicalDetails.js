@@ -61,6 +61,11 @@ async function importTechnicalDetail(worksheet) {
       }
 
       try {
+        // Remove all existing technical details for this sale detail before inserting new ones
+        await tx.filter_value_on_sale_detail.deleteMany({
+          where: { saleDetailId: saleDetail.id },
+        })
+
         const providedFilterValues = await tx.filter_value.findMany({
           where: { id: { in: filterValueIds } },
           select: { id: true, filterId: true },
@@ -72,27 +77,12 @@ async function importTechnicalDetail(worksheet) {
 
         // Process sequentially in the given order
         for (const fv of providedFilterValuesOrdered) {
-          const existingTechnical = await tx.filter_value_on_sale_detail.findFirst({
-            where: {
+          await tx.filter_value_on_sale_detail.create({
+            data: {
+              filterValueId: fv.id,
               saleDetailId: saleDetail.id,
-              filterValue: { filterId: fv.filterId },
             },
-            select: { id: true },
           })
-
-          if (existingTechnical) {
-            await tx.filter_value_on_sale_detail.update({
-              where: { id: existingTechnical.id },
-              data: { filterValueId: fv.id },
-            })
-          } else {
-            await tx.filter_value_on_sale_detail.create({
-              data: {
-                filterValueId: fv.id,
-                saleDetailId: saleDetail.id,
-              },
-            })
-          }
         }
       } catch (error) {
         console.log(error)

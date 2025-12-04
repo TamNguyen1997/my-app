@@ -27,16 +27,6 @@ async function validateProduct(cateId, subCateId, brandId) {
   }
 }
 
-async function validateImportSaleDetail(productId) {
-  const [product] = await Promise.all([
-    db.product.findUnique({ where: { id: productId } }),
-  ])
-
-  return {
-    isProductValid: !!product,
-  }
-}
-
 async function importProduct(worksheet) {
   const requiredColumnIndexes = {
     name: 1,
@@ -154,7 +144,6 @@ async function importProduct(worksheet) {
 
   return { success: true }
 }
-
 
 async function saveImportHistory(data) {
   if (data.id) {

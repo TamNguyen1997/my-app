@@ -16,6 +16,6 @@
 
 .product-tabs-sticky {
   position: sticky;
-  z-index: 9000; /* below subcate menu (10000) but above content */
+  z-index: 10; /* below subcate menu (10000) but above content */
   background: #fff;
 }

@@ -3,69 +3,49 @@ import { v4 } from "uuid";
 import { ProductDetailContext } from "./product/ProductDetail";
 
 const TechnicalDetail = ({ data = [] }) => {
-  const contextValue = useContext(ProductDetailContext);
-  
-  // Check if context is actually provided (not using default values)
-  const isContextProvided = contextValue.setSelectedSaleDetail !== (() => {});
-  const selectedSaleDetail = useMemo(() => {
-    return isContextProvided ? (contextValue?.selectedSaleDetail || {}) : {};
-  }, [isContextProvided, contextValue?.selectedSaleDetail]);
+  const { selectedSaleDetail = {} } = useContext(ProductDetailContext) || {};
 
   const result = useMemo(() => {
-    const productTechnical = data.map(item => {
-      return {
-        id: v4(),
-        filter: item.filter?.name,
-        filterValue: item.filterValue?.value,
-        updatedAt: item.updatedAt || item.updated_at
-      }
-    })
+    const productTechnical = data.map(item => ({
+      id: v4(),
+      filter: item.filter?.name,
+      filterValue: item.filterValue?.value,
+      updatedAt: item.updatedAt || item.updated_at
+    }));
 
-    const filterValueOnSaleDetail = (selectedSaleDetail?.filter_value_on_sale_detail || [])
-    .sort((a, b) => {
-      const aT = a.updatedAt ? new Date(a.updatedAt).getTime() : 0
-      const bT = b.updatedAt ? new Date(b.updatedAt).getTime() : 0
-      return aT - bT
-    })
-    .map(item => {
-      return {
-        id: v4(),
-        filter: item?.filterValue?.filter?.name,
-        filterValue: item?.filterValue?.value,
-        updatedAt: item.updatedAt || item.updated_at
-      }
-    })
+    const filterValueOnSaleDetail = (selectedSaleDetail?.filter_value_on_sale_detail || []).map(item => ({
+      id: v4(),
+      filter: item?.filterValue?.filter?.name,
+      filterValue: item?.filterValue?.value,
+      updatedAt: item.updatedAt || item.updated_at
+    }));
 
-    const merged = [
+    return [
       ...productTechnical,
       ...filterValueOnSaleDetail
-    ].filter(item => item.filterValue && item.filter)
+    ].filter(item => item.filterValue && item.filter);
+  }, [data, selectedSaleDetail]);
 
-    return merged
-  }, [data, selectedSaleDetail])
-
-  return (<>
+  return (
     <div className="pt-6">
       <div className="relative overflow-x-auto border rounded-2xl shadow-md">
         <table className="w-full text-left rtl:text-right">
           <tbody>
-            {
-              result.map((item, index) => {
-                return <tr key={index} className={`border-gray-200 ${index % 2 != 0 ? "bg-gray-100" : ""}`}>
-                  <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap">
-                    {item.filter}
-                  </th>
-                  <td className="px-6 py-4">
-                    {item.filterValue}
-                  </td>
-                </tr>
-              })
-            }
+            {result.map((item, index) => (
+              <tr key={item.id} className={`border-gray-200 ${index % 2 !== 0 ? "bg-gray-100" : ""}`}>
+                <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap">
+                  {item.filter}
+                </th>
+                <td className="px-6 py-4">
+                  {item.filterValue}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
     </div>
-  </>)
-}
+  );
+};
 
-export default TechnicalDetail
+export default TechnicalDetail;

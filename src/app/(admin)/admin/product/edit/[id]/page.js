@@ -26,6 +26,9 @@ const Page = async ({ params }) => {
           }
         },
         saleDetails: {
+          orderBy: {
+            updatedAt: 'asc'
+          },
           include: {
             filter: true,
             filterValue: true,

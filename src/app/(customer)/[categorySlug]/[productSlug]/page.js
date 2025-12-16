@@ -41,6 +41,9 @@ const Page = async ({ params }) => {
         }
       },
       saleDetails: {
+        orderBy: {
+          updatedAt: 'asc'
+        },
         select: {
           id: true,
           productId: true,

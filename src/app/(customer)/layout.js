@@ -72,6 +72,7 @@ const getHeaders = async () => {
     "xe-day-phuc-vu",
     "khan",
     "gang-tay-chuyen-dung",
+    "dung-cu-nha-bep",
     "cac-thiet-bi-khac",
   ]
 

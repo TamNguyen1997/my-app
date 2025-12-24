@@ -14,6 +14,7 @@ import { product_type } from "@prisma/client";
 import { toast, ToastContainer } from "react-toastify";
 import { useSearchParams } from 'next/navigation';
 import ProductBundle from "../../../../../components/admin/ui/product/ProductBundle";
+import slugify from "slugify"
 
 export const ProductContext = createContext();
 

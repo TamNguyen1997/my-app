@@ -73,12 +73,11 @@ const Footer = () => {
           <p className="font-bold p-3 w-full">FANPAGE CHÍNH THỨC</p>
           <iframe
             className="border-[#FFD400] border h-[130px] rounded-lg w-[300px] max-w-full overflow-hidden"
-            data-testid="fb:page Facebook Social Plugin"
             title="fb:page Facebook Social Plugin"
-            allowtransparency="true"
-            allow="encrypted-media"
+            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
             loading="lazy"
-            src="https://www.facebook.com/v3.3/plugins/page.php?adapt_container_width=true&app_id=838529706996139&channel=https%3A%2F%2Fstaticxx.facebook.com%2Fx%2Fconnect%2Fxd_arbiter%2F%3Fversion%3D46%23cb%3Df742a846a7856a793%26domain%3Ddungcuvesinhsaoviet.com%26is_canvas%3Dfalse%26origin%3Dhttps%253A%252F%252Fdungcuvesinhsaoviet.com%252Ff866436d51c4fddf6%26relation%3Dparent.parent&container_width=0&height=500&hide_cover=false&href=https%3A%2F%2Fwww.facebook.com%2Fvesinhsaoviet%2F&locale=vi_VN&sdk=joey&show_facepile=true&small_header=false&tabs=&width=300"
+            src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fvesinhsaoviet%2F&tabs=&width=300&height=130&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&locale=vi_VN"
+            style={{ border: 'none', overflow: 'hidden' }}
           ></iframe>
         </div>
       </div>

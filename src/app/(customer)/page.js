@@ -230,6 +230,11 @@ const getBrandToProducts = async () => {
         slug: slug
       }
     },
+    orderBy: [
+      {
+        createdAt: "asc"
+      }
+    ],
     take: 5,
     skip: 0
   }))

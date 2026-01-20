@@ -115,7 +115,8 @@ const Category = () => {
             imageId: selectedCate.imageId,
             metaDescription: selectedCate.metaDescription,
             metaTitle: selectedCate.metaTitle,
-            active: selectedCate.active
+            active: selectedCate.active,
+            imageUrl: selectedCate.imageUrl
           })
         }).then(async (res) => {
           getCategories()

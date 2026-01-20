@@ -239,13 +239,12 @@ const getBrandToProducts = async () => {
     skip: 0
   }))
   const brandProducts = await Promise.all(queries)
-
   return {
     "RUBBERMAID": brandProducts[0],
     "MOERMAN": brandProducts[1],
     "MAPA": brandProducts[2],
     "GHIBLI": brandProducts[3],
-    "KIMBERLY-CLARK PROFESSIONAL": brandProducts[4],
+    "KIMBERLY-CLARK": brandProducts[4],
     "KLEEN-TEX": brandProducts[5]
   }
 }

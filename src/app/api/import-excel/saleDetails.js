@@ -26,6 +26,7 @@ async function importSaleDetail(worksheet) {
   }
 
   const skuIndex = 1
+  const promotionalPriceIndex = 3
   const parentSaleSkuColumnIndex = 8
 
   const CHUNK_SIZE = 200
@@ -54,6 +55,7 @@ async function importSaleDetail(worksheet) {
     const productId = rowData[requiredColumnIndexes.productId].toString()
     const sku = rowData[skuIndex]?.toString() || v4()
     const price = toNonNegativeInt(rowData[requiredColumnIndexes.price])
+    const promotionalPrice = toNonNegativeInt(rowData[promotionalPriceIndex])
     const showPrice = rowData[requiredColumnIndexes.showPrice]
     const inStock = toNonNegativeInt(rowData[requiredColumnIndexes.inStock])
     const parentSaleDetailSku = rowData[parentSaleSkuColumnIndex]
@@ -69,7 +71,7 @@ async function importSaleDetail(worksheet) {
     const dataObj = {
       sku: sku,
       price: price,
-      promotionalPrice: showPrice === "T" ? null : toNonNegativeInt(rowData[3]),
+      promotionalPrice: promotionalPrice,
       showPrice: showPrice === "T",
       product: {
         connect: { id: productId },

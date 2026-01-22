@@ -210,11 +210,11 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
       <p className="text-[32px] font-medium text-[#b61a2d]">
         {getPrice() && getPrice() !== "0" ? `${getPrice()} đ` : ""}
       </p>
-      {getActiveDetail()?.inStock && getActiveDetail()?.inStock <= 0 && (
+      {getActiveDetail()?.inStock && getActiveDetail()?.inStock <= 0 ? (
         <p className="text-sm text-red-500">
           Sản phẩm đã hết hàng
         </p>
-      )}
+      ) : ""}
       <p className="text-sm">
         Đã bao gồm VAT, chưa bao gồm phí giao hàng.
       </p>

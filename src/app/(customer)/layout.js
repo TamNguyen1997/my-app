@@ -1,4 +1,5 @@
 import "../globals.css";
+import Script from 'next/script'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ContactIcons from '@/components/ContactIcons'
@@ -11,6 +12,19 @@ export default async function RootLayout({ children }) {
     <html lang="vi">
       <meta name="robots" content={process.env.INDEX_FOLLOW || "noindex,nofollow"} />
       <meta name="google-site-verification" content="bnj-0vSnMlKuLmNzj5kleHIQ2Sk85O1ZqwB4-fGPIHo" />
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=AW-552989919"
+        strategy="afterInteractive"
+      />
+      <Script id="google-ads-gtag" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);} 
+          gtag('js', new Date());
+
+          gtag('config', 'AW-552989919');
+        `}
+      </Script>
       <body className='font-roboto'>
         <CartProvider>
           <Header headers={await headers} />

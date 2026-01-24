@@ -142,24 +142,23 @@ const Page = async ({ params }) => {
           updatedAt: true,
         }
       })
-
       const filterValueIds = Array.from(new Set(fvsds.map((x) => x.filterValueId).filter(Boolean)))
       const filterValues = filterValueIds.length
         ? await db.filter_value.findMany({
-            where: { id: { in: filterValueIds } },
-            select: {
-              id: true,
-              value: true,
-              filterId: true,
-            },
-          })
+          where: { id: { in: filterValueIds } },
+          select: {
+            id: true,
+            value: true,
+            filterId: true,
+          },
+        })
         : []
       const filterIdSet = Array.from(new Set(filterValues.map((fv) => fv.filterId).filter(Boolean)))
       const filters = filterIdSet.length
         ? await db.filter.findMany({
-            where: { id: { in: filterIdSet } },
-            select: { id: true, name: true },
-          })
+          where: { id: { in: filterIdSet } },
+          select: { id: true, name: true },
+        })
         : []
       const filterById = new Map(filters.map((f) => [f.id, f]))
       const filterValueById = new Map(

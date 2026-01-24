@@ -3,7 +3,7 @@ import { v4 } from "uuid";
 import { ProductDetailContext } from "./product/ProductDetail";
 
 const TechnicalDetail = ({ data = [] }) => {
-  const { selectedSaleDetail = {} } = useContext(ProductDetailContext) || {};
+  const { selectedSaleDetail = {}, selectedSecondaryDetail = {} } = useContext(ProductDetailContext) || {};
 
   const result = useMemo(() => {
     const productTechnical = data.map(item => ({
@@ -13,7 +13,8 @@ const TechnicalDetail = ({ data = [] }) => {
       updatedAt: item.updatedAt || item.updated_at
     }));
 
-    const filterValueOnSaleDetail = (selectedSaleDetail?.filter_value_on_sale_detail || []).map(item => ({
+    const activeSaleDetail = selectedSecondaryDetail?.id ? selectedSecondaryDetail : selectedSaleDetail
+    const filterValueOnSaleDetail = (activeSaleDetail?.filter_value_on_sale_detail || []).map(item => ({
       id: v4(),
       filter: item?.filterValue?.filter?.name,
       filterValue: item?.filterValue?.value,
@@ -24,7 +25,7 @@ const TechnicalDetail = ({ data = [] }) => {
       ...productTechnical,
       ...filterValueOnSaleDetail
     ].filter(item => item.filterValue && item.filter);
-  }, [data, selectedSaleDetail]);
+  }, [data, selectedSaleDetail, selectedSecondaryDetail]);
 
   return (
     <div className="pt-6">

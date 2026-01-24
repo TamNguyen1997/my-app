@@ -12,7 +12,15 @@ const Page = async ({ params }) => {
 
   const [filterValueOnSaleDetail, allFilters] = await Promise.all([
     db.filter_value_on_sale_detail.findMany({
-      where: { saleDetailId },
+      where: {
+        OR: [{
+          saleDetailId: saleDetailId
+        }, {
+          saleDetail: {
+            saleDetailId: saleDetailId
+          }
+        }]
+      },
       include: {
         filterValue: {
           include: { filter: true }

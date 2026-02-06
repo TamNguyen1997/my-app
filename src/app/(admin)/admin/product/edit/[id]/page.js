@@ -15,7 +15,7 @@ const Page = async ({ params }) => {
       where: {
         OR: [
           { id: params.id },
-          { slug: params.id }
+          { slug: decodeURIComponent(params.id) }
         ]
       },
       include: {

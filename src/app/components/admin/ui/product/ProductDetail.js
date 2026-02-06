@@ -28,7 +28,8 @@ const ProductDetail = () => {
   }, [product])
 
   const getProductPostLink = async (product) => {
-    const cleanedSlug = product.slug.replaceAll(/[^a-z0-9-]/gi, '-')
+    const cleanedSlug = product.slug.replaceAll(/[^a-z0-9-]/gi, '-').replaceAll('--', '-');
+    console.log("cleanedSlug", cleanedSlug)
     const existingPostResponse = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts?slug=${cleanedSlug}&status=any`,
       {
         method: "GET",

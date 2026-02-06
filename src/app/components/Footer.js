@@ -55,7 +55,9 @@ const Footer = () => {
           <p>Chủ nhật & Ngày lễ: Nghỉ</p>
           <div className="flex gap-4">
             <Image height={30} width={90} src="/brand/Icon-dmca_protected.webp" alt="DMCA Protected" />
-            <Image height={30} width={70} src="/brand/icon-bo-cong-thuong.webp" alt="Bo Cong Thuong" />
+            <Link href="http://online.gov.vn/Home/WebDetails/87614" isExternal>
+              <Image height={30} width={70} src="/brand/icon-bo-cong-thuong.webp" alt="Bo Cong Thuong" />
+            </Link>
           </div>
 
           <p className="font-bold">MẠNG XÃ HỘI</p>

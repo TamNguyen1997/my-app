@@ -104,7 +104,7 @@ const SaleDetail = ({ saleDetails, product, setImage = () => { } }) => {
         : selectedDetail.price && !getSecondaryDetails().length
           ? selectedDetail
           : saleDetails[0];
-
+    if (!detail.showPrice) return null;
     return detail?.price > detail?.promotionalPrice && detail?.promotionalPrice
       ? formatPrice(detail.price)
       : "";

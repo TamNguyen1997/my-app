@@ -1,56 +1,51 @@
 import { db } from '@/app/db';
 import { NextResponse } from 'next/server';
-import queryString from 'query-string';
 import { ORDER_STATUS } from "@prisma/client";
 import crypto from "crypto";
 
 export async function GET(req) {
-  let page = 1
-  let size = 10
-  const { query } = queryString.parseUrl(req.url);
-  let condition = {}
-
   try {
-    if (query) {
-      page = parseInt(query.page) || 1
-      size = parseInt(query.size) || 10
+    const searchParams = req.nextUrl?.searchParams ?? new URL(req.url).searchParams;
+
+    const page = Math.max(1, Number.parseInt(searchParams.get('page') || '1', 10) || 1);
+    const sizeRaw = Number.parseInt(searchParams.get('size') || '10', 10) || 10;
+    const size = Math.min(Math.max(1, sizeRaw), 100);
+
+    const condition = {};
+    const paymentMethod = searchParams.get('paymentMethod');
+    if (paymentMethod) condition.paymentMethod = paymentMethod;
+
+    const shippingOrderCreated = searchParams.get('shippingOrderCreated');
+    if (shippingOrderCreated !== null && shippingOrderCreated !== undefined && shippingOrderCreated !== '') {
+      condition.shippingOrderCreated = shippingOrderCreated === 'true';
     }
 
-    if (query.paymentMethod) {
-      condition.paymentMethod = query.paymentMethod
-    }
+    const shippingStatus = searchParams.get('shippingStatus');
+    if (shippingStatus) condition.shippingStatus = shippingStatus;
 
-    if (query.shippingOrderCreated) {
-      condition.shippingOrderCreated = query.shippingOrderCreated === "true"
-    }
-
-    if (query.shippingStatus) {
-      condition.shippingStatus = query.shippingStatus
-    }
-
-    const result = await db.order.findMany({
-      where: condition,
-      include: {
+    const includeProducts = searchParams.get('includeProducts') === 'true';
+    const include = includeProducts
+      ? {
         product_on_order: {
           include: {
             product: true
           }
         }
-      },
-      take: size,
-      skip: (page - 1) * size,
-      orderBy: [
-        {
-          updatedAt: "desc"
-        }
-      ],
-    })
-    return NextResponse.json({
-      result,
-      total: await db.order.count({
-        where: condition
-      })
-    })
+      }
+      : undefined;
+
+    const [result, total] = await Promise.all([
+      db.order.findMany({
+        where: condition,
+        include,
+        take: size,
+        skip: (page - 1) * size,
+        orderBy: [{ updatedAt: "desc" }],
+      }),
+      db.order.count({ where: condition })
+    ]);
+
+    return NextResponse.json({ result, total }, { status: 200 });
 
   } catch (e) {
     console.log(e)
@@ -64,13 +59,20 @@ export async function POST(req) {
     const order = raw.order
     const products = raw.products
 
-    if (order.total <= 0) {
+    if (!order || !Array.isArray(products) || products.length === 0) {
+      return NextResponse.json({ message: "Dữ liệu không hợp lệ" }, { status: 400 })
+    }
+
+    const total = Number(order.total)
+    const shippingFee = Number(order.shippingFee)
+
+    if (!Number.isFinite(total) || total <= 0) {
       return NextResponse.json({ message: "Giá không hợp lệ" }, { status: 400 })
     }
-    if (order.paymentMethod === "COD" && order.shippingFee <= 0) {
+    if (order.paymentMethod === "COD" && (!Number.isFinite(shippingFee) || shippingFee <= 0)) {
       return NextResponse.json({ message: "Phí ship không hợp lệ" }, { status: 400 })
     }
-    if (order.paymentMethod === "VIETQR" && order.total < 2000000 && order.shippingFee <= 0) {
+    if (order.paymentMethod === "VIETQR" && total < 2000000 && (!Number.isFinite(shippingFee) || shippingFee <= 0)) {
       return NextResponse.json({ message: "Phí ship không hợp lệ" }, { status: 400 })
     }
     return NextResponse.json({
@@ -80,13 +82,13 @@ export async function POST(req) {
           email: order.email,
           name: order.name,
           phone: order.phone,
-          total: order.total,
+          total,
           districtId: order.districtId,
           wardId: order.wardId,
           provinceId: order.provinceId,
           status: ORDER_STATUS.PENDING,
           paymentMethod: order.paymentMethod,
-          shippingFee: order.shippingFee,
+          shippingFee: total > 2000000 ? 0 : shippingFee,
           orderId: crypto.randomBytes(10).toString("hex"),
           companyName: order.companyName,
           companyEmail: order.companyEmail,
@@ -96,7 +98,7 @@ export async function POST(req) {
             create: products.map(item => {
               return {
                 productId: item.productId,
-                quantity: parseInt(item.quantity || "1"),
+                quantity: Number.parseInt(item.quantity || "1", 10),
                 saleDetailId: item.saleDetailId
               }
             })

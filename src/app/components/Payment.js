@@ -2,7 +2,7 @@
 
 import { CartContext } from "@/context/CartProvider";
 import { Button, Checkbox, Input, Link, Select, SelectItem, Textarea } from "@heroui/react";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -35,32 +35,64 @@ const Payment = () => {
     register,
     handleSubmit,
     formState: { errors },
-    watch
+    setValue,
+    getValues
   } = useForm();
 
-  const watchedValues = watch();
+  const productsPayload = useMemo(() => {
+    return cartdetails.map(detail => {
+      return {
+        saleDetails: detail.product?.saleDetails || [],
+        productId: detail.product.id,
+        quantity: detail.quantity,
+        saleDetailId: detail.secondarySaleDetail?.id || detail.saleDetail?.id || detail.product?.saleDetails[0]?.id
+      };
+    })
+  }, [cartdetails]);
+
+  const cartTotal = getTotal();
+
+  const getBody = (data) => {
+    return {
+      order: {
+        ...data,
+        ...selectedDestination,
+        total: cartTotal,
+        paymentMethod: selected,
+        shippingFee: cartTotal > 2000000 ? 0 : shipping.cost
+      },
+      products: productsPayload
+    };
+  };
+
   useEffect(() => {
     if (!selectedDestination.wardId) return;
     setShippingLoading(true);
+    const controller = new AbortController();
     fetch(`/api/courier/shipping-price`, {
       method: "POST",
-      body: JSON.stringify(getBody(watchedValues))
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(getBody(getValues())),
+      signal: controller.signal
     })
       .then(res => res.json())
       .then(json => setShipping(prevState => ({ ...prevState, cost: json.MONEY_TOTAL })))
       .catch((e) => {
+        if (e?.name === 'AbortError') return;
         console.log(e);
         toast.error("Không thể tính phí vận chuyển");
         setShipping(prevState => ({ ...prevState, cost: null }));
       })
       .finally(() => setShippingLoading(false));
-  }, [selectedDestination.wardId]);
+    return () => controller.abort();
+  }, [selectedDestination.wardId, getValues]);
 
   const createOrder = async (data) => {
     const body = getBody(data);
 
     const res = await fetch("/api/order/", {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
     });
 
@@ -105,30 +137,10 @@ const Payment = () => {
     }
   };
 
-  const getBody = (data) => {
-    return {
-      order: {
-        ...data,
-        ...selectedDestination,
-        total: getTotal(),
-        paymentMethod: selected,
-        shippingFee: getTotal() > 2000000 ? 0 : shipping.cost
-      },
-      products: cartdetails.map(detail => {
-        return {
-          saleDetails: detail.product?.saleDetails || [],
-          productId: detail.product.id,
-          quantity: detail.quantity,
-          saleDetailId: detail.secondarySaleDetail?.id || detail.saleDetail?.id || detail.product?.saleDetails[0]?.id
-        };
-      })
-    };
-  };
-
   const handleCityChange = (value) => {
     const provinceId = value.values().next().value;
-    register('provinceId', { value: provinceId });
     setSelectedDestination({ ...selectedDestination, provinceId });
+    setValue('provinceId', provinceId);
     setShipping(prev => ({ ...prev, cost: null }));
 
     fetch(`/api/courier/get-districts?provinceId=${provinceId}`)
@@ -139,7 +151,7 @@ const Payment = () => {
   const handleDistrictChange = (value) => {
     const districtId = value.values().next().value;
     setSelectedDestination({ ...selectedDestination, districtId });
-    register('districtId', { value: districtId });
+    setValue('districtId', districtId);
     setShipping(prev => ({ ...prev, cost: null }));
 
     fetch(`/api/courier/get-wards?districtId=${districtId}`)
@@ -149,8 +161,9 @@ const Payment = () => {
 
   const handleWardChange = async (value) => {
     const wardId = value.values().next().value;
-    register('wardId', { value: wardId });
+    setValue('wardId', wardId);
     setSelectedDestination({ ...selectedDestination, wardId });
+    setShipping(prev => ({ ...prev, cost: null }));
   };
 
   const { cities, wards, districts, cost } = shipping;
@@ -307,7 +320,7 @@ const Payment = () => {
                 </div>
               </div>
 
-              {getTotal() && selected === "VIETQR" && getTotal() > 2000000 ? (
+              {cartTotal && selected === "VIETQR" && cartTotal > 2000000 ? (
                 <>
                   <div>
                     {cost !== null && (
@@ -315,7 +328,7 @@ const Payment = () => {
                     )}
                     <p className="text-xs opacity-65">Miễn phí vận chuyển với đơn trên 2,000,000đ</p>
                   </div>
-                  <p>Tổng: {getTotal().toLocaleString().replaceAll(",", ".")} đ</p>
+                  <p>Tổng: {cartTotal.toLocaleString().replaceAll(",", ".")} đ</p>
                 </>
               ) : (
                 <>
@@ -325,7 +338,7 @@ const Payment = () => {
                     )}
                     {selected === "VIETQR" && <p className="text-xs opacity-65">Miễn phí vận chuyển với đơn trên 2,000,000đ</p>}
                   </div>
-                  <p>Tổng: {(cost + getTotal()).toLocaleString().replaceAll(",", ".")} đ</p>
+                  <p>Tổng: {((cost ?? 0) + cartTotal).toLocaleString().replaceAll(",", ".")} đ</p>
                 </>
               )}
 
@@ -333,7 +346,7 @@ const Payment = () => {
                 className="items-center justify-center flex m-auto"
                 color="primary"
                 type="submit"
-                isDisabled={!cartdetails || !cartdetails.length || getTotal() === 0 || !isShippingFeeReady}
+                isDisabled={!cartdetails || !cartdetails.length || cartTotal === 0 || !isShippingFeeReady}
               >
                 Thanh toán
               </Button>

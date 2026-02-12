@@ -25,19 +25,35 @@ export async function POST(req) {
     }
     const order = productOnOrders[0].order
 
-    const saleDetails = productOnOrders.map(item => item.saleDetail)
+    const listItem = productOnOrders
+      .map((po) => {
+        const saleDetail = po.saleDetail
+        const product = saleDetail?.product || po.product
+        if (!product) return null
 
-    const listItem = saleDetails.map(item => {
-      return {
-        "PRODUCT_NAME": item.product.name,
-        "PRODUCT_PRICE": item.price,
-        "PRODUCT_WEIGHT": item.product.weight,
-        "PRODUCT_LENGTH": item.product.length,
-        "PRODUCT_WIDTH": item.product.width,
-        "PRODUCT_HEIGHT": item.product.height,
-        "PRODUCT_QUANTITY": productOnOrders.find(product => product.saleDetailId === item.id).quantity
-      }
-    })
+        const quantity = Number.parseInt(po.quantity || "1", 10) || 1
+        const weight = Number.parseInt(product.weight || "0", 10) || 0
+        const length = Number.parseInt(product.length || "0", 10) || 0
+        const width = Number.parseInt(product.width || "0", 10) || 0
+        const height = Number.parseInt(product.height || "0", 10) || 0
+
+        return {
+          "PRODUCT_NAME": product.name,
+          "PRODUCT_PRICE": saleDetail?.price ?? 0,
+          "PRODUCT_WEIGHT": weight,
+          "PRODUCT_LENGTH": length,
+          "PRODUCT_WIDTH": width,
+          "PRODUCT_HEIGHT": height,
+          "PRODUCT_QUANTITY": quantity
+        }
+      })
+      .filter(Boolean)
+
+    const totalQuantity = listItem.reduce((sum, item) => sum + (item.PRODUCT_QUANTITY || 0), 0)
+    const totalWeight = listItem.reduce((sum, item) => sum + (item.PRODUCT_WEIGHT || 0) * (item.PRODUCT_QUANTITY || 0), 0)
+    const packageLength = listItem.reduce((max, item) => Math.max(max, item.PRODUCT_LENGTH || 0), 0)
+    const packageWidth = listItem.reduce((max, item) => Math.max(max, item.PRODUCT_WIDTH || 0), 0)
+    const packageHeight = listItem.reduce((max, item) => Math.max(max, item.PRODUCT_HEIGHT || 0), 0)
 
     if (listItem.length != 0) {
       const data = {
@@ -55,6 +71,11 @@ export async function POST(req) {
         "RECEIVER_PROVINCE": order.provinceId,
         "PRODUCT_NAME": "Giao hàng Sao Việt",
         "PRODUCT_DESCRIPTION": "Giao hàng Sao Việt",
+        "PRODUCT_QUANTITY": totalQuantity,
+        "PRODUCT_WEIGHT": totalWeight,
+        "PRODUCT_LENGTH": packageLength,
+        "PRODUCT_WIDTH": packageWidth,
+        "PRODUCT_HEIGHT": packageHeight,
         "PRODUCT_TYPE": "HH",
         "ORDER_PAYMENT": 3,
         "ORDER_SERVICE": process.env.VIETTEL_POST_ORDER_SERVICE,

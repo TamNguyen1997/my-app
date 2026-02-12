@@ -11,11 +11,12 @@ const Payment = () => {
   const { cartdetails, getTotal, removeAllItems } = useContext(CartContext);
   const [selected, setSelected] = useState("VIETQR");
   const [isVATActive, setIsVATActive] = useState(false);
+  const [shippingLoading, setShippingLoading] = useState(false);
   const [shipping, setShipping] = useState({
     cities: [],
     wards: [],
     districts: [],
-    cost: 0
+    cost: null
   });
 
   const [selectedDestination, setSelectedDestination] = useState({
@@ -40,9 +41,19 @@ const Payment = () => {
   const watchedValues = watch();
   useEffect(() => {
     if (!selectedDestination.wardId) return;
-    fetch(`/api/courier/shipping-price`, { method: "POST", body: JSON.stringify(getBody(watchedValues)) })
+    setShippingLoading(true);
+    fetch(`/api/courier/shipping-price`, {
+      method: "POST",
+      body: JSON.stringify(getBody(watchedValues))
+    })
       .then(res => res.json())
       .then(json => setShipping(prevState => ({ ...prevState, cost: json.MONEY_TOTAL })))
+      .catch((e) => {
+        console.log(e);
+        toast.error("Không thể tính phí vận chuyển");
+        setShipping(prevState => ({ ...prevState, cost: null }));
+      })
+      .finally(() => setShippingLoading(false));
   }, [selectedDestination.wardId]);
 
   const createOrder = async (data) => {
@@ -57,11 +68,17 @@ const Payment = () => {
       return (await res.json()).order;
     } else {
       toast.error("Không thể đặt hàng: " + (await res.json()).message);
+      return null;
     }
   };
 
   const onSubmit = async (data) => {
     const createdOrder = await createOrder(data);
+
+    if (!createdOrder?.orderId) {
+      // createOrder already shows a toast on failure
+      return;
+    }
 
     if (selected === "VIETQR") {
       const res = await fetch("/api/pay/vnpay", {
@@ -112,6 +129,7 @@ const Payment = () => {
     const provinceId = value.values().next().value;
     register('provinceId', { value: provinceId });
     setSelectedDestination({ ...selectedDestination, provinceId });
+    setShipping(prev => ({ ...prev, cost: null }));
 
     fetch(`/api/courier/get-districts?provinceId=${provinceId}`)
       .then(res => res.json())
@@ -122,6 +140,7 @@ const Payment = () => {
     const districtId = value.values().next().value;
     setSelectedDestination({ ...selectedDestination, districtId });
     register('districtId', { value: districtId });
+    setShipping(prev => ({ ...prev, cost: null }));
 
     fetch(`/api/courier/get-wards?districtId=${districtId}`)
       .then(res => res.json())
@@ -135,6 +154,7 @@ const Payment = () => {
   };
 
   const { cities, wards, districts, cost } = shipping;
+  const isShippingFeeReady = Boolean(selectedDestination.wardId) && cost !== null && !shippingLoading;
 
   return (
     <div>
@@ -290,7 +310,9 @@ const Payment = () => {
               {getTotal() && selected === "VIETQR" && getTotal() > 2000000 ? (
                 <>
                   <div>
-                    <p className="opacity-65 line-through">Phí vận chuyển: {cost?.toLocaleString().replaceAll(",", ".")} đ</p>
+                    {cost !== null && (
+                      <p className="opacity-65 line-through">Phí vận chuyển: {cost?.toLocaleString().replaceAll(",", ".")} đ</p>
+                    )}
                     <p className="text-xs opacity-65">Miễn phí vận chuyển với đơn trên 2,000,000đ</p>
                   </div>
                   <p>Tổng: {getTotal().toLocaleString().replaceAll(",", ".")} đ</p>
@@ -298,7 +320,9 @@ const Payment = () => {
               ) : (
                 <>
                   <div>
-                    <p className="opacity-65">Phí vận chuyển: {cost?.toLocaleString().replaceAll(",", ".")} đ</p>
+                    {cost !== null && (
+                      <p className="opacity-65">Phí vận chuyển: {cost?.toLocaleString().replaceAll(",", ".")} đ</p>
+                    )}
                     {selected === "VIETQR" && <p className="text-xs opacity-65">Miễn phí vận chuyển với đơn trên 2,000,000đ</p>}
                   </div>
                   <p>Tổng: {(cost + getTotal()).toLocaleString().replaceAll(",", ".")} đ</p>
@@ -309,7 +333,7 @@ const Payment = () => {
                 className="items-center justify-center flex m-auto"
                 color="primary"
                 type="submit"
-                isDisabled={!cartdetails || !cartdetails.length || getTotal() === 0}
+                isDisabled={!cartdetails || !cartdetails.length || getTotal() === 0 || !isShippingFeeReady}
               >
                 Thanh toán
               </Button>

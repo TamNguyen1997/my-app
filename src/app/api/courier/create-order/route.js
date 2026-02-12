@@ -70,7 +70,7 @@ export async function POST(req) {
           },
           data: {
             shippingMethod: "VIETTEL_POST",
-            shippingId: data.ORDER_NUMBER
+            shippingId: result.data?.ORDER_NUMBER || data.ORDER_NUMBER
           }
         })
         return NextResponse.json({ message: "OK" }, { status: 200 })

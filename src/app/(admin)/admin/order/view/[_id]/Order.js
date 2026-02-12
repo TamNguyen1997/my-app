@@ -121,7 +121,7 @@ const Order = () => {
     <>
       <ToastContainer />
       <div className="flex py-3 gap-3">
-        <Button onClick={orderShipping} isDisabled={order.shippingId} color="primary">Tạo đơn vận chuyển Viettel Post</Button>
+        <Button onPress={orderShipping} isDisabled={order.shippingId} color="primary">Tạo đơn vận chuyển Viettel Post</Button>
         <Button isDisabled={order.shippingId} color="primary">Tạo đơn vận chuyển 24/7</Button>
       </div>
       <form >

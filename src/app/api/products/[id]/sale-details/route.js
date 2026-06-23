@@ -3,25 +3,25 @@ import { NextResponse } from 'next/server';
 
 export async function POST(req, { params }) {
   try {
-    let body = (await req.json())
+    let body = await req.json()
+
     body.saleDetails.forEach(item => delete item.childSaleDetails)
-    await db.sale_detail.deleteMany({
-      where: {
-        productId: params.id,
-        NOT: [
-          {
-            saleDetailId: null
-          }
-        ]
-      }
-    })
-    await db.sale_detail.deleteMany({
-      where: {
-        productId: params.id
-      }
-    })
-    await db.sale_detail.createMany({
-      data: body.saleDetails
+
+    await db.$transaction(async (tx) => {
+      await tx.sale_detail.updateMany({
+        where: { productId: params.id },
+        data: { saleDetailId: null }
+      })
+
+      await tx.sale_detail.deleteMany({
+        where: {
+          productId: params.id
+        }
+      })
+
+      await tx.sale_detail.createMany({
+        data: body.saleDetails
+      })
     })
     return NextResponse.json({ message: "Success" })
   } catch (e) {

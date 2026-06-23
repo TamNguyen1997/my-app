@@ -35,6 +35,11 @@ async function deleteSaleDetailsHierarchy(tx, productId, idsToKeep = []) {
     });
   }
 
+  await tx.sale_detail.updateMany({
+    where: { id: { in: idsToDelete } },
+    data: { saleDetailId: null }
+  });
+
   await tx.filter_value_on_sale_detail.deleteMany({
     where: { saleDetailId: { in: idsToDelete } }
   });

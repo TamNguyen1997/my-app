@@ -5,6 +5,62 @@ import { product_type, sale_detail_type, user_role } from "@prisma/client";
 import queryString from 'query-string';
 import slugify from 'slugify';
 
+async function deleteSaleDetailsHierarchy(tx, productId, idsToKeep = []) {
+  const keepSet = new Set((idsToKeep || []).filter(Boolean));
+
+  const allSaleDetails = await tx.sale_detail.findMany({
+    where: { productId },
+    select: { id: true, saleDetailId: true }
+  });
+
+  if (!allSaleDetails.length) return;
+
+  const idsToDelete = allSaleDetails
+    .filter((item) => !keepSet.has(item.id))
+    .map((item) => item.id);
+
+  if (!idsToDelete.length) return;
+
+  const toDeleteSet = new Set(idsToDelete);
+
+  // If a remaining node points to a node being deleted, detach it first.
+  const keepIdsNeedingDetach = allSaleDetails
+    .filter((item) => keepSet.has(item.id) && item.saleDetailId && toDeleteSet.has(item.saleDetailId))
+    .map((item) => item.id);
+
+  if (keepIdsNeedingDetach.length > 0) {
+    await tx.sale_detail.updateMany({
+      where: { id: { in: keepIdsNeedingDetach } },
+      data: { saleDetailId: null }
+    });
+  }
+
+  await tx.filter_value_on_sale_detail.deleteMany({
+    where: { saleDetailId: { in: idsToDelete } }
+  });
+
+  let remaining = allSaleDetails.filter((item) => toDeleteSet.has(item.id));
+
+  while (remaining.length > 0) {
+    const parentIds = new Set(remaining.map((item) => item.saleDetailId).filter(Boolean));
+    const leafIds = remaining.filter((item) => !parentIds.has(item.id)).map((item) => item.id);
+
+    if (leafIds.length === 0) {
+      const remainingIds = remaining.map((item) => item.id);
+      await tx.sale_detail.updateMany({
+        where: { id: { in: remainingIds } },
+        data: { saleDetailId: null }
+      });
+      await tx.sale_detail.deleteMany({ where: { id: { in: remainingIds } } });
+      break;
+    }
+
+    await tx.sale_detail.deleteMany({ where: { id: { in: leafIds } } });
+    const leafSet = new Set(leafIds);
+    remaining = remaining.filter((item) => !leafSet.has(item.id));
+  }
+}
+
 export async function POST(req) {
   try {
     let body = await req.json()
@@ -125,87 +181,8 @@ export async function POST(req) {
         })))
       }
 
-      const saleDetailIds = saleDetails?.map(item => item.id)
-      if (!saleDetailIds || saleDetailIds.length === 0) {
-        // Delete child sale details (secondary sale details) first
-        const childSaleDetails = await tx.sale_detail.findMany({
-          where: { 
-            productId: productBody.id,
-            saleDetailId: { not: null }
-          },
-          select: { id: true }
-        })
-        const childSaleDetailIds = childSaleDetails.map(sd => sd.id)
-        
-        // Delete filter_value_on_sale_detail for child sale details
-        if (childSaleDetailIds.length > 0) {
-          await tx.filter_value_on_sale_detail.deleteMany({
-            where: { saleDetailId: { in: childSaleDetailIds } }
-          })
-        }
-        
-        // Delete child sale details
-        if (childSaleDetailIds.length > 0) {
-          await tx.sale_detail.deleteMany({ 
-            where: { id: { in: childSaleDetailIds } } 
-          })
-        }
-        
-        // Delete filter_value_on_sale_detail for all sale details
-        await tx.filter_value_on_sale_detail.deleteMany({
-          where: { saleDetail: { productId: productBody.id } }
-        })
-        
-        // Delete all sale details (parent sale details)
-        await tx.sale_detail.deleteMany({ where: { productId: productBody.id } });
-      } else {
-        // Find child sale details that belong to sale details being deleted
-        const saleDetailsToDelete = await tx.sale_detail.findMany({
-          where: { 
-            productId: productBody.id, 
-            id: { notIn: saleDetailIds } 
-          },
-          select: { id: true }
-        })
-        const saleDetailIdsToDelete = saleDetailsToDelete.map(sd => sd.id)
-        
-        // Find child sale details (secondary sale details) that reference the sale details being deleted
-        const childSaleDetails = await tx.sale_detail.findMany({
-          where: { 
-            productId: productBody.id,
-            saleDetailId: { in: saleDetailIdsToDelete }
-          },
-          select: { id: true }
-        })
-        const childSaleDetailIds = childSaleDetails.map(sd => sd.id)
-        
-        // Delete filter_value_on_sale_detail for child sale details
-        if (childSaleDetailIds.length > 0) {
-          await tx.filter_value_on_sale_detail.deleteMany({
-            where: { saleDetailId: { in: childSaleDetailIds } }
-          })
-        }
-        
-        // Delete child sale details first
-        if (childSaleDetailIds.length > 0) {
-          await tx.sale_detail.deleteMany({ 
-            where: { id: { in: childSaleDetailIds } } 
-          })
-        }
-        
-        // Delete filter_value_on_sale_detail for sale details being deleted
-        await tx.filter_value_on_sale_detail.deleteMany({
-          where: {
-            saleDetailId: { notIn: saleDetailIds },
-            saleDetail: { productId: productBody.id }
-          }
-        })
-        
-        // Delete parent sale details
-        await tx.sale_detail.deleteMany({ 
-          where: { productId: productBody.id, id: { notIn: saleDetailIds } } 
-        });
-      }
+      const saleDetailIds = saleDetails?.map(item => item.id).filter(Boolean) || []
+      await deleteSaleDetailsHierarchy(tx, productBody.id, saleDetailIds)
 
       if (technicalDetails?.length) {
         await Promise.all(technicalDetails.map(item => tx.technical_detail.upsert({

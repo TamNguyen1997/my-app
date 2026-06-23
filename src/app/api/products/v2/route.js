@@ -4,9 +4,12 @@ import crypto from "crypto";
 import { product_type, sale_detail_type, user_role } from "@prisma/client";
 import queryString from 'query-string';
 import slugify from 'slugify';
+import { deleteOrphanedSecondarySaleDetails } from '@/lib/sale-detail-cleanup';
 
 async function deleteSaleDetailsHierarchy(tx, productId, idsToKeep = []) {
   const keepSet = new Set((idsToKeep || []).filter(Boolean));
+
+  await deleteOrphanedSecondarySaleDetails(tx, productId);
 
   const allSaleDetails = await tx.sale_detail.findMany({
     where: { productId },

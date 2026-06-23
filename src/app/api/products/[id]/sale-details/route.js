@@ -1,5 +1,6 @@
 import { db } from '@/app/db';
 import { NextResponse } from 'next/server';
+import { deleteOrphanedSecondarySaleDetails } from '@/lib/sale-detail-cleanup';
 
 export async function POST(req, { params }) {
   try {
@@ -8,6 +9,8 @@ export async function POST(req, { params }) {
     body.saleDetails.forEach(item => delete item.childSaleDetails)
 
     await db.$transaction(async (tx) => {
+      await deleteOrphanedSecondarySaleDetails(tx, params.id)
+
       // Find all existing sale_details we're about to delete
       const existingSaleDetails = await tx.sale_detail.findMany({
         where: { productId: params.id },

@@ -1,5 +1,6 @@
 import { db } from '@/app/db';
 import { NextResponse } from 'next/server';
+import { deleteOrphanedSecondarySaleDetails } from '@/lib/sale-detail-cleanup';
 
 export async function GET(req, { params }) {
   if (!params.id) {
@@ -83,6 +84,8 @@ export async function DELETE(req, { params }) {
   try {
     await db.$transaction(async tx => {
       await tx.technical_detail.deleteMany({ where: { productId: params.id } })
+      await deleteOrphanedSecondarySaleDetails(tx, params.id)
+
       await tx.sale_detail.updateMany({
         where: { productId: params.id },
         data: { saleDetailId: null }

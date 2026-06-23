@@ -83,15 +83,17 @@ export async function DELETE(req, { params }) {
   try {
     await db.$transaction(async tx => {
       await tx.technical_detail.deleteMany({ where: { productId: params.id } })
-      await tx.sale_detail.deleteMany({
-        where: {
-          productId: params.id,
-          NOT: [
-            {
-              saleDetailId: null
-            }
-          ]
-        }
+      await tx.sale_detail.updateMany({
+        where: { productId: params.id },
+        data: { saleDetailId: null }
+      })
+      const saleDetailIds = await tx.sale_detail.findMany({
+        where: { productId: params.id },
+        select: { id: true }
+      })
+      await tx.product_on_order.updateMany({
+        where: { saleDetailId: { in: saleDetailIds.map(sd => sd.id) } },
+        data: { saleDetailId: null }
       })
       await tx.sale_detail.deleteMany({
         where: {

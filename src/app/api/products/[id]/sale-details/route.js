@@ -8,17 +8,38 @@ export async function POST(req, { params }) {
     body.saleDetails.forEach(item => delete item.childSaleDetails)
 
     await db.$transaction(async (tx) => {
-      await tx.sale_detail.updateMany({
+      // Find all existing sale_details we're about to delete
+      const existingSaleDetails = await tx.sale_detail.findMany({
         where: { productId: params.id },
-        data: { saleDetailId: null }
+        select: { id: true }
       })
+      const idsToDelete = existingSaleDetails.map(sd => sd.id)
 
-      await tx.sale_detail.deleteMany({
-        where: {
-          productId: params.id
-        }
-      })
+      if (idsToDelete.length) {
+        // Step 1: Detach children of rows being deleted
+        await tx.sale_detail.updateMany({
+          where: { saleDetailId: { in: idsToDelete } },
+          data: { saleDetailId: null }
+        })
 
+        // Step 2: Detach product_on_order references
+        await tx.product_on_order.updateMany({
+          where: { saleDetailId: { in: idsToDelete } },
+          data: { saleDetailId: null }
+        })
+
+        // Step 3: Delete filter_value_on_sale_detail
+        await tx.filter_value_on_sale_detail.deleteMany({
+          where: { saleDetailId: { in: idsToDelete } }
+        })
+
+        // Step 4: Delete the sale_details
+        await tx.sale_detail.deleteMany({
+          where: { productId: params.id }
+        })
+      }
+
+      // Step 5: Create new sale_details
       await tx.sale_detail.createMany({
         data: body.saleDetails
       })

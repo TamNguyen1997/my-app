@@ -21,49 +21,27 @@ async function deleteSaleDetailsHierarchy(tx, productId, idsToKeep = []) {
 
   if (!idsToDelete.length) return;
 
-  const toDeleteSet = new Set(idsToDelete);
-
-  // If a remaining node points to a node being deleted, detach it first.
-  const keepIdsNeedingDetach = allSaleDetails
-    .filter((item) => keepSet.has(item.id) && item.saleDetailId && toDeleteSet.has(item.saleDetailId))
-    .map((item) => item.id);
-
-  if (keepIdsNeedingDetach.length > 0) {
-    await tx.sale_detail.updateMany({
-      where: { id: { in: keepIdsNeedingDetach } },
-      data: { saleDetailId: null }
-    });
-  }
-
+  // Step 1: Detach any sale_details that reference rows we're about to delete
   await tx.sale_detail.updateMany({
-    where: { id: { in: idsToDelete } },
+    where: { saleDetailId: { in: idsToDelete } },
     data: { saleDetailId: null }
   });
 
+  // Step 2: Detach product_on_order rows that reference sale_details to delete
+  await tx.product_on_order.updateMany({
+    where: { saleDetailId: { in: idsToDelete } },
+    data: { saleDetailId: null }
+  });
+
+  // Step 3: Delete dependent filter_value_on_sale_detail relations
   await tx.filter_value_on_sale_detail.deleteMany({
     where: { saleDetailId: { in: idsToDelete } }
   });
 
-  let remaining = allSaleDetails.filter((item) => toDeleteSet.has(item.id));
-
-  while (remaining.length > 0) {
-    const parentIds = new Set(remaining.map((item) => item.saleDetailId).filter(Boolean));
-    const leafIds = remaining.filter((item) => !parentIds.has(item.id)).map((item) => item.id);
-
-    if (leafIds.length === 0) {
-      const remainingIds = remaining.map((item) => item.id);
-      await tx.sale_detail.updateMany({
-        where: { id: { in: remainingIds } },
-        data: { saleDetailId: null }
-      });
-      await tx.sale_detail.deleteMany({ where: { id: { in: remainingIds } } });
-      break;
-    }
-
-    await tx.sale_detail.deleteMany({ where: { id: { in: leafIds } } });
-    const leafSet = new Set(leafIds);
-    remaining = remaining.filter((item) => !leafSet.has(item.id));
-  }
+  // Step 4: Now safely delete all rows marked for deletion
+  await tx.sale_detail.deleteMany({
+    where: { id: { in: idsToDelete } }
+  });
 }
 
 export async function POST(req) {

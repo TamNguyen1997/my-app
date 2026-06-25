@@ -103,6 +103,18 @@ export const getProductSchema = (product, imageUrls = [], sku) => {
   }
 }
 
+const normalizeBreadcrumbItems = (breadcrumbList) => {
+  if (Array.isArray(breadcrumbList)) {
+    return breadcrumbList;
+  }
+
+  if (Array.isArray(breadcrumbList?.itemListElement)) {
+    return breadcrumbList.itemListElement;
+  }
+
+  return [];
+}
+
 export const getWebPageSchema = (path, title, description, breadcrumbList) => {
   return {
     "@type": "WebPage",
@@ -112,7 +124,7 @@ export const getWebPageSchema = (path, title, description, breadcrumbList) => {
     "description": description,
     "breadcrumb": {
       "@type": "BreadcrumbList",
-      "itemListElement": breadcrumbList
+      "itemListElement": normalizeBreadcrumbItems(breadcrumbList)
     },
     "mainEntity": {
       "@id": `${process.env.NEXT_PUBLIC_DOMAIN}/${path}#product`

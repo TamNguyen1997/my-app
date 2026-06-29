@@ -25,6 +25,7 @@ export default async function RootLayout({ children }) {
           gtag('config', 'AW-552989919');
         `}
       </Script>
+      <link rel="icon" href="/favicon.ico" sizes="any" />
       <body className='font-roboto'>
         <CartProvider>
           <Header headers={await headers} />

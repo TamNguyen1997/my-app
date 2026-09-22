@@ -35,6 +35,7 @@ export async function POST(req) {
 
         const totalQuantity = listItem.reduce((sum, item) => sum + (item.PRODUCT_QUANTITY || 0), 0)
         const totalWeight = listItem.reduce((sum, item) => sum + (item.PRODUCT_WEIGHT || 0) * (item.PRODUCT_QUANTITY || 0), 0)
+        const totalPrice = listItem.reduce((sum, item) => sum + (Number(item.PRODUCT_PRICE) || 0) * (item.PRODUCT_QUANTITY || 0), 0)
         const packageLength = listItem.reduce((max, item) => Math.max(max, item.PRODUCT_LENGTH || 0), 0)
         const packageWidth = listItem.reduce((max, item) => Math.max(max, item.PRODUCT_WIDTH || 0), 0)
         const packageHeight = listItem.reduce((max, item) => Math.max(max, item.PRODUCT_HEIGHT || 0), 0)
@@ -42,12 +43,16 @@ export async function POST(req) {
         const data = {
             "PRODUCT_QUANTITY": totalQuantity,
             "PRODUCT_WEIGHT": totalWeight,
+            "PRODUCT_PRICE": totalPrice,
+            "MONEY_COLLECTION": order.paymentMethod === "COD" ? Number(order.total) || totalPrice : 0,
             "PRODUCT_LENGTH": packageLength,
             "PRODUCT_WIDTH": packageWidth,
             "PRODUCT_HEIGHT": packageHeight,
             "ORDER_SERVICE": process.env.VIETTEL_POST_ORDER_SERVICE,
-            "SENDER_PROVINCE": "1",
-            "SENDER_DISTRICT": "14",
+            "ORDER_SERVICE_ADD": "",
+            "SENDER_WARD": process.env.SAO_VIET_WARD_ID,
+            "SENDER_DISTRICT": process.env.SAO_VIET_DISTRICT_ID,
+            "SENDER_PROVINCE": process.env.SAO_VIET_PROVINCE_ID,
             "RECEIVER_FULLNAME": order.name,
             "RECEIVER_ADDRESS": order.address,
             "RECEIVER_PHONE": order.phone,

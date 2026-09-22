@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/app/db';
-import { createOrder } from '@/lib/courier';
+import { createOrder, getShippingPrice } from '@/lib/courier';
 
 export async function POST(req) {
   try {
@@ -81,6 +81,50 @@ export async function POST(req) {
         "ORDER_SERVICE": process.env.VIETTEL_POST_ORDER_SERVICE,
         "ORDER_NOTE": "cho xem hàng, không cho thử",
         "LIST_ITEM": listItem
+      }
+
+      const priceData = {
+        "PRODUCT_QUANTITY": totalQuantity,
+        "PRODUCT_WEIGHT": totalWeight,
+        "PRODUCT_PRICE": listItem.reduce((sum, item) => sum + (Number(item.PRODUCT_PRICE) || 0) * (item.PRODUCT_QUANTITY || 0), 0),
+        "MONEY_COLLECTION": order.paymentMethod === "COD" ? Number(order.total) || 0 : 0,
+        "PRODUCT_LENGTH": packageLength,
+        "PRODUCT_WIDTH": packageWidth,
+        "PRODUCT_HEIGHT": packageHeight,
+        "ORDER_SERVICE": process.env.VIETTEL_POST_ORDER_SERVICE,
+        "ORDER_SERVICE_ADD": "",
+        "SENDER_WARD": process.env.SAO_VIET_WARD_ID,
+        "SENDER_DISTRICT": process.env.SAO_VIET_DISTRICT_ID,
+        "SENDER_PROVINCE": process.env.SAO_VIET_PROVINCE_ID,
+        "RECEIVER_FULLNAME": order.name,
+        "RECEIVER_ADDRESS": order.address,
+        "RECEIVER_PHONE": order.phone,
+        "RECEIVER_EMAIL": order.email,
+        "RECEIVER_WARD": order.wardId,
+        "RECEIVER_DISTRICT": order.districtId,
+        "RECEIVER_PROVINCE": order.provinceId,
+        "PRODUCT_TYPE": "HH",
+        "NATIONAL_TYPE": 1,
+        "LIST_ITEM": listItem
+      }
+
+      let shippingPrice = await getShippingPrice(priceData)
+      if (shippingPrice.status != 200) {
+        priceData.ORDER_SERVICE = process.env.VIETTEL_POST_ORDER_SERVICE_RETRY
+        shippingPrice = await getShippingPrice(priceData)
+      }
+
+      const currentShippingFee = Number(order.shippingFee)
+      const calculatedShippingFee = Number(shippingPrice.data?.MONEY_TOTAL)
+      if (shippingPrice.status != 200 || !Number.isFinite(calculatedShippingFee)) {
+        return NextResponse.json({ message: shippingPrice.message || "Không thể tính phí vận chuyển" }, { status: 400 })
+      }
+
+      if (currentShippingFee !== calculatedShippingFee) {
+        await db.order.update({
+          where: { id: order.id },
+          data: { shippingFee: calculatedShippingFee }
+        })
       }
 
       const result = await createOrder(data);

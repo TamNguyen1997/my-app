@@ -7,26 +7,44 @@ export async function POST(req) {
         const raw = await req.json()
         const order = raw.order
         const products = raw.products
-        let weight = 0
-
-        let listItem = [];
 
         const saleDetails = await db.sale_detail.findMany({ where: { id: { in: products.map(item => item.saleDetailId) } }, include: { product: true } })
 
-        saleDetails.forEach(item => {
-            weight += item.product.weight
-            listItem.push({
-                "PRODUCT_NAME": item.product.name,
-                "PRODUCT_PRICE": item.price,
-                "PRODUCT_WEIGHT": item.product.weight,
-                "PRODUCT_LENGTH": item.product.length,
-                "PRODUCT_WIDTH": item.product.width,
-                "PRODUCT_HEIGHT": item.product.height,
-                "PRODUCT_QUANTITY": products.find(product => product.saleDetailId === item.id).quantity
+        const listItem = saleDetails
+            .map(item => {
+                if (!item.product) return null
+
+                const product = item.product
+                const quantity = Number.parseInt(products.find(product => product.saleDetailId === item.id)?.quantity || "1", 10) || 1
+                const weight = Number.parseInt(product.weight || "0", 10) || 0
+                const length = Number.parseInt(product.length || "0", 10) || 0
+                const width = Number.parseInt(product.width || "0", 10) || 0
+                const height = Number.parseInt(product.height || "0", 10) || 0
+
+                return {
+                    "PRODUCT_NAME": product.name,
+                    "PRODUCT_PRICE": item.price ?? 0,
+                    "PRODUCT_WEIGHT": weight,
+                    "PRODUCT_LENGTH": length,
+                    "PRODUCT_WIDTH": width,
+                    "PRODUCT_HEIGHT": height,
+                    "PRODUCT_QUANTITY": quantity
+                }
             })
-        })
+            .filter(Boolean)
+
+        const totalQuantity = listItem.reduce((sum, item) => sum + (item.PRODUCT_QUANTITY || 0), 0)
+        const totalWeight = listItem.reduce((sum, item) => sum + (item.PRODUCT_WEIGHT || 0) * (item.PRODUCT_QUANTITY || 0), 0)
+        const packageLength = listItem.reduce((max, item) => Math.max(max, item.PRODUCT_LENGTH || 0), 0)
+        const packageWidth = listItem.reduce((max, item) => Math.max(max, item.PRODUCT_WIDTH || 0), 0)
+        const packageHeight = listItem.reduce((max, item) => Math.max(max, item.PRODUCT_HEIGHT || 0), 0)
+
         const data = {
-            "PRODUCT_WEIGHT": weight,
+            "PRODUCT_QUANTITY": totalQuantity,
+            "PRODUCT_WEIGHT": totalWeight,
+            "PRODUCT_LENGTH": packageLength,
+            "PRODUCT_WIDTH": packageWidth,
+            "PRODUCT_HEIGHT": packageHeight,
             "ORDER_SERVICE": process.env.VIETTEL_POST_ORDER_SERVICE,
             "SENDER_PROVINCE": "1",
             "SENDER_DISTRICT": "14",
@@ -52,7 +70,7 @@ export async function POST(req) {
         const resultRetry = await getShippingPrice(data)
 
         if (resultRetry.status == 200) {
-            return NextResponse.json(result.data, { status: 200 })
+            return NextResponse.json(resultRetry.data, { status: 200 })
         }
 
         return NextResponse.json({ message: result.message }, { status: 400 })

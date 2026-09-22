@@ -41,7 +41,7 @@ const Cart = () => {
                     <a href={`/${detail.product.subCate ? detail.product.subCate.slug : "san-pham"}/${detail.product.slug}`} className="shrink-0 md:order-1">
                       <Image
                         className="h-20 w-20 dark:block"
-                        src={`${detail.product.imageUrl || detail.product.image?.path}`}
+                        src={detail.product.imageUrl || detail.product.image?.path || "/default-featured-image.webp"}
                         alt={detail.product?.name || "Product image"}
                         width={80}
                         height={80}

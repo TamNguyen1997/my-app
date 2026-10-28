@@ -68,6 +68,11 @@ async function importSaleDetail(worksheet) {
     }
 
 
+    const filterId = rowData[5]
+    const filterValueId = rowData[6]
+    let filterRecord = null
+    let filterValueRecord = null
+
     const dataObj = {
       sku: sku,
       price: price,
@@ -78,10 +83,6 @@ async function importSaleDetail(worksheet) {
       },
       inStock: inStock,
     }
-
-    const filterId = rowData[5]
-    const filterValueId = rowData[6]
-    let filterRecord = null
 
     if (filterId) {
       const filter = await tx.filter.findFirst({
@@ -120,6 +121,7 @@ async function importSaleDetail(worksheet) {
       dataObj.filterValue = {
         connect: { id: filterValue.id },
       }
+      filterValueRecord = filterValue
     }
 
     if (parentSaleDetailSku) {
@@ -138,13 +140,40 @@ async function importSaleDetail(worksheet) {
     }
 
     try {
-      if (await tx.sale_detail.findUnique({ where: { sku: dataObj.sku } })) {
-        await tx.sale_detail.update({ where: { sku: dataObj.sku }, data: dataObj })
+      let existingSaleDetail = null
+
+      if (sku) {
+        existingSaleDetail = await tx.sale_detail.findUnique({
+          where: { sku: dataObj.sku },
+        })
+      } else if (filterRecord && filterValueRecord) {
+        existingSaleDetail = await tx.sale_detail.findFirst({
+          where: {
+            productId: productId,
+            filterId: filterRecord.id,
+            filterValueId: filterValueRecord.id,
+          },
+        })
+      }
+
+      if (!existingSaleDetail) {
+        const generatedSku = sku || v4()
+        dataObj.sku = generatedSku
+      } else {
+        dataObj.sku = existingSaleDetail.sku
+      }
+
+      if (existingSaleDetail) {
+        await tx.sale_detail.update({
+          where: { id: existingSaleDetail.id },
+          data: dataObj,
+        })
       } else {
         await tx.sale_detail.create({ data: dataObj })
       }
     } catch (error) {
       console.error(`Error importing sale detail at line ${index + 1}`)
+      console.error(error)
       throw new Error(IMPORT_MESSAGE.DATABASE_ERROR)
     }
   }

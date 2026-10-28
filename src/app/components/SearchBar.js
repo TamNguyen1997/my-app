@@ -32,7 +32,13 @@ const SearchBar = () => {
     products: [],
     blogs: [],
   });
-  const [query, setQuery] = useState('');
+  const [searchError, setSearchError] = useState(false);
+  const [query, setQuery] = useState(() => {
+    if (typeof window === 'undefined') return '';
+
+    const searchParams = new URLSearchParams(window.location.search);
+    return searchParams.get('q') || searchParams.get('key') || '';
+  });
   const [isFocused, setIsFocused] = useState(false);
 
   useEffect(() => {
@@ -54,25 +60,51 @@ const SearchBar = () => {
     [querySlug]
   );
 
-  const onSearch = useCallback(async (value) => {
+  const onSearch = useCallback(async (value, signal) => {
     setIsLoading({ categories: true, products: true, blogs: true });
+    setSearchError(false);
 
     try {
-      Promise.all([
-        fetch(`/api/categories/?size=3&page=1&${queryString}`).then(res => res.json()),
-        fetch(`/api/products/search/?size=5&page=1&searchTerm=${encodeURIComponent(value)}&includeCate=true`).then(res => res.json()),
-      ]).then(([categories, products]) => {
-        setResults(prev => ({ ...prev, categories: categories.result, products: products.result }));
-        setIsLoading(prev => ({ ...prev, categories: false, products: false }));
-      });
-      fetch(`/api/blogs/?size=3&page=1&searchTerm=${encodeURIComponent(value)}`).then(res => res.json()).then(json => {
-        setResults(prev => ({ ...prev, blogs: json.result }))
-        setIsLoading(prev => ({ ...prev, blogs: false }));
-      })
+      const [categories, products, blogs] = await Promise.all([
+        fetch(`/api/categories/?size=3&page=1&${queryString}`, { signal }),
+        fetch(`/api/products/search/?size=5&page=1&searchTerm=${encodeURIComponent(value)}&includeCate=true`, { signal }),
+        fetch(`/api/blogs/?size=3&page=1&searchTerm=${encodeURIComponent(value)}`, { signal }),
+      ].map(async (request) => {
+        const response = await request;
+        if (!response.ok) throw new Error(`Search suggestions failed with status ${response.status}`);
+        return response.json();
+      }));
+
+      if (!signal.aborted) {
+        setResults({
+          categories: categories.result || [],
+          products: products.result || [],
+          blogs: blogs.result || [],
+        });
+      }
+    } catch (error) {
+      if (!signal.aborted) {
+        console.error(error);
+        setSearchError(true);
+      }
     } finally {
-      setIsLoading({ categories: false, products: false, blogs: false });
+      if (!signal.aborted) setIsLoading({ categories: false, products: false, blogs: false });
     }
   }, [queryString]);
+
+  useEffect(() => {
+    const value = query.trim();
+    if (value.length <= 2) {
+      setResults({ categories: [], products: [], blogs: [] });
+      setIsLoading({ categories: false, products: false, blogs: false });
+      setSearchError(false);
+      return;
+    }
+
+    const controller = new AbortController();
+    onSearch(value, controller.signal);
+    return () => controller.abort();
+  }, [onSearch, query]);
 
   const shouldShowResults = query.length > 2;
 
@@ -84,7 +116,7 @@ const SearchBar = () => {
         return `/${item.subCate?.slug}/${item.slug}`;
       case 'blogs':
         return item.categories?.includes(
-          process.env.NEXT_PUBLIC_WORDPRESS_POST_NEWS_ID
+          Number(process.env.NEXT_PUBLIC_WORDPRESS_POST_NEWS_ID)
         )
           ? `/tin-tuc/${item.slug}`
           : `/kien-thuc-hay/${item.slug}`;
@@ -98,12 +130,11 @@ const SearchBar = () => {
       <Input
         isClearable
         radius="lg"
-        placeholder="Tìm sản phẩm..."
+        placeholder="Tìm sản phẩm, tin tức..."
         startContent={<Search className="hover:opacity-hover" strokeWidth={3} />}
         value={query}
         onValueChange={(value) => {
           setQuery(value);
-          if (value.length > 2) onSearch(value);
         }}
         onKeyDown={(e) => {
           if (e.key === 'Enter' && query.trim()) {
@@ -123,6 +154,8 @@ const SearchBar = () => {
                 <div className="w-full p-2 flex justify-center">
                   <LoaderIcon className="animate-spin" />
                 </div>
+              ) : searchError ? (
+                <div className="py-2 flex justify-center text-sm text-slate-500">Không thể tải gợi ý tìm kiếm. Vui lòng thử lại.</div>
               ) : results[key]?.length > 0 ? (
                 <div className="divide-y divide-slate-300 py-2">
                   {results[key].map((item) =>

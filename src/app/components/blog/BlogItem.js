@@ -13,19 +13,21 @@ const blogCategories = {
   }
 }
 
-const getParentCategory = (blog) => {
+const getParentCategory = (blog, category) => {
+  if (category) return category;
   if (blog.categories.includes(Number(process.env.NEXT_PUBLIC_WORDPRESS_POST_NEWS_ID))) {
     return "NEWS"
   }
   return "INFORMATION"
 }
 
-const BlogItem = ({ noBorder = false, item, containerClass = "lg:grid-cols-[160px_auto]", textClass = "" }) => {
+const BlogItem = ({ noBorder = false, item, category, containerClass = "lg:grid-cols-[160px_auto]", textClass = "" }) => {
+  const parentCategory = getParentCategory(item, category);
 
   return (
     <>
       <Link
-        href={`/${blogCategories[getParentCategory(item)].slug}/${item.slug}`}
+        href={`/${blogCategories[parentCategory].slug}/${item.slug}`}
         className={`
                     grid gap-4
                     max-w-full
@@ -38,7 +40,7 @@ const BlogItem = ({ noBorder = false, item, containerClass = "lg:grid-cols-[160p
           className={`${textClass}`}
         >
           <p className="text-xs font-bold text-[#153f17] truncate line-clamp-2 whitespace-normal border-l-3 border-[#FFD400] pl-2 mb-2 blog-category">
-            {blogCategories[getParentCategory(item)].title}
+            {blogCategories[parentCategory].title}
           </p>
           <p className="text-sm font-bold text-[#191919] leading-normal truncate line-clamp-2 whitespace-normal hover:text-[#bb9051] transition mb-2 blog-title">{parse(item.title.rendered || item.title || "")}</p>
           <p className="text-[13px] truncate line-clamp-2 whitespace-normal mb-2 blog-description">{parse(item.excerpt.rendered)}</p>

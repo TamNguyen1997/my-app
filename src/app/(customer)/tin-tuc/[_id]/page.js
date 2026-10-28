@@ -33,7 +33,7 @@ export async function generateMetadata({ params }) {
 }
 
 const News = async ({ params }) => {
-  const res = await fetch(`${process.env.WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${params._id}&_embed`)
+  const res = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${params._id}&_embed`)
   if (!res.ok) {
     notFound()
   }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { getTotalPages } from "@/lib/pagination"
 import { Button, Link, Pagination, Tab, Tabs } from "@heroui/react";
 import { Suspense } from 'react'
@@ -13,32 +13,32 @@ const SearchProductBar = () => {
   const rowsPerPage = 20
   const [data, setData] = useState([])
   const searchParams = useSearchParams()
+  const searchTerm = searchParams.get("q") || searchParams.get("key") || "";
   const [total, setTotal] = useState(0)
   const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"))
-
-  useEffect(() => {
-    getProduct()
-  }, [page, searchParams]);
 
   const pages = useMemo(() => {
     return getTotalPages(total, rowsPerPage)
   }, [total, rowsPerPage]);
 
-  const getProduct = () => {
-    const term = searchParams.get("q") || searchParams.get("key") || "";
-    fetch(`/api/products/search/?size=${rowsPerPage}&page=${page}&searchTerm=${encodeURIComponent(term)}&active=true&includeCate=true`).then(async res => {
+  const getProduct = useCallback(() => {
+    fetch(`/api/products/search/?size=${rowsPerPage}&page=${page}&searchTerm=${encodeURIComponent(searchTerm)}&active=true&includeCate=true`).then(async res => {
       if (res.ok) {
         const body = await res.json()
         setData(body.result)
         setTotal(body.total)
       }
     })
-  }
+  }, [page, searchTerm]);
+
+  useEffect(() => {
+    getProduct()
+  }, [getProduct]);
 
   return (
     <>
       {
-        total === 0 ? <NotFound key={searchParams.get("key")} /> : <>
+        total === 0 ? <NotFound searchTerm={searchTerm} /> : <>
           <p className="font-bold p-2">
             Tìm thấy {total} kết quả.
           </p>
@@ -73,36 +73,68 @@ const SearchProductBar = () => {
   );
 };
 
-const SearchBlog = () => {
+const SearchBlog = ({ category, searchTerm }) => {
   const rowsPerPage = 10
   const [data, setData] = useState([])
-  const searchParams = useSearchParams()
-  const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"))
-  const [endContent, setEndContent] = useState(false)
-  const [total, setTotal] = useState(1)
-  useEffect(() => {
-    getBlog()
-  }, [page, searchParams]);
+  const categoryId = category === "news"
+    ? process.env.NEXT_PUBLIC_WORDPRESS_POST_NEWS_ID
+    : process.env.NEXT_PUBLIC_WORDPRESS_POST_INFORMATION_ID;
+  const [page, setPage] = useState(1)
+  const [total, setTotal] = useState(0)
+  const [isLoading, setIsLoading] = useState(false)
+  const [hasError, setHasError] = useState(false)
 
-  const getBlog = () => {
-    const wordpressCateIds = [process.env.NEXT_PUBLIC_WORDPRESS_POST_NEWS_ID, process.env.NEXT_PUBLIC_WORDPRESS_POST_INFORMATION_ID]
-    fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&categories=${wordpressCateIds.join()}&per_page=${rowsPerPage}&page=${page}&status=publish`)
-      .then(res => {
-        setTotal(res.headers.get("x-wp-total"))
-        return res.json()
-      })
-      .then(json => {
-        setData([...data, ...json])
-      }).catch(err => setEndContent(true))
-  }
+  useEffect(() => {
+    let isCurrent = true;
+
+    const getBlog = async () => {
+      setIsLoading(true);
+      setHasError(false);
+
+      try {
+        if (!categoryId) throw new Error("Missing WordPress category ID for blog search");
+
+        const params = new URLSearchParams({
+          _embed: "",
+          search: searchTerm,
+          categories: categoryId,
+          per_page: String(rowsPerPage),
+          page: String(page),
+          status: "publish",
+        });
+        const res = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?${params}`);
+        if (!res.ok) throw new Error(`Blog search failed with status ${res.status}`);
+
+        const blogs = await res.json();
+        if (!Array.isArray(blogs)) throw new Error("Blog search returned an invalid response");
+
+        if (isCurrent) {
+          setData(previous => page === 1 ? blogs : [...previous, ...blogs]);
+          setTotal(Number(res.headers.get("x-wp-total") || 0));
+        }
+      } catch (error) {
+        console.error(error);
+        if (isCurrent) setHasError(true);
+      } finally {
+        if (isCurrent) setIsLoading(false);
+      }
+    };
+
+    getBlog();
+    return () => {
+      isCurrent = false;
+    };
+  }, [categoryId, page, searchTerm]);
 
   return (
     <>
       {
-        data.length === 0 ? <NotFound key={searchParams.get("key")} /> :
+        hasError ? <p className="p-2">Đã xảy ra lỗi khi tìm kiếm bài viết. Vui lòng thử lại.</p> :
+        data.length === 0 && isLoading ? <p className="p-2">Đang tìm kiếm bài viết...</p> :
+        data.length === 0 ? <NotFound searchTerm={searchTerm} /> :
           <>
             <p className="font-bold p-2">
-              Tìm thấy {data.length} kết quả.
+              Tìm thấy {total} kết quả.
             </p>
             {
               data?.length ? <>
@@ -110,7 +142,12 @@ const SearchBlog = () => {
                   {
                     data.map(item => {
                       return (
-                        <BlogItem item={item} key={item.id} containerClass="lg:grid-cols-[192px_auto] pb-5" />
+                        <BlogItem
+                          item={item}
+                          key={item.id}
+                          category={category === "news" ? "NEWS" : "INFORMATION"}
+                          containerClass="lg:grid-cols-[192px_auto] pb-5"
+                        />
                       )
                     })
                   }
@@ -118,7 +155,8 @@ const SearchBlog = () => {
                 {total > data.length && <Button
                   className="flex justify-center items-center font-semibold w-[181px] h-[43px] rounded-[30px] text-black bg-white
                 border border-black hover:bg-[#FFD400] transition mx-auto text-large"
-                  onClick={() => setPage(page + 1)}
+                  isLoading={isLoading}
+                  onPress={() => setPage(page + 1)}
                 >
                   Xem thêm
                 </Button>}
@@ -130,10 +168,10 @@ const SearchBlog = () => {
   );
 };
 
-const NotFound = ({ key }) => {
+const NotFound = ({ searchTerm }) => {
   return <>
     <p className="p-2">
-      Rất tiếc, Sao Việt không tìm thấy kết quả nào phù hợp với từ khóa {key}
+      Rất tiếc, Sao Việt không tìm thấy kết quả nào phù hợp với từ khóa {searchTerm}
     </p>
     <div className="flex pt-20">
       <div className="m-auto flex flex-col gap-2">
@@ -160,18 +198,30 @@ const NotFound = ({ key }) => {
 
 function Search() {
   return <Suspense fallback={<SearchBarFallback />}>
+    <SearchContent />
+  </Suspense>
+}
+
+function SearchContent() {
+  const searchParams = useSearchParams();
+  const searchTerm = searchParams.get("q") || searchParams.get("key") || "";
+
+  return <>
     <link rel="canonical" href={`${process.env.NEXT_PUBLIC_DOMAIN}/tim-kiem`} />
     <div className="w-9/12 mx-auto pt-5">
-      <Tabs>
+      <Tabs defaultSelectedKey="information">
         <Tab key="product" title="Sản phẩm">
           <SearchProductBar />
         </Tab>
-        <Tab key="blog" title="Bài viết">
-          <SearchBlog />
+        <Tab key="information" title="Kiến thức hay">
+          <SearchBlog key={`information-${searchTerm}`} category="information" searchTerm={searchTerm} />
+        </Tab>
+        <Tab key="news" title="Tin tức">
+          <SearchBlog key={`news-${searchTerm}`} category="news" searchTerm={searchTerm} />
         </Tab>
       </Tabs>
     </div>
-  </Suspense>
+  </>
 }
 
 function SearchBarFallback() {

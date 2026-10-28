@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic"; // Forces dynamic rendering
 export const revalidate = 0;
 
 export async function generateMetadata({ params }) {
-  const res = await fetch(`${process.env.WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${params._id.trim()}&_embed`)
+  const res = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${params._id.trim()}&_embed`)
   if (!res.ok) {
     return {}
   }
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }) {
 }
 
 const Information = async ({ params }) => {
-  const res = await fetch(`${process.env.WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${params._id}&_embed`)
+  const res = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?slug=${params._id}&_embed`)
   if (!res.ok) {
     notFound()
   }
@@ -47,7 +47,7 @@ const Information = async ({ params }) => {
     notFound()
   }
   
-  const relatedBlogRes = await fetch(`${process.env.WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&categories=${blog.categories?.join()}&exclude=${blog.id}&per_page=4&categories_exclude=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID || ""}`)
+  const relatedBlogRes = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2/posts/?_embed&categories=${blog.categories?.join()}&exclude=${blog.id}&per_page=4&categories_exclude=${process.env.NEXT_PUBLIC_WORDPRESS_PRODUCT_CATEGORY_ID || ""}`)
 
   const jsonLdSchema = {
     '@context': 'https://schema.org',
